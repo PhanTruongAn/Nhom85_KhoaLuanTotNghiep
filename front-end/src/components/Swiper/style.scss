@@ -1,0 +1,20 @@
+.swiper {
+  width: 95%; // Đảm bảo Swiper chiếm toàn bộ chiều rộng
+  height: 600px; // Thiết lập chiều cao nếu cần
+  border-radius: 15px;
+  margin-top: 90px;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+  img {
+    border-radius: 15px;
+    display: block;
+    height: 600px;
+    object-fit: cover;
+    width: 100%;
+  }
+}

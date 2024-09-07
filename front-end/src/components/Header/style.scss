@@ -1,0 +1,34 @@
+@import "../../styles/Themes/colors.scss";
+.header {
+  position: fixed; /* Giữ cố định */
+  top: 0; /* Gắn lên phía trên cùng */
+  left: 0;
+  right: 0;
+  z-index: 500;
+  transition: background-color 0.5s ease;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border-bottom: 2px solid transparent;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  flex-wrap: wrap;
+  .logo {
+    cursor: pointer;
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    // padding: 15px;
+    img {
+      height: 100%; // Đảm bảo hình ảnh chiếm toàn bộ chiều cao của .logo
+      width: auto; // Giữ tỷ lệ khung hình
+    }
+    .content {
+      // padding-bottom: 20px;
+      align-self: center;
+      b {
+        font-size: 15px;
+      }
+    }
+  }
+}
