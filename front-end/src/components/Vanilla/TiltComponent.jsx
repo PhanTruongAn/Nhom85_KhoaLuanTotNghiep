@@ -13,15 +13,15 @@ const TiltComponent = (props) => {
     const rightTiltNode = rightTiltRef.current;
     const bottomTiltNode = bottomTiltRef.current;
     VanillaTilt.init(leftTiltNode, {
-      max: 25,
-      speed: 1000,
+      max: 5,
+      speed: 300,
       glare: true,
       "max-glare": 0.5,
     });
 
     VanillaTilt.init(rightTiltNode, {
-      max: 25,
-      speed: 1000,
+      max: 5,
+      speed: 300,
       glare: true,
       "max-glare": 0.5,
     });

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./style.scss";
 import logoIUH from "../../images/logo-iuh.png";
-import themeDark from "../../styles/Themes/themeDark.jsx";
+import themeDark from "../../styles/themes/themeDark.jsx";
 import themeLight from "../../styles/Themes/themeLight.jsx";
 import CssBaseline from "@mui/material/CssBaseline";
 import IconButton from "@mui/material/IconButton";
@@ -11,12 +11,14 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-
+import { useNavigate } from "react-router-dom";
 const Header = (props) => {
-  const [value, setValue] = useState("one");
+  const navigate = useNavigate();
+  const [value, setValue] = useState(window.location.pathname);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
   return (
     <Box
       className="header container-fluid"
@@ -97,31 +99,27 @@ const Header = (props) => {
             }}
           >
             <Tab
-              value="one"
+              value="/home"
               label="TRANG CHỦ"
               component="label"
               disableRipple
+              onClick={() => navigate("home")}
             />
             <Tab
-              value="two"
+              value="/notification"
               label="THÔNG BÁO"
               component="label"
               disableRipple
             />
             <Tab
-              value="three"
+              value="/information"
               label="SỰ KIỆN - TIN TỨC"
               component="label"
               disableRipple
             />
-          </Tabs>
-          <Box
-            sx={{
-              alignSelf: "center",
-            }}
-          >
-            <Button
-              variant="text"
+            <Tab
+              value="/login"
+              label="ĐĂNG NHẬP"
               component="label"
               disableRipple
               sx={[
@@ -136,9 +134,14 @@ const Header = (props) => {
                   }),
                 }),
               ]}
-            >
-              Đăng nhập
-            </Button>
+              onClick={() => navigate("login")}
+            />
+          </Tabs>
+          <Box
+            sx={{
+              alignSelf: "center",
+            }}
+          >
             <IconButton
               sx={[
                 (theme) => ({

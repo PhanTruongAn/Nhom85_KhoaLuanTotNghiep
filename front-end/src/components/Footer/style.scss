@@ -11,6 +11,9 @@
       justify-content: center;
       border: none;
       font-size: 18px;
+      &:hover {
+        transform: scale(1.05);
+      }
     }
 
     .btn-floating i {
