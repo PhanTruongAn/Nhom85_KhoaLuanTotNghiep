@@ -11,7 +11,7 @@ const AppRoute = () => {
       <Routes>
         <Route path="/" element={<Navigate to="home" />} />
         <Route path="/" element={<HomePage />}>
-          <Route index path="home" element={<Home />} />{" "}
+          <Route index path="home" element={<Home />} />
           {/* Default child route */}
           <Route path="login" element={<Login />} />
         </Route>

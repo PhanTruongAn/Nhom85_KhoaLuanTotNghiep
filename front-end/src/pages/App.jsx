@@ -4,7 +4,7 @@ import AppRoute from "../routes/AppRoute";
 import { Fragment } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import DashBoard from "./DashBoard/DashBoard";
+import DashBoardStudent from "./DashBoard/DashBoardStudent/DashBoardStudent";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -12,7 +12,7 @@ function App() {
     <Fragment>
       <BrowserRouter>
         {/* <AppRoute /> */}
-        <DashBoard />
+        <DashBoardStudent />
         <ToastContainer />
       </BrowserRouter>
     </Fragment>
