@@ -11,8 +11,8 @@ function App() {
   return (
     <Fragment>
       <BrowserRouter>
-        {/* <AppRoute /> */}
-        <DashBoardStudent />
+        <AppRoute />
+        {/* <DashBoardStudent /> */}
         <ToastContainer />
       </BrowserRouter>
     </Fragment>

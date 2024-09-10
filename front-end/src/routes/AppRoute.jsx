@@ -3,7 +3,7 @@ import { path } from "../utils/routePath";
 import HomePage from "../pages/HomePage/HomePage";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
-import Dashboard from "../pages/DashBoard/DashBoard";
+import DashBoardStudent from "../pages/DashBoard/DashBoardStudent/DashBoardStudent";
 
 const AppRoute = () => {
   return (
@@ -16,7 +16,7 @@ const AppRoute = () => {
           <Route path="login" element={<Login />} />
         </Route>
 
-        <Route path={path.DASHBOARD} element={<Dashboard />} />
+        <Route path={path.DASHBOARD} element={<DashBoardStudent />} />
       </Routes>
     </>
   );
