@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Major.init(
     {
-      id: DataTypes.INTEGER,
       majorName: DataTypes.STRING,
       termId: DataTypes.INTEGER,
     },

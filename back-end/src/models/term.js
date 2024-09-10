@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Term.init(
     {
-      id: DataTypes.INTEGER,
       name: DataTypes.STRING,
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,

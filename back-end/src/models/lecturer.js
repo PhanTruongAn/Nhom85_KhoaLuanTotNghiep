@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Lecturer.init(
     {
-      id: DataTypes.INTEGER,
       fullName: DataTypes.STRING,
       email: DataTypes.STRING,
       phone: DataTypes.STRING,

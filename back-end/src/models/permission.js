@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Permission.init(
     {
-      id: DataTypes.INTEGER,
       apiPath: DataTypes.STRING,
       description: DataTypes.STRING,
     },

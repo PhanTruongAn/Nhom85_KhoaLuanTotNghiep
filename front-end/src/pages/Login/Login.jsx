@@ -21,10 +21,12 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button as Button2 } from "antd";
+import userApi from "../../apis/userApi";
 export default function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
   const [userNameError, setUserNameError] = useState(false);
   const [userNameErrorMessage, setUserNameErrorMessage] = useState("");
   const [passwordError, setPasswordError] = useState(false);
@@ -53,9 +55,9 @@ export default function Login() {
       setUserNameErrorMessage("");
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value) {
       setPasswordError(true);
-      setPasswordErrorMessage("Mật khẩu phải nhiều hơn 6 kí tự !");
+      setPasswordErrorMessage("Mật khẩu không được để trống !");
       isValid = false;
     } else {
       setPasswordError(false);
@@ -65,11 +67,21 @@ export default function Login() {
     return isValid;
   };
 
-  const handlerLogin = () => {
+  const handlerLogin = async () => {
     const isValid = validateInputs();
     if (isValid) {
-      navigate("/dashboard");
-      toast.success("Login Success!", { autoClose: 1000 });
+      const data = {
+        username: userName,
+        password: password,
+      };
+      const result = await userApi.login(data);
+      if (result.status === 0) {
+        localStorage.setItem("accessToken", result.data.accessToken);
+        navigate("/dashboard");
+        toast.success("Login Success!");
+      } else {
+        toast.error(result.message);
+      }
     }
   };
   return (
@@ -102,6 +114,7 @@ export default function Login() {
               required
               label="Tài khoản đăng nhập"
               variant="standard"
+              onChange={(e) => setUserName(e.target.value)}
             />
           </FormControl>
 
@@ -111,6 +124,7 @@ export default function Login() {
             </InputLabel>
             <Input
               error={passwordError}
+              onChange={(e) => setPassword(e.target.value)}
               id="password"
               sx={{ width: "100%" }}
               type={showPassword ? "text" : "password"}

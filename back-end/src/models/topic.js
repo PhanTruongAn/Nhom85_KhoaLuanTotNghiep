@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Topic.init(
     {
-      id: DataTypes.INTEGER,
       title: DataTypes.STRING,
       description: DataTypes.TEXT,
       goals: DataTypes.TEXT,

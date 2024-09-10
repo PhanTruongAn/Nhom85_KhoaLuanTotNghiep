@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Group.init(
     {
-      id: DataTypes.INTEGER,
       groupName: DataTypes.STRING,
       topicId: DataTypes.INTEGER,
     },
