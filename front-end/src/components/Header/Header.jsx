@@ -2,15 +2,12 @@ import React, { useState } from "react";
 import "./style.scss";
 import logoIUH from "../../images/logo-iuh.png";
 import themeDark from "../../styles/themes/themeDark.jsx";
-import themeLight from "../../styles/Themes/themeLight.jsx";
-import CssBaseline from "@mui/material/CssBaseline";
 import IconButton from "@mui/material/IconButton";
 import DarkMode from "@mui/icons-material/DarkMode";
 import LightMode from "@mui/icons-material/LightMode";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 const Header = (props) => {
   const navigate = useNavigate();
