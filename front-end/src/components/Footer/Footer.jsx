@@ -47,33 +47,25 @@ const Footer = () => {
 
               <div className="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
                 <h6 className="text-uppercase mb-4 font-weight-bold">
-                  Follow us
+                  Follow fit iuh
                 </h6>
 
                 <div className="container icon-container">
                   <a
                     className="btn btn-primary btn-floating m-1"
                     style={{ backgroundColor: "#3b5998" }}
-                    href="#!"
+                    href="https://www.facebook.com/khoacntt.iuh"
                     role="button"
+                    target="_blank"
                   >
                     <i className="fab fa-facebook-f"></i>
                   </a>
-
-                  <a
-                    className="btn btn-primary btn-floating m-1"
-                    style={{ backgroundColor: "#55acee" }}
-                    href="#!"
-                    role="button"
-                  >
-                    <i className="fab fa-twitter"></i>
-                  </a>
-
                   <a
                     className="btn btn-primary btn-floating m-1"
                     style={{ backgroundColor: "#dd4b39" }}
-                    href="#!"
+                    href="https://fit.iuh.edu.vn/"
                     role="button"
+                    target="_blank"
                   >
                     <i className="fab fa-google"></i>
                   </a>

@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import "./style.scss";
 import Header from "../../components/Header/Header";
 import { ThemeProvider } from "@mui/material";
-import themeDark from "../../styles/themes/themeDark.jsx";
+import themeDark from "../../styles/Themes/themeDark.jsx";
 import themeLight from "../../styles/Themes/themeLight.jsx";
 import CssBaseline from "@mui/material/CssBaseline";
 import SwiperSlide from "../../components/Swiper/Swiper.jsx";

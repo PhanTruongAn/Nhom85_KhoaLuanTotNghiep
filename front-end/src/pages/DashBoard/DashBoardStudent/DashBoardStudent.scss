@@ -1,0 +1,38 @@
+.admin-container {
+    .menu {
+      min-height: 100vh;
+    }
+    .collapsed-button {
+      font-size: 16px;
+      height: 64px;
+      width: 64px;
+      float: left;;
+    //   left: -650px;
+    }
+    .header-content {
+      position: absolute;
+      right: 0px;
+      top: -2px;
+      font-weight: 600;
+      margin-right: 5px;
+      .btn-logOut {
+        margin-top: 15px;
+        margin-left: 10px;
+        margin-right: 85px;
+  
+        &.dark-theme {
+          background-color: #0f1114;
+          color: white;
+          border-color: white;
+          &:hover {
+            color: #0068d1;
+            border-color: #0068d1;
+          }
+        }
+  
+        &.light-theme {
+          background-color: #fff;
+        }
+      }
+    }
+  }
