@@ -26,7 +26,7 @@ const authentication = (req, res, next) => {
       if (!cookie.accessToken || !tokenFromHeader) {
         return res.status(401).json({
           status: 401,
-          message: "Unauthorized!",
+          message: "Bạn chưa đăng nhập!",
         });
       } else {
         const token = cookie.accessToken ? cookie.accessToken : tokenFromHeader;
