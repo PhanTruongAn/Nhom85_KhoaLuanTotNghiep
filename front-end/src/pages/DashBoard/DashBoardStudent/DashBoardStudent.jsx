@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 
 import "./DashBoardStudent.scss";
-import { Button, Layout, Menu, theme, Modal } from "antd";
+import { Button, Layout, Menu, theme, Modal, ConfigProvider } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
@@ -34,6 +34,20 @@ const DashBoardStudent = () => {
       onOk: () => handleLogout(),
     });
   };
+  // const currentTheme = themes
+  //   ? {
+  //       token: {
+  //         colorBgContainer: "#001529", // Màu nền cho theme tối
+  //         colorTextBase: "#fff",
+  //         colorBorder: "#fff",
+  //       },
+  //     }
+  //   : {
+  //       token: {
+  //         colorBgContainer: "#ffffff", // Màu nền cho theme sáng
+  //         colorTextBase: "#000",
+  //       },
+  //     };
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -50,62 +64,80 @@ const DashBoardStudent = () => {
     setThemes(!themes);
   };
   return (
-    <Layout className="container-fluid p-0 admin-container">
-      {contextHolder}
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        theme={themes ? "dark" : "light"}
-      >
-        <div className="demo-logo-vertical" />
-        <Menu
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
-          mode="inline"
+    <ConfigProvider
+      theme={{
+        components: {
+          Layout: {
+            /* here is your component tokens */
+            headerColor: themes ? "#fff" : "#000",
+            headerBg: themes ? "#001529" : "#fff",
+          },
+        },
+      }}
+    >
+      <Layout className="container-fluid p-0 admin-container">
+        {contextHolder}
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
           theme={themes ? "dark" : "light"}
-          // inlineCollapsed={collapsed}
-          items={items}
-          style={{ height: "100vh" }}
-        />
-      </Sider>
-      <Layout className="container-fluid p-0">
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-          }}
         >
-          <Button
-            className="collapsed-button"
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
+          <div className="demo-logo-vertical" />
+          <Menu
+            defaultSelectedKeys={["1"]}
+            defaultOpenKeys={["sub1"]}
+            mode="inline"
+            theme={themes ? "dark" : "light"}
+            // inlineCollapsed={collapsed}
+            items={items}
+            style={{ height: "100vh" }}
           />
-
-          <div className="header-content">
-            Welcome, an
+        </Sider>
+        <Layout className="container-fluid p-0">
+          <Header
+            style={{
+              padding: 0,
+              // color: currentTheme.token.colorTextBase,
+              // background: colorBgContainer,
+              // borderLeft: `1px solid ${currentTheme.token.colorBorder}`,
+              // borderBottom: `1px solid ${currentTheme.token.colorBorder}`,
+            }}
+            hasSider
+          >
             <Button
-              className={className}
-              size="large"
-              icon={themes ? <MoonOutlined /> : <SunOutlined />}
-              onClick={changeTheme}
+              color={themes ? "#fff" : "#000"}
+              className="collapsed-button"
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
             />
-          </div>
-        </Header>
-        <Content
-          style={{
-            margin: "24px 16px",
-            minHeight: 280,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
-            overflow: "auto",
-          }}
-        >
-          <Outlet />
-        </Content>
+
+            <div className="header-content">
+              Welcome, {user.fullName}
+              <Button
+                className={className}
+                size="large"
+                icon={themes ? <MoonOutlined /> : <SunOutlined />}
+                onClick={changeTheme}
+              />
+            </div>
+          </Header>
+
+          <Content
+            style={{
+              margin: "24px 16px",
+              minHeight: 280,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+              overflow: "auto",
+            }}
+          >
+            <Outlet />
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </ConfigProvider>
   );
 };
 
