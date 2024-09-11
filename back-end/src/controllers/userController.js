@@ -1,5 +1,5 @@
 import userService from "../services/userService";
-
+import _ from "lodash";
 const handlerLogin = async (req, res) => {
   try {
     const data = await userService.login(req.body);
@@ -36,7 +36,7 @@ const handlerGetDataFromToken = (req, res) => {
       status: 0,
       message: "Lấy thông tin người dùng thành công!",
       data: {
-        user: req.user,
+        user: _.pick(req.user, ["fullName", "username", "role"]),
         accessToken: req.token,
       },
     });

@@ -22,8 +22,11 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import userApi from "../../apis/userApi";
+import { useDispatch } from "react-redux";
+import { fetchToken } from "../../redux/userSlice";
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -78,6 +81,7 @@ export default function Login() {
       if (result.status === 0) {
         localStorage.setItem("accessToken", result.data.accessToken);
         navigate("/dashboard");
+        dispatch(fetchToken());
         toast.success("Login Success!");
       } else {
         toast.error(result.message);
@@ -110,6 +114,7 @@ export default function Login() {
               id="username"
               sx={{ width: "100%" }}
               type="text"
+              autoComplete="username"
               autoFocus
               required
               label="Tài khoản đăng nhập"
@@ -126,6 +131,7 @@ export default function Login() {
               error={passwordError}
               onChange={(e) => setPassword(e.target.value)}
               id="password"
+              autoComplete="current-password"
               sx={{ width: "100%" }}
               type={showPassword ? "text" : "password"}
               endAdornment={

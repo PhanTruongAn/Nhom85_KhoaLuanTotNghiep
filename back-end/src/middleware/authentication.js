@@ -31,7 +31,6 @@ const authentication = (req, res, next) => {
       } else {
         const token = cookie.accessToken ? cookie.accessToken : tokenFromHeader;
         const isVerify = jwtAction.verifyToken(token);
-        console.log(token);
         if (isVerify) {
           req.user = isVerify;
           req.token = token;

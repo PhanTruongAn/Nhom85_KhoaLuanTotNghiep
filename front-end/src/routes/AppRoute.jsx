@@ -4,8 +4,22 @@ import HomePage from "../pages/HomePage/HomePage";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import DashBoardStudent from "../pages/DashBoard/DashBoardStudent/DashBoardStudent";
-
+import DashBoardManager from "../pages/DashBoard/DashBoardManager/DashBoardManager";
+import PrivateRoute from "./PrivateRoute";
+import { useSelector } from "react-redux";
+import { isEmpty } from "lodash";
 const AppRoute = () => {
+  const defaultData = {
+    fullName: "",
+    username: "",
+    role: {
+      id: "",
+      name: "",
+    },
+  };
+  const user = useSelector((state) =>
+    isEmpty(state.userInit.user) ? defaultData : state.userInit.user
+  );
   return (
     <>
       <Routes>
@@ -16,7 +30,20 @@ const AppRoute = () => {
           <Route path="login" element={<Login />} />
         </Route>
 
-        <Route path={path.DASHBOARD} element={<DashBoardStudent />} />
+        <Route
+          path={path.DASHBOARD}
+          element={
+            <PrivateRoute
+              component={
+                user.role.name === "Student" ? (
+                  <DashBoardStudent />
+                ) : (
+                  <DashBoardManager />
+                )
+              }
+            />
+          }
+        />
       </Routes>
     </>
   );
