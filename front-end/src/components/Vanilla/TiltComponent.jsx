@@ -2,8 +2,7 @@ import React, { useRef, useEffect } from "react";
 import VanillaTilt from "vanilla-tilt";
 import "./style.scss";
 import Box from "@mui/material/Box";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import themeLight from "../../styles/Themes/themeLight";
+
 const TiltComponent = (props) => {
   const leftTiltRef = useRef(null);
   const rightTiltRef = useRef(null);

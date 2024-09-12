@@ -14,6 +14,8 @@ import items from "./items.jsx";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import userApi from "../../../apis/userApi.jsx";
+import lightTheme from "../../../styles/themes/ant/lightTheme.jsx";
+import darkTheme from "../../../styles/themes/ant/darkTheme.jsx";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardStudent = () => {
@@ -76,17 +78,7 @@ const DashBoardStudent = () => {
     setThemes(!themes);
   };
   return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Layout: {
-            /* here is your component tokens */
-            headerColor: themes ? "#fff" : "#000",
-            headerBg: themes ? "#001529" : "#fff",
-          },
-        },
-      }}
-    >
+    <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       <Layout className="container-fluid p-0 admin-container">
         {contextHolder}
         <Sider
@@ -111,7 +103,7 @@ const DashBoardStudent = () => {
             defaultOpenKeys={["/dashboard/home"]}
             mode="inline"
             theme={themes ? "dark" : "light"}
-            // inlineCollapsed={collapsed}
+            inlineCollapsed={collapsed}
             items={items}
             style={{ height: "100vh" }}
           />
@@ -120,17 +112,24 @@ const DashBoardStudent = () => {
           <Header
             style={{
               padding: 0,
-              // color: currentTheme.token.colorTextBase,
-              // background: colorBgContainer,
-              // borderLeft: `1px solid ${currentTheme.token.colorBorder}`,
-              // borderBottom: `1px solid ${currentTheme.token.colorBorder}`,
+              backgroundColor: themes ? "#001529" : "#ffffff",
+              color: themes ? "#ffffff" : "#000",
             }}
           >
             <Button
-              color={themes ? "#fff" : "#000"}
               className="collapsed-button"
               type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              icon={
+                collapsed ? (
+                  <MenuUnfoldOutlined
+                    style={{ color: themes ? "#fff" : "#000" }}
+                  />
+                ) : (
+                  <MenuFoldOutlined
+                    style={{ color: themes ? "#fff" : "#000" }}
+                  />
+                )
+              }
               onClick={() => setCollapsed(!collapsed)}
             />
 
@@ -139,7 +138,7 @@ const DashBoardStudent = () => {
               <Button
                 className={className}
                 size="large"
-                icon={themes ? <MoonOutlined /> : <SunOutlined />}
+                icon={themes ? <SunOutlined /> : <MoonOutlined />}
                 onClick={changeTheme}
               />
             </div>

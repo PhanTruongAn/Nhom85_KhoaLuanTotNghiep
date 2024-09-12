@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import "./style.scss";
 import Header from "../../components/Header/Header";
 import { ThemeProvider } from "@mui/material";
-import themeDark from "../../styles/themes/themeDark.jsx";
-import themeLight from "../../styles/themes/themeLight.jsx";
+import themeDark from "../../styles/themes/mui/themeDark";
+import themeLight from "../../styles/themes/mui/themeLight";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Outlet } from "react-router-dom";
 const HomePage = () => {

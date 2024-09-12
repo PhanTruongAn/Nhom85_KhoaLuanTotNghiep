@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./style.scss";
 import logoIUH from "../../images/logo-iuh.png";
-import themeDark from "../../styles/themes/themeDark.jsx";
+import themeDark from "../../styles/themes/mui/themeDark";
 import IconButton from "@mui/material/IconButton";
 import DarkMode from "@mui/icons-material/DarkMode";
 import LightMode from "@mui/icons-material/LightMode";
