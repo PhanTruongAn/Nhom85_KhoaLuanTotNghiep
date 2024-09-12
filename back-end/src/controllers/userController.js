@@ -63,10 +63,19 @@ const handlerLogOut = (req, res) => {
     });
   }
 };
+const handlerBulkCreate = async (req, res) => {
+  try {
+    let data = await userService.createBulkAccount(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   handlerLogin,
   handlerCreateStudentAccount,
   handlerCreateLecturerAccount,
   handlerGetDataFromToken,
   handlerLogOut,
+  handlerBulkCreate,
 };

@@ -19,6 +19,7 @@ const initWebRoutes = (app) => {
   router.post("/createLecturer", userController.handlerCreateLecturerAccount);
   router.get("/fetch-token", userController.handlerGetDataFromToken);
   router.post("/log-out", userController.handlerLogOut);
+  router.post("/bulk-create-student", userController.handlerBulkCreate);
   return app.use("/", router);
 };
 export default initWebRoutes;

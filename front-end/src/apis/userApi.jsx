@@ -10,5 +10,8 @@ const userApi = {
   logOut: () => {
     return axiosClient.post("/log-out");
   },
+  createAccountsStudent: (data) => {
+    return axiosClient.post("/bulk-create-student", data);
+  },
 };
 export default userApi;
