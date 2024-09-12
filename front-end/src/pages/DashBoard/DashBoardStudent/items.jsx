@@ -9,6 +9,8 @@ import {
   MessageOutlined,
   ControlOutlined,
   ClusterOutlined,
+  ReadOutlined,
+  TableOutlined,
 } from "@ant-design/icons";
 
 const items = [
@@ -19,13 +21,13 @@ const items = [
   },
   {
     key: "topic",
-    icon: <UsergroupAddOutlined />,
+    icon: <ReadOutlined />,
     label: "Topic",
   },
   {
-    key: "projects",
-    icon: <ProjectOutlined />,
-    label: "Project",
+    key: "Điểm số",
+    icon: <TableOutlined />,
+    label: "Điểm số",
   },
   {
     key: "role-menu",

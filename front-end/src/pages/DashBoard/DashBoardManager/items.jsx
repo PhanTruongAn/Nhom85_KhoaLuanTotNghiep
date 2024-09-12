@@ -15,17 +15,17 @@ const items = [
   {
     key: "home",
     icon: <HomeOutlined />,
-    label: "Home",
+    label: "Trang chủ",
   },
   {
     key: "topic",
     icon: <UsergroupAddOutlined />,
-    label: "Topic",
+    label: "Đề tài",
   },
   {
-    key: "projects",
+    key: "account",
     icon: <ProjectOutlined />,
-    label: "Project",
+    label: "Tài khoản",
   },
   {
     key: "role-menu",

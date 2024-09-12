@@ -10,6 +10,7 @@ import ManagerHome from "../pages/DashBoard/DashBoardManager/home/home";
 import PrivateRoute from "./PrivateRoute";
 import StudentTopic from "../pages/DashBoard/DashBoardStudent/topic/topic";
 import ManagerTopic from "../pages/DashBoard/DashBoardManager/topic/topic";
+import Account from "../pages/DashBoard/DashBoardManager/account/account";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 const AppRoute = () => {
@@ -67,6 +68,10 @@ const AppRoute = () => {
                 <PrivateRoute component={<ManagerTopic />} />
               )
             }
+          />
+          <Route
+            path="account"
+            element={<PrivateRoute component={<Account />} />}
           />
         </Route>
       </Routes>

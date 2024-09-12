@@ -6,7 +6,7 @@ import {
   SunOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
-
+import { Card, Box, TextField } from "@mui/material";
 import "./DashBoardManager.scss";
 import { Button, Layout, Menu, theme, Modal, ConfigProvider } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -95,7 +95,7 @@ const DashBoardManager = () => {
           collapsed={collapsed}
           theme={themes ? "dark" : "light"}
         >
-          <div className="demo-logo-vertical" />
+          <Box className="demo-logo-vertical" />
           <Menu
             selectedKeys={
               window.location.pathname.split("/dashboard/")[1]
@@ -134,7 +134,7 @@ const DashBoardManager = () => {
               onClick={() => setCollapsed(!collapsed)}
             />
 
-            <div className="header-content">
+            <Box className="header-content">
               Welcome, {user.fullName}
               <Button
                 className={className}
@@ -142,7 +142,7 @@ const DashBoardManager = () => {
                 icon={themes ? <MoonOutlined /> : <SunOutlined />}
                 onClick={changeTheme}
               />
-            </div>
+            </Box>
           </Header>
 
           <Content
