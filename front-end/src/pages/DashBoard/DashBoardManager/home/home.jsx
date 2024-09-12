@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, Input, Select, Button } from "antd";
-import { Card, Box } from "@mui/material";
+import { Card, Box, Typography } from "@mui/material";
 
 const { Option } = Select;
 
@@ -19,8 +19,8 @@ function ManagerHome() {
         display: "flex",
         flexDirection: "column",
         backgroundColor: "#f0f2f5",
-
         borderRadius: "8px",
+        alignItems: "center",
       }}
     >
       <Card
@@ -42,13 +42,18 @@ function ManagerHome() {
             style={{
               backgroundColor: "rgb(8, 56, 127)",
               verticalAlign: "middle",
+              left: "10px",
             }}
             size={80}
           >
             {user.fullname[0] + user.fullname[1]}
           </Avatar>
           <Box style={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
-            <h5>Thông tin cá nhân</h5>
+            <Box style={{ marginTop: "5px" }}>
+              <Typography variant="h5" component="h2" gutterBottom>
+                Thông tin cá nhân
+              </Typography>
+            </Box>
             <hr />
             <Box>
               <p>
@@ -67,8 +72,7 @@ function ManagerHome() {
       <Card
         style={{
           width: "100%",
-
-          padding: "20px",
+          padding: "10px",
           borderRadius: "8px",
           boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}

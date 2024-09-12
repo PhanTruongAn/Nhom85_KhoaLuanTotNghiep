@@ -1,9 +1,8 @@
 import React from "react";
 import { Avatar, Input, Select, Button } from "antd";
-import { Card, Box } from "@mui/material";
-
+import { Card, Box, Typography } from "@mui/material";
+import { BookTwoTone } from "@ant-design/icons";
 const { Option } = Select;
-
 function StudentHome() {
   const user = {
     fullname: "Dieu Phan Quang Dung",
@@ -19,56 +18,106 @@ function StudentHome() {
         display: "flex",
         flexDirection: "column",
         backgroundColor: "#f0f2f5",
-
         borderRadius: "8px",
       }}
     >
-      <Card
-        style={{
-          width: 600,
-          marginBottom: "20px",
-          borderRadius: "8px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-        }}
-      >
-        <Box
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Avatar
-            style={{
-              backgroundColor: "rgb(8, 56, 127)",
-              verticalAlign: "middle",
+      <Box className="row col-12" sx={{ marginBottom: "10px" }}>
+        <Box className="col-6">
+          <Card
+            sx={{
+              borderRadius: "8px",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
             }}
-            size={80}
           >
-            {user.fullname[0] + user.fullname[1]}
-          </Avatar>
-          <Box style={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
-            <h5>Thông tin cá nhân</h5>
-            <hr />
-            <Box>
-              <p>
-                <b>Họ và tên:</b> {user.fullname}
-              </p>
-              <p>
-                <b>Mã số giảng viên:</b> {user.mssv}
-              </p>
-              <p>
-                <b>Giới tính:</b> {user.gender}
-              </p>
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Avatar
+                style={{
+                  backgroundColor: "rgb(8, 56, 127)",
+                  verticalAlign: "middle",
+                  left: "10px",
+                }}
+                size={80}
+              >
+                {user.fullname[0] + user.fullname[1]}
+              </Avatar>
+              <Box style={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
+                <Box style={{ marginTop: "5px" }}>
+                  <Typography variant="h5" component="h2" gutterBottom>
+                    Thông tin cá nhân
+                  </Typography>
+                </Box>
+                <hr />
+                <Box>
+                  <p>
+                    <b>Họ và tên:</b> {user.fullname}
+                  </p>
+                  <p>
+                    <b>Mã số sinh viên:</b> {user.mssv}
+                  </p>
+                  <p>
+                    <b>Giới tính:</b> {user.gender}
+                  </p>
+                </Box>
+              </Box>
             </Box>
-          </Box>
+          </Card>
         </Box>
-      </Card>
+        <Box className="col-6">
+          <Card
+            style={{
+              borderRadius: "8px",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+            }}
+          >
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <BookTwoTone
+                style={{
+                  fontSize: "80px", // Match the avatar size
+                  color: "rgb(8, 56, 127)", // Match the avatar color
+                }}
+              />
+              <Box style={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
+                <Box style={{ marginTop: "5px" }}>
+                  <Typography variant="h5" component="h2" gutterBottom>
+                    Thông tin nhóm đề tài
+                  </Typography>
+                </Box>
+
+                <hr />
+                <Box>
+                  <p>
+                    <b>Tên nhóm:</b> {user.fullname}
+                  </p>
+                  <p>
+                    <b>Trạng thái đề tài:</b> {user.mssv}
+                  </p>
+                  <p>
+                    <a>
+                      <i>Xem chi tiế</i>t
+                    </a>
+                  </p>
+                </Box>
+              </Box>
+            </Box>
+          </Card>
+        </Box>
+      </Box>
       <Card
         style={{
           width: "100%",
-
-          padding: "20px",
+          padding: "10px",
           borderRadius: "8px",
           boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}

@@ -6,14 +6,20 @@ import {
   SunOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
-import { Card, Box, TextField } from "@mui/material";
+
 import "./DashBoardManager.scss";
 import { Button, Layout, Menu, theme, Modal, ConfigProvider } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { ThemeProvider } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
 import userApi from "../../../apis/userApi.jsx";
+import lightTheme from "../../../styles/themes/ant/lightTheme.jsx";
+import themeDark from "../../../styles/themes/mui/themeDark.jsx";
+import themeLight from "../../../styles/themes/mui/themeLight.jsx";
+import darkTheme from "../../../styles/themes/ant/darkTheme.jsx";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardManager = () => {
@@ -76,88 +82,88 @@ const DashBoardManager = () => {
     setThemes(!themes);
   };
   return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Layout: {
-            /* here is your component tokens */
-            headerColor: themes ? "#fff" : "#000",
-            headerBg: themes ? "#001529" : "#fff",
-          },
-        },
-      }}
-    >
-      <Layout className="container-fluid p-0 admin-container">
-        {contextHolder}
-        <Sider
-          trigger={null}
-          collapsible
-          collapsed={collapsed}
-          theme={themes ? "dark" : "light"}
-        >
-          <Box className="demo-logo-vertical" />
-          <Menu
-            selectedKeys={
-              window.location.pathname.split("/dashboard/")[1]
-                ? window.location.pathname.split("/dashboard/")[1]
-                : window.location.pathname
-            }
-            onClick={(key) => handlePath(key)}
-            defaultSelectedKeys={
-              window.location.pathname
-                ? window.location.pathname
-                : "/dashboard/home"
-            }
-            defaultOpenKeys={["/dashboard/home"]}
-            mode="inline"
+    <ConfigProvider theme={themes ? darkTheme : lightTheme}>
+      <ThemeProvider theme={themes ? themeDark : themeLight}>
+        <CssBaseline />
+        <Layout className="container-fluid p-0 admin-container">
+          {contextHolder}
+          <Sider
+            trigger={null}
+            collapsible
+            collapsed={collapsed}
             theme={themes ? "dark" : "light"}
-            // inlineCollapsed={collapsed}
-            items={items}
-            style={{ height: "100vh" }}
-          />
-        </Sider>
-        <Layout className="container-fluid p-0">
-          <Header
-            style={{
-              padding: 0,
-              // color: currentTheme.token.colorTextBase,
-              // background: colorBgContainer,
-              // borderLeft: `1px solid ${currentTheme.token.colorBorder}`,
-              // borderBottom: `1px solid ${currentTheme.token.colorBorder}`,
-            }}
           >
-            <Button
-              color={themes ? "#fff" : "#000"}
-              className="collapsed-button"
-              type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={() => setCollapsed(!collapsed)}
+            <div className="demo-logo-vertical" />
+            <Menu
+              selectedKeys={
+                window.location.pathname.split("/dashboard/")[1]
+                  ? window.location.pathname.split("/dashboard/")[1]
+                  : window.location.pathname
+              }
+              onClick={(key) => handlePath(key)}
+              defaultSelectedKeys={
+                window.location.pathname
+                  ? window.location.pathname
+                  : "/dashboard/home"
+              }
+              defaultOpenKeys={["/dashboard/home"]}
+              mode="inline"
+              theme={themes ? "dark" : "light"}
+              inlineCollapsed={collapsed}
+              items={items}
+              style={{ height: "100vh" }}
             />
-
-            <Box className="header-content">
-              Welcome, {user.fullName}
+          </Sider>
+          <Layout className="container-fluid p-0">
+            <Header
+              style={{
+                padding: 0,
+                backgroundColor: themes ? "#001529" : "#ffffff",
+                color: themes ? "#ffffff" : "#000",
+              }}
+            >
               <Button
-                className={className}
-                size="large"
-                icon={themes ? <MoonOutlined /> : <SunOutlined />}
-                onClick={changeTheme}
+                className="collapsed-button"
+                type="text"
+                icon={
+                  collapsed ? (
+                    <MenuUnfoldOutlined
+                      style={{ color: themes ? "#fff" : "#000" }}
+                    />
+                  ) : (
+                    <MenuFoldOutlined
+                      style={{ color: themes ? "#fff" : "#000" }}
+                    />
+                  )
+                }
+                onClick={() => setCollapsed(!collapsed)}
               />
-            </Box>
-          </Header>
 
-          <Content
-            style={{
-              margin: "24px 16px",
-              minHeight: 280,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-              overflow: "auto",
-            }}
-          >
-            <Outlet />
-          </Content>
+              <div className="header-content">
+                Welcome, {user.fullName}
+                <Button
+                  className={className}
+                  size="large"
+                  icon={themes ? <SunOutlined /> : <MoonOutlined />}
+                  onClick={changeTheme}
+                />
+              </div>
+            </Header>
+
+            <Content
+              style={{
+                margin: "24px 16px",
+                minHeight: 280,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+                overflow: "auto",
+              }}
+            >
+              <Outlet />
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
+      </ThemeProvider>
     </ConfigProvider>
   );
 };
