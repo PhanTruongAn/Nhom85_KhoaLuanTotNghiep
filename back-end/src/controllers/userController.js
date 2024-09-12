@@ -48,9 +48,25 @@ const handlerGetDataFromToken = (req, res) => {
     });
   }
 };
+const handlerLogOut = (req, res) => {
+  try {
+    res.clearCookie("accessToken");
+    return res.status(200).json({
+      status: 0,
+      message: "Đăng xuất thành công!",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 module.exports = {
   handlerLogin,
   handlerCreateStudentAccount,
   handlerCreateLecturerAccount,
   handlerGetDataFromToken,
+  handlerLogOut,
 };

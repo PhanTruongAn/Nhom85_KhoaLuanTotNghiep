@@ -4,7 +4,7 @@ import { Card, Box } from "@mui/material";
 
 const { Option } = Select;
 
-function Information() {
+function StudentHome() {
   const user = {
     fullname: "Dieu Phan Quang Dung",
     mssv: "20093921",
@@ -19,7 +19,7 @@ function Information() {
         display: "flex",
         flexDirection: "column",
         backgroundColor: "#f0f2f5",
-        padding: "20px",
+
         borderRadius: "8px",
       }}
     >
@@ -67,7 +67,7 @@ function Information() {
       <Card
         style={{
           width: "100%",
-          marginTop: "20px",
+
           padding: "20px",
           borderRadius: "8px",
           boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
@@ -163,4 +163,4 @@ function Information() {
   );
 }
 
-export default Information;
+export default StudentHome;

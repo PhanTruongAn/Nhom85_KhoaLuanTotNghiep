@@ -13,6 +13,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import userApi from "../../../apis/userApi.jsx";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardStudent = () => {
@@ -34,6 +35,17 @@ const DashBoardStudent = () => {
       onOk: () => handleLogout(),
     });
   };
+  const handleLogout = async () => {
+    const res = await userApi.logOut();
+    if (res && res.status === 0) {
+      localStorage.removeItem("accessToken");
+      navigate("/login");
+      toast.success(res.message);
+    } else {
+      toast.error(res.message);
+    }
+  };
+
   // const currentTheme = themes
   //   ? {
   //       token: {
@@ -85,8 +97,18 @@ const DashBoardStudent = () => {
         >
           <div className="demo-logo-vertical" />
           <Menu
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
+            selectedKeys={
+              window.location.pathname.split("/dashboard/")[1]
+                ? window.location.pathname.split("/dashboard/")[1]
+                : window.location.pathname
+            }
+            onClick={(key) => handlePath(key)}
+            defaultSelectedKeys={
+              window.location.pathname
+                ? window.location.pathname
+                : "/dashboard/home"
+            }
+            defaultOpenKeys={["/dashboard/home"]}
             mode="inline"
             theme={themes ? "dark" : "light"}
             // inlineCollapsed={collapsed}
@@ -103,7 +125,6 @@ const DashBoardStudent = () => {
               // borderLeft: `1px solid ${currentTheme.token.colorBorder}`,
               // borderBottom: `1px solid ${currentTheme.token.colorBorder}`,
             }}
-            hasSider
           >
             <Button
               color={themes ? "#fff" : "#000"}

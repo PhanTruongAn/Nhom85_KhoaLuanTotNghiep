@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
 import DashBoardStudent from "./DashBoard/DashBoardStudent/DashBoardStudent";
-import Information from "./DashBoard/DashBoardManager/home/information";
+import StudentHome from "./DashBoard/DashBoardStudent/home/home";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -15,9 +15,8 @@ function App() {
     <Fragment>
       <Provider store={store}>
         <BrowserRouter>
-          {/* <AppRoute /> */}
-          <Information />
-          {/* <DashBoardStudent /> */}
+          <AppRoute />
+          {/* <StudentHome /> */}
           <ToastContainer autoClose={1000} />
         </BrowserRouter>
       </Provider>

@@ -5,7 +5,11 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import DashBoardStudent from "../pages/DashBoard/DashBoardStudent/DashBoardStudent";
 import DashBoardManager from "../pages/DashBoard/DashBoardManager/DashBoardManager";
+import StudentHome from "../pages/DashBoard/DashBoardStudent/home/home";
+import ManagerHome from "../pages/DashBoard/DashBoardManager/home/home";
 import PrivateRoute from "./PrivateRoute";
+import StudentTopic from "../pages/DashBoard/DashBoardStudent/topic/topic";
+import ManagerTopic from "../pages/DashBoard/DashBoardManager/topic/topic";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 const AppRoute = () => {
@@ -43,7 +47,28 @@ const AppRoute = () => {
               }
             />
           }
-        />
+        >
+          <Route
+            path="home"
+            element={
+              user.role.name === "Student" ? (
+                <PrivateRoute component={<StudentHome />} />
+              ) : (
+                <PrivateRoute component={<ManagerHome />} />
+              )
+            }
+          />
+          <Route
+            path="topic"
+            element={
+              user.role.name === "Student" ? (
+                <PrivateRoute component={<StudentTopic />} />
+              ) : (
+                <PrivateRoute component={<ManagerTopic />} />
+              )
+            }
+          />
+        </Route>
       </Routes>
     </>
   );

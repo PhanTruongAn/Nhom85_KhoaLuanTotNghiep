@@ -7,5 +7,8 @@ const userApi = {
   fetchToken: () => {
     return axiosClient.get("/fetch-token");
   },
+  logOut: () => {
+    return axiosClient.post("/log-out");
+  },
 };
 export default userApi;

@@ -80,7 +80,7 @@ export default function Login() {
       const result = await userApi.login(data);
       if (result.status === 0) {
         localStorage.setItem("accessToken", result.data.accessToken);
-        navigate("/dashboard");
+        navigate("/dashboard/home");
         dispatch(fetchToken());
         toast.success("Login Success!");
       } else {
