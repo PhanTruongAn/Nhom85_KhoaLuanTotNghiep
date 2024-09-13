@@ -1,9 +1,14 @@
 import React from "react";
 import { Avatar, Input, Select, Button } from "antd";
-import { Card, Box, Typography } from "@mui/material";
-
+import { Box, Typography } from "@mui/material";
+import MuiCard from "@mui/material/Card";
+import { styled } from "@mui/material/styles";
 const { Option } = Select;
-
+const Card = styled(MuiCard)(({ theme }) => ({
+  ...theme.applyStyles("dark", {
+    backgroundColor: "#153645",
+  }),
+}));
 function ManagerHome() {
   const user = {
     fullname: "Dieu Phan Quang Dung",
@@ -16,15 +21,15 @@ function ManagerHome() {
   return (
     <Box
       sx={{
+        height: "100%",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#f0f2f5",
-        borderRadius: "8px",
         alignItems: "center",
       }}
     >
       <Card
-        style={{
+        sx={{
+          marginTop: "10px",
           width: 600,
           marginBottom: "20px",
           borderRadius: "8px",
@@ -32,7 +37,7 @@ function ManagerHome() {
         }}
       >
         <Box
-          style={{
+          sx={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
@@ -48,8 +53,8 @@ function ManagerHome() {
           >
             {user.fullname[0] + user.fullname[1]}
           </Avatar>
-          <Box style={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
-            <Box style={{ marginTop: "5px" }}>
+          <Box sx={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
+            <Box sx={{ marginTop: "5px" }}>
               <Typography variant="h5" component="h2" gutterBottom>
                 Thông tin cá nhân
               </Typography>
@@ -70,19 +75,19 @@ function ManagerHome() {
         </Box>
       </Card>
       <Card
-        style={{
-          width: "100%",
-          padding: "10px",
+        sx={{
+          margin: "0 0 5px",
+          width: "97%",
           borderRadius: "8px",
           boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}
       >
-        <h5>Cập nhật thông tin</h5>
-        <form>
-          <Box className="row" style={{ display: "flex", flexWrap: "wrap" }}>
+        <form style={{ padding: 10 }}>
+          <h5>Cập nhật thông tin</h5>
+          <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
             <Box
               className="col-6"
-              style={{ marginBottom: "16px", paddingRight: "10px" }}
+              sx={{ marginBottom: "16px", paddingRight: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
                 Mã Sinh viên *
@@ -91,7 +96,7 @@ function ManagerHome() {
             </Box>
             <Box
               className="col-6"
-              style={{ marginBottom: "16px", paddingLeft: "10px" }}
+              sx={{ marginBottom: "16px", paddingLeft: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
                 Họ và tên *
@@ -99,10 +104,10 @@ function ManagerHome() {
               <Input defaultValue={user.fullname} />
             </Box>
           </Box>
-          <Box className="row" style={{ display: "flex", flexWrap: "wrap" }}>
+          <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
             <Box
               className="col-6"
-              style={{ marginBottom: "16px", paddingRight: "10px" }}
+              sx={{ marginBottom: "16px", paddingRight: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
                 Số điện thoại *
@@ -111,7 +116,7 @@ function ManagerHome() {
             </Box>
             <Box
               className="col-6"
-              style={{ marginBottom: "16px", paddingLeft: "10px" }}
+              sx={{ marginBottom: "16px", paddingLeft: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
                 Email *
@@ -119,8 +124,8 @@ function ManagerHome() {
               <Input defaultValue={user.email} />
             </Box>
           </Box>
-          <Box className="row" style={{ display: "flex", flexWrap: "wrap" }}>
-            <Box style={{ marginBottom: "16px", flex: 1 }}>
+          <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
+            <Box sx={{ marginBottom: "16px", flex: 1 }}>
               <label style={{ textAlign: "left", display: "block" }}>
                 Giới tính
               </label>
@@ -129,21 +134,21 @@ function ManagerHome() {
                 <Option value="Nữ">Nữ</Option>
               </Select>
             </Box>
-            <Box style={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
+            <Box sx={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
               <label style={{ textAlign: "left", display: "block" }}>
                 Chuyên ngành
               </label>
               <Input placeholder="Kỹ thuật phần mềm" />
             </Box>
           </Box>
-          <Box className="row" style={{ display: "flex", flexWrap: "wrap" }}>
-            <Box style={{ marginBottom: "16px", flex: 1 }}>
+          <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
+            <Box sx={{ marginBottom: "16px", flex: 1 }}>
               <label style={{ textAlign: "left", display: "block" }}>
                 Lớp danh nghĩa
               </label>
               <Input defaultValue="DHKTPM16B" />
             </Box>
-            <Box style={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
+            <Box sx={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
               <label style={{ textAlign: "left", display: "block" }}>
                 Chương trình đào tạo
               </label>
@@ -154,11 +159,7 @@ function ManagerHome() {
             </Box>
           </Box>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{ marginTop: "20px" }}
-          >
+          <Button type="primary" htmlType="submit">
             Cập nhật
           </Button>
         </form>

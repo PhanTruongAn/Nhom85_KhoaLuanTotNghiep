@@ -20,6 +20,7 @@ import lightTheme from "../../../styles/themes/ant/lightTheme.jsx";
 import themeDark from "../../../styles/themes/mui/themeDark.jsx";
 import themeLight from "../../../styles/themes/mui/themeLight.jsx";
 import darkTheme from "../../../styles/themes/ant/darkTheme.jsx";
+
 const { Header, Sider, Content } = Layout;
 
 const DashBoardManager = () => {
@@ -91,7 +92,7 @@ const DashBoardManager = () => {
             trigger={null}
             collapsible
             collapsed={collapsed}
-            theme={themes ? "dark" : "light"}
+            // theme={themes ? "dark" : "light"}
           >
             <div className="demo-logo-vertical" />
             <Menu
@@ -118,8 +119,6 @@ const DashBoardManager = () => {
             <Header
               style={{
                 padding: 0,
-                backgroundColor: themes ? "#001529" : "#ffffff",
-                color: themes ? "#ffffff" : "#000",
               }}
             >
               <Button
@@ -153,8 +152,10 @@ const DashBoardManager = () => {
             <Content
               style={{
                 margin: "24px 16px",
+                color: themes ? "#fff" : "#000",
                 minHeight: 280,
-                background: colorBgContainer,
+                height: "100%",
+                background: themes ? "#152f40" : "#fff",
                 borderRadius: borderRadiusLG,
                 overflow: "auto",
               }}

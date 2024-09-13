@@ -153,8 +153,10 @@ const DashBoardStudent = () => {
             <Content
               style={{
                 margin: "24px 16px",
+                color: themes ? "#fff" : "#000",
                 minHeight: 280,
-                background: colorBgContainer,
+                height: "100%",
+                background: themes ? "#152f40" : "#fff",
                 borderRadius: borderRadiusLG,
                 overflow: "auto",
               }}
