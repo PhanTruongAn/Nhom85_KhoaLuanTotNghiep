@@ -94,25 +94,29 @@ const DashBoardManager = () => {
             trigger={null}
             collapsible
             collapsed={collapsed}
-
+            style={{ position: "relative" }}
             // theme={themes ? "dark" : "light"}
           >
-            <div
-              className="demo-logo-vertical"
-              style={{
-                borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
-                alignItems: "center",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                padding: "10px",
-              }}
-            >
-              <img
-                src={themes ? logoDark : logoLight}
-                style={{ width: "80%", height: "auto", alignSelf: "center" }}
-              ></img>
-              {!collapsed && (
+            {!collapsed && (
+              <div
+                className="demo-logo-vertical"
+                style={{
+                  borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
+                  position: "absolute", // Đặt logo ở vị trí tuyệt đối
+                  left: "0",
+                  right: "0",
+                  alignItems: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  padding: "10px",
+                }}
+              >
+                <img
+                  src={themes ? logoDark : logoLight}
+                  style={{ width: "80%", height: "auto", alignSelf: "center" }}
+                ></img>
+
                 <Box
                   sx={{
                     fontWeight: "700",
@@ -122,8 +126,8 @@ const DashBoardManager = () => {
                 >
                   KHÓA LUẬN TỐT NGHIỆP
                 </Box>
-              )}
-            </div>
+              </div>
+            )}
             <Menu
               selectedKeys={
                 window.location.pathname.split("/dashboard/")[1]
@@ -141,7 +145,14 @@ const DashBoardManager = () => {
               theme={themes ? "dark" : "light"}
               // inlineCollapsed={collapsed}
               items={items}
-              style={{ height: "100vh" }}
+              style={
+                !collapsed
+                  ? {
+                      marginTop: "110px", // Thêm khoảng cách đủ lớn để logo không đè lên menu
+                      height: "calc(100vh - 110px)", // Giữ menu chiếm toàn bộ chiều cao còn lại
+                    }
+                  : { transition: "0.5s ease", height: "100vh" }
+              }
             />
           </Sider>
           <Layout className="container-fluid p-0">

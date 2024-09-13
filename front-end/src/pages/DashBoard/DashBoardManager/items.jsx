@@ -6,12 +6,13 @@ import {
   LogoutOutlined,
   HomeOutlined,
   ProjectOutlined,
-  MessageOutlined,
-  ControlOutlined,
+  OrderedListOutlined,
   ClusterOutlined,
   NotificationOutlined,
 } from "@ant-design/icons";
-
+import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 const items = [
   {
     key: "home",
@@ -20,22 +21,22 @@ const items = [
   },
   {
     key: "topic",
-    icon: <UsergroupAddOutlined />,
+    icon: <TopicOutlinedIcon />,
     label: "Đề tài",
   },
   {
     key: "student",
-    icon: <ProjectOutlined />,
+    icon: <PeopleAltOutlinedIcon />,
     label: "Sinh viên",
     children: [
       {
         key: "account-student",
-        icon: <ControlOutlined />,
+        icon: <AccountCircleOutlinedIcon />,
         label: "Tài khoản",
       },
       {
         key: "list-student",
-        icon: <ClusterOutlined />,
+        icon: <OrderedListOutlined />,
         label: "Danh sách",
       },
     ],
