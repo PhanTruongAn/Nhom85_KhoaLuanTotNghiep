@@ -9,6 +9,7 @@ import {
   MessageOutlined,
   ControlOutlined,
   ClusterOutlined,
+  NotificationOutlined,
 } from "@ant-design/icons";
 
 const items = [
@@ -41,7 +42,7 @@ const items = [
   },
   {
     key: "notification",
-    icon: <MessageOutlined />,
+    icon: <NotificationOutlined />,
     label: "Thông báo",
   },
   {

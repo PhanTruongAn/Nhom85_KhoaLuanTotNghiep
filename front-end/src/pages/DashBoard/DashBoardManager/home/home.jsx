@@ -136,25 +136,11 @@ function ManagerHome() {
             </Box>
             <Box sx={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
               <label style={{ textAlign: "left", display: "block" }}>
-                Chuyên ngành
+                Chức vụ
               </label>
-              <Input placeholder="Kỹ thuật phần mềm" />
-            </Box>
-          </Box>
-          <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
-            <Box sx={{ marginBottom: "16px", flex: 1 }}>
-              <label style={{ textAlign: "left", display: "block" }}>
-                Lớp danh nghĩa
-              </label>
-              <Input defaultValue="DHKTPM16B" />
-            </Box>
-            <Box sx={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
-              <label style={{ textAlign: "left", display: "block" }}>
-                Chương trình đào tạo
-              </label>
-              <Select defaultValue="Đại Học" style={{ width: "100%" }}>
-                <Option value="Đại Học">Đại Học</Option>
-                <Option value="Cao Đẳng">Cao Đẳng</Option>
+              <Select defaultValue="Thạc sĩ" style={{ width: "100%" }}>
+                <Option value="Thạc sĩ">Thạc sĩ</Option>
+                <Option value="Tiến sĩ">Tiến sĩ</Option>
               </Select>
             </Box>
           </Box>

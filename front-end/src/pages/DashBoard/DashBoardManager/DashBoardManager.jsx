@@ -13,14 +13,15 @@ import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { ThemeProvider } from "@mui/material";
+import { Box, ThemeProvider } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import userApi from "../../../apis/userApi.jsx";
 import lightTheme from "../../../styles/themes/ant/lightTheme.jsx";
 import themeDark from "../../../styles/themes/mui/themeDark.jsx";
 import themeLight from "../../../styles/themes/mui/themeLight.jsx";
 import darkTheme from "../../../styles/themes/ant/darkTheme.jsx";
-
+import logoDark from "../../../images/Logo-White.png";
+import logoLight from "../../../images/logo-iuh.png";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardManager = () => {
@@ -42,6 +43,7 @@ const DashBoardManager = () => {
       onOk: () => handleLogout(),
     });
   };
+
   const handleLogout = async () => {
     const res = await userApi.logOut();
     if (res && res.status === 0) {
@@ -86,15 +88,42 @@ const DashBoardManager = () => {
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       <ThemeProvider theme={themes ? themeDark : themeLight}>
         <CssBaseline />
-        <Layout className="container-fluid p-0 admin-container">
+        <Layout className="container-fluid p-0 admin-container" hasSider>
           {contextHolder}
           <Sider
             trigger={null}
             collapsible
             collapsed={collapsed}
+
             // theme={themes ? "dark" : "light"}
           >
-            <div className="demo-logo-vertical" />
+            <div
+              className="demo-logo-vertical"
+              style={{
+                borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                padding: "10px",
+              }}
+            >
+              <img
+                src={themes ? logoDark : logoLight}
+                style={{ width: "80%", height: "auto", alignSelf: "center" }}
+              ></img>
+              {!collapsed && (
+                <Box
+                  sx={{
+                    fontWeight: "700",
+                    paddingTop: "10px",
+                    fontSize: "14px",
+                  }}
+                >
+                  KHÓA LUẬN TỐT NGHIỆP
+                </Box>
+              )}
+            </div>
             <Menu
               selectedKeys={
                 window.location.pathname.split("/dashboard/")[1]
