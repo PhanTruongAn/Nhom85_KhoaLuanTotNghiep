@@ -1,30 +1,24 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import _ from "lodash";
-import {
-  Button,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
+import { Button, Box } from "@mui/material";
 import userApi from "../../../../apis/userApi";
 import { toast } from "react-toastify";
 import { Table } from "antd";
-import OneAccount from "./OneAccount";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import AddIcon from "@mui/icons-material/Add";
+import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
+import AddModal from "./AddModal";
 
 const Account = () => {
   const [jsonData, setJsonData] = useState([]);
   const [fileInput, setFileInput] = useState(null);
   const [open, setOpen] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
-    setFileInput(file);
-
     const reader = new FileReader();
     reader.onload = (e) => {
       const data = new Uint8Array(e.target.result);
@@ -32,9 +26,13 @@ const Account = () => {
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const json = XLSX.utils.sheet_to_json(sheet);
-      setJsonData(json);
-    };
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
 
+        setJsonData(json);
+      }, 1000);
+    };
     reader.readAsArrayBuffer(file);
   };
 
@@ -62,9 +60,12 @@ const Account = () => {
   };
 
   const handleCancel = () => {
-    setJsonData([]);
-    setFileInput(null);
+    setLoading(true);
     document.getElementById("file-input").value = "";
+    setTimeout(() => {
+      setJsonData([]);
+      setLoading(false);
+    }, 1000);
   };
 
   const columns = [
@@ -85,7 +86,7 @@ const Account = () => {
     },
   ];
 
-  const handleOpenModelOneAccount = () => {
+  const handleOpenModal = () => {
     setOpen(true);
   };
 
@@ -97,41 +98,70 @@ const Account = () => {
     <Box className="container-fluid">
       <Box className="row col-12">
         <Box className="col-6">
-          <Box>Thêm tài khoản sinh viên bằng file excel</Box>
-          <Box>
-            <input
-              id="file-input"
-              type="file"
-              accept=".xlsx, .xls"
-              onChange={handleFileChange}
-            />
+          <Box sx={{ padding: "10px 0px 10px 0px", fontSize: "18px" }}>
+            Tải file danh sách sinh viên
           </Box>
+          <Box>
+            <label>
+              <Button
+                sx={[
+                  (theme) => ({
+                    // textTransform: "none",
+                    ...theme.applyStyles("dark", {
+                      background: "#1DA57A",
+                    }),
+                  }),
+                ]}
+                startIcon={<UploadFileIcon />}
+                component="span"
+                variant="contained"
+              >
+                Tải file
+                <input
+                  id="file-input"
+                  type="file"
+                  accept=".xlsx, .xls"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }} // Ẩn input
+                />
+              </Button>
+            </label>
+          </Box>
+        </Box>
+        <Box
+          className="col-6"
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
           <Button
-            sx={{ marginTop: "10px" }}
+            sx={[
+              (theme) => ({
+                textTransform: "none",
+                ...theme.applyStyles("dark", {
+                  background: "#1DA57A",
+                }),
+              }),
+            ]}
             variant="contained"
-            onClick={handlerSubmit}
+            onClick={handleOpenModal}
+            startIcon={<AddIcon />}
           >
-            Submit
-          </Button>
-          <Button
-            sx={{ marginTop: "10px", marginLeft: "10px" }}
-            variant="contained"
-            onClick={handleCancel}
-            color="error"
-          >
-            Cancel
+            Thêm tài khoản sinh viên
           </Button>
         </Box>
-        <Box className="col-6">
-          <Box>Thêm tài khoản sinh viên</Box>
-          <Button
-            sx={{ marginTop: "10px" }}
-            variant="contained"
-            onClick={handleOpenModelOneAccount}
-          >
-            Add Student Account
-          </Button>
-        </Box>
+      </Box>
+      <Box
+        sx={{
+          padding: "20px 0px 5px 0px",
+          fontSize: "18px",
+          textAlign: "center",
+          fontWeight: "600px",
+        }}
+      >
+        DANH SÁCH SINH VIÊN
       </Box>
       <Table
         style={{ marginTop: "10px" }}
@@ -139,14 +169,41 @@ const Account = () => {
         columns={columns}
         rowKey="MaSinhVien"
         pagination={{ pageSize: 5 }}
+        loading={loading}
       />
-
-      <Dialog open={open} onClose={handleCloseModal}>
-        <DialogTitle>Add Student Account</DialogTitle>
-        <DialogContent>
-          <OneAccount onClose={handleCloseModal} /> {/* Pass onClose prop */}
-        </DialogContent>
-      </Dialog>
+      <Button
+        sx={[
+          (theme) => ({
+            alignSelf: "right",
+            marginTop: "10px",
+            textTransform: "none",
+            ...theme.applyStyles("dark", {
+              background: "#1DA57A",
+            }),
+          }),
+        ]}
+        variant="contained"
+        onClick={handlerSubmit}
+        size="small"
+        startIcon={<CheckIcon />}
+      >
+        Xác nhận
+      </Button>
+      <Button
+        sx={{
+          marginTop: "10px",
+          marginLeft: "10px",
+          textTransform: "none",
+        }}
+        variant="contained"
+        onClick={handleCancel}
+        color="error"
+        size="small"
+        startIcon={<ClearIcon />}
+      >
+        Hủy bỏ
+      </Button>
+      <AddModal isOpen={open} onClose={handleCloseModal} />
     </Box>
   );
 };

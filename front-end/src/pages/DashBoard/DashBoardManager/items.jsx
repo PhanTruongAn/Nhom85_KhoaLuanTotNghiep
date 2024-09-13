@@ -23,34 +23,29 @@ const items = [
     label: "Đề tài",
   },
   {
-    key: "account",
+    key: "student",
     icon: <ProjectOutlined />,
-    label: "Tài khoản",
-  },
-  {
-    key: "role-menu",
-    icon: <MenuOutlined />,
-    label: "Role",
+    label: "Sinh viên",
     children: [
       {
-        key: "roles",
+        key: "account-student",
         icon: <ControlOutlined />,
-        label: "View Roles",
+        label: "Tài khoản",
       },
       {
-        key: "group-roles",
+        key: "list-student",
         icon: <ClusterOutlined />,
-        label: "Group Roles",
+        label: "Danh sách",
       },
     ],
   },
   {
-    key: "messages",
+    key: "notification",
     icon: <MessageOutlined />,
-    label: "Message",
+    label: "Thông báo",
   },
   {
-    key: "sub1",
+    key: "setting",
     icon: <SettingOutlined />,
     label: "Setting",
     children: [

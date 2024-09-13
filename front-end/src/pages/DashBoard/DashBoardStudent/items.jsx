@@ -1,8 +1,6 @@
 import {
   SettingOutlined,
-  UserOutlined,
-  UsergroupAddOutlined,
-  MenuOutlined,
+  GroupOutlined,
   LogoutOutlined,
   HomeOutlined,
   ProjectOutlined,
@@ -17,39 +15,22 @@ const items = [
   {
     key: "home",
     icon: <HomeOutlined />,
-    label: "Home",
+    label: "Trang Chủ",
+  },
+  {
+    key: "group",
+    icon: <GroupOutlined />,
+    label: "Nhóm của tôi",
   },
   {
     key: "topic",
     icon: <ReadOutlined />,
-    label: "Topic",
+    label: "Đề tài",
   },
   {
     key: "Điểm số",
     icon: <TableOutlined />,
     label: "Điểm số",
-  },
-  {
-    key: "role-menu",
-    icon: <MenuOutlined />,
-    label: "Role",
-    children: [
-      {
-        key: "roles",
-        icon: <ControlOutlined />,
-        label: "View Roles",
-      },
-      {
-        key: "group-roles",
-        icon: <ClusterOutlined />,
-        label: "Group Roles",
-      },
-    ],
-  },
-  {
-    key: "messages",
-    icon: <MessageOutlined />,
-    label: "Message",
   },
   {
     key: "sub1",

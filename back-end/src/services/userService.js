@@ -84,28 +84,42 @@ const login = async (data) => {
 
 // Create account student
 const createStudentAccount = async (data) => {
-  const hashPass = hashPassword(data.password);
-  const student = await Student.create({
-    ...data,
-    password: hashPass,
-    groupId: data.role,
-    roleId: 1,
+  const existStudent = await Student.findOne({
+    where: {
+      username: data.username,
+    },
   });
-  if (student) {
-    return {
-      status: 0,
-      message: "Tạo tài khoản sinh viên thành công!",
-    };
-  } else {
+  if (existStudent) {
     return {
       status: -1,
-      message: "Tạo tài khoản sinh viên thất bại!",
-      data,
+      message: "Sinh viên này đã tồn tại trong hệ thống!",
     };
+  } else {
+    const defaultPassword = "123";
+    const hashPass = hashPassword(defaultPassword);
+    const student = await Student.create({
+      ...data,
+      password: hashPass,
+      groupId: data.role,
+      roleId: 1,
+    });
+    if (student) {
+      return {
+        status: 0,
+        message: "Tạo tài khoản sinh viên thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Tạo tài khoản sinh viên thất bại!",
+        data,
+      };
+    }
   }
 };
 const createLecturerAccount = async (data) => {
-  const hashPass = hashPassword(data.password);
+  const defaultPassword = "123";
+  const hashPass = hashPassword(defaultPassword);
   const lecturer = await Lecturer.create({
     ...data,
     password: hashPass,

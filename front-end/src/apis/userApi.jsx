@@ -13,5 +13,8 @@ const userApi = {
   createAccountsStudent: (data) => {
     return axiosClient.post("/bulk-create-student", data);
   },
+  createSingleAccountStudent: (data) => {
+    return axiosClient.post("/create-student", data);
+  },
 };
 export default userApi;

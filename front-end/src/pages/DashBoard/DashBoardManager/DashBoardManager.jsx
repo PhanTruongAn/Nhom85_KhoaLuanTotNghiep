@@ -109,7 +109,7 @@ const DashBoardManager = () => {
               defaultOpenKeys={["/dashboard/home"]}
               mode="inline"
               theme={themes ? "dark" : "light"}
-              inlineCollapsed={collapsed}
+              // inlineCollapsed={collapsed}
               items={items}
               style={{ height: "100vh" }}
             />
@@ -140,7 +140,7 @@ const DashBoardManager = () => {
               />
 
               <div className="header-content">
-                Welcome, {user.fullName}
+                Chào mừng quay lại {user.fullName}
                 <Button
                   className={className}
                   size="large"

@@ -15,8 +15,8 @@ const initWebRoutes = (app) => {
   router.all("*", authentication, checkUserPermission);
   // User route
   router.post("/login", userController.handlerLogin);
-  router.post("/createStudent", userController.handlerCreateStudentAccount);
-  router.post("/createLecturer", userController.handlerCreateLecturerAccount);
+  router.post("/create-student", userController.handlerCreateStudentAccount);
+  router.post("/create-lecturer", userController.handlerCreateLecturerAccount);
   router.get("/fetch-token", userController.handlerGetDataFromToken);
   router.post("/log-out", userController.handlerLogOut);
   router.post("/bulk-create-student", userController.handlerBulkCreate);

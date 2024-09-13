@@ -82,7 +82,7 @@ export default function Login() {
         localStorage.setItem("accessToken", result.data.accessToken);
         navigate("/dashboard/home");
         dispatch(fetchToken());
-        toast.success("Login Success!");
+        toast.success(result.message);
       } else {
         toast.error(result.message);
       }

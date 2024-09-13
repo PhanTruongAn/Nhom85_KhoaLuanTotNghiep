@@ -21,7 +21,10 @@ function StudentHome() {
         borderRadius: "8px",
       }}
     >
-      <Box className="row col-12" sx={{ marginBottom: "10px" }}>
+      <Box
+        className="row col-12"
+        sx={{ marginBottom: "10px", alignSelf: "center" }}
+      >
         <Box className="col-6">
           <Card
             sx={{
