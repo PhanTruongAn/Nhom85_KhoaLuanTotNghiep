@@ -11,7 +11,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import AddModal from "./AddModal";
 
-const Account = () => {
+const AccountLecturer = () => {
   const [jsonData, setJsonData] = useState([]);
   const [fileInput, setFileInput] = useState(null);
   const [open, setOpen] = useState(false);
@@ -42,7 +42,7 @@ const Account = () => {
     Object.entries(data).map(([key, value]) => {
       dataPersist.push({
         fullName: value.FullName,
-        username: value.MaSinhVien,
+        username: value.MaGiangVien,
         password: "123",
       });
     });
@@ -51,7 +51,7 @@ const Account = () => {
 
   const handlerSubmit = async () => {
     const data = persistDataToSave();
-    const result = await userApi.createAccountsStudent(data);
+    const result = await userApi.createAccountsLecturer(data);
     if (result.status === 0) {
       toast.success(result.message);
     } else {
@@ -75,9 +75,9 @@ const Account = () => {
       key: "fullName",
     },
     {
-      title: "Student ID",
-      dataIndex: "MaSinhVien",
-      key: "studentId",
+      title: "Lecturer ID",
+      dataIndex: "MaGiangVien",
+      key: "LecturerId",
     },
     {
       title: "Email",
@@ -99,7 +99,7 @@ const Account = () => {
       <Box className="row col-12">
         <Box className="col-6">
           <Box sx={{ padding: "10px 0px 10px 0px", fontSize: "18px" }}>
-            Tải file danh sách sinh viên
+            Tải file danh sách giảng viên
           </Box>
           <Box>
             <label>
@@ -149,7 +149,7 @@ const Account = () => {
             onClick={handleOpenModal}
             startIcon={<AddIcon />}
           >
-            Thêm tài khoản sinh viên
+            Thêm tài khoản giảng viên
           </Button>
         </Box>
       </Box>
@@ -161,13 +161,13 @@ const Account = () => {
           fontWeight: "600px",
         }}
       >
-        DANH SÁCH SINH VIÊN
+        DANH SÁCH GIẢNG VIÊN
       </Box>
       <Table
         style={{ marginTop: "10px" }}
         dataSource={jsonData}
         columns={columns}
-        rowKey="MaSinhVien"
+        rowKey="MaGiangVien"
         pagination={{ pageSize: 5 }}
         loading={loading}
       />
@@ -208,4 +208,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default AccountLecturer;

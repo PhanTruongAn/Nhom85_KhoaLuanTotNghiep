@@ -42,6 +42,23 @@ const items = [
     ],
   },
   {
+    key: "lecturer",
+    icon: <PeopleAltOutlinedIcon />,
+    label: "Giảng viên",
+    children: [
+      {
+        key: "account-lecturer",
+        icon: <AccountCircleOutlinedIcon />,
+        label: "Tài khoản",
+      },
+      {
+        key: "list-lecturer",
+        icon: <OrderedListOutlined />,
+        label: "Danh sách",
+      },
+    ],
+  },
+  {
     key: "notification",
     icon: <NotificationOutlined />,
     label: "Thông báo",

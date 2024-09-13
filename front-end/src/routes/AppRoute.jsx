@@ -10,8 +10,10 @@ import ManagerHome from "../pages/DashBoard/DashBoardManager/home/home";
 import PrivateRoute from "./PrivateRoute";
 import StudentTopic from "../pages/DashBoard/DashBoardStudent/topic/topic";
 import ManagerTopic from "../pages/DashBoard/DashBoardManager/topic/topic";
-import Account from "../pages/DashBoard/DashBoardManager/account/account";
-import ListStudent from "../pages/DashBoard/DashBoardManager/account/listStudent";
+import AccountStudent from "../pages/DashBoard/DashBoardManager/student/accountStudent";
+import ListStudent from "../pages/DashBoard/DashBoardManager/student/listStudent";
+import AccountLecturer from "../pages/DashBoard/DashBoardManager/lecturer/accountLecturer";
+import ListLecturer from "../pages/DashBoard/DashBoardManager/lecturer/listLecturer";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 const AppRoute = () => {
@@ -72,11 +74,19 @@ const AppRoute = () => {
           />
           <Route
             path="account-student"
-            element={<PrivateRoute component={<Account />} />}
+            element={<PrivateRoute component={<AccountStudent />} />}
           />
           <Route
             path="list-student"
             element={<PrivateRoute component={<ListStudent />} />}
+          />
+          <Route
+            path="account-lecturer"
+            element={<PrivateRoute component={<AccountLecturer />} />}
+          />
+          <Route
+            path="list-lecturer"
+            element={<PrivateRoute component={<ListLecturer />} />}
           />
         </Route>
       </Routes>
