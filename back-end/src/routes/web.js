@@ -13,15 +13,24 @@ const router = express.Router();
 
 const initWebRoutes = (app) => {
   router.all("*", authentication, checkUserPermission);
-  // User route
+  // Authenticate route
   router.post("/login", userController.handlerLogin);
-  router.post("/create-student", userController.handlerCreateStudentAccount);
-  router.post("/create-lecturer", userController.handlerCreateLecturerAccount);
   router.get("/fetch-token", userController.handlerGetDataFromToken);
   router.post("/log-out", userController.handlerLogOut);
-  router.post("/bulk-create-student", userController.handlerBulkCreate);
+  //Student route
   router.post(
-    "/bulk-create-lecturer",
+    "/student/create-student",
+    userController.handlerCreateStudentAccount
+  );
+  router.post("/student/bulk-create-student", userController.handlerBulkCreate);
+
+  //Lecturer route
+  router.post(
+    "/lecturer/create-lecturer",
+    userController.handlerCreateLecturerAccount
+  );
+  router.post(
+    "/lecturer/bulk-create-lecturer",
     userController.handlerBulkCreateLecturer
   );
   return app.use("/", router);

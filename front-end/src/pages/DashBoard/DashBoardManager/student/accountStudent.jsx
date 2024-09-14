@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import _ from "lodash";
 import { Button, Box } from "@mui/material";
-import userApi from "../../../../apis/userApi";
+import studentApi from "../../../../apis/studentApi";
 import { toast } from "react-toastify";
 import { Table, message } from "antd";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -52,7 +52,7 @@ const AccountStudent = () => {
 
   const handlerSubmit = async () => {
     const data = persistDataToSave();
-    const result = await userApi.createAccountsStudent(data);
+    const result = await studentApi.createAccountsStudent(data);
     if (result.status === 0) {
       messageApi.success(result.message);
     } else {

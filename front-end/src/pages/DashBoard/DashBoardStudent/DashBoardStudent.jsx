@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { ThemeProvider, Box } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import userApi from "../../../apis/userApi.jsx";
+import authApi from "../../../apis/authApi.jsx";
 import lightTheme from "../../../styles/themes/ant/lightTheme.jsx";
 import themeDark from "../../../styles/themes/mui/themeDark.jsx";
 import themeLight from "../../../styles/themes/mui/themeLight.jsx";
@@ -44,7 +44,7 @@ const DashBoardStudent = () => {
     });
   };
   const handleLogout = async () => {
-    const res = await userApi.logOut();
+    const res = await authApi.logOut();
     if (res && res.status === 0) {
       localStorage.removeItem("accessToken");
       toast.success(res.message);

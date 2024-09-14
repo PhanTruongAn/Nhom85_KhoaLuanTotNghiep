@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import userApi from "../apis/userApi";
+import authApi from "../apis/authApi";
 import { toast } from "react-toastify";
 
 const initialState = {
@@ -11,7 +11,7 @@ const initialState = {
 
 const fetchToken = createAsyncThunk("/fetch-token", async () => {
   try {
-    const result = await userApi.fetchToken();
+    const result = await authApi.fetchToken();
     if (result && result.status === 0) {
       return result.data;
     } else {

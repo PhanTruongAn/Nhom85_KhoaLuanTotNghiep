@@ -84,6 +84,18 @@ const login = async (data) => {
 
 // Create account student
 const createStudentAccount = async (data) => {
+  if (!data.fullName) {
+    return {
+      status: 1,
+      message: "Tên đầy đủ không được trống!",
+    };
+  }
+  if (!data.username) {
+    return {
+      status: 1,
+      message: "Mã sinh viên không được trống!",
+    };
+  }
   const existStudent = await Student.findOne({
     where: {
       username: data.username,
@@ -118,25 +130,49 @@ const createStudentAccount = async (data) => {
   }
 };
 const createLecturerAccount = async (data) => {
-  const defaultPassword = "123";
-  const hashPass = hashPassword(defaultPassword);
-  const lecturer = await Lecturer.create({
-    ...data,
-    password: hashPass,
-    groupId: data.role,
-    roleId: 2,
-  });
-  if (lecturer) {
+  if (!data.fullName) {
     return {
-      status: 0,
-      message: "Tạo tài khoản giảng viên thành công!",
+      status: 1,
+      message: "Tên đầy đủ không được trống!",
     };
-  } else {
+  }
+  if (!data.username) {
+    return {
+      status: 1,
+      message: "Mã giảng viên không được trống!",
+    };
+  }
+  const existLecturer = await Lecturer.findOne({
+    where: {
+      username: data.username,
+    },
+  });
+  if (existLecturer) {
     return {
       status: -1,
-      message: "Tạo tài khoản giảng viên thất bại!",
-      data,
+      message: "Tài khoản giảng viên đã tồn tại!",
     };
+  } else {
+    const defaultPassword = "123";
+    const hashPass = hashPassword(defaultPassword);
+    const lecturer = await Lecturer.create({
+      ...data,
+      password: hashPass,
+      groupId: data.role,
+      roleId: 2,
+    });
+    if (lecturer) {
+      return {
+        status: 0,
+        message: "Tạo tài khoản giảng viên thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Tạo tài khoản giảng viên thất bại!",
+        data,
+      };
+    }
   }
 };
 const createBulkAccount = async (data) => {

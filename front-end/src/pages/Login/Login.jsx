@@ -21,7 +21,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import userApi from "../../apis/userApi";
+import authApi from "../../apis/authApi";
 import { useDispatch } from "react-redux";
 import { fetchToken } from "../../redux/userSlice";
 export default function Login() {
@@ -77,7 +77,7 @@ export default function Login() {
         username: userName,
         password: password,
       };
-      const result = await userApi.login(data);
+      const result = await authApi.login(data);
       if (result.status === 0) {
         localStorage.setItem("accessToken", result.data.accessToken);
         navigate("/dashboard/home");

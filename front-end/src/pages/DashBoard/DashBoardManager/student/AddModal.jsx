@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Col, Form, Input, Modal, Row, Select, message, Button } from "antd";
 import _ from "lodash";
-import userApi from "../../../../apis/userApi";
+import studentApi from "../../../../apis/studentApi";
 function AddModal({ onClose, isOpen }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
@@ -21,14 +21,18 @@ function AddModal({ onClose, isOpen }) {
   };
   const handlerSubmit = async () => {
     setLoading(true);
-    const result = await userApi.createSingleAccountStudent(data);
+    const result = await studentApi.createSingleAccountStudent(data);
     if (result && result.status === 0) {
       messageApi.success(result.message);
       setLoading(false);
       setData(user);
       form.resetFields();
       onClose();
+    } else if (result.status === 1) {
+      messageApi.warning(result.message);
+      setLoading(false);
     } else {
+      setLoading(false);
       messageApi.error(result.message);
     }
   };
