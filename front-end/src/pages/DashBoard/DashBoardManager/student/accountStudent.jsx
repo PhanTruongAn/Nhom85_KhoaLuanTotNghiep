@@ -106,14 +106,6 @@ const AccountStudent = () => {
           <Box>
             <label>
               <Button
-                sx={[
-                  (theme) => ({
-                    // textTransform: "none",
-                    ...theme.applyStyles("dark", {
-                      background: "#1DA57A",
-                    }),
-                  }),
-                ]}
                 startIcon={<UploadFileIcon />}
                 component="span"
                 variant="contained"
@@ -139,14 +131,7 @@ const AccountStudent = () => {
           }}
         >
           <Button
-            sx={[
-              (theme) => ({
-                textTransform: "none",
-                ...theme.applyStyles("dark", {
-                  background: "#1DA57A",
-                }),
-              }),
-            ]}
+            sx={{ textTransform: "none" }}
             variant="contained"
             onClick={handleOpenModal}
             startIcon={<AddIcon />}

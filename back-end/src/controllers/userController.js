@@ -80,6 +80,17 @@ const handlerBulkCreateLecturer = async (req, res) => {
   }
 };
 
+const handlerStudentGetAll = async (req, res) => {
+  if (req.query.page && req.query.limit) {
+    let limit = req.query.limit;
+    let page = req.query.page;
+    const data = await userService.getPaginationStudent(+page, +limit);
+    return res.status(200).json(data);
+  } else {
+    let data = await userService.getStudentList();
+    return res.status(200).json(data);
+  }
+};
 module.exports = {
   handlerLogin,
   handlerCreateStudentAccount,
@@ -88,4 +99,5 @@ module.exports = {
   handlerLogOut,
   handlerBulkCreate,
   handlerBulkCreateLecturer,
+  handlerStudentGetAll,
 };

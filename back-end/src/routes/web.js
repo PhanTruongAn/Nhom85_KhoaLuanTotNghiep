@@ -23,7 +23,7 @@ const initWebRoutes = (app) => {
     userController.handlerCreateStudentAccount
   );
   router.post("/student/bulk-create-student", userController.handlerBulkCreate);
-
+  router.get("/student/get-all", userController.handlerStudentGetAll);
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",

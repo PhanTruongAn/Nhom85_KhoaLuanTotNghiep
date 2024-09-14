@@ -9,7 +9,7 @@ let salt = bcrypt.genSaltSync(10);
 //Models Database
 const Student = db.Student;
 const Lecturer = db.Lecturer;
-
+const Role = db.Role;
 // Hash Password
 const hashPassword = (password) => {
   let hashPassword = bcrypt.hashSync(password, salt);
@@ -272,11 +272,64 @@ const createBulkAccountLecturer = async (data) => {
     };
   }
 };
+const getStudentList = async () => {
+  const list = await Student.findAll({
+    attributes: ["username", "fullName", "email", "phone"],
+    include: {
+      model: Role,
+    },
+  });
+  if (list && list.length > 0) {
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: list,
+    };
+  }
+  return {
+    status: -1,
+    message: "Lấy danh sách thất bại!",
+    data: list,
+  };
+};
 
+const getPaginationStudent = async (page, limit) => {
+  try {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Student.findAndCountAll({
+      attributes: ["username", "fullName", "email", "phone"],
+      include: {
+        model: Role,
+        attributes: ["id", "name", "description"],
+      },
+      offset: offset,
+      limit: limit,
+    });
+    const totalPages = Math.ceil(count / limit);
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: {
+        totalRows: count,
+        totalPages: totalPages,
+        students: rows,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lấy danh sách thất bại!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   login,
   createStudentAccount,
   createLecturerAccount,
   createBulkAccount,
   createBulkAccountLecturer,
+  getPaginationStudent,
+  getStudentList,
 };
