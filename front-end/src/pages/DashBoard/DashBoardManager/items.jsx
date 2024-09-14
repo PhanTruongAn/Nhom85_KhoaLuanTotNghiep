@@ -1,14 +1,13 @@
 import {
   SettingOutlined,
-  UserOutlined,
-  UsergroupAddOutlined,
-  MenuOutlined,
   LogoutOutlined,
   HomeOutlined,
   ProjectOutlined,
   OrderedListOutlined,
   ClusterOutlined,
   NotificationOutlined,
+  UserAddOutlined,
+  LockOutlined,
 } from "@ant-design/icons";
 import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -55,6 +54,23 @@ const items = [
         key: "list-lecturer",
         icon: <OrderedListOutlined />,
         label: "Danh sách",
+      },
+    ],
+  },
+  {
+    key: "role",
+    icon: <ClusterOutlined />,
+    label: "Phân quyền",
+    children: [
+      {
+        key: "list-permission",
+        icon: <LockOutlined />,
+        label: "Quyền hạn",
+      },
+      {
+        key: "role-permission",
+        icon: <UserAddOutlined />,
+        label: "Gán quyền",
       },
     ],
   },

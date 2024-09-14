@@ -1,0 +1,123 @@
+const data = [
+  {
+    key: 1,
+    apiPath: "/student/createStudent",
+    description: "Tạo tài khoản sinh viên",
+    method: "POST",
+  },
+  {
+    key: 2,
+    apiPath: "/student/getStudent",
+    description: "Lấy thông tin sinh viên",
+    method: "GET",
+  },
+  {
+    key: 3,
+    apiPath: "/student/updateStudent",
+    description: "Cập nhật thông tin sinh viên",
+    method: "PUT",
+  },
+  {
+    key: 4,
+    apiPath: "/student/deleteStudent",
+    description: "Xóa tài khoản sinh viên",
+    method: "DELETE",
+  },
+  {
+    key: 5,
+    apiPath: "/lecturer/createLecturer",
+    description: "Tạo tài khoản giảng viên",
+    method: "POST",
+  },
+  {
+    key: 6,
+    apiPath: "/lecturer/getLecturer",
+    description: "Lấy thông tin giảng viên",
+    method: "GET",
+  },
+  {
+    key: 7,
+    apiPath: "/lecturer/updateLecturer",
+    description: "Cập nhật thông tin giảng viên",
+    method: "PUT",
+  },
+  {
+    key: 8,
+    apiPath: "/lecturer/deleteLecturer",
+    description: "Xóa tài khoản giảng viên",
+    method: "DELETE",
+  },
+  {
+    key: 9,
+    apiPath: "/manager/createManager",
+    description: "Tạo tài khoản quản lý",
+    method: "POST",
+  },
+  {
+    key: 10,
+    apiPath: "/manager/getManager",
+    description: "Lấy thông tin quản lý",
+    method: "GET",
+  },
+  {
+    key: 11,
+    apiPath: "/manager/updateManager",
+    description: "Cập nhật thông tin quản lý",
+    method: "PUT",
+  },
+  {
+    key: 12,
+    apiPath: "/manager/deleteManager",
+    description: "Xóa tài khoản quản lý",
+    method: "DELETE",
+  },
+  {
+    key: 13,
+    apiPath: "/student/getAllStudents",
+    description: "Lấy danh sách tất cả sinh viên",
+    method: "GET",
+  },
+  {
+    key: 14,
+    apiPath: "/lecturer/getAllLecturers",
+    description: "Lấy danh sách tất cả giảng viên",
+    method: "GET",
+  },
+  {
+    key: 15,
+    apiPath: "/manager/getAllManagers",
+    description: "Lấy danh sách tất cả quản lý",
+    method: "GET",
+  },
+  {
+    key: 16,
+    apiPath: "/student/enrollCourse",
+    description: "Đăng ký khóa học cho sinh viên",
+    method: "POST",
+  },
+  {
+    key: 17,
+    apiPath: "/lecturer/assignCourse",
+    description: "Gán khóa học cho giảng viên",
+    method: "POST",
+  },
+  {
+    key: 18,
+    apiPath: "/manager/manageCourses",
+    description: "Quản lý khóa học",
+    method: "PUT",
+  },
+  {
+    key: 19,
+    apiPath: "/student/getStudentGrades",
+    description: "Lấy thông tin điểm của sinh viên",
+    method: "GET",
+  },
+  {
+    key: 20,
+    apiPath: "/lecturer/getLecturerCourses",
+    description: "Lấy danh sách khóa học của giảng viên",
+    method: "GET",
+  },
+];
+export default data;
