@@ -274,7 +274,7 @@ const createBulkAccountLecturer = async (data) => {
 };
 const getStudentList = async () => {
   const list = await Student.findAll({
-    attributes: ["username", "fullName", "email", "phone"],
+    attributes: ["id", "username", "fullName", "email", "phone"],
     include: {
       model: Role,
     },
@@ -297,7 +297,7 @@ const getPaginationStudent = async (page, limit) => {
   try {
     const offset = (page - 1) * limit;
     const { count, rows } = await Student.findAndCountAll({
-      attributes: ["username", "fullName", "email", "phone"],
+      attributes: ["id", "username", "fullName", "email", "phone"],
       include: {
         model: Role,
         attributes: ["id", "name", "description"],

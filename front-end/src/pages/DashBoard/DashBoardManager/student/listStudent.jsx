@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Table, Space, message } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table, Space, message, Pagination } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -10,49 +10,10 @@ import { toast } from "react-toastify";
 import { Box, Typography, Button } from "@mui/material";
 import AddModal from "./AddModal";
 import studentApi from "../../../../apis/studentApi";
-
-const initialData = [
-  {
-    key: "1",
-    studentId: "SV001",
-    name: "Nguyen Van A",
-    email: "a@example.com",
-    phone: "0123456789",
-  },
-  {
-    key: "2",
-    studentId: "SV002",
-    name: "Tran Thi B",
-    email: "b@example.com",
-    phone: "0987654321",
-  },
-  {
-    key: "3",
-    studentId: "SV003",
-    name: "Nguyen Van A",
-    email: "a@example.com",
-    phone: "0123456789",
-  },
-  {
-    key: "4",
-    studentId: "SV004",
-    name: "Tran Thi B",
-    email: "b@example.com",
-    phone: "0987654321",
-  },
-  {
-    key: "5",
-    studentId: "SV005",
-    name: "Nguyen Van A",
-    email: "a@example.com",
-    phone: "0123456789",
-  },
-
-  // Thêm dữ liệu sinh viên khác tại đây
-];
-
+import { useNavigate } from "react-router-dom";
 function ListStudent() {
-  const [students, setStudents] = useState(initialData);
+  const navigate = useNavigate();
+  // const [students, setStudents] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,19 +22,24 @@ function ListStudent() {
   const [totalRows, setTotalRows] = useState();
   const [totalPages, setTotalPages] = useState();
   const [dataSource, setDataSource] = useState([]);
-  const [loadingData, setLoadingData] = useState(true);
-
+  const [loadingData, setLoadingData] = useState(false);
+  useEffect(() => {
+    getData();
+  }, [currentPage]);
   const getData = async () => {
+    setLoadingData(true);
     const res = await studentApi.getAll(currentPage, limitUser);
-    if (res && res.EC === 0) {
+    if (res && res.status === 0) {
       setDataSource(res.data.students);
       setTotalRows(res.data.totalRows);
       setTotalPages(res.data.totalPages);
-      // setLoadingData(false);
+      setLoadingData(false);
+      setLoading(false);
       messageApi.success(res.message);
     } else if (res.status === -1) {
       setDataSource([]);
-      // setLoadingData(false);
+      setLoadingData(false);
+      setLoading(false);
       messageApi.error(res.message);
     } else {
       navigate("/login");
@@ -83,7 +49,10 @@ function ListStudent() {
   const handleOpenModal = () => {
     setOpen(true);
   };
-
+  const onChange = (pageNumber) => {
+    setLoadingData(true);
+    setCurrentPage(pageNumber);
+  };
   const handleCloseModal = () => {
     setOpen(false);
   };
@@ -92,23 +61,29 @@ function ListStudent() {
     // Thực hiện logic chỉnh sửa ở đây
   };
 
-  const handleDelete = (key) => {
-    setStudents(students.filter((student) => student.key !== key));
-  };
+  // const handleDelete = (key) => {
+  //   setStudents(students.filter((student) => student.key !== key));
+  // };
 
   const handlerReload = () => {
-    setLoading(!loading);
+    setLoading(true);
+    getData();
   };
   const columns = [
     {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
       title: "Mã số sinh viên",
-      dataIndex: "studentId",
-      key: "studentId",
+      dataIndex: "username",
+      key: "username",
     },
     {
       title: "Họ và tên",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "fullName",
+      key: "fullName",
     },
     {
       title: "Email",
@@ -143,7 +118,7 @@ function ListStudent() {
             Sửa
           </Button>
           <Button
-            onClick={() => handleDelete(record.key)}
+            // onClick={() => handleDelete(record.key)}
             variant="contained"
             color="error"
             size="small"
@@ -159,7 +134,15 @@ function ListStudent() {
       ),
     },
   ];
-
+  const itemRender = (_, type, originalElement) => {
+    if (type === "prev") {
+      return <Button type="link">Previous</Button>;
+    }
+    if (type === "next") {
+      return <Button type="link">Next</Button>;
+    }
+    return originalElement;
+  };
   return (
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
@@ -189,10 +172,28 @@ function ListStudent() {
       </Box>
       <Box>
         <Table
+          dataSource={dataSource}
+          bordered
           columns={columns}
-          dataSource={students}
-          pagination={{ pageSize: 5 }}
+          rowKey={"id"}
+          scroll={{ x: "max-content" }}
+          pagination={false}
+          loading={loadingData}
         />
+        {dataSource.length > 0 ? (
+          <Pagination
+            style={{ float: "right", marginTop: "20px" }}
+            total={totalRows}
+            defaultCurrent={currentPage}
+            pageSize={limitUser}
+            onChange={(e) => onChange(e)}
+            current={currentPage}
+            itemRender={itemRender}
+            showQuickJumper
+          />
+        ) : (
+          <></>
+        )}
       </Box>
       <AddModal isOpen={open} onClose={handleCloseModal} />
     </Box>
