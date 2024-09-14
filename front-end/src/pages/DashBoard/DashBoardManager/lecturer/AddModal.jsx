@@ -21,7 +21,7 @@ function AddModal({ onClose, isOpen }) {
   };
   const handlerSubmit = async () => {
     setLoading(true);
-    const result = await userApi.createSingleAccountStudent(data);
+    const result = await userApi.createSingleAccountLecturer(data);
     if (result && result.status === 0) {
       messageApi.success(result.message);
       setLoading(false);

@@ -187,9 +187,60 @@ const createBulkAccount = async (data) => {
     };
   }
 };
+
+const createBulkAccountLecturer = async (data) => {
+  try {
+    const testArr = data;
+    const currentAccount = await Lecturer.findAll({
+      attributes: ["fullName", "username"],
+      raw: true,
+    });
+
+    const persists = data.filter(
+      ({ username: username1 }) =>
+        !currentAccount.some(
+          ({ username: username2 }) => username1 === username2
+        )
+    );
+    if (persists.length === 0) {
+      return {
+        status: 0,
+        message: "Không có dữ liệu được tạo mới...",
+      };
+    }
+    const _data = _.cloneDeep(persists);
+    const dataPersist = [];
+    Object.entries(_data).map(([key, value], index) => {
+      dataPersist.push({
+        fullName: value.fullName,
+        username: value.username,
+        password: hashPassword(value.password),
+        roleId: 2,
+      });
+    });
+
+    // console.log("Check persist: ", dataPersist);
+    const results = await Lecturer.bulkCreate(dataPersist);
+    if (persists) {
+      return {
+        status: 0,
+        message: `Tạo mới thành công ${persists.length} tài khoản giảng viên!`,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      status: 1,
+      message: "Lỗi chức năng!",
+      data: null,
+    };
+  }
+};
+
 module.exports = {
   login,
   createStudentAccount,
   createLecturerAccount,
   createBulkAccount,
+  createBulkAccountLecturer,
 };

@@ -4,7 +4,7 @@ import _ from "lodash";
 import { Button, Box } from "@mui/material";
 import userApi from "../../../../apis/userApi";
 import { toast } from "react-toastify";
-import { Table } from "antd";
+import { Table, message } from "antd";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
@@ -12,6 +12,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import AddModal from "./AddModal";
 
 const AccountStudent = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [jsonData, setJsonData] = useState([]);
   const [fileInput, setFileInput] = useState(null);
   const [open, setOpen] = useState(false);
@@ -53,9 +54,9 @@ const AccountStudent = () => {
     const data = persistDataToSave();
     const result = await userApi.createAccountsStudent(data);
     if (result.status === 0) {
-      toast.success(result.message);
+      messageApi.success(result.message);
     } else {
-      toast.error(result.message);
+      messageApi.error(result.message);
     }
   };
 
@@ -96,6 +97,7 @@ const AccountStudent = () => {
 
   return (
     <Box className="container-fluid">
+      {contextHolder}
       <Box className="row col-12">
         <Box className="col-6">
           <Box sx={{ padding: "10px 0px 10px 0px", fontSize: "18px" }}>

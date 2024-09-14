@@ -19,11 +19,12 @@ const PrivateRoute = (props) => {
 
   if (reduxData.isAuthenticated === false || isEmpty(reduxData.user)) {
     navigate("/login");
-  } else if (reduxData.isLoading === true) {
-    return <></>;
   } else {
     return props.component;
   }
+  // else if (reduxData.isLoading === true) {
+  //   return <></>;
+  // }
 };
 
 export default PrivateRoute;

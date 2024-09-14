@@ -48,8 +48,11 @@ const DashBoardManager = () => {
     const res = await userApi.logOut();
     if (res && res.status === 0) {
       localStorage.removeItem("accessToken");
-      navigate("/login");
       toast.success(res.message);
+      setTimeout(() => {
+        navigate("/login");
+        window.location.reload();
+      }, 1000);
     } else {
       toast.error(res.message);
     }
@@ -148,6 +151,7 @@ const DashBoardManager = () => {
               style={
                 !collapsed
                   ? {
+                      transition: "0.5s ease",
                       marginTop: "110px", // Thêm khoảng cách đủ lớn để logo không đè lên menu
                       height: "calc(100vh - 110px)", // Giữ menu chiếm toàn bộ chiều cao còn lại
                     }

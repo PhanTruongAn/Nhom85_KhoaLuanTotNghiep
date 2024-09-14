@@ -71,6 +71,15 @@ const handlerBulkCreate = async (req, res) => {
     console.log(error);
   }
 };
+const handlerBulkCreateLecturer = async (req, res) => {
+  try {
+    let data = await userService.createBulkAccountLecturer(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   handlerLogin,
   handlerCreateStudentAccount,
@@ -78,4 +87,5 @@ module.exports = {
   handlerGetDataFromToken,
   handlerLogOut,
   handlerBulkCreate,
+  handlerBulkCreateLecturer,
 };
