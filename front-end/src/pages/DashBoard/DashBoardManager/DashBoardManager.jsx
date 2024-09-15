@@ -151,7 +151,6 @@ const DashBoardManager = () => {
               style={
                 !collapsed
                   ? {
-                      transition: "0.5s ease",
                       marginTop: "110px", // Thêm khoảng cách đủ lớn để logo không đè lên menu
                       height: "calc(100vh - 110px)", // Giữ menu chiếm toàn bộ chiều cao còn lại
                     }

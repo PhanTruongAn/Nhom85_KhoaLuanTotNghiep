@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Table, Space } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table, Space, message, Pagination } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -8,28 +8,47 @@ import {
 } from "@ant-design/icons"; // Thêm biểu tượng UserOutlined
 import { Box, Typography, Button } from "@mui/material";
 import AddModal from "./AddModal";
-const initialData = [
-  {
-    key: "1",
-    lecturerId: "GV001",
-    name: "Nguyen Van A",
-    email: "a@example.com",
-    phone: "0123456789",
-  },
-  {
-    key: "2",
-    lecturerId: "GV002",
-    name: "Tran Thi B",
-    email: "b@example.com",
-    phone: "0987654321",
-  },
-  // Thêm dữ liệu giảng viên khác tại đây
-];
-
+import lecturerApi from "../../../../apis/lecturerApi";
 function ListLecturer() {
-  const [lecturers, setLecturers] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [limitUser, setLimitUser] = useState(5);
+  const [totalRows, setTotalRows] = useState();
+  const [totalPages, setTotalPages] = useState();
+  const [dataSource, setDataSource] = useState([]);
+  const [loadingData, setLoadingData] = useState(false);
+
+  useEffect(() => {
+    getData();
+  }, [currentPage]);
+
+  const getData = async () => {
+    setLoadingData(true);
+    const res = await lecturerApi.getAll(currentPage, limitUser);
+    if (res && res.status === 0) {
+      setDataSource(res.data.lecturers);
+      setTotalRows(res.data.totalRows);
+      setTotalPages(res.data.totalPages);
+      setLoadingData(false);
+      setLoading(false);
+      return true;
+    } else if (res.status === -1) {
+      setDataSource([]);
+      setLoadingData(false);
+      setLoading(false);
+      messageApi.error(res.message);
+    } else if (res.status === 403) {
+      setDataSource([]);
+      setLoadingData(false);
+      setLoading(false);
+      messageApi.error(res.message);
+    } else {
+      navigate("/login");
+      toast.error(res.message);
+    }
+  };
   const handleOpenModal = () => {
     setOpen(true);
   };
@@ -37,27 +56,45 @@ function ListLecturer() {
     setOpen(false);
   };
   const handlerReload = () => {
-    setLoading(!loading);
+    setLoading(true);
+    getData();
   };
   const handleEdit = (key) => {
     console.log("Edit lecturer with key:", key);
     // Thực hiện logic chỉnh sửa ở đây
   };
-
-  const handleDelete = (key) => {
-    setLecturers(lecturers.filter((lecturer) => lecturer.key !== key));
+  const onChange = (pageNumber) => {
+    setLoadingData(true);
+    setCurrentPage(pageNumber);
   };
+  // const handleDelete = (key) => {
+  //   setLecturers(lecturers.filter((lecturer) => lecturer.key !== key));
+  // };
 
+  const itemRender = (_, type, originalElement) => {
+    if (type === "prev") {
+      return <Button type="link">Previous</Button>;
+    }
+    if (type === "next") {
+      return <Button type="link">Next</Button>;
+    }
+    return originalElement;
+  };
   const columns = [
     {
-      title: "Mã số giảng viên",
-      dataIndex: "lecturerId",
-      key: "lecturerId",
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Mã số sinh viên",
+      dataIndex: "username",
+      key: "username",
     },
     {
       title: "Họ và tên",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "fullName",
+      key: "fullName",
     },
     {
       title: "Email",
@@ -111,6 +148,7 @@ function ListLecturer() {
 
   return (
     <Box sx={{ padding: "20px" }}>
+      {contextHolder}
       <Box sx={{ float: "right" }}>
         <Space>
           <Button
@@ -136,10 +174,29 @@ function ListLecturer() {
       </Box>
       <Box>
         <Table
+          dataSource={dataSource}
+          bordered
           columns={columns}
-          dataSource={lecturers}
-          pagination={{ pageSize: 5 }}
+          rowKey={"id"}
+          scroll={{ x: "max-content" }}
+          pagination={false}
+          loading={loadingData}
         />
+        {dataSource.length > 0 ? (
+          <Pagination
+            style={{ float: "right", marginTop: "20px" }}
+            total={totalRows}
+            defaultCurrent={currentPage}
+            pageSize={limitUser}
+            onChange={(e) => onChange(e)}
+            current={currentPage}
+            itemRender={itemRender}
+            showQuickJumper
+            responsive={true}
+          />
+        ) : (
+          <></>
+        )}
       </Box>
       <AddModal isOpen={open} onClose={handleCloseModal} />
     </Box>

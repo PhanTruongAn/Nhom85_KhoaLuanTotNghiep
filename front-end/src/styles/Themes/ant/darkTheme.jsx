@@ -9,6 +9,12 @@ const darkTheme = {
       headerColor: "#fff",
       bodyBg: "#071522",
     },
+    Pagination: {
+      colorText: "#1DA57A",
+      itemBg: "#152F40",
+      itemActiveBg: "#F1FAE8",
+      itemLinkBg: "#1DA57A",
+    },
   },
 };
 

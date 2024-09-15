@@ -1,3 +1,5 @@
+import { Pagination } from "antd";
+
 const lightTheme = {
   token: {},
   components: {
@@ -6,6 +8,9 @@ const lightTheme = {
       headerColor: "#000",
       bodyBg: "#f5f5f5",
       siderBg: "#ffffff",
+    },
+    Pagination: {
+      colorText: "#000",
     },
   },
 };

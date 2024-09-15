@@ -35,8 +35,13 @@ function ListStudent() {
       setTotalPages(res.data.totalPages);
       setLoadingData(false);
       setLoading(false);
-      messageApi.success(res.message);
+      return true;
     } else if (res.status === -1) {
+      setDataSource([]);
+      setLoadingData(false);
+      setLoading(false);
+      messageApi.error(res.message);
+    } else if (res.status === 403) {
       setDataSource([]);
       setLoadingData(false);
       setLoading(false);
@@ -61,7 +66,7 @@ function ListStudent() {
     // Thực hiện logic chỉnh sửa ở đây
   };
 
-  // const handleDelete = (key) => {
+  // const handleDelete = (key) => {#1A8369
   //   setStudents(students.filter((student) => student.key !== key));
   // };
 
@@ -190,6 +195,7 @@ function ListStudent() {
             current={currentPage}
             itemRender={itemRender}
             showQuickJumper
+            responsive={true}
           />
         ) : (
           <></>

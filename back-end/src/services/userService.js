@@ -16,7 +16,7 @@ const hashPassword = (password) => {
   return hashPassword;
 };
 
-// Find account by username
+// Tìm tài khoản dựa vào username
 const findAccount = async (username) => {
   const student = await Student.findOne({
     where: {
@@ -37,7 +37,7 @@ const findAccount = async (username) => {
   return null;
 };
 
-//Login
+//Chức năng đăng nhập
 const login = async (data) => {
   const username = data.username;
   const password = data.password;
@@ -82,7 +82,7 @@ const login = async (data) => {
   };
 };
 
-// Create account student
+// Tạo tài khoản sinh viên
 const createStudentAccount = async (data) => {
   if (!data.fullName) {
     return {
@@ -129,6 +129,7 @@ const createStudentAccount = async (data) => {
     }
   }
 };
+//Tạo tài khoản giảng viên
 const createLecturerAccount = async (data) => {
   if (!data.fullName) {
     return {
@@ -175,6 +176,8 @@ const createLecturerAccount = async (data) => {
     }
   }
 };
+
+// Tạo nhiều tài khoản sinh viên
 const createBulkAccount = async (data) => {
   try {
     const testArr = data;
@@ -223,7 +226,7 @@ const createBulkAccount = async (data) => {
     };
   }
 };
-
+// Tạo nhiều tài khoản giảng viên
 const createBulkAccountLecturer = async (data) => {
   try {
     const testArr = data;
@@ -272,6 +275,8 @@ const createBulkAccountLecturer = async (data) => {
     };
   }
 };
+
+// Lấy danh sách sinh viên
 const getStudentList = async () => {
   const list = await Student.findAll({
     attributes: ["id", "username", "fullName", "email", "phone"],
@@ -292,7 +297,7 @@ const getStudentList = async () => {
     data: list,
   };
 };
-
+// Lấy danh sách phân trang của sinh viên
 const getPaginationStudent = async (page, limit) => {
   try {
     const offset = (page - 1) * limit;
@@ -324,6 +329,59 @@ const getPaginationStudent = async (page, limit) => {
     };
   }
 };
+// Lấy danh sách giảng viên
+const getLecturerList = async () => {
+  const list = await Lecturer.findAll({
+    attributes: ["id", "username", "fullName", "email", "phone"],
+    include: {
+      model: Role,
+    },
+  });
+  if (list && list.length > 0) {
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: list,
+    };
+  }
+  return {
+    status: -1,
+    message: "Lấy danh sách thất bại!",
+    data: list,
+  };
+};
+// Lấy danh sách phân trang của giảng viên
+const getPaginationLecturer = async (page, limit) => {
+  try {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Lecturer.findAndCountAll({
+      attributes: ["id", "username", "fullName", "email", "phone"],
+      include: {
+        model: Role,
+        attributes: ["id", "name", "description"],
+      },
+      offset: offset,
+      limit: limit,
+    });
+    const totalPages = Math.ceil(count / limit);
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: {
+        totalRows: count,
+        totalPages: totalPages,
+        lecturers: rows,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lấy danh sách thất bại!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   login,
   createStudentAccount,
@@ -332,4 +390,6 @@ module.exports = {
   createBulkAccountLecturer,
   getPaginationStudent,
   getStudentList,
+  getLecturerList,
+  getPaginationLecturer,
 };

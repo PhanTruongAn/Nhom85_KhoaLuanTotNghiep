@@ -87,7 +87,7 @@ const items = [
       {
         key: "log-out",
         icon: <LogoutOutlined />,
-        label: "Logout",
+        label: "Đăng xuất",
       },
     ],
   },

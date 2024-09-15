@@ -24,9 +24,11 @@ import { toast } from "react-toastify";
 import authApi from "../../apis/authApi";
 import { useDispatch } from "react-redux";
 import { fetchToken } from "../../redux/userSlice";
+import { message } from "antd";
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [messageApi, contextHolder] = message.useMessage();
   const [showPassword, setShowPassword] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -84,12 +86,13 @@ export default function Login() {
         dispatch(fetchToken());
         toast.success(result.message);
       } else {
-        toast.error(result.message);
+        messageApi.error(result.message);
       }
     }
   };
   return (
     <SignInContainer direction="column" justifyContent="space-between">
+      {contextHolder}
       <Card variant="outlined">
         <Box>
           <img style={{ width: "100px", height: "auto" }} src={logo} />

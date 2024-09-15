@@ -33,6 +33,7 @@ const initWebRoutes = (app) => {
     "/lecturer/bulk-create-lecturer",
     userController.handlerBulkCreateLecturer
   );
+  router.get("/lecturer/get-all", userController.handlerLecturerGetAll);
   return app.use("/", router);
 };
 export default initWebRoutes;
