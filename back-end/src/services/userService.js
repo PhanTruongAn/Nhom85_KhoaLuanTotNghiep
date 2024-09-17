@@ -279,7 +279,7 @@ const createBulkAccountLecturer = async (data) => {
 // Lấy danh sách sinh viên
 const getStudentList = async () => {
   const list = await Student.findAll({
-    attributes: ["id", "username", "fullName", "email", "phone"],
+    attributes: ["id", "username", "fullName", "gender", "email", "phone"],
     include: {
       model: Role,
     },
@@ -302,7 +302,7 @@ const getPaginationStudent = async (page, limit) => {
   try {
     const offset = (page - 1) * limit;
     const { count, rows } = await Student.findAndCountAll({
-      attributes: ["id", "username", "fullName", "email", "phone"],
+      attributes: ["id", "username", "fullName", "gender", "email", "phone"],
       include: {
         model: Role,
         attributes: ["id", "name", "description"],
@@ -382,6 +382,50 @@ const getPaginationLecturer = async (page, limit) => {
     };
   }
 };
+
+const deleteStudent = async (data) => {
+  const res = await Student.destroy({
+    where: { id: data.id },
+  });
+  if (res) {
+    return {
+      status: 0,
+      message: "Xóa thành công!",
+    };
+  } else {
+    return {
+      status: 0,
+      message: "Xóa thất bại!",
+    };
+  }
+};
+
+const updateStudent = async (data) => {
+  const res = await Student.update(
+    {
+      username: data.username,
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      gender: data.gender,
+    },
+    { where: { id: data.id } }
+  );
+  if (res) {
+    return {
+      status: 0,
+      message: "Cập nhật thành công!",
+      data: res,
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Cập nhật thất bại!",
+      data: null,
+    };
+  }
+};
+
 module.exports = {
   login,
   createStudentAccount,
@@ -392,4 +436,6 @@ module.exports = {
   getStudentList,
   getLecturerList,
   getPaginationLecturer,
+  deleteStudent,
+  updateStudent,
 };

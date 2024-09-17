@@ -103,6 +103,24 @@ const handlerLecturerGetAll = async (req, res) => {
     return res.status(200).json(data);
   }
 };
+
+const handlerDeleteStudent = async (req, res) => {
+  try {
+    let data = await userService.deleteStudent(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+const handlerUpdateStudent = async (req, res) => {
+  try {
+    let data = await userService.updateStudent(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   handlerLogin,
   handlerCreateStudentAccount,
@@ -113,4 +131,6 @@ module.exports = {
   handlerBulkCreateLecturer,
   handlerStudentGetAll,
   handlerLecturerGetAll,
+  handlerDeleteStudent,
+  handlerUpdateStudent,
 };

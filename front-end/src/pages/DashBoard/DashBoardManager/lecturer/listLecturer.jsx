@@ -87,7 +87,7 @@ function ListLecturer() {
       key: "id",
     },
     {
-      title: "Mã số sinh viên",
+      title: "Mã số giảng viên",
       dataIndex: "username",
       key: "username",
     },
@@ -129,7 +129,7 @@ function ListLecturer() {
             Sửa
           </Button>
           <Button
-            onClick={() => handleDelete(record.key)}
+            // onClick={() => handleDelete(record.key)}
             variant="contained"
             color="error"
             size="small"

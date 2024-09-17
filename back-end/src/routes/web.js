@@ -24,6 +24,8 @@ const initWebRoutes = (app) => {
   );
   router.post("/student/bulk-create-student", userController.handlerBulkCreate);
   router.get("/student/get-all", userController.handlerStudentGetAll);
+  router.delete("/student/delete", userController.handlerDeleteStudent);
+  router.put("/student/update", userController.handlerUpdateStudent);
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",

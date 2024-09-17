@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Space, message, Pagination } from "antd";
+import { Table, Space, message, Pagination, Popconfirm } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -11,6 +11,7 @@ import { Box, Typography, Button } from "@mui/material";
 import AddModal from "./AddModal";
 import studentApi from "../../../../apis/studentApi";
 import { useNavigate } from "react-router-dom";
+import UpdateModal from "./updateModal";
 function ListStudent() {
   const navigate = useNavigate();
   // const [students, setStudents] = useState(initialData);
@@ -23,6 +24,8 @@ function ListStudent() {
   const [totalPages, setTotalPages] = useState();
   const [dataSource, setDataSource] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
+  const [userSelect, setUserSelect] = useState({});
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
   useEffect(() => {
     getData();
   }, [currentPage]);
@@ -66,10 +69,41 @@ function ListStudent() {
     // Thực hiện logic chỉnh sửa ở đây
   };
 
+  const showUpdateModal = (record) => {
+    setUserSelect(record);
+    setOpenUpdateModal(true);
+    // setLoading(true);
+    // setTimeout(() => {
+    //   setLoading(false);
+    // }, 1000);
+  };
+
+  const closeUpdateModal = () => {
+    setOpenUpdateModal(false);
+  };
   // const handleDelete = (key) => {#1A8369
   //   setStudents(students.filter((student) => student.key !== key));
   // };
 
+  const onPopConfirmDelete = async (record) => {
+    const user = {
+      id: record.id,
+    };
+    const res = await studentApi.deleteById(user);
+    // console.log("Res:", res);
+    if (res && res.status === 0) {
+      message.success(res.message);
+      setLoadingData(true);
+      getData();
+      if (dataSource.length === 1) {
+        setCurrentPage(currentPage - 1);
+      }
+    } else if (res.EC === -1) {
+      message.error(res.message);
+    } else {
+      toast.error(res.message);
+    }
+  };
   const handlerReload = () => {
     setLoading(true);
     getData();
@@ -91,6 +125,11 @@ function ListStudent() {
       key: "fullName",
     },
     {
+      title: "Giới tính",
+      dataIndex: "gender",
+      key: "gender",
+    },
+    {
       title: "Email",
       dataIndex: "email",
       key: "email",
@@ -106,7 +145,7 @@ function ListStudent() {
       render: (_, record) => (
         <>
           <Button
-            onClick={() => handleEdit(record.key)}
+            onClick={(e) => showUpdateModal(record)}
             variant="contained"
             size="small"
             sx={[
@@ -122,19 +161,28 @@ function ListStudent() {
           >
             Sửa
           </Button>
-          <Button
-            // onClick={() => handleDelete(record.key)}
-            variant="contained"
-            color="error"
-            size="small"
-            sx={{
-              marginLeft: "10px",
-              textTransform: "none",
-            }}
-            startIcon={<DeleteOutlined />}
+          <Popconfirm
+            title="Xóa sinh viên"
+            description="Bạn có chắc muốn xóa sinh viên này?"
+            onConfirm={(e) => onPopConfirmDelete(record)}
+            // onCancel={onPopConfirmCancel}
+            okText="Đồng ý"
+            cancelText="Không"
           >
-            Xóa
-          </Button>
+            <Button
+              // onClick={(e) => showUpdateModal(record)}
+              variant="contained"
+              color="error"
+              size="small"
+              sx={{
+                marginLeft: "10px",
+                textTransform: "none",
+              }}
+              startIcon={<DeleteOutlined />}
+            >
+              Xóa
+            </Button>
+          </Popconfirm>
         </>
       ),
     },
@@ -202,6 +250,13 @@ function ListStudent() {
         )}
       </Box>
       <AddModal isOpen={open} onClose={handleCloseModal} />
+      <UpdateModal
+        userSelect={userSelect}
+        open={openUpdateModal}
+        onSubmit={closeUpdateModal}
+        onCancel={closeUpdateModal}
+        getData={getData}
+      />
     </Box>
   );
 }
