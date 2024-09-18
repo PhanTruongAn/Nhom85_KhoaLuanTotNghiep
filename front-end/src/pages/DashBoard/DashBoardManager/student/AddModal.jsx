@@ -26,8 +26,8 @@ function AddModal({ onClose, isOpen }) {
       messageApi.success(result.message);
       setLoading(false);
       setData(user);
-      form.resetFields();
       onClose();
+      form.resetFields();
     } else if (result.status === 1) {
       messageApi.warning(result.message);
       setLoading(false);
@@ -36,15 +36,24 @@ function AddModal({ onClose, isOpen }) {
       messageApi.error(result.message);
     }
   };
+  const handleCancel = () => {
+    form.resetFields();
+    onClose();
+  };
   return (
     <>
       {contextHolder}
       <Modal
         title="Thêm tài khoản sinh viên"
         open={isOpen}
-        onCancel={onClose}
+        onCancel={(e) => handleCancel()}
         footer={[
-          <Button key="back" type="primary" danger onClick={onClose}>
+          <Button
+            key="back"
+            type="primary"
+            danger
+            onClick={(e) => handleCancel()}
+          >
             Hủy bỏ
           </Button>,
           <Button

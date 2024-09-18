@@ -1,57 +1,64 @@
 import React, { useEffect, useState } from "react";
 import { Col, Form, Input, message, Modal, Row, Select } from "antd";
 import _ from "lodash";
-import studentApi from "../../../../apis/studentApi";
+import studentApi from "../../apis/studentApi";
 import { toast } from "react-toastify";
+import lecturerApi from "../../apis/lecturerApi";
 const { Option } = Select;
-const UpdateModal = (props) => {
-  const defaultValues = {
-    username: "",
-    fullName: "",
-    email: "",
-    phone: "",
-  };
-  const [form] = Form.useForm(); // Tạo form instance
+const UpdateModal = ({
+  isStudent,
+  userSelect,
+  isOpen,
+  closeModal,
+  onCancel,
+  getData,
+}) => {
+  const obj = isStudent ? "sinh viên" : "giảng viên";
+  const [messageApi, contextHolder] = message.useMessage();
+  const [form] = Form.useForm();
   useEffect(() => {
-    if (props.userSelect) {
-      form.setFieldsValue(props.userSelect);
+    if (userSelect) {
+      form.setFieldsValue(userSelect);
     }
-  }, [props.userSelect, form]);
+  }, [userSelect, form]);
   const onSubmit = async () => {
-    const _student = _.cloneDeep(form.getFieldValue());
-    const res = await studentApi.updateById(_student);
+    const _data = _.cloneDeep(form.getFieldValue());
+    const res = isStudent
+      ? await studentApi.updateById(_data)
+      : await lecturerApi.updateById(_data);
     if (res && res.status === 0) {
-      message.success(res.message);
-      props.getData();
-      props.onSubmit();
+      messageApi.success(res.message);
+      getData();
+      closeModal();
     } else if (res.status === -1) {
-      message.error(res.message);
+      messageApi.error(res.message);
     } else {
       toast.error(res.message);
     }
   };
   return (
     <>
+      {contextHolder}
       <Modal
-        open={props.open}
-        title="Cập nhật thông tin sinh viên"
-        onCancel={props.onCancel}
-        onOk={onSubmit}
+        open={isOpen}
+        title={`Cập nhật thông tin ${obj}`}
+        onCancel={(e) => onCancel()}
+        onOk={(e) => onSubmit()}
       >
-        <Form layout="vertical" form={form} initialValues={props.userSelect}>
+        <Form layout="vertical" form={form} initialValues={userSelect}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 name="username"
-                label="Mã sinh viên"
+                label={`Mã ${obj}`}
                 rules={[
                   {
                     required: true,
-                    message: "Hãy nhập mã sinh viên!",
+                    message: `Hãy nhập mã ${obj}!`,
                   },
                 ]}
               >
-                <Input placeholder="Mã sinh viên" />
+                <Input placeholder={`Mã ${obj}`} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -61,11 +68,11 @@ const UpdateModal = (props) => {
                 rules={[
                   {
                     required: true,
-                    message: "Hãy nhập họ và tên sinh viên!",
+                    message: `Hãy nhập họ và tên ${obj}!`,
                   },
                 ]}
               >
-                <Input placeholder="Họ và tên sinh viên" />
+                <Input placeholder={`Họ và tên ${obj}`} />
               </Form.Item>
             </Col>
           </Row>

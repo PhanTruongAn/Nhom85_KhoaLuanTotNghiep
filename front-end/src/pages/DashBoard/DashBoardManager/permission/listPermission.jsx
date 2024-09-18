@@ -106,13 +106,18 @@ function ListPermission() {
           <Box className="col-9" sx={{ flexGrow: 1 }}>
             <Input
               placeholder="Tìm kiếm"
-              style={{
-                width: "100%",
-                borderRadius: "4px",
-                border: "1px solid #d9d9d9",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                padding: "0 5px",
-              }}
+              sx={[
+                (theme) => ({
+                  width: "100%",
+                  borderRadius: "4px",
+                  border: "1px solid #d9d9d9",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  padding: "0 5px",
+                  ...theme.applyStyles("dark", {
+                    boxShadow: "0 2px 4px #1DA57A",
+                  }),
+                }),
+              ]}
             />
           </Box>
         </Box>

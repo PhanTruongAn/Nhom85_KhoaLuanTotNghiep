@@ -1,5 +1,5 @@
 import permissionService from "../services/roleService";
-
+import roleService from "../services/roleService";
 // const handlerGetAllGroup = async (req, res) => {
 //   try {
 //     const data = await groupService.getAllGroup();
@@ -26,6 +26,21 @@ const handlerGetPermissions = async (req, res) => {
     });
   }
 };
+const handleGetRolesForLecturer = async (req, res) => {
+  try {
+    const data = await roleService.getRolesForLecturer();
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: -1,
+      message: "Error from server!",
+      data: null,
+    });
+  }
+};
+
 module.exports = {
   handlerGetPermissions,
+  handleGetRolesForLecturer,
 };

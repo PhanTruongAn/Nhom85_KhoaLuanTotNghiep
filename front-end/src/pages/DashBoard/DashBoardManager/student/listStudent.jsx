@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Space, message, Pagination, Popconfirm } from "antd";
+import { Table, Space, message, Pagination, Popconfirm, Select } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -7,14 +7,17 @@ import {
   PlusOutlined,
 } from "@ant-design/icons"; // Thêm biểu tượng UserOutlined
 import { toast } from "react-toastify";
-import { Box, Typography, Button } from "@mui/material";
-import AddModal from "./AddModal";
+import { Box, Typography, Button, Input } from "@mui/material";
+// import AddModal from "./AddModal";
 import studentApi from "../../../../apis/studentApi";
 import { useNavigate } from "react-router-dom";
-import UpdateModal from "./updateModal";
+import UpdateModal from "../../../../components/Dashboard/updateModal";
+import CreateModal from "../../../../components/Dashboard/createModal";
+const { Option } = Select;
 function ListStudent() {
   const navigate = useNavigate();
-  // const [students, setStudents] = useState(initialData);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRole, setSelectedRole] = useState(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,7 +41,6 @@ function ListStudent() {
       setTotalPages(res.data.totalPages);
       setLoadingData(false);
       setLoading(false);
-      return true;
     } else if (res.status === -1) {
       setDataSource([]);
       setLoadingData(false);
@@ -64,26 +66,15 @@ function ListStudent() {
   const handleCloseModal = () => {
     setOpen(false);
   };
-  const handleEdit = (key) => {
-    console.log("Edit student with key:", key);
-    // Thực hiện logic chỉnh sửa ở đây
-  };
 
   const showUpdateModal = (record) => {
     setUserSelect(record);
     setOpenUpdateModal(true);
-    // setLoading(true);
-    // setTimeout(() => {
-    //   setLoading(false);
-    // }, 1000);
   };
 
   const closeUpdateModal = () => {
     setOpenUpdateModal(false);
   };
-  // const handleDelete = (key) => {#1A8369
-  //   setStudents(students.filter((student) => student.key !== key));
-  // };
 
   const onPopConfirmDelete = async (record) => {
     const user = {
@@ -92,14 +83,14 @@ function ListStudent() {
     const res = await studentApi.deleteById(user);
     // console.log("Res:", res);
     if (res && res.status === 0) {
-      message.success(res.message);
+      messageApi.success(res.message);
       setLoadingData(true);
       getData();
       if (dataSource.length === 1) {
         setCurrentPage(currentPage - 1);
       }
     } else if (res.EC === -1) {
-      message.error(res.message);
+      messageApi.error(res.message);
     } else {
       toast.error(res.message);
     }
@@ -108,6 +99,22 @@ function ListStudent() {
     setLoading(true);
     getData();
   };
+
+  const onSelectChange = (newSelectedRowKeys) => {
+    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    // selectedRowKeys,
+    onChange: onSelectChange,
+    selections: [
+      Table.SELECTION_ALL,
+      Table.SELECTION_INVERT,
+      Table.SELECTION_NONE,
+    ],
+  };
+
   const columns = [
     {
       title: "ID",
@@ -165,12 +172,10 @@ function ListStudent() {
             title="Xóa sinh viên"
             description="Bạn có chắc muốn xóa sinh viên này?"
             onConfirm={(e) => onPopConfirmDelete(record)}
-            // onCancel={onPopConfirmCancel}
             okText="Đồng ý"
             cancelText="Không"
           >
             <Button
-              // onClick={(e) => showUpdateModal(record)}
               variant="contained"
               color="error"
               size="small"
@@ -199,6 +204,36 @@ function ListStudent() {
   return (
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
+      <Box
+        className="col-6"
+        sx={{
+          float: "left",
+        }}
+      >
+        <Space>
+          <Input
+            placeholder="Tìm kiếm"
+            sx={[
+              (theme) => ({
+                borderRadius: "4px",
+                border: "1px solid #d9d9d9",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                padding: "0 5px",
+                ...theme.applyStyles("dark", {
+                  boxShadow: "0 2px 4px #1DA57A",
+                  background: "#F6FFED",
+                  color: "#000",
+                }),
+              }),
+            ]}
+          />
+
+          <Select placeholder="Tìm kiếm theo">
+            <Option value="fullName">Tên đầy đủ</Option>
+            <Option value="username">Mã sinh viên</Option>
+          </Select>
+        </Space>
+      </Box>
       <Box sx={{ float: "right" }}>
         <Space>
           <Button
@@ -225,12 +260,13 @@ function ListStudent() {
       </Box>
       <Box>
         <Table
+          rowSelection={rowSelection}
           dataSource={dataSource}
           bordered
+          pagination={false}
           columns={columns}
           rowKey={"id"}
           scroll={{ x: "max-content" }}
-          pagination={false}
           loading={loadingData}
         />
         {dataSource.length > 0 ? (
@@ -249,13 +285,19 @@ function ListStudent() {
           <></>
         )}
       </Box>
-      <AddModal isOpen={open} onClose={handleCloseModal} />
+      <CreateModal
+        isOpen={open}
+        onClose={handleCloseModal}
+        getData={getData}
+        isStudent={true}
+      />
       <UpdateModal
         userSelect={userSelect}
-        open={openUpdateModal}
-        onSubmit={closeUpdateModal}
+        isOpen={openUpdateModal}
+        closeModal={closeUpdateModal}
         onCancel={closeUpdateModal}
         getData={getData}
+        isStudent={true}
       />
     </Box>
   );

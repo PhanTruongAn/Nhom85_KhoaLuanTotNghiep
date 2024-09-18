@@ -10,7 +10,6 @@ import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import AddModal from "./AddModal";
-
 const AccountStudent = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [jsonData, setJsonData] = useState([]);

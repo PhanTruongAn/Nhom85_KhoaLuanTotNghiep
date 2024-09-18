@@ -1,5 +1,8 @@
 import express from "express";
 import userController from "../controllers/userController";
+import studentController from "../controllers/studentController";
+import lecturerController from "../controllers/lecturerController";
+import roleController from "../controllers/roleController";
 import {
   authentication,
   checkUserPermission,
@@ -14,28 +17,36 @@ const router = express.Router();
 const initWebRoutes = (app) => {
   router.all("*", authentication, checkUserPermission);
   // Authenticate route
-  router.post("/login", userController.handlerLogin);
-  router.get("/fetch-token", userController.handlerGetDataFromToken);
-  router.post("/log-out", userController.handlerLogOut);
+  router.post("/login", userController.handleLogin);
+  router.get("/fetch-token", userController.handleGetDataFromToken);
+  router.post("/log-out", userController.handleLogOut);
+
   //Student route
   router.post(
     "/student/create-student",
-    userController.handlerCreateStudentAccount
+    studentController.handleCreateStudentAccount
   );
-  router.post("/student/bulk-create-student", userController.handlerBulkCreate);
-  router.get("/student/get-all", userController.handlerStudentGetAll);
-  router.delete("/student/delete", userController.handlerDeleteStudent);
-  router.put("/student/update", userController.handlerUpdateStudent);
+  router.post(
+    "/student/bulk-create-student",
+    studentController.handleBulkCreate
+  );
+  router.get("/student/get-all", studentController.handleStudentGetAll);
+  router.delete("/student/delete", studentController.handleDeleteStudent);
+  router.put("/student/update", studentController.handleUpdateStudent);
+
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
-    userController.handlerCreateLecturerAccount
+    lecturerController.handleCreateLecturerAccount
   );
   router.post(
     "/lecturer/bulk-create-lecturer",
-    userController.handlerBulkCreateLecturer
+    lecturerController.handleBulkCreateLecturer
   );
-  router.get("/lecturer/get-all", userController.handlerLecturerGetAll);
+  router.get("/lecturer/get-all", lecturerController.handleLecturerGetAll);
+  router.get("/lecturer/get-roles", roleController.handleGetRolesForLecturer);
+  router.delete("/lecturer/delete", lecturerController.handleDeleteLecturer);
+  router.put("/lecturer/update", lecturerController.handleUpdateLecturer);
   return app.use("/", router);
 };
 export default initWebRoutes;

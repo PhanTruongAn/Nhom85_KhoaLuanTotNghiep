@@ -32,6 +32,26 @@ const getRoleWithId = async (user) => {
     };
   }
 };
+
+const getRolesForLecturer = async () => {
+  const list = await Role.findAll({
+    attributes: ["id", "name", "description"],
+  });
+  const filterData = list.filter((list) => list.name !== "STUDENT");
+  if (list && list.length > 0) {
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: filterData,
+    };
+  }
+  return {
+    status: -1,
+    message: "Lấy danh sách thất bại!",
+    data: list,
+  };
+};
 module.exports = {
   getRoleWithId,
+  getRolesForLecturer,
 };

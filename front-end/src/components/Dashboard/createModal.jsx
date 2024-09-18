@@ -1,27 +1,34 @@
 import React, { useState } from "react";
 import { Col, Form, Input, Modal, Row, Select, message, Button } from "antd";
 import _ from "lodash";
-import lecturerApi from "../../../../apis/lecturerApi";
-function AddModal({ onClose, isOpen, getData }) {
+import studentApi from "../../apis/studentApi";
+import lecturerApi from "../../apis/lecturerApi";
+import { Box } from "@mui/material";
+const { Option } = Select; // Thêm dòng này
+function CreateModal({ onClose, isOpen, getData, isStudent, listRole }) {
+  const obj = isStudent ? "sinh viên" : "giảng viên";
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const user = {
     fullName: "",
     username: "",
-    // email: "",
+    roleId: "",
     // phone: "",
   };
 
   const [data, setData] = useState(user);
+  //   console.log(data);
   const handlerOnChange = (value, name) => {
     const _user = _.cloneDeep(data);
-    _user[name] = value;
+    _user[name] = name === "roleId" ? parseInt(value) : value;
     setData(_user);
   };
   const handlerSubmit = async () => {
     setLoading(true);
-    const result = await lecturerApi.createSingleAccountLecturer(data);
+    const result = isStudent
+      ? await studentApi.createSingleAccountStudent(data)
+      : await lecturerApi.createSingleAccountLecturer(data);
     if (result && result.status === 0) {
       messageApi.success(result.message);
       setLoading(false);
@@ -37,15 +44,17 @@ function AddModal({ onClose, isOpen, getData }) {
       messageApi.error(result.message);
     }
   };
+
   const handleCancel = () => {
     form.resetFields();
+    setData(user);
     onClose();
   };
   return (
-    <>
+    <Box>
       {contextHolder}
       <Modal
-        title="Thêm tài khoản giảng viên"
+        title="Thêm tài khoản sinh viên"
         open={isOpen}
         onCancel={(e) => handleCancel()}
         footer={[
@@ -76,12 +85,12 @@ function AddModal({ onClose, isOpen, getData }) {
                 rules={[
                   {
                     required: true,
-                    message: "Hãy nhập họ và tên giảng viên!",
+                    message: `Hãy nhập họ và tên ${obj}!`,
                   },
                 ]}
               >
                 <Input
-                  placeholder="Họ và tên giảng viên"
+                  placeholder={`Họ và tên sinh viên ${obj}`}
                   onChange={(e) => handlerOnChange(e.target.value, "fullName")}
                 />
               </Form.Item>
@@ -89,64 +98,47 @@ function AddModal({ onClose, isOpen, getData }) {
             <Col span={12}>
               <Form.Item
                 name="username"
-                label="Mã giảng viên"
+                label={`Mã ${obj}`}
                 rules={[
                   {
                     required: true,
-                    message: "Hãy nhập mã giảng viên!",
+                    message: `Hãy nhập mã ${obj}!`,
                   },
                 ]}
               >
                 <Input
-                  placeholder="Mã giảng viên"
+                  placeholder={`Mã ${obj}`}
                   onChange={(e) => handlerOnChange(e.target.value, "username")}
                 />
               </Form.Item>
             </Col>
           </Row>
-          {/* <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="phone"
-                label="Số điện thoại"
-                rules={[
-                  {
-                    required: true,
-                    message: "Hãy nhập số điện thoại của giảng viên!",
-                  },
-                ]}
-              >
-                <Input
-                  placeholder="Số điện thoại của giảng viên"
-                  onChange={(e) => handlerOnChange(e.target.value, "phone")}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="email"
-                label="Email"
-                rules={[
-                  {
-                    required: true,
-                    message: "Hãy nhập email của giảng viên!",
-                  },
-                ]}
-              >
-                <Input
-                  style={{
-                    width: "100%",
-                  }}
-                  placeholder="Địa chỉ email giảng viên"
-                  onChange={(e) => handlerOnChange(e.target.value, "email")}
-                />
-              </Form.Item>
-            </Col>
-          </Row> */}
+          {!isStudent && (
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item name="role" label="Vai trò" required>
+                  <Select
+                    placeholder="Hãy chọn vai trò"
+                    onChange={(value) => handlerOnChange(value, "roleId")}
+                  >
+                    {listRole &&
+                      listRole.length > 0 &&
+                      listRole.map((item, index) => {
+                        return (
+                          <Option key={index} value={item.id}>
+                            {item.name}
+                          </Option>
+                        );
+                      })}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+          )}
         </Form>
       </Modal>
-    </>
+    </Box>
   );
 }
 
-export default AddModal;
+export default CreateModal;
