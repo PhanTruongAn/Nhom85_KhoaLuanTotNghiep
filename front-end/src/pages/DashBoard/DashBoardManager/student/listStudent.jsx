@@ -13,11 +13,13 @@ import studentApi from "../../../../apis/studentApi";
 import { useNavigate } from "react-router-dom";
 import UpdateModal from "../../../../components/Dashboard/updateModal";
 import CreateModal from "../../../../components/Dashboard/createModal";
+import { useQuery } from "react-query";
+
 const { Option } = Select;
+
 function ListStudent() {
   const navigate = useNavigate();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [selectedRole, setSelectedRole] = useState(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,41 +28,35 @@ function ListStudent() {
   const [totalRows, setTotalRows] = useState();
   const [totalPages, setTotalPages] = useState();
   const [dataSource, setDataSource] = useState([]);
-  const [loadingData, setLoadingData] = useState(false);
   const [userSelect, setUserSelect] = useState({});
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
-  useEffect(() => {
-    getData();
-  }, [currentPage]);
-  const getData = async () => {
-    setLoadingData(true);
-    const res = await studentApi.getAll(currentPage, limitUser);
-    if (res && res.status === 0) {
-      setDataSource(res.data.students);
-      setTotalRows(res.data.totalRows);
-      setTotalPages(res.data.totalPages);
-      setLoadingData(false);
-      setLoading(false);
-    } else if (res.status === -1) {
-      setDataSource([]);
-      setLoadingData(false);
-      setLoading(false);
-      messageApi.error(res.message);
-    } else if (res.status === 403) {
-      setDataSource([]);
-      setLoadingData(false);
-      setLoading(false);
-      messageApi.error(res.message);
-    } else {
-      navigate("/login");
-      toast.error(res.message);
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ["students", currentPage],
+    () => studentApi.getAll(currentPage, limitUser),
+    {
+      keepPreviousData: true,
+      staleTime: 1000,
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          setDataSource(res.data.students);
+          setTotalRows(res.data.totalRows);
+          setTotalPages(res.data.totalPages);
+          setLoading(false);
+        } else if (res.status === -1 || res.status === 403) {
+          setLoading(false);
+          setDataSource([]);
+          messageApi.error(res.message);
+        }
+      },
+      onError: (err) => {
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
     }
-  };
+  );
   const handleOpenModal = () => {
     setOpen(true);
   };
   const onChange = (pageNumber) => {
-    setLoadingData(true);
     setCurrentPage(pageNumber);
   };
   const handleCloseModal = () => {
@@ -81,11 +77,9 @@ function ListStudent() {
       id: record.id,
     };
     const res = await studentApi.deleteById(user);
-    // console.log("Res:", res);
     if (res && res.status === 0) {
+      refetch();
       messageApi.success(res.message);
-      setLoadingData(true);
-      getData();
       if (dataSource.length === 1) {
         setCurrentPage(currentPage - 1);
       }
@@ -97,11 +91,10 @@ function ListStudent() {
   };
   const handlerReload = () => {
     setLoading(true);
-    getData();
+    refetch();
   };
 
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
@@ -261,34 +254,30 @@ function ListStudent() {
       <Box>
         <Table
           rowSelection={rowSelection}
-          dataSource={dataSource}
+          dataSource={data ? data.data.students : []}
           bordered
           pagination={false}
           columns={columns}
           rowKey={"id"}
           scroll={{ x: "max-content" }}
-          loading={loadingData}
+          loading={isFetching}
         />
-        {dataSource.length > 0 ? (
-          <Pagination
-            style={{ float: "right", marginTop: "20px" }}
-            total={totalRows}
-            defaultCurrent={currentPage}
-            pageSize={limitUser}
-            onChange={(e) => onChange(e)}
-            current={currentPage}
-            itemRender={itemRender}
-            showQuickJumper
-            responsive={true}
-          />
-        ) : (
-          <></>
-        )}
+        <Pagination
+          style={{ float: "right", marginTop: "20px" }}
+          total={totalRows}
+          defaultCurrent={currentPage}
+          pageSize={limitUser}
+          onChange={(e) => onChange(e)}
+          current={currentPage}
+          itemRender={itemRender}
+          showQuickJumper
+          responsive={true}
+        />
       </Box>
       <CreateModal
         isOpen={open}
         onClose={handleCloseModal}
-        getData={getData}
+        getData={refetch}
         isStudent={true}
       />
       <UpdateModal
@@ -296,7 +285,7 @@ function ListStudent() {
         isOpen={openUpdateModal}
         closeModal={closeUpdateModal}
         onCancel={closeUpdateModal}
-        getData={getData}
+        getData={refetch}
         isStudent={true}
       />
     </Box>

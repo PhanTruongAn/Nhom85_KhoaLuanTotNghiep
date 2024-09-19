@@ -13,9 +13,11 @@ import lecturerApi from "../../../../apis/lecturerApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UpdateModal from "../../../../components/Dashboard/updateModal";
+import { useQuery } from "react-query";
 const { Option } = Select;
 function ListLecturer() {
   const navigate = useNavigate();
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,14 +26,33 @@ function ListLecturer() {
   const [totalRows, setTotalRows] = useState();
   const [totalPages, setTotalPages] = useState();
   const [dataSource, setDataSource] = useState([]);
-  const [loadingData, setLoadingData] = useState(false);
   const [userSelect, setUserSelect] = useState({});
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [listRole, setListRole] = useState();
-  useEffect(() => {
-    getData();
-  }, [currentPage]);
 
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ["lecturers", currentPage],
+    () => lecturerApi.getAll(currentPage, limitUser),
+    {
+      keepPreviousData: true,
+      staleTime: 1000,
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          setDataSource(res.data.students);
+          setTotalRows(res.data.totalRows);
+          setTotalPages(res.data.totalPages);
+          setLoading(false);
+        } else if (res.status === -1 || res.status === 403) {
+          setLoading(false);
+          setDataSource([]);
+          messageApi.error(res.message);
+        }
+      },
+      onError: (err) => {
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
+    }
+  );
   useEffect(() => {
     getRoles();
   }, []);
@@ -42,31 +63,6 @@ function ListLecturer() {
     }
   };
 
-  const getData = async () => {
-    setLoadingData(true);
-    const res = await lecturerApi.getAll(currentPage, limitUser);
-    if (res && res.status === 0) {
-      setDataSource(res.data.lecturers);
-      setTotalRows(res.data.totalRows);
-      setTotalPages(res.data.totalPages);
-      setLoadingData(false);
-      setLoading(false);
-      return true;
-    } else if (res.status === -1) {
-      setDataSource([]);
-      setLoadingData(false);
-      setLoading(false);
-      messageApi.error(res.message);
-    } else if (res.status === 403) {
-      setDataSource([]);
-      setLoadingData(false);
-      setLoading(false);
-      messageApi.error(res.message);
-    } else {
-      navigate("/login");
-      toast.error(res.message);
-    }
-  };
   const handleOpenModal = () => {
     setOpen(true);
   };
@@ -75,11 +71,10 @@ function ListLecturer() {
   };
   const handlerReload = () => {
     setLoading(true);
-    getData();
+    refetch();
   };
 
   const onChange = (pageNumber) => {
-    setLoadingData(true);
     setCurrentPage(pageNumber);
   };
   const showUpdateModal = (record) => {
@@ -98,8 +93,7 @@ function ListLecturer() {
     // console.log("Res:", res);
     if (res && res.status === 0) {
       messageApi.success(res.message);
-      setLoadingData(true);
-      getData();
+      refetch();
       if (dataSource.length === 1) {
         setCurrentPage(currentPage - 1);
       }
@@ -108,6 +102,20 @@ function ListLecturer() {
     } else {
       toast.error(res.message);
     }
+  };
+  const onSelectChange = (newSelectedRowKeys) => {
+    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    // selectedRowKeys,
+    onChange: onSelectChange,
+    selections: [
+      Table.SELECTION_ALL,
+      Table.SELECTION_INVERT,
+      Table.SELECTION_NONE,
+    ],
   };
   const itemRender = (_, type, originalElement) => {
     if (type === "prev") {
@@ -256,34 +264,32 @@ function ListLecturer() {
       </Box>
       <Box>
         <Table
-          dataSource={dataSource}
+          rowSelection={rowSelection}
+          dataSource={data ? data.data.lecturers : []}
           bordered
           columns={columns}
           rowKey={"id"}
           scroll={{ x: "max-content" }}
           pagination={false}
-          loading={loadingData}
+          loading={isFetching}
         />
-        {dataSource.length > 0 ? (
-          <Pagination
-            style={{ float: "right", marginTop: "20px" }}
-            total={totalRows}
-            defaultCurrent={currentPage}
-            pageSize={limitUser}
-            onChange={(e) => onChange(e)}
-            current={currentPage}
-            itemRender={itemRender}
-            showQuickJumper
-            responsive={true}
-          />
-        ) : (
-          <></>
-        )}
+
+        <Pagination
+          style={{ float: "right", marginTop: "20px" }}
+          total={totalRows}
+          defaultCurrent={currentPage}
+          pageSize={limitUser}
+          onChange={(e) => onChange(e)}
+          current={currentPage}
+          itemRender={itemRender}
+          showQuickJumper
+          responsive={true}
+        />
       </Box>
       <CreateModal
         isOpen={open}
         onClose={handleCloseModal}
-        getData={getData}
+        getData={refetch}
         isStudent={false}
         listRole={listRole}
       />
@@ -292,7 +298,7 @@ function ListLecturer() {
         isOpen={openUpdateModal}
         closeModal={closeUpdateModal}
         onCancel={closeUpdateModal}
-        getData={getData}
+        getData={refetch}
         isStudent={false}
       />
     </Box>

@@ -9,17 +9,21 @@ import { store } from "../redux/store";
 import DashBoardStudent from "./DashBoard/DashBoardStudent/DashBoardStudent";
 import ManagerHome from "./DashBoard/DashBoardManager/home/home";
 import StudentHome from "./DashBoard/DashBoardStudent/home/home";
+import { useQuery, QueryClient, QueryClientProvider } from "react-query";
+const queryClient = new QueryClient();
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <Fragment>
       <Provider store={store}>
-        <BrowserRouter>
-          <AppRoute />
-          {/* <ManagerHome /> */}
-          <ToastContainer autoClose={1000} />
-        </BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <AppRoute />
+            {/* <ManagerHome /> */}
+            <ToastContainer autoClose={1000} />
+          </BrowserRouter>
+        </QueryClientProvider>
       </Provider>
     </Fragment>
   );
