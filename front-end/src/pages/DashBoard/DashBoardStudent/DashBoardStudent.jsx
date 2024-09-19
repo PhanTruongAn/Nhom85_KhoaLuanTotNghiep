@@ -205,7 +205,14 @@ const DashBoardStudent = () => {
                     style={{ marginRight: "16px", marginTop: "-3px" }}
                   />
                   <Dropdown
-                    overlay={<ListNotification />}
+                    overlay={
+                      <ListNotification
+                        style={{
+                          color: themes ? "#fff" : "#000",
+                          width: "500px",
+                        }}
+                      />
+                    }
                     visible={visible}
                     onClick={toggleNotification}
                     arrow
@@ -224,10 +231,7 @@ const DashBoardStudent = () => {
                       }
                     >
                       {notifications > 0 && (
-                        <span
-                          className="notification-badge"
-                          style={{ overflow: "scroll", width: "500px" }}
-                        >
+                        <span className="notification-badge">
                           {notifications}
                         </span>
                       )}
