@@ -1,0 +1,66 @@
+.notification-container {
+  background-color: #ffffff; // Nền trắng để tăng độ tương phản
+  border-radius: 8px; // Bo góc
+  padding: 16px; // Padding cho container
+  width: "100%"; // Chiều rộng
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); // Đổ bóng
+  transition: box-shadow 0.3s; // Hiệu ứng chuyển tiếp cho hover
+
+  &:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); // Đổ bóng tối hơn khi hover
+  }
+}
+
+.notification-header {
+  display: flex; // Sử dụng flexbox
+  justify-content: space-between; // Căn chỉnh các mục
+  align-items: center; // Căn giữa theo chiều dọc
+  margin-bottom: 16px; // Khoảng cách dưới tiêu đề
+
+  h2 {
+    font-size: 18px; // Kích thước chữ tiêu đề
+    margin: 0; // Không có margin
+    color: #333; // Màu tối cho độ rõ
+  }
+
+  span {
+    font-size: 14px; // Kích thước chữ cho số thông báo
+    color: #888; // Màu nhạt cho số lượng
+  }
+}
+
+.notification-item {
+  background-color: #f9f9f9; // Nền xám nhạt cho thông báo
+  border-radius: 4px; // Bo góc
+  padding: 12px; // Padding cho thông báo
+  margin-bottom: 10px; // Khoảng cách giữa các thông báo
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); // Đổ bóng nhẹ
+  transition: background-color 0.3s; // Hiệu ứng chuyển tiếp cho hover
+
+  &:hover {
+    background-color: #e6f7ff; // Nền xanh nhạt khi hover
+  }
+
+  .notification-date {
+    font-size: 12px; // Kích thước chữ cho ngày
+    color: #aaa; // Màu nhạt cho ngày
+  }
+
+  .notification-title {
+    font-size: 14px; // Kích thước chữ cho tiêu đề thông báo
+    font-weight: bold; // Chữ đậm
+    margin: 4px 0; // Khoảng cách trên và dưới
+    color: #333; // Màu tối cho độ rõ
+  }
+
+  .notification-link {
+    font-size: 12px; // Kích thước chữ cho liên kết
+    color: #0066cc; // Màu liên kết
+    text-align: right; // Căn phải
+    transition: color 0.3s; // Hiệu ứng chuyển tiếp cho hover
+
+    &:hover {
+      color: #0056a3; // Màu liên kết tối hơn khi hover
+    }
+  }
+}

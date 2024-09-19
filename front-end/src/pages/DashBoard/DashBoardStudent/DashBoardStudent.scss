@@ -1,39 +1,54 @@
-.admin-container {
-  .menu {
-    min-height: 100vh;
-  }
-  .collapsed-button {
-    font-size: 16px;
-    height: 64px;
-    width: 64px;
-    float: left;
-    //   left: -650px;
-  }
-
+.student-container {
   .header-content {
-    position: absolute;
-    right: 0px;
-    top: -2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    padding: 10px 20px;
     font-weight: 600;
-    margin-right: 5px;
-    .btn-logOut {
-      margin-top: 15px;
-      margin-left: 10px;
-      margin-right: 85px;
 
-      &.dark-theme {
-        background-color: #001529;
-        color: white;
-        border-color: white;
-        &:hover {
-          color: #0068d1;
-          border-color: #0068d1;
-        }
+    .bell-icon {
+      transition: background-color 0.3s, color 0.3s;
+
+      &:hover {
+        background-color: rgba(0, 104, 209, 0.2);
+        color: #0068d1;
       }
+    }
 
-      &.light-theme {
-        background-color: #fff;
-        color: #3087ff;
+    // Thêm CSS cho dropdown
+    .ant-dropdown {
+      min-width: 300px; // Đặt chiều rộng tối thiểu cho dropdown
+      max-width: calc(
+        100vw - 40px
+      ); // Đảm bảo không vượt quá chiều rộng màn hình
+      overflow: auto; // Thêm cuộn nếu nội dung quá lớn
+      z-index: 1000; // Đảm bảo nó nằm trên các phần tử khác
+    }
+  }
+
+  .notification-dropdown {
+    position: absolute;
+    right: 0; // Đặt vị trí bên phải
+    top: 60px; // Đặt chiều cao dựa trên tiêu đề
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    width: 600px;
+    padding: 10px;
+    display: none;
+
+    &.show {
+      display: block;
+    }
+
+    .notification-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: rgba(0, 104, 209, 0.1);
       }
     }
   }

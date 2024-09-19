@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   MenuFoldOutlined,
   ExclamationCircleOutlined,
   MoonOutlined,
   SunOutlined,
   MenuUnfoldOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 
 import "./DashBoardStudent.scss";
-import { Button, Layout, Menu, theme, Modal, ConfigProvider } from "antd";
+import {
+  Button,
+  Layout,
+  Menu,
+  theme,
+  Modal,
+  ConfigProvider,
+  Dropdown,
+} from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
@@ -22,6 +31,8 @@ import themeLight from "../../../styles/themes/mui/themeLight.jsx";
 import darkTheme from "../../../styles/themes/ant/darkTheme.jsx";
 import logoDark from "../../../images/Logo-White.png";
 import logoLight from "../../../images/logo-iuh.png";
+import ListNotification from "./notifications/listNotification.jsx";
+
 const { Header, Sider, Content } = Layout;
 
 const DashBoardStudent = () => {
@@ -33,6 +44,10 @@ const DashBoardStudent = () => {
   });
   const [collapsed, setCollapsed] = useState(false);
   const [modal, contextHolder] = Modal.useModal();
+  const [visible, setVisible] = useState(false); // State for notification dropdown
+  const [notifications, setNotifications] = useState(1); // Example state for notifications
+  const dropdownRef = useRef(null);
+
   const confirm = () => {
     modal.confirm({
       title: "Confirm",
@@ -43,6 +58,7 @@ const DashBoardStudent = () => {
       onOk: () => handleLogout(),
     });
   };
+
   const handleLogout = async () => {
     const res = await authApi.logOut();
     if (res && res.status === 0) {
@@ -57,24 +73,6 @@ const DashBoardStudent = () => {
     }
   };
 
-  // const currentTheme = themes
-  //   ? {
-  //       token: {
-  //         colorBgContainer: "#001529", // Màu nền cho theme tối
-  //         colorTextBase: "#fff",
-  //         colorBorder: "#fff",
-  //       },
-  //     }
-  //   : {
-  //       token: {
-  //         colorBgContainer: "#ffffff", // Màu nền cho theme sáng
-  //         colorTextBase: "#000",
-  //       },
-  //     };
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-
   const handlePath = ({ key }) => {
     if (key === "log-out") {
       confirm();
@@ -82,10 +80,32 @@ const DashBoardStudent = () => {
       navigate(key);
     }
   };
+
   const className = themes ? "btn-logOut dark-theme" : "btn-logOut light-theme";
   const changeTheme = () => {
     setThemes(!themes);
   };
+
+  const toggleNotification = () => {
+    setVisible(!visible);
+    if (visible) {
+      setNotifications(0); // Reset notification count when opened
+    }
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       <ThemeProvider theme={themes ? themeDark : themeLight}>
@@ -101,28 +121,27 @@ const DashBoardStudent = () => {
             {!collapsed && (
               <div
                 className="demo-logo-vertical"
-                style={{
-                  borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
-                  position: "absolute", // Đặt logo ở vị trí tuyệt đối
-                  left: "0",
-                  right: "0",
-                  alignItems: "center",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  padding: "10px",
-                }}
+                style={
+                  {
+                    /* styles */
+                  }
+                }
               >
                 <img
                   src={themes ? logoDark : logoLight}
-                  style={{ width: "80%", height: "auto", alignSelf: "center" }}
-                ></img>
-
+                  style={{
+                    width: "80%",
+                    height: "auto",
+                    alignSelf: "center",
+                    paddingLeft: "10px",
+                  }}
+                />
                 <Box
                   sx={{
                     fontWeight: "700",
                     paddingTop: "10px",
                     fontSize: "14px",
+                    paddingLeft: "10px",
                   }}
                 >
                   KHÓA LUẬN TỐT NGHIỆP
@@ -144,16 +163,11 @@ const DashBoardStudent = () => {
               defaultOpenKeys={["/dashboard/home"]}
               mode="inline"
               theme={themes ? "dark" : "light"}
-              // inlineCollapsed={collapsed}
               items={items}
-              style={
-                !collapsed
-                  ? {
-                      marginTop: "110px", // Thêm khoảng cách đủ lớn để logo không đè lên menu
-                      height: "calc(100vh - 110px)", // Giữ menu chiếm toàn bộ chiều cao còn lại
-                    }
-                  : { transition: "0.5s ease", height: "100vh" }
-              }
+              style={{
+                marginTop: "10px",
+                height: "calc(100vh - 110px)",
+              }}
             />
           </Sider>
           <Layout className="container-fluid p-0">
@@ -180,15 +194,46 @@ const DashBoardStudent = () => {
                 }
                 onClick={() => setCollapsed(!collapsed)}
               />
-
-              <div className="header-content">
-                Chào mừng quay lại {user.fullName}
-                <Button
-                  className={className}
-                  size="large"
-                  icon={themes ? <SunOutlined /> : <MoonOutlined />}
-                  onClick={changeTheme}
-                />
+              <div className="student-container">
+                <div className="header-content" ref={dropdownRef}>
+                  <span>Chào mừng quay lại {user.fullName}</span>
+                  <Button
+                    className={className}
+                    size="large"
+                    icon={themes ? <SunOutlined /> : <MoonOutlined />}
+                    onClick={changeTheme}
+                    style={{ marginRight: "16px", marginTop: "-3px" }}
+                  />
+                  <Dropdown
+                    overlay={<ListNotification />}
+                    visible={visible}
+                    onClick={toggleNotification}
+                    arrow
+                    placement="bottomRight"
+                  >
+                    <Button
+                      className="bell-icon"
+                      size="large"
+                      style={{
+                        backgroundColor: themes ? "#001529" : "#ffffff",
+                      }}
+                      icon={
+                        <BellOutlined
+                          style={{ color: themes ? "#fff" : "#000" }}
+                        />
+                      }
+                    >
+                      {notifications > 0 && (
+                        <span
+                          className="notification-badge"
+                          style={{ overflow: "scroll", width: "500px" }}
+                        >
+                          {notifications}
+                        </span>
+                      )}
+                    </Button>
+                  </Dropdown>
+                </div>
               </div>
             </Header>
 
@@ -196,10 +241,7 @@ const DashBoardStudent = () => {
               style={{
                 margin: "24px 16px",
                 color: themes ? "#fff" : "#000",
-                minHeight: 280,
-                height: "100%",
                 background: themes ? "#152f40" : "#fff",
-                borderRadius: borderRadiusLG,
                 overflow: "auto",
               }}
             >
