@@ -45,7 +45,7 @@ const AppRoute = () => {
           element={
             <PrivateRoute
               component={
-                user.role.name === "Student" ? (
+                user.role.name === "STUDENT" ? (
                   <DashBoardStudent />
                 ) : (
                   <DashBoardManager />
@@ -57,7 +57,7 @@ const AppRoute = () => {
           <Route
             path="home"
             element={
-              user.role.name === "Student" ? (
+              user.role.name === "STUDENT" ? (
                 <PrivateRoute component={<StudentHome />} />
               ) : (
                 <PrivateRoute component={<ManagerHome />} />
@@ -67,7 +67,7 @@ const AppRoute = () => {
           <Route
             path="topic"
             element={
-              user.role.name === "Student" ? (
+              user.role.name === "STUDENT" ? (
                 <PrivateRoute component={<StudentTopic />} />
               ) : (
                 <PrivateRoute component={<ManagerTopic />} />
