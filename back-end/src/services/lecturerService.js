@@ -1,5 +1,6 @@
 import db from "../models/index";
 import { hashPassword } from "../services/userService";
+import _ from "lodash";
 //Models Database
 const Lecturer = db.Lecturer;
 const Role = db.Role;
@@ -193,6 +194,34 @@ const updateLecturer = async (data) => {
     };
   }
 };
+const deleteManyLecturer = async (data) => {
+  try {
+    const result = Lecturer.destroy({
+      where: {
+        id: data,
+      },
+    });
+    if (result) {
+      return {
+        status: 0,
+        message: "Xóa thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Xóa thật bại!",
+      };
+    }
+  } catch (error) {
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+      data: {
+        error,
+      },
+    };
+  }
+};
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -200,4 +229,5 @@ module.exports = {
   getPaginationLecturer,
   deleteLecturer,
   updateLecturer,
+  deleteManyLecturer,
 };

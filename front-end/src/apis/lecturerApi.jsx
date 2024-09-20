@@ -19,5 +19,8 @@ const lecturerApi = {
   updateById: (data) => {
     return axiosClient.put(baseUrl + "/update", data);
   },
+  deleteMany: (data) => {
+    return axiosClient.delete(baseUrl + "/delete-many", { data });
+  },
 };
 export default lecturerApi;

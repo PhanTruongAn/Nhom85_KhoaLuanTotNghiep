@@ -46,10 +46,19 @@ const handleUpdateLecturer = async (req, res) => {
     console.log(error);
   }
 };
+const handleDeleteManyLecturer = async (req, res) => {
+  try {
+    let data = await lecturerService.deleteManyLecturer(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   handleCreateLecturerAccount,
   handleBulkCreateLecturer,
   handleLecturerGetAll,
   handleDeleteLecturer,
   handleUpdateLecturer,
+  handleDeleteManyLecturer,
 };

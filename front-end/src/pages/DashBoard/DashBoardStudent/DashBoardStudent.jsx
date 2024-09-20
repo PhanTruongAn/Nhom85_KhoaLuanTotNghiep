@@ -170,14 +170,9 @@ const DashBoardStudent = () => {
                     className="bell-icon"
                     size="large"
                     style={{
-                      backgroundColor: themes ? "#001529" : "#ffffff",
                       marginRight: "30px",
                     }}
-                    icon={
-                      <BellOutlined
-                        style={{ color: themes ? "#fff" : "#000" }}
-                      />
-                    }
+                    icon={<BellOutlined />}
                   >
                     {notifications > 0 && (
                       <span className="notification-badge">

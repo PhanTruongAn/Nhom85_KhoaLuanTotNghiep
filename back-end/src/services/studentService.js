@@ -1,5 +1,7 @@
+import { where } from "sequelize";
 import db from "../models/index";
 import { hashPassword } from "../services/userService";
+import _ from "lodash";
 //Models Database
 const Student = db.Student;
 const Role = db.Role;
@@ -51,6 +53,7 @@ const createStudentAccount = async (data) => {
 };
 // Tạo nhiều tài khoản sinh viên
 const createBulkAccount = async (data) => {
+  console.log(data);
   try {
     const testArr = data;
     const currentAccount = await Student.findAll({
@@ -193,6 +196,34 @@ const updateStudent = async (data) => {
     };
   }
 };
+const deleteManyStudent = async (data) => {
+  try {
+    const result = Student.destroy({
+      where: {
+        id: data,
+      },
+    });
+    if (result) {
+      return {
+        status: 0,
+        message: "Xóa thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Xóa thật bại!",
+      };
+    }
+  } catch (error) {
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+      data: {
+        error,
+      },
+    };
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -200,4 +231,5 @@ module.exports = {
   getStudentList,
   deleteStudent,
   updateStudent,
+  deleteManyStudent,
 };

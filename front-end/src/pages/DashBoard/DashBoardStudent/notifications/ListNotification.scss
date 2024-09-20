@@ -7,7 +7,7 @@
   transition: box-shadow 0.3s; // Hiệu ứng chuyển tiếp cho hover
   max-height: 400px; // Chiều cao tối đa
   overflow-y: auto; // Cho phép cuộn
-
+  cursor: pointer;
   // Custom scrollbar styles
   &::-webkit-scrollbar {
     width: 8px; // Width of the scrollbar

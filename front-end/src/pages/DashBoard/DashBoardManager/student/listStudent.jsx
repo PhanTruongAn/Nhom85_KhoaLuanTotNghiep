@@ -35,6 +35,9 @@ function ListStudent() {
     () => studentApi.getAll(currentPage, limitUser),
     {
       keepPreviousData: true,
+      staleTime: 1000 * 60 * 5, // Dữ liệu sẽ được coi là mới trong 5 phút
+      cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
+      refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
       staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
@@ -61,6 +64,15 @@ function ListStudent() {
   };
   const handleCloseModal = () => {
     setOpen(false);
+    if (currentPage === totalPages && dataSource.length === 5) {
+      setCurrentPage(currentPage + 1);
+    } else if (currentPage === totalPages && dataSource.length < 5) {
+      setCurrentPage(currentPage);
+    } else if (currentPage < totalPages && totalRows % 10 !== 0) {
+      setCurrentPage(totalPages);
+    } else {
+      setCurrentPage(totalPages + 1);
+    }
   };
 
   const showUpdateModal = (record) => {
@@ -106,6 +118,20 @@ function ListStudent() {
       Table.SELECTION_INVERT,
       Table.SELECTION_NONE,
     ],
+  };
+  const handleDeleteMany = async () => {
+    const res = await studentApi.deleteMany(selectedRowKeys);
+    if (res && res.status === 0) {
+      refetch();
+
+      if (selectedRowKeys.length === dataSource.length) {
+        setCurrentPage((prev) => Math.max(prev - 1, 1));
+      }
+      setSelectedRowKeys([]);
+      messageApi.success(res.message);
+    } else {
+      messageApi.error(res.message);
+    }
   };
 
   const columns = [
@@ -246,8 +272,37 @@ function ListStudent() {
         </Space>
       </Box>
 
-      <Box sx={{ textAlign: "center", marginTop: "50px" }}>
-        <Typography variant="h4" component="h2" gutterBottom>
+      <Box
+        sx={{
+          textAlign: "center",
+          marginTop: "50px",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Button
+          variant="contained"
+          color="error"
+          size="small"
+          sx={{
+            marginRight: "10px",
+            display: selectedRowKeys.length === 0 ? "none" : "",
+          }}
+          startIcon={<DeleteOutlined />}
+          onClick={handleDeleteMany}
+        >
+          Xóa nhiều
+        </Button>
+        <Typography
+          sx={{
+            flex: 1, // Để tiêu đề chiếm không gian còn lại
+            textAlign: "center", // Căn giữa
+          }}
+          variant="h4"
+          component="h2"
+          gutterBottom
+        >
           Danh sách sinh viên
         </Typography>
       </Box>
@@ -256,24 +311,22 @@ function ListStudent() {
           rowSelection={rowSelection}
           dataSource={data ? data.data.students : []}
           bordered
-          pagination={false}
+          pagination={{
+            total: totalRows,
+            current: currentPage,
+            pageSize: limitUser,
+            onChange: onChange,
+            showQuickJumper: true,
+            itemRender: itemRender,
+            responsive: true,
+          }}
           columns={columns}
           rowKey={"id"}
           scroll={{ x: "max-content" }}
           loading={isFetching}
         />
-        <Pagination
-          style={{ float: "right", marginTop: "20px" }}
-          total={totalRows}
-          defaultCurrent={currentPage}
-          pageSize={limitUser}
-          onChange={(e) => onChange(e)}
-          current={currentPage}
-          itemRender={itemRender}
-          showQuickJumper
-          responsive={true}
-        />
       </Box>
+
       <CreateModal
         isOpen={open}
         onClose={handleCloseModal}

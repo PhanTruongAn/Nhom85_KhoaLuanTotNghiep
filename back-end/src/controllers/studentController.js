@@ -47,6 +47,14 @@ const handleUpdateStudent = async (req, res) => {
     console.log(error);
   }
 };
+const handleDeleteManyStudent = async (req, res) => {
+  try {
+    let data = await studentService.deleteManyStudent(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports = {
   handleCreateStudentAccount,
@@ -54,4 +62,5 @@ module.exports = {
   handleStudentGetAll,
   handleDeleteStudent,
   handleUpdateStudent,
+  handleDeleteManyStudent,
 };

@@ -33,7 +33,10 @@ const initWebRoutes = (app) => {
   router.get("/student/get-all", studentController.handleStudentGetAll);
   router.delete("/student/delete", studentController.handleDeleteStudent);
   router.put("/student/update", studentController.handleUpdateStudent);
-
+  router.delete(
+    "/student/delete-many",
+    studentController.handleDeleteManyStudent
+  );
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
@@ -47,6 +50,10 @@ const initWebRoutes = (app) => {
   router.get("/lecturer/get-roles", roleController.handleGetRolesForLecturer);
   router.delete("/lecturer/delete", lecturerController.handleDeleteLecturer);
   router.put("/lecturer/update", lecturerController.handleUpdateLecturer);
+  router.delete(
+    "/lecturer/delete-many",
+    lecturerController.handleDeleteManyLecturer
+  );
   return app.use("/", router);
 };
 export default initWebRoutes;

@@ -35,10 +35,13 @@ function ListLecturer() {
     () => lecturerApi.getAll(currentPage, limitUser),
     {
       keepPreviousData: true,
+      staleTime: 1000 * 60 * 5,
+      cacheTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
       staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
-          setDataSource(res.data.students);
+          setDataSource(res.data.lecturers);
           setTotalRows(res.data.totalRows);
           setTotalPages(res.data.totalPages);
           setLoading(false);
@@ -68,6 +71,15 @@ function ListLecturer() {
   };
   const handleCloseModal = () => {
     setOpen(false);
+    if (currentPage === totalPages && dataSource.length === 5) {
+      setCurrentPage(currentPage + 1);
+    } else if (currentPage === totalPages && dataSource.length < 5) {
+      setCurrentPage(currentPage);
+    } else if (currentPage < totalPages && totalRows % 10 !== 0) {
+      setCurrentPage(totalPages);
+    } else {
+      setCurrentPage(totalPages + 1);
+    }
   };
   const handlerReload = () => {
     setLoading(true);
@@ -81,7 +93,20 @@ function ListLecturer() {
     setUserSelect(record);
     setOpenUpdateModal(true);
   };
+  const handleDeleteMany = async () => {
+    const res = await lecturerApi.deleteMany(selectedRowKeys);
+    if (res && res.status === 0) {
+      refetch();
 
+      if (selectedRowKeys.length === dataSource.length) {
+        setCurrentPage((prev) => Math.max(prev - 1, 1));
+      }
+      setSelectedRowKeys([]);
+      messageApi.success(res.message);
+    } else {
+      messageApi.error(res.message);
+    }
+  };
   const closeUpdateModal = () => {
     setOpenUpdateModal(false);
   };
@@ -104,7 +129,6 @@ function ListLecturer() {
     }
   };
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
@@ -257,8 +281,37 @@ function ListLecturer() {
           </Button>
         </Space>
       </Box>
-      <Box sx={{ textAlign: "center", marginTop: "50px" }}>
-        <Typography variant="h4" component="h2" gutterBottom>
+      <Box
+        sx={{
+          textAlign: "center",
+          marginTop: "50px",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Button
+          variant="contained"
+          color="error"
+          size="small"
+          sx={{
+            marginRight: "10px",
+            display: selectedRowKeys.length === 0 ? "none" : "",
+          }}
+          startIcon={<DeleteOutlined />}
+          onClick={handleDeleteMany}
+        >
+          Xóa nhiều
+        </Button>
+        <Typography
+          sx={{
+            flex: 1, // Để tiêu đề chiếm không gian còn lại
+            textAlign: "center", // Căn giữa
+          }}
+          variant="h4"
+          component="h2"
+          gutterBottom
+        >
           Danh sách giảng viên
         </Typography>
       </Box>
@@ -267,23 +320,19 @@ function ListLecturer() {
           rowSelection={rowSelection}
           dataSource={data ? data.data.lecturers : []}
           bordered
+          pagination={{
+            total: totalRows,
+            current: currentPage,
+            pageSize: limitUser,
+            onChange: onChange,
+            showQuickJumper: true,
+            itemRender: itemRender,
+            responsive: true,
+          }}
           columns={columns}
           rowKey={"id"}
           scroll={{ x: "max-content" }}
-          pagination={false}
           loading={isFetching}
-        />
-
-        <Pagination
-          style={{ float: "right", marginTop: "20px" }}
-          total={totalRows}
-          defaultCurrent={currentPage}
-          pageSize={limitUser}
-          onChange={(e) => onChange(e)}
-          current={currentPage}
-          itemRender={itemRender}
-          showQuickJumper
-          responsive={true}
         />
       </Box>
       <CreateModal
