@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "antd";
 import "./ListNotification.scss";
 
@@ -38,31 +38,61 @@ const notifications = [
     createAt: "2024-08-17T16:50:00Z",
     weight: 5,
   },
+  // Add more notifications if needed
 ];
 
 function ListNotification() {
-  // Sắp xếp thông báo theo thời gian tạo (mới nhất trước)
-  const sortedNotifications = notifications.sort((a, b) => {
-    return new Date(b.createAt) - new Date(a.createAt);
-  });
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [sortedNotifications, setSortedNotifications] = useState([]);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const sorted = notifications.sort((a, b) => {
+      return new Date(b.createAt) - new Date(a.createAt);
+    });
+    setSortedNotifications(sorted);
+  }, []);
+
+  const handleScroll = () => {
+    if (containerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+      if (
+        scrollTop + clientHeight >= scrollHeight - 10 &&
+        visibleCount < sortedNotifications.length
+      ) {
+        setVisibleCount((prevCount) => prevCount + 3);
+      }
+    }
+  };
 
   return (
-    <div className="notification-container">
+    <div
+      className="notification-container"
+      ref={containerRef}
+      onScroll={handleScroll}
+    >
       <div className="notification-header">
         <h2>Thông báo mới</h2>
         <span>{sortedNotifications.length} Thông báo</span>
       </div>
-      {sortedNotifications.map((notification) => (
-        <div className="notification-item" key={notification.id}>
+      {sortedNotifications.slice(0, visibleCount).map((notification) => (
+        <div
+          className="notification-item"
+          key={notification.id}
+          style={{ height: "85px" }}
+        >
           <div className="notification-date">
             {new Date(notification.createAt).toLocaleString("vi-VN")}
           </div>
           <div className="notification-title">
             Tiêu đề: {notification.title} (Trọng số: {notification.weight})
           </div>
-          <Button type="link" className="notification-link">
-            Đã xem
-          </Button>
+          <div
+            className="notification-footer"
+            style={{ float: "right", fontSize: "12px" }}
+          >
+            <i> Đã xem</i>
+          </div>
         </div>
       ))}
     </div>

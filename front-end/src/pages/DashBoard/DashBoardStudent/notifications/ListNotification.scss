@@ -2,9 +2,25 @@
   background-color: #ffffff; // Nền trắng để tăng độ tương phản
   border-radius: 8px; // Bo góc
   padding: 16px; // Padding cho container
-  width: "100%"; // Chiều rộng
+  width: 700px; // Chiều rộng
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); // Đổ bóng
   transition: box-shadow 0.3s; // Hiệu ứng chuyển tiếp cho hover
+  max-height: 400px; // Chiều cao tối đa
+  overflow-y: auto; // Cho phép cuộn
+
+  // Custom scrollbar styles
+  &::-webkit-scrollbar {
+    width: 8px; // Width of the scrollbar
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1; // Background of the scrollbar track
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888; // Color of the scrollbar thumb
+    border-radius: 10px; // Rounded corners for the thumb
+  }
 
   &:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); // Đổ bóng tối hơn khi hover
@@ -51,16 +67,5 @@
     font-weight: bold; // Chữ đậm
     margin: 4px 0; // Khoảng cách trên và dưới
     color: #333; // Màu tối cho độ rõ
-  }
-
-  .notification-link {
-    font-size: 12px; // Kích thước chữ cho liên kết
-    color: #0066cc; // Màu liên kết
-    text-align: right; // Căn phải
-    transition: color 0.3s; // Hiệu ứng chuyển tiếp cho hover
-
-    &:hover {
-      color: #0056a3; // Màu liên kết tối hơn khi hover
-    }
   }
 }

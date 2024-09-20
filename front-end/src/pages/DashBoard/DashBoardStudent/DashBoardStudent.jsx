@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import {
   MenuFoldOutlined,
   ExclamationCircleOutlined,
@@ -7,17 +7,8 @@ import {
   MenuUnfoldOutlined,
   BellOutlined,
 } from "@ant-design/icons";
-
 import "./DashBoardStudent.scss";
-import {
-  Button,
-  Layout,
-  Menu,
-  theme,
-  Modal,
-  ConfigProvider,
-  Dropdown,
-} from "antd";
+import { Button, Layout, Menu, Dropdown, ConfigProvider, Modal } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
@@ -43,19 +34,16 @@ const DashBoardStudent = () => {
     return storedTheme === "true";
   });
   const [collapsed, setCollapsed] = useState(false);
-  const [modal, contextHolder] = Modal.useModal();
-  const [visible, setVisible] = useState(false); // State for notification dropdown
-  const [notifications, setNotifications] = useState(1); // Example state for notifications
-  const dropdownRef = useRef(null);
+  const [notifications, setNotifications] = useState(5); // Example state for notifications
 
-  const confirm = () => {
-    modal.confirm({
+  const confirmLogout = () => {
+    Modal.confirm({
       title: "Confirm",
       icon: <ExclamationCircleOutlined />,
-      content: "Are you sure to want logout?",
+      content: "Are you sure you want to logout?",
       okText: "Ok",
       cancelText: "Cancel",
-      onOk: () => handleLogout(),
+      onOk: handleLogout,
     });
   };
 
@@ -75,43 +63,23 @@ const DashBoardStudent = () => {
 
   const handlePath = ({ key }) => {
     if (key === "log-out") {
-      confirm();
+      confirmLogout();
     } else {
       navigate(key);
     }
   };
 
-  const className = themes ? "btn-logOut dark-theme" : "btn-logOut light-theme";
   const changeTheme = () => {
-    setThemes(!themes);
+    const newTheme = !themes;
+    setThemes(newTheme);
+    localStorage.setItem("themeDark", newTheme);
   };
-
-  const toggleNotification = () => {
-    setVisible(!visible);
-    if (visible) {
-      setNotifications(0); // Reset notification count when opened
-    }
-  };
-
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setVisible(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       <ThemeProvider theme={themes ? themeDark : themeLight}>
         <CssBaseline />
         <Layout className="container-fluid p-0 admin-container">
-          {contextHolder}
           <Sider
             trigger={null}
             collapsible
@@ -119,14 +87,7 @@ const DashBoardStudent = () => {
             style={{ position: "relative" }}
           >
             {!collapsed && (
-              <div
-                className="demo-logo-vertical"
-                style={
-                  {
-                    /* styles */
-                  }
-                }
-              >
+              <div className="demo-logo-vertical">
                 <img
                   src={themes ? logoDark : logoLight}
                   style={{
@@ -135,6 +96,7 @@ const DashBoardStudent = () => {
                     alignSelf: "center",
                     paddingLeft: "10px",
                   }}
+                  alt="Logo"
                 />
                 <Box
                   sx={{
@@ -150,17 +112,13 @@ const DashBoardStudent = () => {
             )}
             <Menu
               selectedKeys={
-                window.location.pathname.split("/dashboard/")[1]
-                  ? window.location.pathname.split("/dashboard/")[1]
-                  : window.location.pathname
-              }
-              onClick={(key) => handlePath(key)}
-              defaultSelectedKeys={
+                window.location.pathname.split("/dashboard/")[1] ||
                 window.location.pathname
-                  ? window.location.pathname
-                  : "/dashboard/home"
               }
-              defaultOpenKeys={["/dashboard/home"]}
+              onClick={handlePath}
+              defaultSelectedKeys={
+                window.location.pathname || "/dashboard/home"
+              }
               mode="inline"
               theme={themes ? "dark" : "light"}
               items={items}
@@ -194,50 +152,40 @@ const DashBoardStudent = () => {
                 }
                 onClick={() => setCollapsed(!collapsed)}
               />
-              <div className="student-container">
-                <div className="header-content" ref={dropdownRef}>
-                  <span>Chào mừng quay lại {user.fullName}</span>
+              <div className="student-container" style={{ float: "right" }}>
+                <span style={{ marginRight: "10px" }}>
+                  Chào mừng quay lại {user.fullName}
+                </span>
+                <Button
+                  className={`btn-logOut ${
+                    themes ? "dark-theme" : "light-theme"
+                  }`}
+                  size="large"
+                  icon={themes ? <SunOutlined /> : <MoonOutlined />}
+                  onClick={changeTheme}
+                  style={{ marginRight: "10px", marginTop: "-3px" }}
+                />
+                <Dropdown overlay={<ListNotification />} trigger={["click"]}>
                   <Button
-                    className={className}
+                    className="bell-icon"
                     size="large"
-                    icon={themes ? <SunOutlined /> : <MoonOutlined />}
-                    onClick={changeTheme}
-                    style={{ marginRight: "16px", marginTop: "-3px" }}
-                  />
-                  <Dropdown
-                    overlay={
-                      <ListNotification
-                        style={{
-                          color: themes ? "#fff" : "#000",
-                          width: "500px",
-                        }}
+                    style={{
+                      backgroundColor: themes ? "#001529" : "#ffffff",
+                      marginRight: "30px",
+                    }}
+                    icon={
+                      <BellOutlined
+                        style={{ color: themes ? "#fff" : "#000" }}
                       />
                     }
-                    visible={visible}
-                    onClick={toggleNotification}
-                    arrow
-                    placement="bottomRight"
                   >
-                    <Button
-                      className="bell-icon"
-                      size="large"
-                      style={{
-                        backgroundColor: themes ? "#001529" : "#ffffff",
-                      }}
-                      icon={
-                        <BellOutlined
-                          style={{ color: themes ? "#fff" : "#000" }}
-                        />
-                      }
-                    >
-                      {notifications > 0 && (
-                        <span className="notification-badge">
-                          {notifications}
-                        </span>
-                      )}
-                    </Button>
-                  </Dropdown>
-                </div>
+                    {notifications > 0 && (
+                      <span className="notification-badge">
+                        {notifications}
+                      </span>
+                    )}
+                  </Button>
+                </Dropdown>
               </div>
             </Header>
 
