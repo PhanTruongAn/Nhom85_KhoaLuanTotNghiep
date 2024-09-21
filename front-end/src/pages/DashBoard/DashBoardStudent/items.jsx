@@ -9,6 +9,7 @@ import {
   ClusterOutlined,
   ReadOutlined,
   TableOutlined,
+  KeyOutlined,
 } from "@ant-design/icons";
 
 const items = [
@@ -37,6 +38,11 @@ const items = [
     icon: <SettingOutlined />,
     label: "Setting",
     children: [
+      {
+        key: "change-password",
+        icon: <KeyOutlined />,
+        label: "Đổi mật khẩu",
+      },
       {
         key: "log-out",
         icon: <LogoutOutlined />,

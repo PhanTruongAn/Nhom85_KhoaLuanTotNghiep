@@ -8,6 +8,7 @@ import {
   NotificationOutlined,
   UserAddOutlined,
   LockOutlined,
+  KeyOutlined,
 } from "@ant-design/icons";
 import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -84,6 +85,11 @@ const items = [
     icon: <SettingOutlined />,
     label: "Setting",
     children: [
+      {
+        key: "change-password",
+        icon: <KeyOutlined />,
+        label: "Đổi mật khẩu",
+      },
       {
         key: "log-out",
         icon: <LogoutOutlined />,

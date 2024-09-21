@@ -16,6 +16,7 @@ import AccountLecturer from "../pages/DashBoard/DashBoardManager/lecturer/accoun
 import ListLecturer from "../pages/DashBoard/DashBoardManager/lecturer/listLecturer";
 import RolePermission from "../pages/DashBoard/DashBoardManager/permission/rolePermission";
 import ListPermission from "../pages/DashBoard/DashBoardManager/permission/listPermission";
+import ChangePassword from "../pages/DashBoard/DashBoardManager/setting/ChangePassword";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 const AppRoute = () => {
@@ -97,6 +98,10 @@ const AppRoute = () => {
           <Route
             path="list-permission"
             element={<PrivateRoute component={<ListPermission />} />}
+          />
+          <Route
+            path="change-password"
+            element={<PrivateRoute component={<ChangePassword />} />}
           />
         </Route>
       </Routes>
