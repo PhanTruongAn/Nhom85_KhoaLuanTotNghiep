@@ -54,6 +54,38 @@ const handleDeleteManyLecturer = async (req, res) => {
     console.log(error);
   }
 };
+const handleFindLecturersByName = async (req, res) => {
+  const { page, limit, input } = req.query;
+  if (page && limit && input) {
+    const data = await lecturerService.findLecturersByName(
+      +page,
+      +limit,
+      input
+    );
+    return res.status(200).json(data);
+  } else {
+    return res.status(400).json({
+      status: 1,
+      message: "Dữ liệu truyền vào không hợp lệ!",
+    });
+  }
+};
+const handleFindLecturersByUserName = async (req, res) => {
+  const { page, limit, input } = req.query;
+  if (page && limit && input) {
+    const data = await lecturerService.findLecturersByUserName(
+      +page,
+      +limit,
+      input
+    );
+    return res.status(200).json(data);
+  } else {
+    return res.status(400).json({
+      status: 1,
+      message: "Dữ liệu truyền vào không hợp lệ!",
+    });
+  }
+};
 module.exports = {
   handleCreateLecturerAccount,
   handleBulkCreateLecturer,
@@ -61,4 +93,6 @@ module.exports = {
   handleDeleteLecturer,
   handleUpdateLecturer,
   handleDeleteManyLecturer,
+  handleFindLecturersByName,
+  handleFindLecturersByUserName,
 };

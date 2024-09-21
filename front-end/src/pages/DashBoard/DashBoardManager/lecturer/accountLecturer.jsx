@@ -51,11 +51,14 @@ const AccountLecturer = () => {
   };
 
   const handlerSubmit = async () => {
+    setLoading(true);
     const data = persistDataToSave();
     const result = await lecturerApi.createAccountsLecturer(data);
     if (result.status === 0) {
       messageApi.success(result.message);
+      handleCancel();
     } else {
+      setLoading(false);
       messageApi.error(result.message);
     }
   };

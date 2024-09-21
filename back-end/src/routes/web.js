@@ -37,6 +37,14 @@ const initWebRoutes = (app) => {
     "/student/delete-many",
     studentController.handleDeleteManyStudent
   );
+  router.get(
+    "/student/find-by-username",
+    studentController.handleFindStudentsByUserName
+  );
+  router.get(
+    "/student/find-by-name",
+    studentController.handleFindStudentsByName
+  );
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
@@ -53,6 +61,14 @@ const initWebRoutes = (app) => {
   router.delete(
     "/lecturer/delete-many",
     lecturerController.handleDeleteManyLecturer
+  );
+  router.get(
+    "/lecturer/find-by-username",
+    lecturerController.handleFindLecturersByUserName
+  );
+  router.get(
+    "/lecturer/find-by-name",
+    lecturerController.handleFindLecturersByName
   );
   return app.use("/", router);
 };

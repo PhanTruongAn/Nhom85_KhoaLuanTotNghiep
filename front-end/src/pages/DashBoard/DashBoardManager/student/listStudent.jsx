@@ -1,24 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { Table, Space, message, Pagination, Popconfirm, Select } from "antd";
+import {
+  Table,
+  Space,
+  message,
+  Pagination,
+  Popconfirm,
+  Select,
+  Input,
+} from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   ReloadOutlined,
   PlusOutlined,
+  AudioOutlined,
 } from "@ant-design/icons"; // Thêm biểu tượng UserOutlined
 import { toast } from "react-toastify";
-import { Box, Typography, Button, Input } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 // import AddModal from "./AddModal";
 import studentApi from "../../../../apis/studentApi";
 import { useNavigate } from "react-router-dom";
 import UpdateModal from "../../../../components/Dashboard/updateModal";
 import CreateModal from "../../../../components/Dashboard/createModal";
 import { useQuery } from "react-query";
-
+import { isEmpty } from "lodash";
 const { Option } = Select;
+const { Search } = Input;
 
 function ListStudent() {
   const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -30,9 +41,18 @@ function ListStudent() {
   const [dataSource, setDataSource] = useState([]);
   const [userSelect, setUserSelect] = useState({});
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [state, setState] = useState({
+    searchLoading: false,
+  });
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
   const { data, isLoading, isFetching, refetch } = useQuery(
     ["students", currentPage],
-    () => studentApi.getAll(currentPage, limitUser),
+    () =>
+      searchValue
+        ? studentApi.findByUserName(currentPage, limitUser, searchValue)
+        : studentApi.getAll(currentPage, limitUser),
     {
       keepPreviousData: true,
       staleTime: 1000 * 60 * 5, // Dữ liệu sẽ được coi là mới trong 5 phút
@@ -52,6 +72,7 @@ function ListStudent() {
         }
       },
       onError: (err) => {
+        setLoading(false);
         messageApi.error("Lỗi khi lấy dữ liệu!");
       },
     }
@@ -131,6 +152,25 @@ function ListStudent() {
       messageApi.success(res.message);
     } else {
       messageApi.error(res.message);
+    }
+  };
+  const onSearch = async (value, _e, info) => {
+    if (value) {
+      updateState({ searchLoading: true });
+      const res = await studentApi.findByUserName(1, limitUser, value);
+      if (res && res.status === 0 && res.data) {
+        setCurrentPage(1);
+        messageApi.success(res.message);
+        setDataSource(res.data.students);
+        setTotalRows(res.data.totalRows);
+        setTotalPages(res.data.totalPages);
+        updateState({ searchLoading: false });
+      } else {
+        updateState({ searchLoading: false });
+        messageApi.error(res.message);
+      }
+    } else {
+      messageApi.error("Hãy nhập dữ liệu tìm kiếm!");
     }
   };
 
@@ -224,27 +264,20 @@ function ListStudent() {
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
       <Box
-        className="col-6"
+        className="col-4"
         sx={{
           float: "left",
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <Space>
-          <Input
-            placeholder="Tìm kiếm"
-            sx={[
-              (theme) => ({
-                borderRadius: "4px",
-                border: "1px solid #d9d9d9",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                padding: "0 5px",
-                ...theme.applyStyles("dark", {
-                  boxShadow: "0 2px 4px #1DA57A",
-                  background: "#F6FFED",
-                  color: "#000",
-                }),
-              }),
-            ]}
+          <Search
+            placeholder="Nhập thông tin"
+            onSearch={onSearch}
+            onChange={(e) => setSearchValue(e.target.value)}
+            enterButton
+            loading={state.searchLoading}
           />
 
           <Select placeholder="Tìm kiếm theo">
@@ -309,7 +342,8 @@ function ListStudent() {
       <Box>
         <Table
           rowSelection={rowSelection}
-          dataSource={data ? data.data.students : []}
+          // dataSource={data ? data.data.students : []}
+          dataSource={dataSource}
           bordered
           pagination={{
             total: totalRows,

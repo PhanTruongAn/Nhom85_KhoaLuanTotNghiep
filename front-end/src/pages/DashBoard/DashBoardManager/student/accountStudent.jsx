@@ -50,11 +50,14 @@ const AccountStudent = () => {
   };
 
   const handlerSubmit = async () => {
+    setLoading(true);
     const data = persistDataToSave();
     const result = await studentApi.createAccountsStudent(data);
     if (result.status === 0) {
       messageApi.success(result.message);
+      handleCancel();
     } else {
+      setLoading(false);
       messageApi.error(result.message);
     }
   };

@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       apiPath: DataTypes.STRING,
       description: DataTypes.STRING,
+      method: DataTypes.STRING,
     },
     {
       sequelize,

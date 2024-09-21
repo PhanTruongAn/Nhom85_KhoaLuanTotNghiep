@@ -22,5 +22,15 @@ const lecturerApi = {
   deleteMany: (data) => {
     return axiosClient.delete(baseUrl + "/delete-many", { data });
   },
+  findByUserName: (page, limit, input) => {
+    return axiosClient.get(
+      `${baseUrl}/find-by-username?page=${page}&limit=${limit}&input=${input}`
+    );
+  },
+  findByName: (page, limit, input) => {
+    return axiosClient.get(
+      `${baseUrl}/find-by-name?page=${page}&limit=${limit}&input=${input}`
+    );
+  },
 };
 export default lecturerApi;

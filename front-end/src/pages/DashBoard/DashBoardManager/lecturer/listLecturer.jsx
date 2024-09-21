@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Table, Space, message, Pagination, Popconfirm, Select } from "antd";
+import {
+  Table,
+  Space,
+  message,
+  Pagination,
+  Popconfirm,
+  Select,
+  Input,
+} from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   ReloadOutlined,
   PlusOutlined,
 } from "@ant-design/icons"; // Thêm biểu tượng UserOutlined
-import { Box, Typography, Button, Input } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 // import AddModal from "./AddModal";
 import CreateModal from "../../../../components/Dashboard/createModal";
 import lecturerApi from "../../../../apis/lecturerApi";
@@ -15,8 +23,10 @@ import { toast } from "react-toastify";
 import UpdateModal from "../../../../components/Dashboard/updateModal";
 import { useQuery } from "react-query";
 const { Option } = Select;
+const { Search } = Input;
 function ListLecturer() {
   const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -29,10 +39,18 @@ function ListLecturer() {
   const [userSelect, setUserSelect] = useState({});
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [listRole, setListRole] = useState();
-
+  const [state, setState] = useState({
+    searchLoading: false,
+  });
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
   const { data, isLoading, isFetching, refetch } = useQuery(
     ["lecturers", currentPage],
-    () => lecturerApi.getAll(currentPage, limitUser),
+    () =>
+      searchValue
+        ? lecturerApi.findByUserName(currentPage, limitUser, searchValue)
+        : lecturerApi.getAll(currentPage, limitUser),
     {
       keepPreviousData: true,
       staleTime: 1000 * 60 * 5,
@@ -89,6 +107,27 @@ function ListLecturer() {
   const onChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  const onSearch = async (value, _e, info) => {
+    if (value) {
+      updateState({ searchLoading: true });
+      const res = await lecturerApi.findByUserName(1, limitUser, value);
+      if (res && res.status === 0 && res.data) {
+        setCurrentPage(1);
+        messageApi.success(res.message);
+        setDataSource(res.data.lecturers);
+        setTotalRows(res.data.totalRows);
+        setTotalPages(res.data.totalPages);
+        updateState({ searchLoading: false });
+      } else {
+        updateState({ searchLoading: false });
+        messageApi.error(res.message);
+      }
+    } else {
+      messageApi.error("Hãy nhập dữ liệu tìm kiếm!");
+    }
+  };
+
   const showUpdateModal = (record) => {
     setUserSelect(record);
     setOpenUpdateModal(true);
@@ -234,30 +273,27 @@ function ListLecturer() {
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
       <Box
-        className="col-6"
+        className="col-4"
         sx={{
           float: "left",
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" }, // Thay đổi hướng flex
+          alignItems: "flex-start", // Căn chỉnh các phần tử
         }}
       >
         <Space>
-          <Input
-            placeholder="Tìm kiếm"
-            sx={[
-              (theme) => ({
-                borderRadius: "4px",
-                border: "1px solid #d9d9d9",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                padding: "0 5px",
-                ...theme.applyStyles("dark", {
-                  boxShadow: "0 2px 4px #1DA57A",
-                  background: "#F6FFED",
-                  color: "#000",
-                }),
-              }),
-            ]}
+          <Search
+            placeholder="Nhập thông tin"
+            onSearch={onSearch}
+            onChange={(e) => setSearchValue(e.target.value)}
+            enterButton
+            loading={state.searchLoading}
           />
 
-          <Select placeholder="Tìm kiếm theo">
+          <Select
+            placeholder="Tìm kiếm theo"
+            style={{ width: "100%", marginTop: { xs: "8px", sm: "0" } }}
+          >
             <Option value="fullName">Tên đầy đủ</Option>
             <Option value="username">Mã giảng viên</Option>
           </Select>
@@ -318,7 +354,8 @@ function ListLecturer() {
       <Box>
         <Table
           rowSelection={rowSelection}
-          dataSource={data ? data.data.lecturers : []}
+          // dataSource={data ? data.data.lecturers : []}
+          dataSource={dataSource}
           bordered
           pagination={{
             total: totalRows,

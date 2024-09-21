@@ -1,6 +1,7 @@
 import db from "../models/index";
 import { hashPassword } from "../services/userService";
 import _ from "lodash";
+const { Op } = require("sequelize");
 //Models Database
 const Lecturer = db.Lecturer;
 const Role = db.Role;
@@ -222,6 +223,95 @@ const deleteManyLecturer = async (data) => {
     };
   }
 };
+const findLecturersByUserName = async (page, limit, input) => {
+  try {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Lecturer.findAndCountAll({
+      where: {
+        username: {
+          [Op.like]: `${input}%`,
+        },
+      },
+      attributes: ["id", "username", "fullName", "gender", "email", "phone"],
+      include: {
+        model: Role,
+        attributes: ["id", "name", "description"],
+      },
+      offset: offset,
+      limit: limit,
+    });
+    const totalPages = Math.ceil(count / limit);
+    if (rows.length > 0) {
+      return {
+        status: 0,
+        message: "Tìm kiếm thành công!",
+        data: {
+          totalRows: count,
+          totalPages: totalPages,
+          lecturers: rows,
+        },
+      };
+    } else {
+      return {
+        status: 0,
+        message: "Không tìm thấy thông tin khớp dữ liệu nhập vào!",
+        data: null,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Tìm kiếm thất bại!",
+      data: null,
+    };
+  }
+};
+
+const findLecturersByName = async (page, limit, input) => {
+  try {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Lecturer.findAndCountAll({
+      where: {
+        fullName: {
+          [Op.like]: `${input}%`,
+        },
+      },
+      attributes: ["id", "username", "fullName", "gender", "email", "phone"],
+      include: {
+        model: Role,
+        attributes: ["id", "name", "description"],
+      },
+      offset: offset,
+      limit: limit,
+    });
+    const totalPages = Math.ceil(count / limit);
+    if (rows.length > 0) {
+      return {
+        status: 0,
+        message: "Tìm kiếm thành công!",
+        data: {
+          totalRows: count,
+          totalPages: totalPages,
+          lecturers: rows,
+        },
+      };
+    } else {
+      return {
+        status: 0,
+        message: "Không tìm thấy thông tin khớp dữ liệu nhập vào!",
+        data: null,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Tìm kiếm thất bại!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -230,4 +320,6 @@ module.exports = {
   deleteLecturer,
   updateLecturer,
   deleteManyLecturer,
+  findLecturersByUserName,
+  findLecturersByName,
 };

@@ -55,7 +55,34 @@ const handleDeleteManyStudent = async (req, res) => {
     console.log(error);
   }
 };
-
+const handleFindStudentsByName = async (req, res) => {
+  const { page, limit, input } = req.query;
+  if (page && limit && input) {
+    const data = await studentService.findStudentsByName(+page, +limit, input);
+    return res.status(200).json(data);
+  } else {
+    return res.status(400).json({
+      status: 1,
+      message: "Dữ liệu truyền vào không hợp lệ!",
+    });
+  }
+};
+const handleFindStudentsByUserName = async (req, res) => {
+  const { page, limit, input } = req.query;
+  if (page && limit && input) {
+    const data = await studentService.findStudentsByUserName(
+      +page,
+      +limit,
+      input
+    );
+    return res.status(200).json(data);
+  } else {
+    return res.status(400).json({
+      status: 1,
+      message: "Dữ liệu truyền vào không hợp lệ!",
+    });
+  }
+};
 module.exports = {
   handleCreateStudentAccount,
   handleBulkCreate,
@@ -63,4 +90,6 @@ module.exports = {
   handleDeleteStudent,
   handleUpdateStudent,
   handleDeleteManyStudent,
+  handleFindStudentsByUserName,
+  handleFindStudentsByName,
 };
