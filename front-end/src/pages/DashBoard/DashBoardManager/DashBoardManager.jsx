@@ -58,20 +58,6 @@ const DashBoardManager = () => {
     }
   };
 
-  // const currentTheme = themes
-  //   ? {
-  //       token: {
-  //         colorBgContainer: "#001529", // Màu nền cho theme tối
-  //         colorTextBase: "#fff",
-  //         colorBorder: "#fff",
-  //       },
-  //     }
-  //   : {
-  //       token: {
-  //         colorBgContainer: "#ffffff", // Màu nền cho theme sáng
-  //         colorTextBase: "#000",
-  //       },
-  //     };
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();

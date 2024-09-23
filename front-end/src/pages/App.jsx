@@ -10,7 +10,10 @@ import DashBoardStudent from "./DashBoard/DashBoardStudent/DashBoardStudent";
 import ManagerHome from "./DashBoard/DashBoardManager/home/home";
 import StudentHome from "./DashBoard/DashBoardStudent/home/home";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
+import history from "../utils/history";
 const queryClient = new QueryClient();
+
 function App() {
   const [count, setCount] = useState(0);
 
@@ -18,11 +21,10 @@ function App() {
     <Fragment>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
+          <HistoryRouter history={history}>
             <AppRoute />
-            {/* <ManagerHome /> */}
             <ToastContainer autoClose={1000} />
-          </BrowserRouter>
+          </HistoryRouter>
         </QueryClientProvider>
       </Provider>
     </Fragment>

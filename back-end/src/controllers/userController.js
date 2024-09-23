@@ -21,7 +21,14 @@ const handleGetDataFromToken = (req, res) => {
       status: 0,
       message: "Lấy thông tin người dùng thành công!",
       data: {
-        user: _.pick(req.user, ["fullName", "username", "role"]),
+        user: _.pick(req.user, [
+          "fullName",
+          "username",
+          "phone",
+          "email",
+          "gender",
+          "role",
+        ]),
         accessToken: req.token,
       },
     });
@@ -48,9 +55,18 @@ const handleLogOut = (req, res) => {
     });
   }
 };
-
+const handleChangePassword = async (req, res) => {
+  try {
+    const data = await userService.changePassword(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(data);
+  }
+};
 module.exports = {
   handleLogin,
   handleGetDataFromToken,
   handleLogOut,
+  handleChangePassword,
 };

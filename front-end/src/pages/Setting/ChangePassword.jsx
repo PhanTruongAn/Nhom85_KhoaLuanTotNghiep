@@ -1,19 +1,35 @@
 import React, { useState } from "react";
-import { Form, Input, Button, notification } from "antd";
+import { Form, Input, Button, message } from "antd";
 import { Box } from "@mui/material";
 import "./ChangePassword.scss";
-
+import { useSelector } from "react-redux";
+import lecturerApi from "../../apis/lecturerApi";
+import studentApi from "../../apis/studentApi";
 function ChangePassword() {
-  const [loading, setLoading] = useState(false);
+  const data = useSelector((state) => state.userInit.user);
 
-  const onFinish = (values) => {
+  const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [form] = Form.useForm();
+  const onFinish = async () => {
     setLoading(true);
-    // Xử lý đổi mật khẩu ở đây
-    console.log("Received values:", values);
-    notification.success({
-      message: "Đổi mật khẩu thành công!",
-    });
-    setLoading(false);
+    const payload = {
+      username: data.username,
+      roleName: data.role.name,
+      currentPassword: form.getFieldValue("currentPassword"),
+      newPassword: form.getFieldValue("newPassword"),
+    };
+    const res =
+      data.role.name === "STUDENT"
+        ? await studentApi.changePassword(payload)
+        : await lecturerApi.changePassword(payload);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      setLoading(false);
+    } else {
+      messageApi.error(res.message);
+      setLoading(false);
+    }
   };
 
   return (
@@ -27,6 +43,7 @@ function ChangePassword() {
         width: "100%",
       }}
     >
+      {contextHolder}
       <Box
         sx={{
           width: "40%",
@@ -46,7 +63,7 @@ function ChangePassword() {
         >
           Đổi Mật Khẩu
         </h2>
-        <Form name="change_password" onFinish={onFinish} layout="vertical">
+        <Form form={form} onFinish={onFinish} layout="vertical">
           <Form.Item
             name="currentPassword"
             label="Mật khẩu hiện tại"
@@ -54,7 +71,10 @@ function ChangePassword() {
               { required: true, message: "Vui lòng nhập mật khẩu hiện tại!" },
             ]}
           >
-            <Input.Password placeholder="Mật khẩu hiện tại" />
+            <Input.Password
+              placeholder="Mật khẩu hiện tại"
+              autoComplete="current-password"
+            />
           </Form.Item>
 
           <Form.Item
@@ -62,7 +82,10 @@ function ChangePassword() {
             label="Mật khẩu mới"
             rules={[{ required: true, message: "Vui lòng nhập mật khẩu mới!" }]}
           >
-            <Input.Password placeholder="Mật khẩu mới" />
+            <Input.Password
+              placeholder="Mật khẩu mới"
+              autoComplete="new-password"
+            />
           </Form.Item>
 
           <Form.Item
@@ -72,7 +95,10 @@ function ChangePassword() {
               { required: true, message: "Vui lòng xác nhận mật khẩu mới!" },
             ]}
           >
-            <Input.Password placeholder="Xác nhận mật khẩu mới" />
+            <Input.Password
+              placeholder="Xác nhận mật khẩu mới"
+              autoComplete="new-password"
+            />
           </Form.Item>
 
           <Form.Item>
