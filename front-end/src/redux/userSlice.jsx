@@ -15,7 +15,6 @@ const fetchToken = createAsyncThunk("/fetch-token", async () => {
     if (result && result.status === 0) {
       return result.data;
     } else {
-      toast.error(result.message);
       throw new Error(result.message);
     }
   } catch (error) {

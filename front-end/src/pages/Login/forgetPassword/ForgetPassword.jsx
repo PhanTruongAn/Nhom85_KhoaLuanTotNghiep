@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import {
-  LoadingOutlined,
-  SmileOutlined,
-  SolutionOutlined,
-  UserOutlined,
-  LoginOutlined,
-} from "@ant-design/icons";
-import { Steps, Input, Button } from "antd";
-import Link from "@mui/material/Link";
+  Stepper,
+  Step,
+  StepLabel,
+  Input,
+  Button,
+  Typography,
+  Box,
+  Card,
+  Link,
+} from "@mui/material";
+import { Space } from "antd";
 import { useNavigate } from "react-router-dom";
+import SignInContainer from "../theme/Container";
 
 function ForgetPassword() {
   const navigate = useNavigate();
@@ -16,48 +20,42 @@ function ForgetPassword() {
   const [mssv, setMSSV] = useState("");
   const [email, setEmail] = useState("");
 
-  const next = () => {
-    setCurrent(current + 1);
-  };
-
-  const prev = () => {
-    setCurrent(current - 1);
-  };
+  const next = () => setCurrent(current + 1);
+  const prev = () => setCurrent(current - 1);
 
   return (
-    <div
-      className="container"
-      style={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100vw",
-      }}
-    >
-      <div
-        style={{
-          width: "900px",
+    <SignInContainer direction="column" justifyContent="space-between">
+      <Card
+        variant="outlined"
+        sx={{
+          alignSelf: "center",
+          width: { xs: "100%", sm: "600px" },
           padding: "30px",
           borderRadius: "8px",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          boxShadow:
+            "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
         }}
       >
         <Link
           component="button"
           variant="body2"
           sx={{ marginBottom: "30px", fontSize: "17px" }}
-          onClick={() => {
-            navigate("/login");
-          }}
+          onClick={() => navigate("/login")}
         >
           Quay lại đăng nhập
         </Link>
-        <Steps current={current} style={{ marginBottom: "20px" }}>
-          <Steps.Step title="Nhập mã số sinh viên" icon={<UserOutlined />} />
-          <Steps.Step title="Nhập email" icon={<SolutionOutlined />} />
-          <Steps.Step title="Hoàn tất" icon={<SmileOutlined />} />
-        </Steps>
+
+        <Stepper activeStep={current} sx={{ marginBottom: "20px" }}>
+          <Step>
+            <StepLabel>Username</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Email</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Hoàn tất</StepLabel>
+          </Step>
+        </Stepper>
 
         {current === 0 && (
           <InputMSSV value={mssv} onChange={setMSSV} next={next} />
@@ -71,57 +69,77 @@ function ForgetPassword() {
           />
         )}
         {current === 2 && (
-          <div>
-            <p>Mật khẩu đã gửi về email của bạn.</p>
-            <p>Vui lòng kiểm tra email của bạn.</p>
-            <Button onClick={prev} style={{ marginRight: 10 }}>
-              Gửi lại mật khẩu
-            </Button>
-            <Button onClick={(e) => navigate("/login")} type="primary">
-              Xác nhận
-            </Button>
-          </div>
+          <Box textAlign="center">
+            <Typography variant="body1">
+              Mật khẩu đã gửi về địa chỉ email. Vui lòng kiểm tra email của bạn.
+            </Typography>
+            <Space>
+              <Button
+                onClick={prev}
+                variant="contained"
+                sx={{ marginTop: "10px" }}
+              >
+                Gửi lại mật khẩu
+              </Button>
+              <Button
+                onClick={() => navigate("/login")}
+                variant="contained"
+                sx={{ marginTop: "10px" }}
+              >
+                Xác nhận
+              </Button>
+            </Space>
+          </Box>
         )}
-        {current === 3 && <div>Hoàn tất!</div>}
-      </div>
-    </div>
+      </Card>
+    </SignInContainer>
   );
 }
 
 function InputMSSV({ value, onChange, next }) {
   return (
-    <div>
+    <Box display="flex" flexDirection="column" alignItems="center">
       <Input
-        placeholder="Nhập mã số sinh viên"
+        placeholder="Nhập mã sinh viên hoặc giảng viên"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        style={{ marginBottom: 10, height: "40px", fontSize: "14px" }}
+        sx={{
+          marginBottom: 2,
+          height: "40px",
+          fontSize: "14px",
+          width: "100%",
+        }}
       />
       <Button
         onClick={next}
-        type="primary"
-        block
-        style={{ height: "40px", fontSize: "14px" }}
+        variant="contained"
+        sx={{ height: "40px", fontSize: "14px", width: "100%" }}
       >
         Tiếp tục
       </Button>
-    </div>
+    </Box>
   );
 }
 
 function InputEmail({ value, onChange, next, prev }) {
   return (
-    <div>
+    <Box display="flex" flexDirection="column" alignItems="center">
       <Input
         placeholder="Nhập email"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        style={{ marginBottom: 10, height: "40px", fontSize: "14px" }}
+        sx={{
+          marginBottom: 2,
+          height: "40px",
+          fontSize: "14px",
+          width: "100%",
+        }}
       />
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <Box display="flex" justifyContent="space-between" width="100%">
         <Button
           onClick={prev}
-          style={{
+          variant="outlined"
+          sx={{
             height: "40px",
             fontSize: "14px",
             flex: "1",
@@ -132,13 +150,13 @@ function InputEmail({ value, onChange, next, prev }) {
         </Button>
         <Button
           onClick={next}
-          type="primary"
-          style={{ height: "40px", fontSize: "14px", flex: "1" }}
+          variant="contained"
+          sx={{ height: "40px", fontSize: "14px", flex: "1" }}
         >
           Tiếp tục
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
