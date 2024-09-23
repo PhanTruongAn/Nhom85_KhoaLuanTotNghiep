@@ -164,6 +164,9 @@ export default function Login() {
                 component="button"
                 variant="body2"
                 sx={{ alignSelf: "baseline" }}
+                onClick={() => {
+                  navigate("/forget-password");
+                }}
               >
                 Quên mật khẩu
               </Link>

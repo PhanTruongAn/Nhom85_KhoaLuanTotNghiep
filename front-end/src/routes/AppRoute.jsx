@@ -17,6 +17,7 @@ import ListLecturer from "../pages/DashBoard/DashBoardManager/lecturer/listLectu
 import RolePermission from "../pages/DashBoard/DashBoardManager/permission/rolePermission";
 import ListPermission from "../pages/DashBoard/DashBoardManager/permission/listPermission";
 import ChangePassword from "../pages/DashBoard/DashBoardManager/setting/ChangePassword";
+import ForgetPassword from "../pages/Login/forgetPassword/ForgetPassword";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 const AppRoute = () => {
@@ -37,8 +38,8 @@ const AppRoute = () => {
         <Route path="/" element={<Navigate to="home" />} />
         <Route path="/" element={<HomePage />}>
           <Route index path="home" element={<Home />} />
-          {/* Default child route */}
           <Route path="login" element={<Login />} />
+          <Route path="forget-password" element={<ForgetPassword />} />
         </Route>
 
         <Route

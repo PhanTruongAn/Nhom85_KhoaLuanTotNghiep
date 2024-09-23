@@ -134,6 +134,7 @@ const Header = (props) => {
               onClick={() => navigate("login")}
             />
           </Tabs>
+
           <Box
             sx={{
               alignSelf: "center",
