@@ -33,11 +33,12 @@ const DashBoardStudent = () => {
     const storedTheme = localStorage.getItem("themeDark");
     return storedTheme === "true";
   });
+  const [modal, contextHolder] = Modal.useModal();
   const [collapsed, setCollapsed] = useState(false);
   const [notifications, setNotifications] = useState(5); // Example state for notifications
 
   const confirmLogout = () => {
-    Modal.confirm({
+    modal.confirm({
       title: "Confirm",
       icon: <ExclamationCircleOutlined />,
       content: "Are you sure you want to logout?",
@@ -77,6 +78,7 @@ const DashBoardStudent = () => {
 
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
+      {contextHolder}
       <ThemeProvider theme={themes ? themeDark : themeLight}>
         <CssBaseline />
         <Layout className="container-fluid p-0 admin-container">

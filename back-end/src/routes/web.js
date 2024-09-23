@@ -21,6 +21,8 @@ const initWebRoutes = (app) => {
   router.get("/fetch-token", userController.handleGetDataFromToken);
   router.post("/log-out", userController.handleLogOut);
 
+  //
+
   //Student route
   router.post(
     "/student/create-student",
@@ -45,6 +47,8 @@ const initWebRoutes = (app) => {
     "/student/find-by-name",
     studentController.handleFindStudentsByName
   );
+  router.put("/student/change-password", userController.handleChangePassword);
+
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
@@ -70,6 +74,8 @@ const initWebRoutes = (app) => {
     "/lecturer/find-by-name",
     lecturerController.handleFindLecturersByName
   );
+  router.put("/lecturer/change-password", userController.handleChangePassword);
+
   return app.use("/", router);
 };
 export default initWebRoutes;

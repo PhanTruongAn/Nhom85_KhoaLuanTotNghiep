@@ -3,6 +3,7 @@ import db from "../models/index";
 import _ from "lodash";
 import jwtAction from "../middleware/jwtAction";
 import roleService from "./roleService";
+import { where } from "sequelize";
 // Salt Bcrypt
 let salt = bcrypt.genSaltSync(10);
 
@@ -55,6 +56,9 @@ const login = async (data) => {
       const payload = {
         fullName: user.fullName,
         username: user.username,
+        gender: user.gender,
+        phone: user.phone,
+        email: user.email,
         role,
       };
       const accessToken = jwtAction.createToken(payload);
@@ -80,8 +84,89 @@ const login = async (data) => {
     data: null,
   };
 };
+const changePassword = async (data) => {
+  try {
+    const { username, currentPassword, newPassword, roleName } = data;
+    console.log(username, currentPassword, newPassword, roleName);
+    switch (roleName) {
+      case "STUDENT":
+        const student = await Student.findOne({
+          where: {
+            username: username,
+          },
+        });
+        const comparePassword = bcrypt.compareSync(
+          currentPassword,
+          student.password
+        );
+        if (!comparePassword) {
+          return {
+            status: 1,
+            message: "Mật khẩu cũ không đúng!",
+          };
+        } else {
+          const hashPass = hashPassword(newPassword);
+          const res = await Student.update(
+            {
+              password: hashPass,
+            },
+            { where: { username: username } }
+          );
+          if (res) {
+            return {
+              status: 0,
+              message: "Cập nhật mật khẩu thành công!",
+            };
+          } else {
+            return {
+              status: -1,
+              message: "Cập nhật mật khẩu thất bại!",
+            };
+          }
+        }
 
+      default:
+        const lecturer = await Lecturer.findOne({
+          where: {
+            username: username,
+          },
+        });
+        const comparePassword2 = bcrypt.compareSync(
+          currentPassword,
+          lecturer.password
+        );
+        if (!comparePassword2) {
+          return {
+            status: 1,
+            message: "Mật khẩu cũ không đúng!",
+          };
+        } else {
+          const hashPass = hashPassword(newPassword);
+          const res = await Lecturer.update(
+            {
+              password: hashPass,
+            },
+            { where: { username: username } }
+          );
+          if (res) {
+            return {
+              status: 0,
+              message: "Cập nhật mật khẩu thành công!",
+            };
+          } else {
+            return {
+              status: -1,
+              message: "Cập nhật mật khẩu thất bại!",
+            };
+          }
+        }
+    }
+  } catch (error) {
+    return { status: -1, message: error };
+  }
+};
 module.exports = {
   login,
   hashPassword,
+  changePassword,
 };

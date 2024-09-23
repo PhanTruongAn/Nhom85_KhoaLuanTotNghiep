@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 import { BookTwoTone } from "@ant-design/icons";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
+import { useSelector } from "react-redux";
 const { Option } = Select;
 const Card = styled(MuiCard)(({ theme }) => ({
   ...theme.applyStyles("dark", {
@@ -11,13 +12,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 function StudentHome() {
-  const user = {
-    fullname: "Dieu Phan Quang Dung",
-    mssv: "20093921",
-    email: "quangdungzkh@gmail.com",
-    phone: "0968771863",
-    gender: "Nam",
-  };
+  const user = useSelector((state) => state.userInit.user);
 
   return (
     <Box
@@ -54,9 +49,7 @@ function StudentHome() {
                   left: "10px",
                 }}
                 size={80}
-              >
-                {user.fullname[0] + user.fullname[1]}
-              </Avatar>
+              ></Avatar>
               <Box sx={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
                 <Box sx={{ marginTop: "5px" }}>
                   <Typography variant="h5" component="h2" gutterBottom>
@@ -66,10 +59,10 @@ function StudentHome() {
                 <hr />
                 <Box>
                   <p>
-                    <b>Họ và tên:</b> {user.fullname}
+                    <b>Họ và tên:</b> {user.fullName}
                   </p>
                   <p>
-                    <b>Mã số sinh viên:</b> {user.mssv}
+                    <b>Mã số sinh viên:</b> {user.username}
                   </p>
                   <p>
                     <b>Giới tính:</b> {user.gender}
@@ -109,10 +102,10 @@ function StudentHome() {
                 <hr />
                 <Box>
                   <p>
-                    <b>Tên nhóm:</b> {user.fullname}
+                    <b>Tên nhóm:</b>
                   </p>
                   <p>
-                    <b>Trạng thái đề tài:</b> {user.mssv}
+                    <b>Trạng thái đề tài:</b>
                   </p>
                   <p>
                     <a>
@@ -143,7 +136,7 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Mã Sinh viên *
               </label>
-              <Input defaultValue={user.mssv} />
+              <Input value={user.username} disabled />
             </Box>
             <Box
               className="col-6"
@@ -152,7 +145,7 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Họ và tên *
               </label>
-              <Input defaultValue={user.fullname} />
+              <Input value={user.fullName} />
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -163,7 +156,7 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Số điện thoại *
               </label>
-              <Input defaultValue={user.phone} />
+              <Input value={user.phone ? user.phone : "null"} />
             </Box>
             <Box
               className="col-6"
@@ -172,7 +165,7 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Email *
               </label>
-              <Input defaultValue={user.email} />
+              <Input value={user.email ? user.email : "null"} />
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -180,7 +173,7 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Giới tính
               </label>
-              <Select defaultValue={user.gender} style={{ width: "100%" }}>
+              <Select value={user.gender} style={{ width: "100%" }}>
                 <Option value="Nam">Nam</Option>
                 <Option value="Nữ">Nữ</Option>
               </Select>

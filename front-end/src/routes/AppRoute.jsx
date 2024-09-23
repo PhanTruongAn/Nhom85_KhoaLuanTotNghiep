@@ -17,9 +17,9 @@ import ListLecturer from "../pages/DashBoard/DashBoardManager/lecturer/listLectu
 import RolePermission from "../pages/DashBoard/DashBoardManager/permission/rolePermission";
 import ListPermission from "../pages/DashBoard/DashBoardManager/permission/listPermission";
 import ChangePassword from "../pages/DashBoard/DashBoardManager/setting/ChangePassword";
-import ForgetPassword from "../pages/Login/forgetPassword/ForgetPassword";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
+
 const AppRoute = () => {
   const defaultData = {
     fullName: "",
