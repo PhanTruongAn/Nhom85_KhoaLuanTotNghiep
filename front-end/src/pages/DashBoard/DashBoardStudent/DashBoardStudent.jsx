@@ -35,7 +35,7 @@ const DashBoardStudent = () => {
   });
   const [modal, contextHolder] = Modal.useModal();
   const [collapsed, setCollapsed] = useState(false);
-  const [notifications, setNotifications] = useState(5); // Example state for notifications
+  const [notifications, setNotifications] = useState(5);
 
   const confirmLogout = () => {
     modal.confirm({

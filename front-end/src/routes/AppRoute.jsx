@@ -18,6 +18,7 @@ import RolePermission from "../pages/DashBoard/DashBoardManager/permission/roleP
 import ListPermission from "../pages/DashBoard/DashBoardManager/permission/listPermission";
 import ChangePassword from "../pages/setting/ChangePassword";
 import ForgetPassword from "../pages/Login/forgetPassword/ForgetPassword";
+import ListGroupStudent from "../pages/DashBoard/DashBoardManager/groupStudent/ListGroupStudent";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -84,6 +85,10 @@ const AppRoute = () => {
           <Route
             path="list-student"
             element={<PrivateRoute component={<ListStudent />} />}
+          />
+          <Route
+            path="list-group-student"
+            element={<PrivateRoute component={<ListGroupStudent />} />}
           />
           <Route
             path="account-lecturer"

@@ -9,6 +9,7 @@ import {
   UserAddOutlined,
   LockOutlined,
   KeyOutlined,
+  UsergroupAddOutlined,
 } from "@ant-design/icons";
 import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -42,6 +43,23 @@ const items = [
     ],
   },
   {
+    key: "groups-student",
+    icon: <PeopleAltOutlinedIcon />,
+    label: "Nhóm sinh viên",
+    children: [
+      {
+        key: "create-group-student",
+        icon: <UsergroupAddOutlined />,
+        label: "Tạo nhóm",
+      },
+      {
+        key: "list-group-student",
+        icon: <OrderedListOutlined />,
+        label: "Danh sách ",
+      },
+    ],
+  },
+  {
     key: "lecturer",
     icon: <PeopleAltOutlinedIcon />,
     label: "Giảng viên",
@@ -58,6 +76,7 @@ const items = [
       },
     ],
   },
+
   {
     key: "role",
     icon: <ClusterOutlined />,
