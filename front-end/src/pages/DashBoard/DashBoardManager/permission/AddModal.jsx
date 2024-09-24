@@ -13,7 +13,7 @@ function AddModal({ onClose, isOpen }) {
   const [state, setState] = useState({
     data: permission,
   });
-  console.log(state.data);
+  // console.log(state.data);
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };

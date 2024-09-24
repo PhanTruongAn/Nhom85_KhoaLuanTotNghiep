@@ -207,7 +207,7 @@ function ListPermission() {
         </Box>
       </Box>
 
-      <Box sx={{ textAlign: "center", marginBottom: "20px" }}>
+      <Box sx={{ textAlign: "center", marginBottom: "15px" }}>
         <Typography variant="h4" component="h2">
           Danh sách quyền hạn
         </Typography>
@@ -216,7 +216,7 @@ function ListPermission() {
       {/* Bảng danh sách sinh viên */}
       <Table
         bordered
-        dataSource={data && data.data.length > 0 ? data.data : state.dataSource}
+        dataSource={data && data.data ? data.data : state.dataSource}
         columns={columns}
         rowKey={"id"}
         scroll={{ x: "max-content" }}
