@@ -5,7 +5,14 @@ import studentApi from "../../apis/studentApi";
 import lecturerApi from "../../apis/lecturerApi";
 import { Box } from "@mui/material";
 const { Option } = Select; // Thêm dòng này
-function CreateModal({ onClose, isOpen, getData, isStudent, listRole }) {
+function CreateModal({
+  onSubmit,
+  onCancel,
+  isOpen,
+  getData,
+  isStudent,
+  listRole,
+}) {
   const obj = isStudent ? "sinh viên" : "giảng viên";
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
@@ -35,7 +42,7 @@ function CreateModal({ onClose, isOpen, getData, isStudent, listRole }) {
       setData(user);
       getData();
       form.resetFields();
-      onClose();
+      onSubmit();
     } else if (result.status === 1) {
       messageApi.warning(result.message);
       setLoading(false);
@@ -48,7 +55,7 @@ function CreateModal({ onClose, isOpen, getData, isStudent, listRole }) {
   const handleCancel = () => {
     form.resetFields();
     setData(user);
-    onClose();
+    onCancel();
   };
   return (
     <Box>

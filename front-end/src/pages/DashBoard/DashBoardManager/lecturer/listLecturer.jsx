@@ -99,6 +99,9 @@ function ListLecturer() {
       setCurrentPage(totalPages + 1);
     }
   };
+  const handleCancel = () => {
+    setOpen(false);
+  };
   const handlerReload = () => {
     setLoading(true);
     refetch();
@@ -374,7 +377,8 @@ function ListLecturer() {
       </Box>
       <CreateModal
         isOpen={open}
-        onClose={handleCloseModal}
+        onSubmit={handleCloseModal}
+        onCancel={handleCancel}
         getData={refetch}
         isStudent={false}
         listRole={listRole}

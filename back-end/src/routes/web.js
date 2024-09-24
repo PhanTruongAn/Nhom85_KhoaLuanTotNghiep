@@ -3,6 +3,7 @@ import userController from "../controllers/userController";
 import studentController from "../controllers/studentController";
 import lecturerController from "../controllers/lecturerController";
 import roleController from "../controllers/roleController";
+import permissionController from "../controllers/permissionController";
 import {
   authentication,
   checkUserPermission,
@@ -75,6 +76,12 @@ const initWebRoutes = (app) => {
     lecturerController.handleFindLecturersByName
   );
   router.put("/lecturer/change-password", userController.handleChangePassword);
+
+  //Manager Route
+  router.get(
+    "/manager/get-all-permission",
+    permissionController.handleGetAllPermission
+  );
 
   return app.use("/", router);
 };

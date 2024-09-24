@@ -3,14 +3,39 @@ import { Col, Form, Input, Modal, Row, Select, message, Button } from "antd";
 import _ from "lodash";
 
 function AddModal({ onClose, isOpen }) {
+  const [form] = Form.useForm();
+  const permission = {
+    apiPath: "",
+    description: "",
+    method: "",
+    // phone: "",
+  };
+  const [state, setState] = useState({
+    data: permission,
+  });
+  console.log(state.data);
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
+
+  const handlerOnChange = (value, name) => {
+    const _user = _.cloneDeep(state.data);
+    _user[name] = value;
+    updateState({ data: _user });
+  };
+  const handleCancel = () => {
+    updateState({ data: permission });
+    form.resetFields();
+    onClose();
+  };
   return (
     <>
       <Modal
-        title="Thêm tài khoản giảng viên"
+        title="Thêm mới quyền hạn"
         open={isOpen}
         onCancel={onClose}
         footer={[
-          <Button key="back" type="primary" danger onClick={onClose}>
+          <Button key="back" type="primary" danger onClick={handleCancel}>
             Hủy bỏ
           </Button>,
           <Button key="submit" type="primary">
@@ -18,7 +43,7 @@ function AddModal({ onClose, isOpen }) {
           </Button>,
         ]}
       >
-        <Form layout="vertical">
+        <Form layout="vertical" form={form}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -54,6 +79,22 @@ function AddModal({ onClose, isOpen }) {
                     handlerOnChange(e.target.value, "description")
                   }
                 />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="method" label="Phương thức" required>
+                <Select
+                  placeholder="Hãy chọn phương thức"
+                  onChange={(value) => handlerOnChange(value, "method")}
+                  options={[
+                    { value: "GET", label: "GET" },
+                    { value: "POST", label: "POST" },
+                    { value: "PUT", label: "PUT" },
+                    { value: "DELETE", label: "DELETE" },
+                  ]}
+                ></Select>
               </Form.Item>
             </Col>
           </Row>

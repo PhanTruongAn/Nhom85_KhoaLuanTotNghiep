@@ -95,7 +95,9 @@ function ListStudent() {
       setCurrentPage(totalPages + 1);
     }
   };
-
+  const handleCancel = () => {
+    setOpen(false);
+  };
   const showUpdateModal = (record) => {
     setUserSelect(record);
     setOpenUpdateModal(true);
@@ -363,7 +365,8 @@ function ListStudent() {
 
       <CreateModal
         isOpen={open}
-        onClose={handleCloseModal}
+        onSubmit={handleCloseModal}
+        onCancel={handleCancel}
         getData={refetch}
         isStudent={true}
       />

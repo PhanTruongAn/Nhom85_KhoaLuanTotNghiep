@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Space, message, Pagination, Select } from "antd";
+import { Table, Space, message, Pagination, Select, Input, Tag } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -7,14 +7,58 @@ import {
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { toast } from "react-toastify";
-import { Box, Typography, Button, Input } from "@mui/material";
-import AddModal from "./AddModal";
+import { Box, Typography, Button } from "@mui/material";
+import AddModal from "./addModal";
 import studentApi from "../../../../apis/studentApi";
-import { useNavigate } from "react-router-dom";
-
+import { useQuery } from "react-query";
+import managerApi from "../../../../apis/managerApi";
+const { Search } = Input;
 function ListPermission() {
+  const [state, setState] = useState({
+    searchLoading: false,
+    currentPage: 1,
+    pageSize: 5,
+    dataSource: [],
+    loadingData: false,
+  });
+  const [messageApi, contextHolder] = message.useMessage();
+  const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
+
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
+
+  //Fetch All Permission
+  const fetchPermissions = async () => {
+    updateState({ loadingData: true });
+    const response = await managerApi.getAllPermission();
+    if (response && response.status === 0) {
+      updateState({ dataSource: response.data, loadingData: false });
+      messageApi.success(response.message);
+    } else {
+      updateState({ dataSource: [], loadingData: false });
+      messageApi.error(response.message);
+    }
+    return response;
+  };
+  // useQuery to fetch data
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ["data"],
+    fetchPermissions,
+    {
+      keepPreviousData: true,
+      staleTime: 1000 * 60 * 5, // Dữ liệu sẽ được coi là mới trong 5 phút
+      cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
+      refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
+    }
+  );
+
+  // Làm mới dữ liệu
+  const handleReload = () => {
+    updateState({ loadingDta: true });
+    refetch();
+  };
   const handleOpenModal = () => {
     setOpen(true);
   };
@@ -36,6 +80,35 @@ function ListPermission() {
       title: "Mô tả",
       dataIndex: "description",
       key: "description",
+    },
+    {
+      title: "Phương thức",
+      dataIndex: "method",
+      key: "method",
+      render: (method) => {
+        let color;
+        switch (method) {
+          case "GET":
+            color = "green";
+            break;
+          case "POST":
+            color = "gold";
+            break;
+          case "PUT":
+            color = "blue";
+            break;
+          case "DELETE":
+            color = "red";
+            break;
+          default:
+            color = "default";
+        }
+        return (
+          <Tag color={color} key={method}>
+            {method}
+          </Tag>
+        );
+      },
     },
     {
       title: "Hành động",
@@ -78,6 +151,7 @@ function ListPermission() {
   ];
   return (
     <Box sx={{ padding: "20px" }}>
+      {contextHolder}
       <Box
         className="row col-12"
         sx={{
@@ -94,30 +168,22 @@ function ListPermission() {
           <Box className="col-3">
             <Select
               style={{ width: "100%" }}
-              placeholder="Chọn quyền"
+              placeholder="Lọc theo vai trò"
               options={[
-                { value: "Manager", label: "QUẢN LÝ" },
-                { value: "Lecturer", label: "GIẢNG VIÊN" },
-                { value: "Student", label: "SINH VIÊN" },
+                { value: "MANAGER", label: "QUẢN LÝ" },
+                { value: "LECTURER", label: "GIẢNG VIÊN" },
+                { value: "STUDENT", label: "SINH VIÊN" },
               ]}
             />
           </Box>
 
-          <Box className="col-9" sx={{ flexGrow: 1 }}>
-            <Input
-              placeholder="Tìm kiếm"
-              sx={[
-                (theme) => ({
-                  width: "100%",
-                  borderRadius: "4px",
-                  border: "1px solid #d9d9d9",
-                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                  padding: "0 5px",
-                  ...theme.applyStyles("dark", {
-                    boxShadow: "0 2px 4px #1DA57A",
-                  }),
-                }),
-              ]}
+          <Box className="col-5" sx={{ flexGrow: 1 }}>
+            <Search
+              placeholder="Nhập thông tin"
+              // onSearch={onSearch}
+              onChange={(e) => setSearchValue(e.target.value)}
+              enterButton
+              loading={state.searchLoading}
             />
           </Box>
         </Box>
@@ -128,9 +194,13 @@ function ListPermission() {
               startIcon={<PlusOutlined />}
               onClick={handleOpenModal}
             >
-              Thêm mới quyền hạn
+              Thêm mới
             </Button>
-            <Button variant="contained" startIcon={<ReloadOutlined />}>
+            <Button
+              onClick={handleReload}
+              variant="contained"
+              startIcon={<ReloadOutlined />}
+            >
               Làm mới
             </Button>
           </Space>
@@ -146,11 +216,16 @@ function ListPermission() {
       {/* Bảng danh sách sinh viên */}
       <Table
         bordered
-        dataSource={data}
+        dataSource={data && data.data.length > 0 ? data.data : state.dataSource}
         columns={columns}
         rowKey={"id"}
         scroll={{ x: "max-content" }}
-        pagination={5}
+        pagination={{
+          pageSize: state.pageSize,
+          // onChange: onChangePage,
+          responsive: true,
+        }}
+        loading={state.loadingData}
       />
 
       <AddModal isOpen={open} onClose={handleCloseModal} />
@@ -159,21 +234,3 @@ function ListPermission() {
 }
 
 export default ListPermission;
-
-const data = [
-  {
-    id: 1,
-    apiPath: "/createStudent",
-    description: "tạo tài khoản sinh viên",
-  },
-  {
-    id: 2,
-    apiPath: "/createLecturer",
-    description: "tạo tài khoản giảng viên",
-  },
-  {
-    id: 3,
-    apiPath: "/bulk-create-student",
-    description: "thêm nhiều tài khoản sinh viên",
-  },
-];
