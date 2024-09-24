@@ -15,9 +15,9 @@ const darkTheme = {
       itemActiveBg: "#F1FAE8",
       itemLinkBg: "#1DA57A",
     },
-    Form: {
-      labelColor: "#fff",
-    },
+    // Form: {
+    //   labelColor: "#fff",
+    // },
   },
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.scss";
 import logoIUH from "../../images/logo-iuh.png";
 import themeDark from "../../styles/themes/mui/themeDark";
@@ -9,11 +9,25 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
+
 const Header = (props) => {
   const navigate = useNavigate();
-  const [value, setValue] = useState(window.location.pathname);
+  const validPaths = ["/home", "/notification", "/information", "/login"];
+
+  // Default to "Đăng Nhập" tab
+  const [value, setValue] = useState("/login");
+
+  useEffect(() => {
+    const initialPath = window.location.pathname;
+    // Set value based on the current path, defaulting to "/login"
+    if (validPaths.includes(initialPath)) {
+      setValue(initialPath);
+    }
+  }, []);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    navigate(newValue); // Navigate to the selected tab
   };
 
   return (
@@ -34,19 +48,12 @@ const Header = (props) => {
           alignItems: "center",
           justifyContent: "space-between",
           width: "100%",
-          flexDirection: { xs: "column", sm: "row" }, // Column on mobile, row on larger screens
+          flexDirection: { xs: "column", sm: "row" },
         }}
       >
         <div className="logo">
           <img src={logoIUH} alt="Logo" style={{ width: "100px" }} />
-          <div
-            className="content"
-            // style={{
-            //   flexGrow: 1,
-            //   marginLeft: { xs: "10px", sm: "20px" }, // Adjust margin for mobile and larger screens
-            //   textAlign: { xs: "center", sm: "left" }, // Center text on mobile
-            // }}
-          >
+          <div className="content">
             <Box
               sx={[
                 (theme) => ({
@@ -80,17 +87,16 @@ const Header = (props) => {
           sx={{
             display: "flex",
             alignItems: "center",
-            flexDirection: { xs: "column", sm: "row" }, // Stack vertically on mobile
+            flexDirection: { xs: "column", sm: "row" },
             width: { xs: "100%", sm: "auto" },
           }}
         >
           <Tabs
             value={value}
             onChange={handleChange}
-            // textColor="#fff"
             sx={{
               padding: "10px",
-              width: { xs: "100%", sm: "auto" }, // Full width on mobile
+              width: { xs: "100%", sm: "auto" },
               textAlign: { xs: "center", sm: "left" },
               alignSelf: "center",
             }}
@@ -100,7 +106,6 @@ const Header = (props) => {
               label="TRANG CHỦ"
               component="label"
               disableRipple
-              onClick={() => navigate("home")}
             />
             <Tab
               value="/notification"
@@ -121,7 +126,7 @@ const Header = (props) => {
               disableRipple
               sx={[
                 (theme) => ({
-                  marginRight: { xs: "0px", sm: "10px" }, // Remove margin on mobile
+                  marginRight: { xs: "0px", sm: "10px" },
                   "&:hover": {
                     color: "primary.light",
                     backgroundColor: "transparent",
@@ -131,8 +136,16 @@ const Header = (props) => {
                   }),
                 }),
               ]}
-              onClick={() => navigate("login")}
             />
+            {/* Conditionally render the Tab */}
+            {false && ( // Keep this false to hide the Forget Password tab
+              <Tab
+                value="/forget-password"
+                label="QUÊN MẬT KHẨU"
+                component="label"
+                disableRipple
+              />
+            )}
           </Tabs>
 
           <Box
@@ -144,7 +157,7 @@ const Header = (props) => {
               sx={[
                 (theme) => ({
                   color: "#fff",
-                  marginRight: { xs: "10px", sm: "20px" }, // Smaller margin on mobile
+                  marginRight: { xs: "10px", sm: "20px" },
                   backgroundColor: themeDark.palette.primary.dark,
                   "&:hover": {
                     boxShadow: themeDark.shadows[3],

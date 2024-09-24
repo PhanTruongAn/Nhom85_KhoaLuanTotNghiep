@@ -5,10 +5,19 @@ import {
   MoonOutlined,
   SunOutlined,
   MenuUnfoldOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 
 import "./DashBoardManager.scss";
-import { Button, Layout, Menu, theme, Modal, ConfigProvider } from "antd";
+import {
+  Button,
+  Layout,
+  Menu,
+  theme,
+  Dropdown,
+  ConfigProvider,
+  Modal,
+} from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
@@ -22,13 +31,16 @@ import themeDark from "../../../styles/themes/mui/themeDark.jsx";
 import themeLight from "../../../styles/themes/mui/themeLight.jsx";
 import logoDark from "../../../images/Logo-White.png";
 import logoLight from "../../../images/logo-iuh.png";
+import ListNotification from "./notifications/listNotification.jsx";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardManager = () => {
+  const [notifications, setNotifications] = useState(5);
   const navigate = useNavigate();
   const user = useSelector((state) => state.userInit.user);
   const [themes, setThemes] = useState(() => {
     const storedTheme = localStorage.getItem("themeDark");
+
     return storedTheme === "true";
   });
   const [collapsed, setCollapsed] = useState(false);
@@ -167,14 +179,35 @@ const DashBoardManager = () => {
                 onClick={() => setCollapsed(!collapsed)}
               />
 
-              <div className="header-content">
-                Chào mừng quay lại {user.fullName}
+              <div className="student-container" style={{ float: "right" }}>
+                <span style={{ marginRight: "10px" }}>
+                  Chào mừng quay lại {user.fullName}
+                </span>
                 <Button
-                  className={className}
+                  className={`btn-logOut ${
+                    themes ? "dark-theme" : "light-theme"
+                  }`}
                   size="large"
                   icon={themes ? <SunOutlined /> : <MoonOutlined />}
                   onClick={changeTheme}
+                  style={{ marginRight: "10px", marginTop: "-3px" }}
                 />
+                <Dropdown overlay={<ListNotification />} trigger={["click"]}>
+                  <Button
+                    className="bell-icon"
+                    size="large"
+                    style={{
+                      marginRight: "30px",
+                    }}
+                    icon={<BellOutlined />}
+                  >
+                    {notifications > 0 && (
+                      <span className="notification-badge">
+                        {notifications}
+                      </span>
+                    )}
+                  </Button>
+                </Dropdown>
               </div>
             </Header>
 
