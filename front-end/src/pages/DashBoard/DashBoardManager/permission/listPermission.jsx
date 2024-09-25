@@ -35,6 +35,8 @@ function ListPermission() {
   const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
@@ -42,7 +44,9 @@ function ListPermission() {
   //Fetch All Permission
   const fetchPermissions = async () => {
     updateState({ loadingData: true });
-    const response = await managerApi.getAllPermission();
+    const response = searchValue
+      ? await managerApi.findByDescription(searchValue)
+      : await managerApi.getAllPermission();
     if (response && response.status === 0) {
       updateState({ dataSource: response.data, loadingData: false });
       // messageApi.success(response.message);
@@ -100,9 +104,39 @@ function ListPermission() {
     updateState({ objectSelect: record });
     setOpenUpdateModal(true);
   };
+  // Select role
+  const handleRoleChange = (value) => {
+    setSelectedRole(value);
+  };
+  // Lọc api theo role
+  const filteredData = selectedRole
+    ? state.dataSource.filter((item) =>
+        item.apiPath.startsWith(`/${selectedRole.toLowerCase()}`)
+      )
+    : state.dataSource;
 
   const onCloseUpdateModal = () => {
     setOpenUpdateModal(false);
+  };
+
+  const onSearch = async (value, _e, info) => {
+    if (value) {
+      updateState({ searchLoading: true });
+      const res = await managerApi.findByDescription(value);
+      if (res && res.status === 0 && res.data) {
+        messageApi.success(res.message);
+        updateState({
+          currentPage: 1,
+          searchLoading: false,
+          dataSource: res.data,
+        });
+      } else {
+        updateState({ searchLoading: false });
+        messageApi.error(res.message);
+      }
+    } else {
+      messageApi.error("Hãy nhập thông tin tìm kiếm!");
+    }
   };
   const columns = [
     {
@@ -221,14 +255,16 @@ function ListPermission() {
                 { value: "MANAGER", label: "QUẢN LÝ" },
                 { value: "LECTURER", label: "GIẢNG VIÊN" },
                 { value: "STUDENT", label: "SINH VIÊN" },
+                { value: "", label: "TẤT CẢ" },
               ]}
+              onChange={handleRoleChange}
             />
           </Box>
 
           <Box className="col-5" sx={{ flexGrow: 1 }}>
             <Search
               placeholder="Nhập thông tin"
-              // onSearch={onSearch}
+              onSearch={onSearch}
               onChange={(e) => setSearchValue(e.target.value)}
               enterButton
               loading={state.searchLoading}
@@ -264,7 +300,8 @@ function ListPermission() {
       {/* Bảng danh sách sinh viên */}
       <Table
         bordered
-        dataSource={data && data.data ? data.data : state.dataSource}
+        // dataSource={data && data.data ? data.data : state.dataSource}
+        dataSource={filteredData}
         columns={columns}
         rowKey={"id"}
         scroll={{ x: "max-content" }}

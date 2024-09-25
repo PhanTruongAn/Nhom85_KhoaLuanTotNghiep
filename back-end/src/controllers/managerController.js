@@ -52,9 +52,27 @@ const handleDeletePermission = async (req, res) => {
     });
   }
 };
+
+const handleFindByDescription = async (req, res) => {
+  const { input } = req.query;
+  try {
+    if (input) {
+      const data = await service.findByDescription(input);
+      return res.status(200).json(data);
+    } else {
+      return res.status(400).json({
+        status: 1,
+        message: "Dữ liệu truyền vào không hợp lệ!",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   handleGetAllPermission,
   handleCreatePermission,
   handleUpdatePermission,
   handleDeletePermission,
+  handleFindByDescription,
 };

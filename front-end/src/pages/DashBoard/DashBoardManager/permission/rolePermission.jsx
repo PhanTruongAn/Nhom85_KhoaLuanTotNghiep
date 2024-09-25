@@ -101,6 +101,7 @@ function RolePermission() {
             { value: "Manager", label: "QUẢN LÝ" },
             { value: "Lecturer", label: "GIẢNG VIÊN" },
             { value: "Student", label: "SINH VIÊN" },
+            { value: null, label: "TẤT CẢ" },
           ]}
           onChange={handleRoleChange} // Gọi hàm khi thay đổi
         />

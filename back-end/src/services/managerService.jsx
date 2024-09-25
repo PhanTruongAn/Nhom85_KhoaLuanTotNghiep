@@ -136,10 +136,41 @@ const deletePermission = async (data) => {
     };
   }
 };
+const findByDescription = async (input) => {
+  console.log("Check input>>>>>>>>>>>: ", input);
+  if (!input) {
+    return {
+      status: 1,
+      message: "Hãy nhập thông tin cần tìm!",
+    };
+  }
+  const res = await Permission.findAll({
+    where: {
+      description: {
+        [Op.like]: `%${input.toLowerCase()}%`,
+      },
+    },
+    attributes: ["id", "apiPath", "description", "method"],
+  });
+  if (res) {
+    return {
+      status: 0,
+      message: "Tìm kiếm thành công!",
+      data: res,
+    };
+  } else {
+    return {
+      status: 0,
+      message: "Không tìm thấy dữ liệu nào trùng khớp!",
+      data: [],
+    };
+  }
+};
 module.exports = {
   paginationPermission,
   getAllPermission,
   createPermission,
   updatePermission,
   deletePermission,
+  findByDescription,
 };

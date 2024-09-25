@@ -94,6 +94,10 @@ const initWebRoutes = (app) => {
     "/manager/delete-permission",
     managerController.handleDeletePermission
   );
+  router.get(
+    "/manager/find-permission",
+    managerController.handleFindByDescription
+  );
 
   return app.use("/", router);
 };
