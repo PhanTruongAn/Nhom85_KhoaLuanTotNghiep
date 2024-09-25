@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Form, Input, message, Modal, Row, Select } from "antd";
+import { Col, Form, Input, message, Modal, Row, Select, Button } from "antd";
 import _ from "lodash";
 import studentApi from "../../apis/studentApi";
 import { toast } from "react-toastify";
@@ -16,12 +16,14 @@ const UpdateModal = ({
   const obj = isStudent ? "sinh viên" : "giảng viên";
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (userSelect) {
       form.setFieldsValue(userSelect);
     }
   }, [userSelect, form]);
   const onSubmit = async () => {
+    setLoading(true);
     const _data = _.cloneDeep(form.getFieldValue());
     const res = isStudent
       ? await studentApi.updateById(_data)
@@ -30,6 +32,7 @@ const UpdateModal = ({
       messageApi.success(res.message);
       getData();
       closeModal();
+      setLoading(false);
     } else if (res.status === -1) {
       messageApi.error(res.message);
     } else {
@@ -42,8 +45,20 @@ const UpdateModal = ({
       <Modal
         open={isOpen}
         title={`Cập nhật thông tin ${obj}`}
-        onCancel={(e) => onCancel()}
-        onOk={(e) => onSubmit()}
+        onCancel={onCancel}
+        footer={[
+          <Button key="back" type="primary" danger onClick={onCancel}>
+            Hủy bỏ
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={onSubmit}
+          >
+            Cập nhật
+          </Button>,
+        ]}
       >
         <Form layout="vertical" form={form} initialValues={userSelect}>
           <Row gutter={16}>

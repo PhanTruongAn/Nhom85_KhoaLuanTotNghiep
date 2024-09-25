@@ -49,6 +49,7 @@ function AddModal({ onClose, isOpen, refetch }) {
       <Modal
         title="Thêm mới quyền hạn"
         open={isOpen}
+        onCancel={handleCancel}
         footer={[
           <Button key="back" type="primary" danger onClick={handleCancel}>
             Hủy bỏ

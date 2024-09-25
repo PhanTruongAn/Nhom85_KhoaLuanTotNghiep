@@ -34,6 +34,7 @@ const UpdateModal = ({ objectSelect, isOpen, onClose, getData }) => {
       <Modal
         open={isOpen}
         title={`Cập nhật quyền hạn`}
+        onCancel={onClose}
         footer={[
           <Button key="back" type="primary" danger onClick={onClose}>
             Hủy bỏ
