@@ -8,7 +8,7 @@ import DashBoardManager from "../pages/DashBoard/DashBoardManager/DashBoardManag
 import StudentHome from "../pages/DashBoard/DashBoardStudent/home/home";
 import ManagerHome from "../pages/DashBoard/DashBoardManager/home/home";
 import PrivateRoute from "./PrivateRoute";
-import StudentTopic from "../pages/DashBoard/DashBoardStudent/topic/topic";
+import StudentTopic from "../pages/DashBoard/DashBoardStudent/topic/StudentTopic";
 import ManagerTopic from "../pages/DashBoard/DashBoardManager/topic/topic";
 import AccountStudent from "../pages/DashBoard/DashBoardManager/student/accountStudent";
 import ListStudent from "../pages/DashBoard/DashBoardManager/student/listStudent";
@@ -19,6 +19,10 @@ import ListPermission from "../pages/DashBoard/DashBoardManager/permission/listP
 import ChangePassword from "../pages/setting/ChangePassword";
 import ForgetPassword from "../pages/Login/forgetPassword/ForgetPassword";
 import ListGroupStudent from "../pages/DashBoard/DashBoardManager/groupStudent/ListGroupStudent";
+import CreateGroupStudent from "../pages/DashBoard/DashBoardManager/groupStudent/CreateGroupStudent";
+import ListTopic from "../pages/DashBoard/DashBoardStudent/topic/ListTopic";
+import ListStudentGroup from "../pages/DashBoard/DashBoardStudent/group/ListStudentGroup";
+import StudentGroup from "../pages/DashBoard/DashBoardStudent/group/StudentGroup";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -87,6 +91,10 @@ const AppRoute = () => {
             element={<PrivateRoute component={<ListStudent />} />}
           />
           <Route
+            path="create-group-student"
+            element={<PrivateRoute component={<CreateGroupStudent />} />}
+          />
+          <Route
             path="list-group-student"
             element={<PrivateRoute component={<ListGroupStudent />} />}
           />
@@ -109,6 +117,22 @@ const AppRoute = () => {
           <Route
             path="change-password"
             element={<PrivateRoute component={<ChangePassword />} />}
+          />
+          <Route
+            path="list-topic"
+            element={<PrivateRoute component={<ListTopic />} />}
+          />
+          <Route
+            path="my-topic"
+            element={<PrivateRoute component={<StudentTopic />} />}
+          />
+          <Route
+            path="list-student-group"
+            element={<PrivateRoute component={<ListStudentGroup />} />}
+          />
+          <Route
+            path="my-group"
+            element={<PrivateRoute component={<StudentGroup />} />}
           />
         </Route>
       </Routes>

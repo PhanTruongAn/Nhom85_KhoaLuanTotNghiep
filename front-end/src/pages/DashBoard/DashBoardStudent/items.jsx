@@ -6,6 +6,8 @@ import {
   ReadOutlined,
   TableOutlined,
   KeyOutlined,
+  OrderedListOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 const items = [
@@ -18,11 +20,35 @@ const items = [
     key: "group",
     icon: <GroupOutlined />,
     label: "Nhóm của tôi",
+    children: [
+      {
+        key: "list-student-group",
+        icon: <OrderedListOutlined />,
+        label: "Danh sách nhóm",
+      },
+      {
+        key: "my-group",
+        icon: <UserOutlined />,
+        label: "Nhóm của tôi",
+      },
+    ],
   },
   {
     key: "topic",
     icon: <ReadOutlined />,
     label: "Đề tài",
+    children: [
+      {
+        key: "list-topic",
+        icon: <OrderedListOutlined />,
+        label: "Danh sách đề tài",
+      },
+      {
+        key: "my-topic",
+        icon: <ReadOutlined />,
+        label: "Đề tài của tôi",
+      },
+    ],
   },
   {
     key: "Điểm số",
