@@ -3,7 +3,7 @@ import userController from "../controllers/userController";
 import studentController from "../controllers/studentController";
 import lecturerController from "../controllers/lecturerController";
 import roleController from "../controllers/roleController";
-import permissionController from "../controllers/permissionController";
+import managerController from "../controllers/managerController";
 import {
   authentication,
   checkUserPermission,
@@ -80,7 +80,19 @@ const initWebRoutes = (app) => {
   //Manager Route
   router.get(
     "/manager/get-all-permission",
-    permissionController.handleGetAllPermission
+    managerController.handleGetAllPermission
+  );
+  router.post(
+    "/manager/create-permission",
+    managerController.handleCreatePermission
+  );
+  router.put(
+    "/manager/update-permission",
+    managerController.handleUpdatePermission
+  );
+  router.delete(
+    "/manager/delete-permission",
+    managerController.handleDeletePermission
   );
 
   return app.use("/", router);

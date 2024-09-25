@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Col, Form, Input, Modal, Row, Select, message, Button } from "antd";
 import _ from "lodash";
-
-function AddModal({ onClose, isOpen }) {
+import managerApi from "../../../../apis/managerApi";
+function AddModal({ onClose, isOpen, refetch }) {
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
   const permission = {
     apiPath: "",
     description: "",
@@ -12,6 +13,7 @@ function AddModal({ onClose, isOpen }) {
   };
   const [state, setState] = useState({
     data: permission,
+    buttonLoading: false,
   });
   // console.log(state.data);
   const updateState = (newState) => {
@@ -28,17 +30,35 @@ function AddModal({ onClose, isOpen }) {
     form.resetFields();
     onClose();
   };
+  const handleSubmit = async () => {
+    updateState({ buttonLoading: true });
+    const res = await managerApi.create(state.data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      updateState({ buttonLoading: false });
+      refetch();
+      handleCancel();
+    } else {
+      messageApi.error(res.message);
+      updateState({ buttonLoading: false });
+    }
+  };
   return (
     <>
+      {contextHolder}
       <Modal
         title="Thêm mới quyền hạn"
         open={isOpen}
-        onCancel={onClose}
         footer={[
           <Button key="back" type="primary" danger onClick={handleCancel}>
             Hủy bỏ
           </Button>,
-          <Button key="submit" type="primary">
+          <Button
+            key="submit"
+            type="primary"
+            loading={state.buttonLoading}
+            onClick={handleSubmit}
+          >
             Xác nhận
           </Button>,
         ]}

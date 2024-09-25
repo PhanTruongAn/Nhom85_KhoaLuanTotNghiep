@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Table, Space, message, Pagination, Select, Input, Tag } from "antd";
+import {
+  Table,
+  Space,
+  message,
+  Pagination,
+  Select,
+  Input,
+  Tag,
+  Popconfirm,
+} from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -9,7 +18,7 @@ import {
 } from "@ant-design/icons";
 import { Box, Typography, Button } from "@mui/material";
 import AddModal from "./addModal";
-import studentApi from "../../../../apis/studentApi";
+import UpdateModal from "./updateModal";
 import { useQuery } from "react-query";
 import managerApi from "../../../../apis/managerApi";
 const { Search } = Input;
@@ -20,11 +29,12 @@ function ListPermission() {
     pageSize: 5,
     dataSource: [],
     loadingData: false,
+    objectSelect: {},
   });
   const [messageApi, contextHolder] = message.useMessage();
   const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
-
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
@@ -35,7 +45,7 @@ function ListPermission() {
     const response = await managerApi.getAllPermission();
     if (response && response.status === 0) {
       updateState({ dataSource: response.data, loadingData: false });
-      messageApi.success(response.message);
+      // messageApi.success(response.message);
     } else {
       updateState({ dataSource: [], loadingData: false });
       messageApi.error(response.message);
@@ -56,14 +66,43 @@ function ListPermission() {
 
   // Làm mới dữ liệu
   const handleReload = () => {
-    updateState({ loadingDta: true });
+    updateState({ loadingData: true });
     refetch();
+    setTimeout(() => {
+      messageApi.success("Làm mới dữ liệu thành công!");
+    }, 2000);
+  };
+
+  const onPageChange = (pageNumber) => {
+    updateState({ currentPage: pageNumber });
+  };
+  const onPopConfirmDelete = async (record) => {
+    const user = {
+      id: record.id,
+    };
+    const res = await managerApi.deleteById(user);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      refetch();
+      if (data.data % 10 === 1 || state.dataSource % 10 === 1)
+        updateState({ currentPage: state.currentPage - 1 });
+    } else {
+      messageApi.error(res.message);
+    }
   };
   const handleOpenModal = () => {
     setOpen(true);
   };
   const handleCloseModal = () => {
     setOpen(false);
+  };
+  const handleEdit = (record) => {
+    updateState({ objectSelect: record });
+    setOpenUpdateModal(true);
+  };
+
+  const onCloseUpdateModal = () => {
+    setOpenUpdateModal(false);
   };
   const columns = [
     {
@@ -116,7 +155,7 @@ function ListPermission() {
       render: (_, record) => (
         <>
           <Button
-            onClick={() => handleEdit(record.key)}
+            onClick={() => handleEdit(record)}
             variant="contained"
             size="small"
             sx={[
@@ -132,19 +171,28 @@ function ListPermission() {
           >
             Sửa
           </Button>
-          <Button
-            // onClick={() => handleDelete(record.key)}
-            variant="contained"
-            color="error"
-            size="small"
-            sx={{
-              marginLeft: "10px",
-              textTransform: "none",
-            }}
-            startIcon={<DeleteOutlined />}
+          <Popconfirm
+            title="Xóa quyền hạn"
+            description="Bạn có chắc muốn xóa quyền hạn này?"
+            onConfirm={(e) => onPopConfirmDelete(record)}
+            // onCancel={onPopConfirmCancel}
+            okText="Đồng ý"
+            cancelText="Không"
           >
-            Xóa
-          </Button>
+            <Button
+              // onClick={(e) => showUpdateModal(record)}
+              variant="contained"
+              color="error"
+              size="small"
+              sx={{
+                marginLeft: "10px",
+                textTransform: "none",
+              }}
+              startIcon={<DeleteOutlined />}
+            >
+              Xóa
+            </Button>
+          </Popconfirm>
         </>
       ),
     },
@@ -221,14 +269,21 @@ function ListPermission() {
         rowKey={"id"}
         scroll={{ x: "max-content" }}
         pagination={{
+          current: state.currentPage,
           pageSize: state.pageSize,
-          // onChange: onChangePage,
+          onChange: onPageChange,
           responsive: true,
         }}
         loading={state.loadingData}
       />
 
-      <AddModal isOpen={open} onClose={handleCloseModal} />
+      <AddModal isOpen={open} onClose={handleCloseModal} refetch={refetch} />
+      <UpdateModal
+        isOpen={openUpdateModal}
+        objectSelect={state.objectSelect}
+        onClose={onCloseUpdateModal}
+        getData={refetch}
+      />
     </Box>
   );
 }
