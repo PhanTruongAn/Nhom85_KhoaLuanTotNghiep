@@ -3,6 +3,7 @@ import { Avatar, Input, Select, Button } from "antd";
 import { Box, Typography } from "@mui/material";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
+import { useSelector } from "react-redux";
 const { Option } = Select;
 const Card = styled(MuiCard)(({ theme }) => ({
   ...theme.applyStyles("dark", {
@@ -10,13 +11,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 function ManagerHome() {
-  const user = {
-    fullname: "Dieu Phan Quang Dung",
-    mssv: "20093921",
-    email: "quangdungzkh@gmail.com",
-    phone: "0968771863",
-    gender: "Nam",
-  };
+  const user = useSelector((state) => state.userInit.user);
 
   return (
     <Box
@@ -50,9 +45,7 @@ function ManagerHome() {
               left: "10px",
             }}
             size={80}
-          >
-            {user.fullname[0] + user.fullname[1]}
-          </Avatar>
+          ></Avatar>
           <Box sx={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
             <Box sx={{ marginTop: "5px" }}>
               <Typography variant="h5" component="h2" gutterBottom>
@@ -62,13 +55,15 @@ function ManagerHome() {
             <hr />
             <Box>
               <p>
-                <b>Họ và tên:</b> {user.fullname}
+                <b>Họ và tên: </b> {user.fullName ? user.fullName : "undefined"}
               </p>
               <p>
-                <b>Mã số giảng viên:</b> {user.mssv}
+                <b>Mã số giảng viên: </b>
+                {user.username ? user.username : "undefined"}
               </p>
               <p>
-                <b>Giới tính:</b> {user.gender}
+                <b>Giới tính: </b>
+                {user.gender ? user.gender : "undefined"}
               </p>
             </Box>
           </Box>
@@ -92,7 +87,9 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Mã Sinh viên *
               </label>
-              <Input defaultValue={user.mssv} />
+              <Input
+                defaultValue={user.username ? user.username : "undefined"}
+              />
             </Box>
             <Box
               className="col-6"
@@ -101,7 +98,9 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Họ và tên *
               </label>
-              <Input defaultValue={user.fullname} />
+              <Input
+                defaultValue={user.fullName ? user.fullName : "undefined"}
+              />
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -112,7 +111,7 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Số điện thoại *
               </label>
-              <Input defaultValue={user.phone} />
+              <Input defaultValue={user.phone ? user.phone : "undefined"} />
             </Box>
             <Box
               className="col-6"
@@ -121,7 +120,7 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Email *
               </label>
-              <Input defaultValue={user.email} />
+              <Input defaultValue={user.email ? user.email : "undefined"} />
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -129,7 +128,10 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Giới tính
               </label>
-              <Select defaultValue={user.gender} style={{ width: "100%" }}>
+              <Select
+                defaultValue={user.gender ? user.gender : "undefined"}
+                style={{ width: "100%" }}
+              >
                 <Option value="Nam">Nam</Option>
                 <Option value="Nữ">Nữ</Option>
               </Select>
@@ -138,9 +140,12 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Chức vụ
               </label>
-              <Select defaultValue="Thạc sĩ" style={{ width: "100%" }}>
-                <Option value="Thạc sĩ">Thạc sĩ</Option>
-                <Option value="Tiến sĩ">Tiến sĩ</Option>
+              <Select
+                defaultValue={user.degree ? user.degree : "undefined"}
+                style={{ width: "100%" }}
+              >
+                <Option value="THẠC SĨ">THẠC SĨ</Option>
+                <Option value="TIẾN SĨ">TIẾN SĨ</Option>
               </Select>
             </Box>
           </Box>

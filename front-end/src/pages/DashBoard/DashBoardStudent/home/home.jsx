@@ -59,13 +59,15 @@ function StudentHome() {
                 <hr />
                 <Box>
                   <p>
-                    <b>Họ và tên:</b> {user.fullName}
+                    <b>Họ và tên: </b>
+                    {user.fullName ? user.fullName : "undefined"}
                   </p>
                   <p>
-                    <b>Mã số sinh viên:</b> {user.username}
+                    <b>Mã số sinh viên: </b>
+                    {user.username ? user.username : "undefined"}
                   </p>
                   <p>
-                    <b>Giới tính:</b> {user.gender}
+                    <b>Giới tính: </b> {user.gender ? user.gender : "undefined"}
                   </p>
                 </Box>
               </Box>
@@ -136,7 +138,10 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Mã Sinh viên *
               </label>
-              <Input value={user.username} disabled />
+              <Input
+                defaultValue={user.username ? user.username : "undefined"}
+                disabled
+              />
             </Box>
             <Box
               className="col-6"
@@ -145,7 +150,9 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Họ và tên *
               </label>
-              <Input value={user.fullName} />
+              <Input
+                defaultValue={user.fullName ? user.fullName : "undefined"}
+              />
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -156,7 +163,7 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Số điện thoại *
               </label>
-              <Input value={user.phone ? user.phone : "null"} />
+              <Input defaultValue={user.phone ? user.phone : "undefined"} />
             </Box>
             <Box
               className="col-6"
@@ -165,7 +172,7 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Email *
               </label>
-              <Input value={user.email ? user.email : "null"} />
+              <Input defaultValue={user.email ? user.email : "undefined"} />
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -173,7 +180,10 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Giới tính
               </label>
-              <Select value={user.gender} style={{ width: "100%" }}>
+              <Select
+                defaultValue={user.gender ? user.gender : "undefined"}
+                style={{ width: "100%" }}
+              >
                 <Option value="Nam">Nam</Option>
                 <Option value="Nữ">Nữ</Option>
               </Select>

@@ -23,7 +23,8 @@ const authentication = (req, res, next) => {
     setTimeout(() => {
       const cookie = req.cookies;
       const tokenFromHeader = extractToken(req);
-      if (!cookie.accessToken || !tokenFromHeader) {
+      const token = tokenFromHeader || cookie.accessToken;
+      if (!token) {
         return res.status(401).json({
           status: 401,
           message: "Bạn chưa đăng nhập!",
@@ -33,7 +34,6 @@ const authentication = (req, res, next) => {
         const isVerify = jwtAction.verifyToken(token);
         if (isVerify) {
           req.user = isVerify;
-          req.token = token;
           next();
         } else {
           return res.status(401).json({
@@ -42,7 +42,7 @@ const authentication = (req, res, next) => {
           });
         }
       }
-    }, 2000);
+    }, 1000);
   }
 };
 

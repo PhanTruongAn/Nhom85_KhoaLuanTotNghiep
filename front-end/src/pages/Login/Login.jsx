@@ -22,12 +22,9 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import authApi from "../../apis/authApi";
-import { useDispatch } from "react-redux";
-import { fetchToken } from "../../redux/userSlice";
 import { message } from "antd";
 export default function Login() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [showPassword, setShowPassword] = useState(false);
   const [userName, setUserName] = useState("");

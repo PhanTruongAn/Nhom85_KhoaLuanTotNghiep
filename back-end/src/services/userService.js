@@ -22,6 +22,7 @@ const findAccount = async (username) => {
     where: {
       username: username,
     },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
   });
   if (student) {
     return student;
@@ -30,6 +31,7 @@ const findAccount = async (username) => {
     where: {
       username: username,
     },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
   });
   if (lecturer) {
     return lecturer;
@@ -54,11 +56,7 @@ const login = async (data) => {
     if (comparePassword) {
       const role = await roleService.getRoleWithId(user);
       const payload = {
-        fullName: user.fullName,
         username: user.username,
-        gender: user.gender,
-        phone: user.phone,
-        email: user.email,
         role,
       };
       const accessToken = jwtAction.createToken(payload);
@@ -169,4 +167,5 @@ module.exports = {
   login,
   hashPassword,
   changePassword,
+  findAccount,
 };
