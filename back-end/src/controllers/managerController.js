@@ -69,10 +69,39 @@ const handleFindByDescription = async (req, res) => {
     console.log(error);
   }
 };
+const handleGetRolePermissions = async (req, res) => {
+  try {
+    const data = await service.getRolePermissions(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: null,
+    });
+  }
+};
+const handleAssignPermissions = async (req, res) => {
+  try {
+    const data = await service.assignPermissionsToRole(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
 module.exports = {
   handleGetAllPermission,
   handleCreatePermission,
   handleUpdatePermission,
   handleDeletePermission,
   handleFindByDescription,
+  handleGetRolePermissions,
+  handleAssignPermissions,
 };

@@ -98,7 +98,14 @@ const initWebRoutes = (app) => {
     "/manager/find-permission",
     managerController.handleFindByDescription
   );
-
+  router.post(
+    "/manager/get-role-permissions",
+    managerController.handleGetRolePermissions
+  );
+  router.post(
+    "/manager/assign-permissions",
+    managerController.handleAssignPermissions
+  );
   return app.use("/", router);
 };
 export default initWebRoutes;

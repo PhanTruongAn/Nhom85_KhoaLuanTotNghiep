@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { Select, Table, Tag, message } from "antd";
-// import data from "./data"; // Đảm bảo file này tồn tại và xuất dữ liệu đúng cách
 import { CheckOutlined } from "@ant-design/icons";
 import { useQuery } from "react-query";
 import managerApi from "../../../../apis/managerApi";
@@ -24,7 +23,6 @@ function RolePermission() {
   const fetchPermission2 = async () => {
     updateState({ loadingData: true });
     const res = await managerApi.getAllPermission();
-    console.log("Check res: ", res);
     if (res && res.status === 0) {
       updateState({ dataSource: res.data, loadingData: false });
     } else {
@@ -32,8 +30,6 @@ function RolePermission() {
       messageApi.error(res.message);
     }
   };
-
-  console.log("Check: ", state.dataSource);
   const { data, isLoading, isFetching, refetch } = useQuery(
     ["data"],
     fetchPermission2,
@@ -45,35 +41,67 @@ function RolePermission() {
       staleTime: 1000,
     }
   );
-
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+    // console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
-  const handleRoleChange = (value) => {
+  const handleRoleChange = async (value) => {
+    setSelectedRole(parseInt(value));
+    updateState({ loadingData: true, currentPage: 1 });
+    const data = {
+      id: parseInt(value),
+    };
+    const res = await managerApi.getRolePermissions(data);
+    if (res && res.status === 0) {
+      if (res.data.length > 0) {
+        updateState({ loadingData: false });
+        messageApi.success(res.message);
+        onSelectChange(res.data);
+      } else {
+        updateState({ loadingData: false });
+        onSelectChange(res.data);
+        messageApi.warning(res.message);
+      }
+    } else {
+      updateState({ loadingData: false });
+      messageApi.error(res.message);
+    }
     setSelectedRole(value); // Cập nhật giá trị đã chọn
-    setSelectedRowKeys([]); // Xóa lựa chọn cũ khi thay đổi vai trò
   };
 
   const onPageChange = (pageNumber) => {
     updateState({ currentPage: pageNumber });
   };
-  // Lọc dữ liệu dựa trên vai trò đã chọn
-  // const filteredData = selectedRole
-  //   ? data.filter((item) =>
-  //       item.apiPath.startsWith(`/${selectedRole.toLowerCase()}`)
-  //     )
-  //   : data; // Nếu không có vai trò nào được chọn, hiển thị tất cả dữ liệu
+
+  // Tạo đối tượng để gán quyền
+  const buildDataToSave = () => {
+    const result = {};
+    result.roleId = selectedRole;
+    result.permissions = selectedRowKeys.map((item) => {
+      let data = { roleId: selectedRole, permissionId: item };
+      return data;
+    });
+
+    return result;
+  };
+  const handleSubmit = async () => {
+    updateState({ loadingData: true });
+    const data = buildDataToSave();
+    const res = await managerApi.assignPermissions(data);
+    if (res && res.status === 0) {
+      updateState({ loadingData: false });
+      messageApi.success(res.message);
+    } else {
+      updateState({ loadingData: false });
+      messageApi.error(res.message);
+    }
+  };
 
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
-    selections: [
-      Table.SELECTION_ALL,
-      Table.SELECTION_INVERT,
-      Table.SELECTION_NONE,
-    ],
+    selections: [Table.SELECTION_ALL, Table.SELECTION_NONE],
   };
 
   const columns = [
@@ -140,9 +168,9 @@ function RolePermission() {
           style={{ width: "100%" }}
           placeholder="Chọn quyền"
           options={[
-            { value: "Manager", label: "QUẢN LÝ" },
-            { value: "Lecturer", label: "GIẢNG VIÊN" },
-            { value: "Student", label: "SINH VIÊN" },
+            { value: "1", label: "STUDENT" },
+            { value: "2", label: "LECTURER" },
+            { value: "3", label: "MANAGER" },
             { value: "", label: "TẤT CẢ" },
           ]}
           onChange={handleRoleChange} // Gọi hàm khi thay đổi
@@ -152,6 +180,7 @@ function RolePermission() {
         <Table
           rowSelection={rowSelection}
           columns={columns}
+          rowKey={"id"}
           dataSource={state.dataSource} // Sử dụng dữ liệu đã lọc
           pagination={{
             current: state.currentPage,
@@ -163,7 +192,7 @@ function RolePermission() {
         />
       </Box>
       <Box sx={{ padding: "0px 0px 0px 10px" }}>
-        <Button variant="contained">
+        <Button variant="contained" onClick={handleSubmit}>
           <CheckOutlined style={{ marginRight: "5px" }} />
           Xác nhận
         </Button>

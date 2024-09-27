@@ -16,5 +16,11 @@ const managerApi = {
   findByDescription: (input) => {
     return axiosClient.get(baseUrl + `/find-permission?input=${input}`);
   },
+  getRolePermissions: (data) => {
+    return axiosClient.post(`${baseUrl}/get-role-permissions`, data);
+  },
+  assignPermissions: (data) => {
+    return axiosClient.post(`${baseUrl}/assign-permissions`, data);
+  },
 };
 export default managerApi;

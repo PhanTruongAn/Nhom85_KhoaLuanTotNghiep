@@ -1,10 +1,10 @@
 import db from "../models/index";
-import _ from "lodash";
+import _, { includes, map } from "lodash";
 import permissionValid from "../validates/permissionValidate";
 const { Op } = require("sequelize");
 
 const Permission = db.Permission;
-
+const RolePermission = db.RolePermission;
 const paginationPermission = async (page, limit) => {
   try {
     const offset = (page - 1) * limit;
@@ -166,6 +166,67 @@ const findByDescription = async (input) => {
     };
   }
 };
+
+const getRolePermissions = async (data) => {
+  if (!data.id) {
+    return {
+      status: 1,
+      message: "Chưa chọn chức vụ!",
+      data: null,
+    };
+  }
+  let listIdPermission = [];
+  const result = await RolePermission.findAll({
+    where: {
+      roleId: data.id,
+    },
+    attributes: ["permissionId"],
+  });
+
+  if (result) {
+    listIdPermission.push(...result.map((obj) => obj.permissionId));
+    if (listIdPermission.length > 0) {
+      return {
+        status: 0,
+        message: "Lấy danh sách quyền hạn thành công!",
+        data: listIdPermission,
+      };
+    } else {
+      return {
+        status: 0,
+        message: "Vai trò chưa được gán quyền hạn nào!",
+        data: listIdPermission,
+      };
+    }
+  } else {
+    return {
+      status: 1,
+      message: "Không tìm thấy quyền hạn nào!",
+      data: [],
+    };
+  }
+};
+const assignPermissionsToRole = async (data) => {
+  await RolePermission.destroy({
+    where: {
+      roleId: data.roleId,
+    },
+  });
+  const res = await RolePermission.bulkCreate(data.permissions);
+  if (res) {
+    return {
+      status: 0,
+      message: "Gán quyền thành công!",
+      // data: listIdPermission,
+    };
+  } else {
+    return {
+      status: 0,
+      message: "Gán quyền thất bại!",
+      //  data: listIdPermission,
+    };
+  }
+};
 module.exports = {
   paginationPermission,
   getAllPermission,
@@ -173,4 +234,6 @@ module.exports = {
   updatePermission,
   deletePermission,
   findByDescription,
+  getRolePermissions,
+  assignPermissionsToRole,
 };
