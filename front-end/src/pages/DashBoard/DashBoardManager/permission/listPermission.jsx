@@ -48,7 +48,11 @@ function ListPermission() {
       ? await managerApi.findByDescription(searchValue)
       : await managerApi.getAllPermission();
     if (response && response.status === 0) {
-      updateState({ dataSource: response.data, loadingData: false });
+      updateState({
+        dataSource: response.data,
+        loadingData: false,
+        reloadIcon: false,
+      });
       // messageApi.success(response.message);
     } else {
       updateState({ dataSource: [], loadingData: false });
@@ -74,7 +78,7 @@ function ListPermission() {
     refetch();
     setTimeout(() => {
       messageApi.success("Làm mới dữ liệu thành công!");
-    }, 2000);
+    }, 1000);
   };
 
   const onPageChange = (pageNumber) => {
