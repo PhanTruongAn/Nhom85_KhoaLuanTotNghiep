@@ -1,0 +1,26 @@
+.list-topic {
+  max-height: 400px; // Đặt chiều cao tối đa cho vùng chứa
+  overflow-y: auto; // Chỉ hiển thị thanh cuộn khi cần
+  border: 1px solid #ddd; // Đường viền cho vùng chứa
+  border-radius: 8px; // Bo góc
+
+  // Tùy chỉnh thanh cuộn
+  &::-webkit-scrollbar {
+    width: 10px; // Độ rộng của thanh cuộn
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #3f51b5; // Màu của thanh cuộn
+    border-radius: 5px; // Bo góc thanh cuộn
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f0f0f0; // Màu nền của thanh cuộn
+    border-radius: 5px; // Bo góc vùng nền
+  }
+
+  // Tùy chỉnh khi hover lên thanh cuộn
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #303f9f; // Màu của thanh cuộn khi hover
+  }
+}

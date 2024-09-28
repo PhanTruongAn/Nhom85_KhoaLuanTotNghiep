@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Space,
-  message,
-  Pagination,
-  Popconfirm,
-  Select,
-  Input,
-} from "antd";
+import { Table, Space, message, Popconfirm, Select, Input } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
