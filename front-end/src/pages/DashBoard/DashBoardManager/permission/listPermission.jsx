@@ -114,6 +114,7 @@ function ListPermission() {
   // Select role
   const handleRoleChange = (value) => {
     setSelectedRole(value);
+    updateState({ currentPage: 1 });
   };
   // Lọc api theo role
   const filteredData = selectedRole
