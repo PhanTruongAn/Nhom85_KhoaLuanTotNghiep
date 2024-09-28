@@ -21,6 +21,7 @@ import AddModal from "./addModal";
 import UpdateModal from "./updateModal";
 import { useQuery } from "react-query";
 import managerApi from "../../../../apis/managerApi";
+import SearchComponent from "../../../../components/SearchComponent/search";
 const { Search } = Input;
 function ListPermission() {
   const [state, setState] = useState({
@@ -29,6 +30,7 @@ function ListPermission() {
     pageSize: 5,
     dataSource: [],
     loadingData: false,
+    searchValue: "",
     objectSelect: {},
   });
   const [messageApi, contextHolder] = message.useMessage();
@@ -44,9 +46,10 @@ function ListPermission() {
   //Fetch All Permission
   const fetchPermissions = async () => {
     updateState({ loadingData: true });
-    const response = searchValue
-      ? await managerApi.findByDescription(searchValue)
-      : await managerApi.getAllPermission();
+    const response =
+      state.searchValue !== ""
+        ? await managerApi.findByDescription(state.searchValue)
+        : await managerApi.getAllPermission();
     if (response && response.status === 0) {
       updateState({
         dataSource: response.data,
@@ -122,10 +125,21 @@ function ListPermission() {
   const onCloseUpdateModal = () => {
     setOpenUpdateModal(false);
   };
-
+  const onInputChange = (e) => {
+    const value = e.target.value;
+    updateState({
+      searchValue: value,
+    });
+  };
+  const onClear = () => {
+    updateState({ searchValue: "" });
+    setTimeout(() => {
+      refetch();
+    }, 100);
+  };
   const onSearch = async (value, _e, info) => {
     if (value) {
-      updateState({ searchLoading: true });
+      updateState({ searchLoading: true, loadingData: true });
       const res = await managerApi.findByDescription(value);
       if (res && res.status === 0 && res.data) {
         messageApi.success(res.message);
@@ -133,9 +147,10 @@ function ListPermission() {
           currentPage: 1,
           searchLoading: false,
           dataSource: res.data,
+          loadingData: false,
         });
       } else {
-        updateState({ searchLoading: false });
+        updateState({ searchLoading: false, loadingData: false });
         messageApi.error(res.message);
       }
     } else {
@@ -266,12 +281,12 @@ function ListPermission() {
           </Box>
 
           <Box className="col-5" sx={{ flexGrow: 1 }}>
-            <Search
-              placeholder="Nhập thông tin"
-              onSearch={onSearch}
-              onChange={(e) => setSearchValue(e.target.value)}
-              enterButton
+            <SearchComponent
+              onChange={onInputChange}
               loading={state.searchLoading}
+              onSearch={onSearch}
+              onClear={onClear}
+              value={state.searchValue}
             />
           </Box>
         </Box>

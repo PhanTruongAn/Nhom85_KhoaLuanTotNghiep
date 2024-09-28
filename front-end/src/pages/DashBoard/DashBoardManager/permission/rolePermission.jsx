@@ -38,7 +38,6 @@ function RolePermission() {
       refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
       staleTime: 1000,
       onSuccess: (res) => {
-        console.log("Data: ", data);
         if (res && res.status === 0) {
           updateState({ dataSource: res.data, loadingData: false });
         } else {
@@ -93,22 +92,26 @@ function RolePermission() {
     refetch();
   };
   const onSearch = () => {
-    let filterData = [];
-    filterData =
-      state.searchValue !== ""
-        ? state.dataSource.filter((item) =>
-            item.description
-              .toLowerCase()
-              .includes(state.searchValue.toLowerCase())
-          )
-        : data.data;
-    console.log("Check input: ", state.searchValue);
-    if (filterData.length > 0) {
-      messageApi.success("Tìm kiếm thành công!");
-      updateState({ dataSource: filterData });
+    if (state.searchValue === "") {
+      messageApi.warning("Hãy nhập thông tin tìm kiếm!");
     } else {
-      messageApi.error("Không tìm thấy dữ liệu!");
-      updateState({ dataSource: data.data });
+      let filterData = [];
+      filterData =
+        state.searchValue !== ""
+          ? state.dataSource.filter((item) =>
+              item.description
+                .toLowerCase()
+                .includes(state.searchValue.toLowerCase())
+            )
+          : data.data;
+
+      if (filterData.length > 0) {
+        messageApi.success("Tìm kiếm thành công!");
+        updateState({ dataSource: filterData });
+      } else {
+        messageApi.error("Không tìm thấy dữ liệu!");
+        updateState({ dataSource: data.data });
+      }
     }
   };
   // Tạo đối tượng để gán quyền

@@ -110,7 +110,7 @@ function ListTopic() {
   ];
 
   return (
-    <Paper>
+    <Box>
       <Grid
         container
         spacing={2}
@@ -177,7 +177,7 @@ function ListTopic() {
         rowKey="id"
         style={{ height: "100%" }}
       />
-    </Paper>
+    </Box>
   );
 }
 

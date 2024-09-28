@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { Collapse, Typography, Button } from "antd";
+import { Collapse, Button } from "antd";
 import {
   InfoCircleOutlined,
   DownOutlined,
   ReadOutlined,
 } from "@ant-design/icons";
-
+import { Typography, Card } from "@mui/material";
 const { Panel } = Collapse;
-const { Title, Text } = Typography;
 
 const ProjectDetails = () => {
   const [showDetails, setShowDetails] = useState(false);
@@ -18,53 +17,48 @@ const ProjectDetails = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <div
-        style={{
+      <Card
+        sx={{
           marginBottom: "20px",
           padding: "10px",
-          border: "1px solid #e0e0e0",
-          borderRadius: "5px",
         }}
+        variant="elevation"
       >
-        <Title level={4}>THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN</Title>
-        <Text strong>Họ và tên giảng viên: </Text>
-        <Text>Đặng Thị Thu Hà</Text>
-        <br />
-        <Text strong>Email liên hệ: </Text>
-        <Text>dtthuha79@gmail.com</Text>
-        <br />
-        <Text strong>Số điện thoại: </Text>
-        <Text>0903016048</Text>
-      </div>
+        <Typography sx={{ fontWeight: 700 }}>
+          THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN
+        </Typography>
+        <Typography>Họ và tên giảng viên: Đặng Thị Thu Hà</Typography>
 
-      {/* Project Title Section */}
-      <div
+        <Typography>Email liên hệ: dtthuha79@gmail.com</Typography>
+
+        <Typography>Số điện thoại: 0903016048</Typography>
+      </Card>
+
+      {/* Project Typography Section */}
+      <Card
         style={{
           marginBottom: "20px",
           padding: "10px",
-          border: "1px solid #e0e0e0",
-          borderRadius: "5px",
         }}
+        variant="elevation"
       >
-        <Text strong style={{ fontSize: "18px" }}>
-          TÊN ĐỀ TÀI:
-        </Text>
-        <Text style={{ fontSize: "18px", fontWeight: "bold" }}>
+        <Typography sx={{ fontSize: "18px" }}>TÊN ĐỀ TÀI:</Typography>
+        <Typography sx={{ fontSize: "18px", fontWeight: "bold" }}>
           Xây dựng website đăng ký đề tài và giám sát thực hiện khóa luận tốt
           nghiệp cho sinh viên Khoa CNTT-IUH
-        </Text>
+        </Typography>
 
         <DownOutlined
           onClick={toggleDetails}
           style={{
             fontSize: "24px",
             justifyItems: "center",
-            marginTop: "5px",
             float: "right",
+            marginTop: "-35px",
             cursor: "pointer",
           }}
         />
-      </div>
+      </Card>
 
       {showDetails && (
         <Collapse
@@ -76,32 +70,32 @@ const ProjectDetails = () => {
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <Panel header="Dự kiến sản phẩm nghiên cứu của Đề tài" key="1">
-            <Text>
+          <Panel>
+            <Typography>
               - Website cho phép SV đăng ký đề tài KLTN (chọn đề tài, GVHD,...)
               <br />- GV giám sát việc đăng ký của SV với mời GV, thiết lập các
               khoảng thời gian theo tiến độ thực hiện đề tài.
-            </Text>
+            </Typography>
           </Panel>
 
           <Panel header="Mục tiêu cần đạt được" key="2">
-            <Text>
+            <Typography>
               - Phân tích tiến độ đăng ký đề tài và báo cáo thực hiện với GVHD.
               <br />- Website ứng dụng đồng bộ dữ liệu của SV và GVHD cùng thực
               hiện trên một nền tảng.
-            </Text>
+            </Typography>
           </Panel>
 
           <Panel header="Yêu cầu đầu ra" key="3">
-            <Text>
+            <Typography>
               - SV có kiến thức về lập trình hệ thống.
               <br />- SV có kiến thức về lập trình Web.
               <br />- SV chịu khó học hỏi và tìm hiểu tài liệu liên quan.
-            </Text>
+            </Typography>
           </Panel>
 
           <Panel header="Chuẩn đầu ra" key="4">
-            <Text>
+            <Typography>
               A. Sinh viên tham gia đề tài:
               <ol>
                 <li>
@@ -116,15 +110,15 @@ const ProjectDetails = () => {
                   án.
                 </li>
               </ol>
-            </Text>
+            </Typography>
           </Panel>
 
           <Panel header="Thông tin chi tiết của đề tài" key="5">
-            <Text>
+            <Typography>
               - Thông tin chi tiết về đề tài sẽ được trình bày ở đây. Bạn có thể
               thêm nội dung liên quan đến các yêu cầu, tiến độ, và các vấn đề
               khác mà sinh viên cần lưu ý.
-            </Text>
+            </Typography>
           </Panel>
         </Collapse>
       )}
