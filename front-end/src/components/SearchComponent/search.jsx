@@ -4,7 +4,14 @@ import { Box } from "@mui/material";
 import { CloseCircleFilled } from "@ant-design/icons";
 const { Search } = Input;
 
-function SearchComponent({ onChange, loading, onSearch, onClear, value }) {
+function SearchComponent({
+  onChange,
+  loading,
+  onSearch,
+  onClear,
+  value,
+  placeholder,
+}) {
   const suffix = (
     <CloseCircleFilled
       onClick={onClear}
@@ -17,7 +24,7 @@ function SearchComponent({ onChange, loading, onSearch, onClear, value }) {
   );
   return (
     <Search
-      placeholder="Nhập dữ liệu..."
+      placeholder={placeholder}
       onSearch={onSearch}
       onChange={onChange}
       enterButton

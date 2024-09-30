@@ -70,7 +70,7 @@ const ProjectDetails = () => {
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <Panel>
+          <Panel header="Dự kiến sản phẩm nghiên cứu của đề tài">
             <Typography>
               - Website cho phép SV đăng ký đề tài KLTN (chọn đề tài, GVHD,...)
               <br />- GV giám sát việc đăng ký của SV với mời GV, thiết lập các

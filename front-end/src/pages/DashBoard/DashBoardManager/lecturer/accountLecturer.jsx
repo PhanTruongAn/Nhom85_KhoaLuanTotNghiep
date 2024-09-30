@@ -36,7 +36,6 @@ const AccountLecturer = () => {
     };
     reader.readAsArrayBuffer(file);
   };
-
   const persistDataToSave = () => {
     const data = _.cloneDeep(jsonData);
     const dataPersist = [];

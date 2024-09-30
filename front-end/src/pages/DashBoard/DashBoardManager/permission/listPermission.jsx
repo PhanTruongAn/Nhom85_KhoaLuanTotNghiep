@@ -133,7 +133,7 @@ function ListPermission() {
     });
   };
   const onClear = () => {
-    updateState({ searchValue: "" });
+    updateState({ searchValue: "", currentPage: 1 });
     setTimeout(() => {
       refetch();
     }, 100);
@@ -283,6 +283,7 @@ function ListPermission() {
 
           <Box className="col-5" sx={{ flexGrow: 1 }}>
             <SearchComponent
+              placeholder={"Tìm theo mô tả"}
               onChange={onInputChange}
               loading={state.searchLoading}
               onSearch={onSearch}

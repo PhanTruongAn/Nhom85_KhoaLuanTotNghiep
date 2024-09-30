@@ -88,7 +88,7 @@ function RolePermission() {
     });
   };
   const onClear = () => {
-    updateState({ searchValue: "" });
+    updateState({ searchValue: "", currentPage: 1 });
     refetch();
   };
   const onSearch = () => {
@@ -148,8 +148,8 @@ function RolePermission() {
   const columns = [
     {
       title: "Mã quyền",
-      dataIndex: "key",
-      key: "key",
+      dataIndex: "id",
+      key: "id",
     },
     {
       title: "Đường dẫn",
@@ -197,18 +197,18 @@ function RolePermission() {
       {contextHolder}
       <Box>
         <Typography
-          variant="h5"
+          variant="h4"
           fontWeight="bold"
-          sx={{ mb: 2, padding: "10px" }}
+          sx={{ mb: 2, padding: "10px", textAlign: "center" }}
         >
-          Chọn quyền
+          Gán quyền hạn
         </Typography>
       </Box>
       <Box className="row col-6" sx={{ padding: "10px" }}>
         <Box className="col-3">
           <Select
             style={{ width: "100%" }}
-            placeholder="Chọn quyền"
+            placeholder="Chọn vai trò"
             options={[
               { value: "1", label: "STUDENT" },
               { value: "2", label: "LECTURER" },
@@ -219,6 +219,7 @@ function RolePermission() {
         </Box>
         <Box className="col-3" sx={{ flexGrow: 1 }}>
           <SearchComponent
+            placeholder={"Tìm theo mô tả"}
             onChange={onInputChange}
             loading={state.searchLoading}
             onSearch={onSearch}

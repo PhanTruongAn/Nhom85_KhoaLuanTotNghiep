@@ -39,11 +39,11 @@ const DashBoardStudent = () => {
 
   const confirmLogout = () => {
     modal.confirm({
-      title: "Confirm",
+      title: "Xác nhận",
       icon: <ExclamationCircleOutlined />,
-      content: "Are you sure you want to logout?",
+      content: "Bạn có muốn đăng xuất?",
       okText: "Ok",
-      cancelText: "Cancel",
+      cancelText: "Hủy bỏ",
       onOk: handleLogout,
     });
   };
@@ -156,7 +156,7 @@ const DashBoardStudent = () => {
               />
               <div className="student-container" style={{ float: "right" }}>
                 <span style={{ marginRight: "10px" }}>
-                  Chào mừng quay lại {user.fullName}
+                  Chào mừng quay lại <strong>{user.fullName}</strong>
                 </span>
                 <Button
                   className={`btn-logOut ${
