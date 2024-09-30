@@ -21,9 +21,16 @@ const items = [
     label: "Trang chủ",
   },
   {
-    key: "topic",
+    key: "manager-topic",
     icon: <TopicOutlinedIcon />,
     label: "Đề tài",
+    children: [
+      {
+        key: "topic",
+        icon: <OrderedListOutlined />,
+        label: "Tạo đề tài",
+      },
+    ],
   },
   {
     key: "student",

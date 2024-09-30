@@ -1,31 +1,29 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Box,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  IconButton,
-} from "@mui/material";
-import { Table, message, Tooltip } from "antd";
+import React, { useState, useRef } from "react"; // Thêm useRef
+import { Button, Box, IconButton } from "@mui/material";
+import { Table, message, Tooltip, Select, Modal, Space } from "antd";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import DeleteIcon from "@mui/icons-material/Delete";
 import * as XLSX from "xlsx";
+
+const { Option } = Select;
 
 const ManagerTopic = () => {
   const [jsonData, setJsonData] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedSheet, setSelectedSheet] = useState("");
   const [sheetNames, setSheetNames] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentRecord, setCurrentRecord] = useState(null);
+  const [messageApi, contextHolder] = message.useMessage();
+  const fileInputRef = useRef(null); // Tạo ref cho input file
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) {
-      message.error("Vui lòng chọn một file Excel.");
+      messageApi.error("Vui lòng chọn một file Excel.");
       return;
     }
 
@@ -48,9 +46,9 @@ const ManagerTopic = () => {
         setSelectedSheet(sheets[0]); // Chọn sheet đầu tiên mặc định
         setJsonData(sheetData);
 
-        message.success("Dữ liệu đã được tải thành công!");
+        messageApi.success("Dữ liệu file đã được tải thành công!");
       } catch (error) {
-        message.error("Lỗi khi đọc file. Vui lòng kiểm tra lại định dạng.");
+        messageApi.error("Lỗi khi đọc file. Vui lòng kiểm tra lại định dạng.");
         setLoading(false);
       }
     };
@@ -58,55 +56,70 @@ const ManagerTopic = () => {
     reader.readAsArrayBuffer(file);
   };
 
-  console.log("Json: ", jsonData);
-  const handleSheetChange = (event) => {
-    setSelectedSheet(event.target.value);
+  const handleSheetChange = (value) => {
+    setSelectedSheet(value);
   };
 
   const handleViewDetails = (record) => {
-    message.info(`Xem chi tiết của đề tài: ${record["Tên đề tài"]}`);
+    setCurrentRecord(record);
+    setIsModalVisible(true);
   };
 
   const handleDelete = (record) => {
-    message.warning(`Đã xóa đề tài: ${record["Tên đề tài"]}`);
+    messageApi.warning(`Đã xóa đề tài: ${record["Tên đề tài"]}`);
     const updatedData = jsonData[selectedSheet].filter(
       (item) => item["Tên đề tài"] !== record["Tên đề tài"]
     );
     setJsonData({ ...jsonData, [selectedSheet]: updatedData });
   };
 
-  // Cột Action và giới hạn nội dung dài
   const columns = [
     {
       title: "Tên đề tài",
       dataIndex: "Tên đề tài",
       key: "Tên đề tài",
-      ellipsis: true, // Giới hạn độ dài hiển thị, thay thế bằng "..."
+      ellipsis: true,
     },
     {
       title: "Mô tả đề tài",
       dataIndex: "Mô tả",
       key: "Mô tả",
-      ellipsis: true, // Giới hạn độ dài hiển thị, thay thế bằng "..."
+      ellipsis: true,
     },
+    {
+      title: "Mục tiêu",
+      dataIndex: "Mục tiêu đề tài",
+      key: "Mục tiêu đề tài",
+      ellipsis: true,
+    },
+
     {
       title: "Hành động",
       key: "action",
       render: (text, record) => (
         <Box>
-          <Tooltip title="Xem chi tiết">
-            <IconButton
-              color="primary"
+          <Space>
+            <Button
               onClick={() => handleViewDetails(record)}
+              variant="outlined"
+              size="small"
+              sx={{ textTransform: "none" }}
+              endIcon={<InfoCircleOutlined />}
             >
-              <VisibilityIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Xóa">
-            <IconButton color="error" onClick={() => handleDelete(record)}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+              Xem chi tiết
+            </Button>
+
+            <Button
+              onClick={() => handleDelete(record)}
+              variant="contained"
+              size="small"
+              color="error"
+              sx={{ textTransform: "none" }}
+              endIcon={<InfoCircleOutlined />}
+            >
+              Xóa
+            </Button>
+          </Space>
         </Box>
       ),
     },
@@ -114,23 +127,28 @@ const ManagerTopic = () => {
 
   const handleConfirm = () => {
     if (!jsonData[selectedSheet] || jsonData[selectedSheet].length === 0) {
-      message.warning("Chưa có dữ liệu để xác nhận.");
+      messageApi.warning("Chưa có dữ liệu file để xác nhận.");
       return;
     }
-    message.success("Dữ liệu đã được xác nhận!");
+    messageApi.success("Dữ liệu file đã được xác nhận!");
   };
 
   const handleCancel = () => {
     setJsonData({});
-    message.info("Đã hủy bỏ dữ liệu!");
+    messageApi.info("Đã hủy bỏ file dữ liệu!");
+    // Reset input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null; // Xóa file đang chọn
+    }
   };
 
   return (
     <Box className="container-fluid">
+      {contextHolder}
       <Box className="row col-12">
         <Box className="col-6">
           <Box sx={{ padding: "10px 0px 10px 0px", fontSize: "18px" }}>
-            Tải file danh sách nhóm
+            Tải file danh sách đề tài
           </Box>
           <Box>
             <label>
@@ -145,7 +163,8 @@ const ManagerTopic = () => {
                   type="file"
                   accept=".xlsx, .xls"
                   onChange={handleFileChange}
-                  style={{ display: "none" }} // Ẩn input
+                  style={{ display: "none" }}
+                  ref={fileInputRef} // Gán ref cho input file
                 />
               </Button>
             </label>
@@ -160,21 +179,23 @@ const ManagerTopic = () => {
           }}
         >
           {sheetNames.length > 0 && (
-            <FormControl fullWidth size="small">
-              <InputLabel id="sheet-select-label">Chọn Sheet</InputLabel>
-              <Select
-                labelId="sheet-select-label"
-                value={selectedSheet}
-                label="Chọn Sheet"
-                onChange={handleSheetChange}
-              >
-                {sheetNames.map((sheetName) => (
-                  <MenuItem key={sheetName} value={sheetName}>
-                    {sheetName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Box>
+              <Space>
+                <Box>Giảng viên: </Box>
+                <Select
+                  style={{ width: 200 }}
+                  value={selectedSheet}
+                  onChange={handleSheetChange}
+                  placeholder="Chọn Sheet"
+                >
+                  {sheetNames.map((sheetName) => (
+                    <Option key={sheetName} value={sheetName}>
+                      {sheetName}
+                    </Option>
+                  ))}
+                </Select>
+              </Space>
+            </Box>
           )}
         </Box>
       </Box>
@@ -184,33 +205,53 @@ const ManagerTopic = () => {
         dataSource={jsonData[selectedSheet] || []}
         columns={columns}
         rowKey={(record, index) => index}
-        pagination={{ pageSize: 3 }}
+        pagination={{ pageSize: 4 }}
         loading={loading}
         locale={{
           emptyText: "Chưa có dữ liệu",
         }}
       />
 
-      <Button
-        variant="contained"
-        onClick={handleConfirm}
-        size="small"
-        startIcon={<CheckIcon />}
+      <Box sx={{ marginTop: "10px" }}>
+        <Button
+          variant="contained"
+          onClick={handleConfirm}
+          size="small"
+          startIcon={<CheckIcon />}
+        >
+          Tạo đề tài
+        </Button>
+        <Button
+          sx={{
+            marginLeft: "10px",
+          }}
+          variant="contained"
+          color="error"
+          size="small"
+          onClick={handleCancel}
+          startIcon={<ClearIcon />}
+        >
+          Hủy bỏ
+        </Button>
+      </Box>
+
+      <Modal
+        title="Chi tiết đề tài"
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+        width={"80%"}
       >
-        Xác nhận
-      </Button>
-      <Button
-        sx={{
-          marginLeft: "10px",
-        }}
-        variant="contained"
-        color="error"
-        size="small"
-        onClick={handleCancel}
-        startIcon={<ClearIcon />}
-      >
-        Hủy bỏ
-      </Button>
+        {currentRecord && (
+          <Box>
+            {Object.keys(currentRecord).map((key) => (
+              <Box key={key} sx={{ marginBottom: "10px" }}>
+                <strong>{key}:</strong> {currentRecord[key]}
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Modal>
     </Box>
   );
 };
