@@ -23,6 +23,7 @@ import CreateGroupStudent from "../pages/DashBoard/DashBoardManager/groupStudent
 import ListTopic from "../pages/DashBoard/DashBoardStudent/topic/ListTopic";
 import ListStudentGroup from "../pages/DashBoard/DashBoardStudent/group/ListStudentGroup";
 import StudentGroup from "../pages/DashBoard/DashBoardStudent/group/StudentGroup";
+import MyPoint from "../pages/DashBoard/DashBoardStudent/point/MyPoint";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -133,6 +134,10 @@ const AppRoute = () => {
           <Route
             path="my-group"
             element={<PrivateRoute component={<StudentGroup />} />}
+          />
+          <Route
+            path="my-point"
+            element={<PrivateRoute component={<MyPoint />} />}
           />
         </Route>
       </Routes>

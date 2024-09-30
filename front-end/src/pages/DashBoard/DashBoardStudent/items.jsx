@@ -51,7 +51,7 @@ const items = [
     ],
   },
   {
-    key: "Điểm số",
+    key: "my-point",
     icon: <TableOutlined />,
     label: "Điểm số",
   },
