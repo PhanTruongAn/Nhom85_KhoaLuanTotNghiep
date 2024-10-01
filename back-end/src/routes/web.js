@@ -76,7 +76,7 @@ const initWebRoutes = (app) => {
     lecturerController.handleFindLecturersByName
   );
   router.put("/lecturer/change-password", userController.handleChangePassword);
-
+  router.post("/lecturer/create-topic", lecturerController.handleCreateTopics);
   //Manager Route
   router.get(
     "/manager/get-all-permission",

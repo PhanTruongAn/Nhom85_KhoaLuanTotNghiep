@@ -27,6 +27,9 @@ module.exports = {
       status: {
         type: Sequelize.STRING,
       },
+      quantityGroup: {
+        type: Sequelize.INTEGER,
+      },
       lecturerId: {
         type: Sequelize.INTEGER,
       },

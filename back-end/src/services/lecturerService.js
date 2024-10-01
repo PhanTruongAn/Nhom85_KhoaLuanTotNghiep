@@ -5,6 +5,7 @@ const { Op } = require("sequelize");
 //Models Database
 const Lecturer = db.Lecturer;
 const Role = db.Role;
+const Topic = db.Topic;
 //Tạo tài khoản giảng viên
 const createLecturerAccount = async (data) => {
   if (!data.fullName) {
@@ -312,6 +313,51 @@ const findLecturersByName = async (page, limit, input) => {
     };
   }
 };
+
+// Thêm danh sách đề tài
+const createTopics = async (data) => {
+  try {
+    if (data && !Array.isArray(data)) {
+      return {
+        status: 1,
+        message: "Danh sách đề tài không hợp lệ!",
+        data: null,
+      };
+    } else {
+      const _data = _.cloneDeep(data);
+      const dataPersist = [];
+      Object.entries(_data).map(([key, value], index) => {
+        dataPersist.push({
+          lecturerId: value.lecturerId,
+          title: value.title,
+          description: value.description,
+          goals: value.goals,
+          requirement: value.requirement,
+          standardOutput: value.standardOutput,
+          status: "PENDING",
+          quantityGroup: value.quantityGroup,
+        });
+      });
+
+      // console.log("Check persist: ", dataPersist);
+      const results = await Topic.bulkCreate(dataPersist);
+      if (results) {
+        return {
+          status: 0,
+          message: `Thêm mới thành công ${dataPersist.length} đề tài!`,
+        };
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      status: 1,
+      message: "Lỗi chức năng!",
+      data: null,
+    };
+  }
+};
+
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -322,4 +368,5 @@ module.exports = {
   deleteManyLecturer,
   findLecturersByUserName,
   findLecturersByName,
+  createTopics,
 };

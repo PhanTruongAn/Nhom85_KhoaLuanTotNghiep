@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       requirement: DataTypes.TEXT,
       standardOutput: DataTypes.TEXT,
       status: DataTypes.STRING,
+      quantityGroup: DataTypes.INTEGER,
       lecturerId: DataTypes.INTEGER,
     },
     {

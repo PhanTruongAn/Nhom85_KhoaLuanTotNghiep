@@ -19,7 +19,7 @@ import {
   Modal,
 } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
-import items from "./items.jsx";
+import getItems from "./items.jsx";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { Box, ThemeProvider } from "@mui/material";
@@ -38,9 +38,10 @@ const DashBoardManager = () => {
   const [notifications, setNotifications] = useState(5);
   const navigate = useNavigate();
   const user = useSelector((state) => state.userInit.user);
+  const isManager = user.role.name === "MANAGER" || user.role.name === "ADMIN";
+  const items = getItems(isManager);
   const [themes, setThemes] = useState(() => {
     const storedTheme = localStorage.getItem("themeDark");
-
     return storedTheme === "true";
   });
   const [collapsed, setCollapsed] = useState(false);
@@ -210,7 +211,6 @@ const DashBoardManager = () => {
                 </Dropdown>
               </div>
             </Header>
-
             <Content
               style={{
                 margin: "24px 16px",

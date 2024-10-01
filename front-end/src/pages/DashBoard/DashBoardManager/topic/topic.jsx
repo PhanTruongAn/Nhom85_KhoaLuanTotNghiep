@@ -5,12 +5,15 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useSelector } from "react-redux";
+import _ from "lodash";
 import * as XLSX from "xlsx";
-
+import lecturerApi from "../../../../apis/lecturerApi";
 const { Option } = Select;
 
 const ManagerTopic = () => {
+  const user = useSelector((state) => state.userInit.user);
+  const [state, setState] = useState({});
   const [jsonData, setJsonData] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedSheet, setSelectedSheet] = useState("");
@@ -18,8 +21,25 @@ const ManagerTopic = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
+  // console.log("JsonData: ", jsonData[selectedSheet]);
   const fileInputRef = useRef(null); // Tạo ref cho input file
 
+  const buildDataToSave = () => {
+    const data = _.cloneDeep(jsonData[selectedSheet]);
+    const dataSave = [];
+    Object.entries(data).map(([key, value]) => {
+      dataSave.push({
+        title: value["Tên đề tài"],
+        description: value["Mô tả"],
+        goals: value["Mục tiêu đề tài"],
+        requirement: value["Yêu cầu đầu vào"],
+        standardOutput: value["Yêu cầu đầu ra"],
+        quantityGroup: value["Số lượng nhóm"],
+        lecturerId: user.id,
+      });
+    });
+    return dataSave;
+  };
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) {
@@ -55,7 +75,6 @@ const ManagerTopic = () => {
 
     reader.readAsArrayBuffer(file);
   };
-
   const handleSheetChange = (value) => {
     setSelectedSheet(value);
   };
@@ -80,6 +99,7 @@ const ManagerTopic = () => {
       key: "Tên đề tài",
       ellipsis: true,
     },
+
     {
       title: "Mô tả đề tài",
       dataIndex: "Mô tả",
@@ -87,12 +107,11 @@ const ManagerTopic = () => {
       ellipsis: true,
     },
     {
-      title: "Mục tiêu",
-      dataIndex: "Mục tiêu đề tài",
-      key: "Mục tiêu đề tài",
-      ellipsis: true,
+      title: "Số lượng nhóm",
+      dataIndex: "Số lượng nhóm",
+      key: "Số lượng nhóm",
+      align: "center",
     },
-
     {
       title: "Hành động",
       key: "action",
@@ -125,12 +144,25 @@ const ManagerTopic = () => {
     },
   ];
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!jsonData[selectedSheet] || jsonData[selectedSheet].length === 0) {
-      messageApi.warning("Chưa có dữ liệu file để xác nhận.");
-      return;
+      messageApi.warning("Chưa chọn file dữ liệu!.");
+    } else {
+      setLoading(true);
+      const dataSave = buildDataToSave();
+      const res = await lecturerApi.createTopics(dataSave);
+      if (res && res.status === 0) {
+        setLoading(false);
+        setJsonData({});
+        if (fileInputRef.current) {
+          fileInputRef.current.value = null; // Xóa file đang chọn
+        }
+        messageApi.success(res.message);
+      } else {
+        setLoading(false);
+        messageApi.error(res.message);
+      }
     }
-    messageApi.success("Dữ liệu file đã được xác nhận!");
   };
 
   const handleCancel = () => {
@@ -181,7 +213,7 @@ const ManagerTopic = () => {
           {sheetNames.length > 0 && (
             <Box>
               <Space>
-                <Box>Giảng viên: </Box>
+                <Box>Sheet Name: </Box>
                 <Select
                   style={{ width: 200 }}
                   value={selectedSheet}
@@ -204,7 +236,7 @@ const ManagerTopic = () => {
         style={{ marginTop: "10px" }}
         dataSource={jsonData[selectedSheet] || []}
         columns={columns}
-        rowKey={(record, index) => index}
+        rowKey={(record) => record["Tên đề tài"]}
         pagination={{ pageSize: 4 }}
         loading={loading}
         locale={{

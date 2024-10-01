@@ -35,5 +35,8 @@ const lecturerApi = {
   changePassword: (data) => {
     return axiosClient.put(baseUrl + "/change-password", data);
   },
+  createTopics: (data) => {
+    return axiosClient.post(baseUrl + "/create-topic", data);
+  },
 };
 export default lecturerApi;

@@ -7,34 +7,43 @@ const TiltComponent = (props) => {
   const leftTiltRef = useRef(null);
   const rightTiltRef = useRef(null);
   const bottomTiltRef = useRef(null);
+
   useEffect(() => {
     const leftTiltNode = leftTiltRef.current;
     const rightTiltNode = rightTiltRef.current;
     const bottomTiltNode = bottomTiltRef.current;
-    VanillaTilt.init(leftTiltNode, {
-      max: 5,
-      speed: 300,
-      glare: true,
-      "max-glare": 0.5,
-    });
 
-    VanillaTilt.init(rightTiltNode, {
-      max: 5,
-      speed: 300,
-      glare: true,
-      "max-glare": 0.5,
-    });
-    VanillaTilt.init(bottomTiltNode, {
-      max: 5,
-      speed: 300,
-      glare: true,
-      "max-glare": 0.5,
-    });
+    if (leftTiltNode) {
+      VanillaTilt.init(leftTiltNode, {
+        max: 5,
+        speed: 300,
+        glare: true,
+        "max-glare": 0.5,
+      });
+    }
+
+    if (rightTiltNode) {
+      VanillaTilt.init(rightTiltNode, {
+        max: 5,
+        speed: 300,
+        glare: true,
+        "max-glare": 0.5,
+      });
+    }
+
+    if (bottomTiltNode) {
+      VanillaTilt.init(bottomTiltNode, {
+        max: 5,
+        speed: 300,
+        glare: true,
+        "max-glare": 0.5,
+      });
+    }
 
     return () => {
-      leftTiltNode.vanillaTilt.destroy();
-      rightTiltNode.vanillaTilt.destroy();
-      bottomTiltNode.vanillaTilt.destroy();
+      if (leftTiltNode?.vanillaTilt) leftTiltNode.vanillaTilt.destroy();
+      if (rightTiltNode?.vanillaTilt) rightTiltNode.vanillaTilt.destroy();
+      if (bottomTiltNode?.vanillaTilt) bottomTiltNode.vanillaTilt.destroy();
     };
   }, []);
 
@@ -95,13 +104,13 @@ const TiltComponent = (props) => {
         <img src={props.srcRight} alt="Right Tilt" className="image-right" />
       </Box>
 
+      {/* Bottom Tilt */}
       <Box
         ref={bottomTiltRef}
-        className="tilt-container right-tilt"
+        className="tilt-container bottom-tilt"
         sx={[
           (theme) => ({
             color: "#fff",
-            // backgroundColor: "#757de8",
             backgroundColor: theme.palette.primary.light,
             ...theme.applyStyles("dark", {
               backgroundColor: theme.palette.primary.light,
@@ -114,14 +123,14 @@ const TiltComponent = (props) => {
             <b>Đội ngũ phát triển</b>
           </div>
           <div className="content">
-            <b> Giáo viên hướng dẫn:</b> <br />
+            <b>Giáo viên hướng dẫn:</b> <br />
             Cô Đặng Thị Thu Hà <br />
-            <b> Người phát triển phần mềm:</b> <br />
+            <b>Người phát triển phần mềm:</b> <br />
             Phan Trường An <br />
             Điểu Phan Quang Dũng
           </div>
         </div>
-        <img src={props.srcBottom} alt="Right Tilt" className="image-bottom" />
+        <img src={props.srcBottom} alt="Bottom Tilt" className="image-bottom" />
       </Box>
     </div>
   );
