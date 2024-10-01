@@ -1,56 +1,23 @@
 import React, { useState } from "react";
-import { Button, Box } from "@mui/material";
-import { Table, message } from "antd";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { Button, Box, TextField, Typography, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import CreateGroupModal from "./CreateGroupModal"; // Nhập modal bạn đã tạo
 
 const CreateGroupStudent = () => {
-  const [jsonData, setJsonData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [openModal, setOpenModal] = useState(false); // Trạng thái mở modal
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(sheet);
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-        setJsonData(json);
-      }, 1000);
-    };
-    reader.readAsArrayBuffer(file);
-  };
-
-  const columns = [
-    {
-      title: "Group Name",
-      dataIndex: "groupName",
-      key: "groupName",
-    },
-    {
-      title: "Mã đề tài",
-      dataIndex: "topicId",
-      key: "topicId",
-    },
-  ];
+  const [openModal, setOpenModal] = useState(false);
+  const [startGroup, setStartGroup] = useState("");
+  const [endGroup, setEndGroup] = useState("");
 
   const handleConfirm = () => {
-    message.success("Dữ liệu đã được xác nhận!");
+    alert(`Nhóm từ ${startGroup} đến ${endGroup} đã được xác nhận!`);
   };
 
   const handleCancel = () => {
-    setJsonData([]);
-    message.info("Đã hủy bỏ!");
+    setStartGroup("");
+    setEndGroup("");
+    alert("Đã hủy bỏ!");
   };
 
   const handleOpenModal = () => {
@@ -62,93 +29,75 @@ const CreateGroupStudent = () => {
   };
 
   return (
-    <Box className="container-fluid">
-      <Box className="row col-12">
-        <Box className="col-6">
-          <Box sx={{ padding: "10px 0px 10px 0px", fontSize: "18px" }}>
-            Tải file danh sách nhóm
-          </Box>
-          <Box>
-            <label>
-              <Button
-                startIcon={<UploadFileIcon />}
-                component="span"
-                variant="contained"
-              >
-                Tải file
-                <input
-                  id="file-input"
-                  type="file"
-                  accept=".xlsx, .xls"
-                  onChange={handleFileChange}
-                  style={{ display: "none" }} // Ẩn input
-                />
-              </Button>
-            </label>
+    <Box className="container-fluid" sx={{ padding: "20px" }}>
+      <Paper elevation={3} sx={{ padding: "20px", borderRadius: "8px" }}>
+        <Typography
+          variant="h5"
+          sx={{ marginBottom: "20px", fontWeight: "bold" }}
+        >
+          Tạo Nhóm Sinh Viên
+        </Typography>
+        <Button
+          variant="contained"
+          onClick={handleOpenModal}
+          startIcon={<AddIcon />}
+          sx={{ padding: "10px" }}
+        >
+          Thêm một nhóm mới
+        </Button>
+
+        <Box sx={{ marginBottom: "20px", marginTop: "20px" }}>
+          <Typography variant="h5" sx={{ padding: "10px", fontWeight: "bold" }}>
+            Tạo nhiều nhóm sinh viên:
+          </Typography>
+
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <TextField
+              label="Nhóm bắt đầu"
+              variant="outlined"
+              value={startGroup}
+              onChange={(e) => setStartGroup(e.target.value)}
+              required
+            />
+            <TextField
+              label="Nhóm kết thúc"
+              variant="outlined"
+              value={endGroup}
+              onChange={(e) => setEndGroup(e.target.value)}
+              required
+            />
           </Box>
         </Box>
+
         <Box
-          className="col-6"
           sx={{
             display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
+            justifyContent: "flex-start",
+            marginTop: "20px",
           }}
         >
           <Button
-            sx={{ textTransform: "none" }}
             variant="contained"
-            onClick={handleOpenModal}
-            startIcon={<AddIcon />}
+            color="success"
+            onClick={handleConfirm}
+            size="small"
+            startIcon={<CheckIcon />}
+            sx={{ marginRight: "10px" }}
           >
-            Thêm nhóm mới
+            Xác nhận
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            onClick={handleCancel}
+            startIcon={<ClearIcon />}
+          >
+            Hủy bỏ
           </Button>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          padding: "20px 0px 5px 0px",
-          fontSize: "18px",
-          textAlign: "center",
-          fontWeight: "600px",
-        }}
-      >
-        DANH SÁCH NHÓM
-      </Box>
-      <Table
-        style={{ marginTop: "10px" }}
-        dataSource={jsonData}
-        columns={columns}
-        rowKey="id"
-        pagination={{ pageSize: 5 }}
-        loading={loading}
-      />
-      <Button
-        sx={{
-          marginTop: "10px",
-          textTransform: "none",
-        }}
-        variant="contained"
-        onClick={handleConfirm}
-        size="small"
-        startIcon={<CheckIcon />}
-      >
-        Xác nhận
-      </Button>
-      <Button
-        sx={{
-          marginTop: "10px",
-          marginLeft: "10px",
-          textTransform: "none",
-        }}
-        variant="contained"
-        color="error"
-        size="small"
-        onClick={handleCancel}
-        startIcon={<ClearIcon />}
-      >
-        Hủy bỏ
-      </Button>
+      </Paper>
+
       <CreateGroupModal isOpen={openModal} onClose={handleCloseModal} />
     </Box>
   );

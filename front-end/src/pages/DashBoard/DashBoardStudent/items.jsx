@@ -8,6 +8,7 @@ import {
   KeyOutlined,
   OrderedListOutlined,
   UserOutlined,
+  FileDoneOutlined,
 } from "@ant-design/icons";
 
 const items = [
@@ -49,6 +50,11 @@ const items = [
         label: "Đề tài của tôi",
       },
     ],
+  },
+  {
+    key: "criteria",
+    icon: <FileDoneOutlined />,
+    label: "Tiêu chí đánh giá",
   },
   {
     key: "my-point",
