@@ -10,6 +10,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import AddModal from "./AddModal";
+import EmptyData from "../../../../components/emptydata/EmptyData";
 
 const AccountLecturer = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -152,14 +153,43 @@ const AccountLecturer = () => {
       >
         DANH SÁCH GIẢNG VIÊN
       </Box>
-      <Table
-        style={{ marginTop: "10px" }}
-        dataSource={jsonData}
-        columns={columns}
-        rowKey="MaGiangVien"
-        pagination={{ pageSize: 5 }}
-        loading={loading}
-      />
+
+      {jsonData.length > 0 ? (
+        <Table
+          style={{ marginTop: "10px" }}
+          dataSource={jsonData}
+          columns={columns}
+          rowKey="MaGiangVien"
+          pagination={{ pageSize: 5 }}
+          loading={loading}
+        />
+      ) : (
+        <Table
+          style={{
+            padding: "10px",
+            borderRadius: "8px",
+            height: "400px",
+          }}
+          columns={columns}
+          dataSource={[]}
+          pagination={false}
+          rowKey="dataIndex"
+          locale={{
+            emptyText: (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                paddingTop={"50px"}
+                style={{ height: "100%" }}
+              >
+                <EmptyData />
+              </Box>
+            ),
+          }}
+        />
+      )}
       <Button
         sx={{ alignSelf: "right", marginTop: "10px", textTransform: "none" }}
         variant="contained"

@@ -160,47 +160,19 @@ function ListTopic() {
         Danh sách đề tài
       </Typography>
 
-      {topics.length > 0 ? (
-        <Table
-          columns={columns}
-          dataSource={filteredTopics}
-          pagination={{
-            current: page,
-            pageSize: rowsPerPage,
-            total: totalRows,
-            onChange: (page, pageSize) => {
-              setPage(page);
-              setRowsPerPage(pageSize);
-            },
-          }}
-        />
-      ) : (
-        <Table
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            height: "400px",
-          }}
-          columns={columns}
-          dataSource={[]}
-          pagination={false}
-          rowKey="dataIndex"
-          locale={{
-            emptyText: (
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                paddingTop={"50px"}
-                style={{ height: "100%" }}
-              >
-                <EmptyData />
-              </Box>
-            ),
-          }}
-        />
-      )}
+      <Table
+        columns={columns}
+        dataSource={filteredTopics}
+        pagination={{
+          current: page,
+          pageSize: rowsPerPage,
+          total: totalRows,
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setRowsPerPage(pageSize);
+          },
+        }}
+      />
     </Box>
   );
 }

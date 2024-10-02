@@ -6,6 +6,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import EmptyData from "../../../../components/emptydata/EmptyData";
 import _ from "lodash";
 import * as XLSX from "xlsx";
 import lecturerApi from "../../../../apis/lecturerApi";
@@ -232,17 +233,42 @@ const ManagerTopic = () => {
         </Box>
       </Box>
 
-      <Table
-        style={{ marginTop: "10px" }}
-        dataSource={jsonData[selectedSheet] || []}
-        columns={columns}
-        rowKey={(record) => record["Tên đề tài"]}
-        pagination={{ pageSize: 4 }}
-        loading={loading}
-        locale={{
-          emptyText: "Chưa có dữ liệu",
-        }}
-      />
+      {jsonData[selectedSheet] && jsonData[selectedSheet].length > 0 ? (
+        <Table
+          style={{ marginTop: "10px" }}
+          dataSource={jsonData[selectedSheet] || []}
+          columns={columns}
+          rowKey={(record) => record["Tên đề tài"]}
+          pagination={{ pageSize: 4 }}
+          loading={loading}
+        />
+      ) : (
+        <Table
+          style={{
+            padding: "10px",
+            borderRadius: "8px",
+            height: "400px",
+          }}
+          columns={columns}
+          dataSource={[]}
+          pagination={false}
+          rowKey="dataIndex"
+          locale={{
+            emptyText: (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                paddingTop={"50px"}
+                style={{ height: "100%" }}
+              >
+                <EmptyData />
+              </Box>
+            ),
+          }}
+        />
+      )}
 
       <Box sx={{ marginTop: "10px" }}>
         <Button
