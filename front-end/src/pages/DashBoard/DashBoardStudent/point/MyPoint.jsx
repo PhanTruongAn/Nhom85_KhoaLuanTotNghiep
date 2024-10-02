@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Table } from "antd";
 import { TableOutlined } from "@ant-design/icons";
-import EmptyData from "../emptydata/EmptyData";
+import EmptyData from "../../../../components/emptydata/EmptyData";
 
 const initialColumns = [
   {
