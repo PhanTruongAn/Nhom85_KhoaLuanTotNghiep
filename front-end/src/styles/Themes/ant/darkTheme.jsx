@@ -1,6 +1,7 @@
 const darkTheme = {
   token: {
-    colorPrimary: "#1DA57A",
+    // colorPrimary: "#1DA57A",
+    colorPrimary: "#1976D2",
     colorBgContainer: "#f6ffed",
   },
   components: {

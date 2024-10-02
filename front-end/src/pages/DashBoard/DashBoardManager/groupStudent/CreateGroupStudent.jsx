@@ -82,7 +82,14 @@ const CreateGroupStudent = () => {
             onClick={handleConfirm}
             size="small"
             startIcon={<CheckIcon />}
-            sx={{ marginRight: "10px" }}
+            sx={[
+              (theme) => ({
+                marginRight: "10px",
+                ...theme.applyStyles("dark", {
+                  color: "#fff",
+                }),
+              }),
+            ]}
           >
             Xác nhận
           </Button>

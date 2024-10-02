@@ -167,7 +167,7 @@ const DashBoardStudent = () => {
                   onClick={changeTheme}
                   style={{ marginRight: "10px", marginTop: "-3px" }}
                 />
-                <Dropdown overlay={<ListNotification />} trigger={["click"]}>
+                <Dropdown menu={<ListNotification />} trigger={["click"]}>
                   <Button
                     className="bell-icon"
                     size="large"

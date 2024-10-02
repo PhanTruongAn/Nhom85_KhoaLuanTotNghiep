@@ -1,6 +1,6 @@
 import React from "react";
-import { Avatar, Input, Select, Button } from "antd";
-import { Box, Typography } from "@mui/material";
+import { Avatar, Input, Select } from "antd";
+import { Box, Typography, Button } from "@mui/material";
 import { BookTwoTone } from "@ant-design/icons";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
@@ -213,9 +213,7 @@ function StudentHome() {
             </Box>
           </Box>
 
-          <Button type="primary" htmlType="submit">
-            Cập nhật
-          </Button>
+          <Button variant="contained">Cập nhật</Button>
         </form>
       </Card>
     </Box>

@@ -161,16 +161,7 @@ const AccountStudent = () => {
         loading={loading}
       />
       <Button
-        sx={[
-          (theme) => ({
-            alignSelf: "right",
-            marginTop: "10px",
-            textTransform: "none",
-            ...theme.applyStyles("dark", {
-              background: "#1DA57A",
-            }),
-          }),
-        ]}
+        sx={{ alignSelf: "right", marginTop: "10px", textTransform: "none" }}
         variant="contained"
         onClick={handlerSubmit}
         size="small"

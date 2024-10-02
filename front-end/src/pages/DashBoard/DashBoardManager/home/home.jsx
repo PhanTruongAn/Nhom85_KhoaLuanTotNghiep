@@ -1,6 +1,6 @@
 import React from "react";
-import { Avatar, Input, Select, Button } from "antd";
-import { Box, Typography } from "@mui/material";
+import { Avatar, Input, Select } from "antd";
+import { Box, Typography, Button } from "@mui/material";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { useSelector } from "react-redux";
@@ -150,7 +150,7 @@ function ManagerHome() {
             </Box>
           </Box>
 
-          <Button type="primary" htmlType="submit">
+          <Button variant="contained" size="small">
             Cập nhật
           </Button>
         </form>

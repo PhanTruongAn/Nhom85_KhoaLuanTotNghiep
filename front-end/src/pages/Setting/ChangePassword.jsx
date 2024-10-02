@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Form, Input, Button, message } from "antd";
-import { Box } from "@mui/material";
+import { Form, Input, message } from "antd";
+import { Box, Button } from "@mui/material";
 import "./ChangePassword.scss";
 import { useSelector } from "react-redux";
 import lecturerApi from "../../apis/lecturerApi";
@@ -103,14 +103,11 @@ function ChangePassword() {
 
           <Form.Item>
             <Button
-              type="primary"
-              htmlType="submit"
+              variant="contained"
               loading={loading}
-              style={{
+              sx={{
                 width: "100%",
-                // backgroundColor: "#4CAF50",
-                borderColor: "#4CAF50",
-                borderRadius: "8px",
+                textTransform: "none",
                 fontWeight: "bold",
               }}
             >
