@@ -1,12 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  Divider,
-  Box,
-} from "@mui/material";
+import { CardContent, Typography, Button, Divider, Box } from "@mui/material";
+import { Card } from "../../../../components/Card/Card";
 import Grid from "@mui/material/Grid";
 import "./ListStudentGroup.scss";
 

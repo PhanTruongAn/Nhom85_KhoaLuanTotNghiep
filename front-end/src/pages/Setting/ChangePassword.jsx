@@ -5,6 +5,7 @@ import "./ChangePassword.scss";
 import { useSelector } from "react-redux";
 import lecturerApi from "../../apis/lecturerApi";
 import studentApi from "../../apis/studentApi";
+import { Card } from "../../components/Card/Card";
 function ChangePassword() {
   const data = useSelector((state) => state.userInit.user);
 
@@ -44,14 +45,11 @@ function ChangePassword() {
       }}
     >
       {contextHolder}
-      <Box
+      <Card
         sx={{
           width: "40%",
           padding: "20px",
-          border: "1px solid #e0e0e0",
           borderRadius: "12px",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-          //   backgroundColor: "#f9f9f9",
         }}
       >
         <h2
@@ -115,7 +113,7 @@ function ChangePassword() {
             </Button>
           </Form.Item>
         </Form>
-      </Box>
+      </Card>
     </div>
   );
 }

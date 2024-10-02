@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Button, Box, TextField, Typography, Paper } from "@mui/material";
+import { Button, Box, TextField, Typography } from "@mui/material";
+import { Card } from "../../../../components/Card/Card";
 import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -30,7 +31,7 @@ const CreateGroupStudent = () => {
 
   return (
     <Box className="container-fluid" sx={{ padding: "20px" }}>
-      <Paper elevation={3} sx={{ padding: "20px", borderRadius: "8px" }}>
+      <Card sx={{ padding: "20px", borderRadius: "8px" }}>
         <Typography
           variant="h5"
           sx={{ marginBottom: "20px", fontWeight: "bold" }}
@@ -103,7 +104,7 @@ const CreateGroupStudent = () => {
             Hủy bỏ
           </Button>
         </Box>
-      </Paper>
+      </Card>
 
       <CreateGroupModal isOpen={openModal} onClose={handleCloseModal} />
     </Box>

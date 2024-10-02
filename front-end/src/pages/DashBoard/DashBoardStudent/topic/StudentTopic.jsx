@@ -5,7 +5,8 @@ import {
   DownOutlined,
   ReadOutlined,
 } from "@ant-design/icons";
-import { Typography, Card } from "@mui/material";
+import { Typography } from "@mui/material";
+import { Card } from "../../../../components/Card/Card";
 const { Panel } = Collapse;
 
 const ProjectDetails = () => {
