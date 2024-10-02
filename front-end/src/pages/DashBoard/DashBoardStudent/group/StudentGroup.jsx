@@ -1,6 +1,8 @@
 import React from "react";
-import { Card, Row, Col, Button, theme } from "antd";
+import { Row, Col } from "antd";
 import { HomeOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Button } from "@mui/material";
+import { Card } from "../../../../components/Card/Card";
 import { Link, Typography } from "@mui/material";
 import "./StudentGroup.scss";
 // const { Typography, Typography } = Typography;
@@ -87,20 +89,12 @@ const StudentGroup = () => {
 
       <Row justify="space-between" style={{ marginTop: "20px" }}>
         <Col>
-          <Link
-            sx={[
-              (theme) => ({
-                ...theme.applyStyles("dark", {
-                  color: "#1DA57A",
-                }),
-              }),
-            ]}
-          >
-            Xem Đề tài của tôi
-          </Link>
+          <Link>Xem Đề tài của tôi</Link>
         </Col>
         <Col>
-          <Button icon={<LogoutOutlined />}>Rời nhóm</Button>
+          <Button variant="contained" startIcon={<LogoutOutlined />}>
+            Rời nhóm
+          </Button>
         </Col>
       </Row>
     </div>

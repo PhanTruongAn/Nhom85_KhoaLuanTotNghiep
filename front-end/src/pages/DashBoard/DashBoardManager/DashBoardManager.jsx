@@ -218,6 +218,9 @@ const DashBoardManager = () => {
                 minHeight: 280,
                 height: "100%",
                 background: themes ? "#152f40" : "#fff",
+                // background: themes
+                //   ? "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))"
+                //   : "#fff",
                 borderRadius: borderRadiusLG,
                 overflow: "auto",
               }}

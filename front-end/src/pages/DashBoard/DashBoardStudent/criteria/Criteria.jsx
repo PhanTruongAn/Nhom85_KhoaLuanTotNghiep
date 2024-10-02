@@ -147,13 +147,16 @@ const Criteria = () => {
   ];
 
   return (
-    <div style={{ padding: "20px", overflow: "hidden" }}>
-      {" "}
+    <Box style={{ padding: "20px", overflow: "hidden" }}>
       {/* Thêm overflow: hidden */}
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box display="flex" alignItems="center">
-          <AuditOutlined style={{ fontSize: "26px" }} />
-          <Typography variant="h5" fontWeight="bold" sx={{ margin: "0 10px" }}>
+          <AuditOutlined style={{ fontSize: "26px", marginBottom: "10px" }} />
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            sx={{ margin: "0 10px 10px" }}
+          >
             Tiêu chí Đánh giá
           </Typography>
         </Box>
@@ -181,7 +184,7 @@ const Criteria = () => {
           scroll={{ y: 340 }}
         />
       </Card>
-    </div>
+    </Box>
   );
 };
 

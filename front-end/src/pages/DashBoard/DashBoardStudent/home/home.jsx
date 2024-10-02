@@ -2,15 +2,9 @@ import React from "react";
 import { Avatar, Input, Select } from "antd";
 import { Box, Typography, Button } from "@mui/material";
 import { BookTwoTone } from "@ant-design/icons";
-import MuiCard from "@mui/material/Card";
-import { styled } from "@mui/material/styles";
+import { Card } from "../../../../components/Card/Card";
 import { useSelector } from "react-redux";
-const { Option } = Select;
-const Card = styled(MuiCard)(({ theme }) => ({
-  ...theme.applyStyles("dark", {
-    backgroundColor: "#153645",
-  }),
-}));
+
 function StudentHome() {
   const user = useSelector((state) => state.userInit.user);
 
