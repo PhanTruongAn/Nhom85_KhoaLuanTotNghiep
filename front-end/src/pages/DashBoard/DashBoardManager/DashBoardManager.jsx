@@ -7,7 +7,6 @@ import {
   MenuUnfoldOutlined,
   BellOutlined,
 } from "@ant-design/icons";
-
 import "./DashBoardManager.scss";
 import {
   Button,
@@ -32,6 +31,7 @@ import themeLight from "../../../styles/themes/mui/themeLight.jsx";
 import logoDark from "../../../images/Logo-White.png";
 import logoLight from "../../../images/logo-iuh.png";
 import ListNotification from "./notifications/listNotification.jsx";
+
 const { Header, Sider, Content } = Layout;
 
 const DashBoardManager = () => {
@@ -40,12 +40,16 @@ const DashBoardManager = () => {
   const user = useSelector((state) => state.userInit.user);
   const isManager = user.role.name === "MANAGER" || user.role.name === "ADMIN";
   const items = getItems(isManager);
+
   const [themes, setThemes] = useState(() => {
     const storedTheme = localStorage.getItem("themeDark");
     return storedTheme === "true";
   });
+
   const [collapsed, setCollapsed] = useState(false);
+  const [openKeys, setOpenKeys] = useState([]); // State để theo dõi menu con đang mở
   const [modal, contextHolder] = Modal.useModal();
+
   const confirm = () => {
     modal.confirm({
       title: "Xác nhận",
@@ -82,10 +86,21 @@ const DashBoardManager = () => {
       navigate(key);
     }
   };
+
+  const handleOpenChange = (keys) => {
+    const latestOpenKey = keys.find((key) => !openKeys.includes(key));
+    if (latestOpenKey) {
+      setOpenKeys([latestOpenKey]); // Chỉ cho phép một menu con mở
+    } else {
+      setOpenKeys([]); // Đóng tất cả nếu không có menu nào mở
+    }
+  };
+
   const className = themes ? "btn-logOut dark-theme" : "btn-logOut light-theme";
   const changeTheme = () => {
     setThemes(!themes);
   };
+
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       <ThemeProvider theme={themes ? themeDark : themeLight}>
@@ -97,14 +112,13 @@ const DashBoardManager = () => {
             collapsible
             collapsed={collapsed}
             style={{ position: "relative" }}
-            // theme={themes ? "dark" : "light"}
           >
             {!collapsed && (
               <div
                 className="demo-logo-vertical"
                 style={{
                   borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
-                  position: "absolute", // Đặt logo ở vị trí tuyệt đối
+                  position: "absolute",
                   left: "0",
                   right: "0",
                   alignItems: "center",
@@ -117,8 +131,7 @@ const DashBoardManager = () => {
                 <img
                   src={themes ? logoDark : logoLight}
                   style={{ width: "80%", height: "auto", alignSelf: "center" }}
-                ></img>
-
+                />
                 <Box
                   sx={{
                     fontWeight: "700",
@@ -131,38 +144,27 @@ const DashBoardManager = () => {
               </div>
             )}
             <Menu
-              selectedKeys={
-                window.location.pathname.split("/dashboard/")[1]
-                  ? window.location.pathname.split("/dashboard/")[1]
-                  : window.location.pathname
-              }
+              selectedKeys={[
+                window.location.pathname.split("/dashboard/")[1] ||
+                  window.location.pathname,
+              ]}
               onClick={(key) => handlePath(key)}
-              defaultSelectedKeys={
-                window.location.pathname
-                  ? window.location.pathname
-                  : "/dashboard/home"
-              }
-              defaultOpenKeys={["/dashboard/home"]}
+              defaultSelectedKeys={[
+                window.location.pathname || "/dashboard/home",
+              ]}
+              openKeys={openKeys}
+              onOpenChange={handleOpenChange} // Thêm hàm này để quản lý trạng thái mở
               mode="inline"
               theme={themes ? "dark" : "light"}
-              // inlineCollapsed={collapsed}
               items={items}
-              style={
-                !collapsed
-                  ? {
-                      marginTop: "110px", // Thêm khoảng cách đủ lớn để logo không đè lên menu
-                      height: "calc(100vh - 110px)", // Giữ menu chiếm toàn bộ chiều cao còn lại
-                    }
-                  : { transition: "0.5s ease", height: "100vh" }
-              }
+              style={{
+                marginTop: "110px",
+                height: "calc(100vh - 110px)",
+              }}
             />
           </Sider>
           <Layout className="container-fluid p-0">
-            <Header
-              style={{
-                padding: 0,
-              }}
-            >
+            <Header style={{ padding: 0 }}>
               <Button
                 className="collapsed-button"
                 type="text"
@@ -179,7 +181,6 @@ const DashBoardManager = () => {
                 }
                 onClick={() => setCollapsed(!collapsed)}
               />
-
               <div className="student-container" style={{ float: "right" }}>
                 <span style={{ marginRight: "10px" }}>
                   Chào mừng quay lại <strong>{user.fullName}</strong>
@@ -197,9 +198,7 @@ const DashBoardManager = () => {
                   <Button
                     className="bell-icon"
                     size="large"
-                    style={{
-                      marginRight: "30px",
-                    }}
+                    style={{ marginRight: "30px" }}
                     icon={<BellOutlined />}
                   >
                     {notifications > 0 && (
@@ -218,9 +217,6 @@ const DashBoardManager = () => {
                 minHeight: 280,
                 height: "100%",
                 background: themes ? "#152f40" : "#fff",
-                // background: themes
-                //   ? "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))"
-                //   : "#fff",
                 borderRadius: borderRadiusLG,
                 overflow: "auto",
               }}

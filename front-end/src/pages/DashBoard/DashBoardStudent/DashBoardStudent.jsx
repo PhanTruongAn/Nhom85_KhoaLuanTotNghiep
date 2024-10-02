@@ -36,6 +36,7 @@ const DashBoardStudent = () => {
   const [modal, contextHolder] = Modal.useModal();
   const [collapsed, setCollapsed] = useState(false);
   const [notifications, setNotifications] = useState(5);
+  const [openKeys, setOpenKeys] = useState([]); // State để theo dõi menu con đang mở
 
   const confirmLogout = () => {
     modal.confirm({
@@ -67,6 +68,15 @@ const DashBoardStudent = () => {
       confirmLogout();
     } else {
       navigate(key);
+    }
+  };
+
+  const handleOpenChange = (keys) => {
+    const latestOpenKey = keys.find((key) => !openKeys.includes(key));
+    if (latestOpenKey) {
+      setOpenKeys([latestOpenKey]); // Chỉ cho phép một menu con mở
+    } else {
+      setOpenKeys([]); // Đóng tất cả nếu không có menu nào mở
     }
   };
 
@@ -121,6 +131,8 @@ const DashBoardStudent = () => {
               defaultSelectedKeys={
                 window.location.pathname || "/dashboard/home"
               }
+              openKeys={openKeys}
+              onOpenChange={handleOpenChange} // Thêm hàm này để quản lý trạng thái mở
               mode="inline"
               theme={themes ? "dark" : "light"}
               items={items}
