@@ -147,9 +147,7 @@ const Criteria = () => {
   ];
 
   return (
-    <div style={{ padding: "20px", overflow: "hidden" }}>
-      {" "}
-      {/* Thêm overflow: hidden */}
+    <Box style={{ padding: "20px", overflow: "hidden" }}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box display="flex" alignItems="center">
           <AuditOutlined style={{ fontSize: "26px", marginBottom: "10px" }} />
