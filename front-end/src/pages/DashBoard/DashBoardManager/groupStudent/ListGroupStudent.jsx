@@ -247,49 +247,23 @@ const ListGroupStudent = () => {
           Danh sách nhóm
         </Typography>
       </Box>
-      {data.length > 0 ? (
-        <Table
-          rowSelection={{
-            selectedRowKeys,
-            onChange: setSelectedRowKeys,
-          }}
-          columns={columns}
-          dataSource={data}
-          rowKey="id"
-          showSorterTooltip={{
-            target: "sorter-icon",
-          }}
-          pagination={{
-            pageSize: 5,
-          }}
-        />
-      ) : (
-        <Table
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            height: "400px",
-          }}
-          columns={columns}
-          dataSource={data}
-          pagination={false}
-          rowKey="dataIndex"
-          locale={{
-            emptyText: (
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                paddingTop={"50px"}
-                style={{ height: "100%" }}
-              >
-                <EmptyData />
-              </Box>
-            ),
-          }}
-        />
-      )}
+
+      <Table
+        rowSelection={{
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
+        }}
+        columns={columns}
+        dataSource={data}
+        rowKey="id"
+        showSorterTooltip={{
+          target: "sorter-icon",
+        }}
+        pagination={{
+          pageSize: 5,
+        }}
+      />
+
       <CreateGroupModal
         isOpen={openCreateModal}
         onClose={handleCloseCreateModal}

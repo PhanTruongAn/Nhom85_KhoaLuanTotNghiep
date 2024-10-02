@@ -9,6 +9,7 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
+import EmptyData from "../../../../components/emptydata/EmptyData";
 import AddModal from "./AddModal";
 const AccountStudent = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -152,14 +153,43 @@ const AccountStudent = () => {
       >
         DANH SÁCH SINH VIÊN
       </Box>
-      <Table
-        style={{ marginTop: "10px" }}
-        dataSource={jsonData}
-        columns={columns}
-        rowKey="MaSinhVien"
-        pagination={{ pageSize: 5 }}
-        loading={loading}
-      />
+
+      {jsonData.length > 0 ? (
+        <Table
+          style={{ marginTop: "10px" }}
+          dataSource={jsonData}
+          columns={columns}
+          rowKey="MaSinhVien"
+          pagination={{ pageSize: 5 }}
+          loading={loading}
+        />
+      ) : (
+        <Table
+          style={{
+            padding: "10px",
+            borderRadius: "8px",
+            height: "400px",
+          }}
+          columns={columns}
+          dataSource={[]}
+          pagination={false}
+          rowKey="dataIndex"
+          locale={{
+            emptyText: (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                paddingTop={"50px"}
+                style={{ height: "100%" }}
+              >
+                <EmptyData />
+              </Box>
+            ),
+          }}
+        />
+      )}
       <Button
         sx={{ alignSelf: "right", marginTop: "10px", textTransform: "none" }}
         variant="contained"

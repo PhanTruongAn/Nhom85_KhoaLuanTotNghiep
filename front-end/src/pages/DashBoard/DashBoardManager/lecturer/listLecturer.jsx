@@ -356,53 +356,25 @@ function ListLecturer() {
         </Typography>
       </Box>
       <Box>
-        {dataSource && dataSource.length > 0 ? (
-          <Table
-            rowSelection={rowSelection}
-            // dataSource={data ? data.data.lecturers : []}
-            dataSource={dataSource}
-            bordered
-            pagination={{
-              total: totalRows,
-              current: currentPage,
-              pageSize: limitUser,
-              onChange: onChange,
-              showQuickJumper: true,
-              itemRender: itemRender,
-              responsive: true,
-            }}
-            columns={columns}
-            rowKey={"id"}
-            scroll={{ x: "max-content" }}
-            loading={isFetching}
-          />
-        ) : (
-          <Table
-            style={{
-              padding: "10px",
-              borderRadius: "8px",
-              height: "400px",
-            }}
-            columns={columns}
-            dataSource={[]}
-            pagination={false}
-            rowKey="dataIndex"
-            locale={{
-              emptyText: (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  paddingTop={"50px"}
-                  style={{ height: "100%" }}
-                >
-                  <EmptyData />
-                </Box>
-              ),
-            }}
-          />
-        )}
+        <Table
+          rowSelection={rowSelection}
+          // dataSource={data ? data.data.lecturers : []}
+          dataSource={dataSource}
+          bordered
+          pagination={{
+            total: totalRows,
+            current: currentPage,
+            pageSize: limitUser,
+            onChange: onChange,
+            showQuickJumper: true,
+            itemRender: itemRender,
+            responsive: true,
+          }}
+          columns={columns}
+          rowKey={"id"}
+          scroll={{ x: "max-content" }}
+          loading={isFetching}
+        />
       </Box>
       <CreateModal
         isOpen={open}
