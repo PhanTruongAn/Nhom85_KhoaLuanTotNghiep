@@ -22,6 +22,7 @@ import UpdateModal from "./updateModal";
 import { useQuery } from "react-query";
 import managerApi from "../../../../apis/managerApi";
 import SearchComponent from "../../../../components/SearchComponent/search";
+import EmptyData from "../../../../components/emptydata/EmptyData";
 const { Search } = Input;
 function ListPermission() {
   const [state, setState] = useState({
@@ -318,22 +319,49 @@ function ListPermission() {
         </Typography>
       </Box>
 
-      {/* Bảng danh sách sinh viên */}
-      <Table
-        bordered
-        // dataSource={data && data.data ? data.data : state.dataSource}
-        dataSource={filteredData}
-        columns={columns}
-        rowKey={"id"}
-        scroll={{ x: "max-content" }}
-        pagination={{
-          current: state.currentPage,
-          pageSize: state.pageSize,
-          onChange: onPageChange,
-          responsive: true,
-        }}
-        loading={state.loadingData}
-      />
+      {filteredData.length > 0 ? (
+        <Table
+          bordered
+          // dataSource={data && data.data ? data.data : state.dataSource}
+          dataSource={filteredData}
+          columns={columns}
+          rowKey={"id"}
+          scroll={{ x: "max-content" }}
+          pagination={{
+            current: state.currentPage,
+            pageSize: state.pageSize,
+            onChange: onPageChange,
+            responsive: true,
+          }}
+          loading={state.loadingData}
+        />
+      ) : (
+        <Table
+          style={{
+            padding: "10px",
+            borderRadius: "8px",
+            height: "400px",
+          }}
+          columns={columns}
+          dataSource={[]}
+          pagination={false}
+          rowKey="dataIndex"
+          locale={{
+            emptyText: (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                paddingTop={"50px"}
+                style={{ height: "100%" }}
+              >
+                <EmptyData />
+              </Box>
+            ),
+          }}
+        />
+      )}
 
       <AddModal isOpen={open} onClose={handleCloseModal} refetch={refetch} />
       <UpdateModal

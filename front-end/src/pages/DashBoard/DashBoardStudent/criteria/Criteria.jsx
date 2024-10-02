@@ -147,7 +147,8 @@ const Criteria = () => {
   ];
 
   return (
-    <Box style={{ padding: "20px", overflow: "hidden" }}>
+    <div style={{ padding: "20px", overflow: "hidden" }}>
+      {" "}
       {/* Thêm overflow: hidden */}
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box display="flex" alignItems="center">
@@ -162,7 +163,8 @@ const Criteria = () => {
         </Box>
         <Select
           defaultValue={0}
-          style={{ width: "200px", marginBottom: "10px" }} // Đặt chiều rộng cố định
+          style={{ width: "300px", marginBottom: "10px" }}
+          h
           onChange={handleChange}
         >
           {criteriaData.map((section, index) => (

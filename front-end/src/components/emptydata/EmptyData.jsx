@@ -1,5 +1,5 @@
 import React from "react";
-import emptyDataImage from "../../../../images/anhdong/emtydata.gif";
+import emptyDataImage from "../../images/anhdong/emtydata.gif";
 
 function EmptyData() {
   return (
