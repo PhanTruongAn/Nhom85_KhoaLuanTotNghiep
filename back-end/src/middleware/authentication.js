@@ -7,6 +7,8 @@ const white_list = [
   //   "/createLecturer",
   "/login",
   "/log-out",
+  "/find-account",
+  "/send-email",
 ];
 
 const extractToken = (req) => {

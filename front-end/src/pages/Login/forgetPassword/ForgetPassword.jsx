@@ -10,21 +10,49 @@ import {
   Card,
   Link,
 } from "@mui/material";
-import { Space } from "antd";
+import { Space, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import SignInContainer from "../theme/Container";
-
+import authApi from "../../../apis/authApi";
 function ForgetPassword() {
   const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
   const [current, setCurrent] = useState(0);
   const [mssv, setMSSV] = useState("");
   const [email, setEmail] = useState("");
-
+  const data = {
+    username: mssv,
+  };
   const next = () => setCurrent(current + 1);
   const prev = () => setCurrent(current - 1);
 
+  const handleFindAccount = async () => {
+    const res = await authApi.findAccount(data);
+    if (res && res.status === 0) {
+      setEmail(res.data.email);
+      next();
+    } else {
+      setCurrent(current);
+      messageApi.error(res.message);
+    }
+  };
+  const handleSendEmail = async () => {
+    const data = {
+      email: email,
+      username: mssv,
+    };
+    const res = await authApi.sendEmail(data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      next();
+    } else {
+      setCurrent(current);
+      messageApi.error(res.message);
+    }
+  };
   return (
     <SignInContainer direction="column" justifyContent="space-between">
+      {contextHolder}
       <Card
         variant="outlined"
         sx={{
@@ -58,13 +86,13 @@ function ForgetPassword() {
         </Stepper>
 
         {current === 0 && (
-          <InputMSSV value={mssv} onChange={setMSSV} next={next} />
+          <InputMSSV value={mssv} onChange={setMSSV} next={handleFindAccount} />
         )}
         {current === 1 && (
           <InputEmail
             value={email}
             onChange={setEmail}
-            next={next}
+            next={handleSendEmail}
             prev={prev}
           />
         )}

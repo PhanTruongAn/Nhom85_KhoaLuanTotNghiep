@@ -61,7 +61,7 @@ function ChangePassword() {
         >
           Đổi Mật Khẩu
         </h2>
-        <Form form={form} onFinish={onFinish} layout="vertical">
+        <Form form={form} layout="vertical">
           <Form.Item
             name="currentPassword"
             label="Mật khẩu hiện tại"
@@ -101,6 +101,7 @@ function ChangePassword() {
 
           <Form.Item>
             <Button
+              onClick={onFinish}
               variant="contained"
               loading={loading}
               sx={{

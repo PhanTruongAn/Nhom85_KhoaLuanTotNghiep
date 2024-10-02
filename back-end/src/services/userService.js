@@ -4,6 +4,9 @@ import _ from "lodash";
 import jwtAction from "../middleware/jwtAction";
 import roleService from "./roleService";
 import { where } from "sequelize";
+import { mailer } from "../utils/mailer";
+import commonUtils from "../utils/commonUtils";
+import templateHtml from "../utils/templateHtml";
 // Salt Bcrypt
 let salt = bcrypt.genSaltSync(10);
 
@@ -38,7 +41,29 @@ const findAccount = async (username) => {
   }
   return null;
 };
-
+const getEmailByUserName = async (data) => {
+  if (!data && !data.username) {
+    return {
+      status: 1,
+      message: "Hãy nhập username!",
+    };
+  }
+  const res = await findAccount(data.username);
+  if (res) {
+    const data = _.pick(res, ["email"]);
+    return {
+      status: 0,
+      message: "Tìm tài khoản thành công!",
+      data: data,
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Tài khoản không tồn tại!",
+      data: null,
+    };
+  }
+};
 //Chức năng đăng nhập
 const login = async (data) => {
   const username = data.username;
@@ -163,9 +188,79 @@ const changePassword = async (data) => {
     return { status: -1, message: error };
   }
 };
+
+const sendEmail = async (data) => {
+  const { email, username } = data;
+
+  if (!data && !email) {
+    return {
+      status: 1,
+      message: "Hãy nhập email!",
+    };
+  }
+
+  const password = commonUtils.getRandomPassword();
+  const newPassword = password.toString();
+  mailer.sendMail(
+    email,
+    "IUH - Cấp lại mật khẩu mới",
+    templateHtml.getPassHtml(password)
+  );
+  const hashPass = hashPassword(newPassword);
+  const payload = {
+    username: username,
+    password: hashPass,
+  };
+  const result = await updateForgotPassword(payload);
+  if (result && result.status === 0) {
+    return result;
+  } else {
+    return {
+      status: -1,
+      message: "Cấp mật khẩu mới thất bại!",
+    };
+  }
+};
+// Forgot Password
+const updateForgotPassword = async (data) => {
+  const { username, password } = data;
+
+  const student = await Student.findOne({ where: { username: username } });
+
+  if (student) {
+    student.password = password;
+    await student.save();
+
+    return {
+      status: 0,
+      message: "Cấp mật khẩu mới thành công cho sinh viên!",
+    };
+  }
+
+  const lecturer = await Lecturer.findOne({ where: { username: username } });
+
+  if (lecturer) {
+    lecturer.password = password;
+    await lecturer.save();
+
+    return {
+      status: 0,
+      message: "Cấp mật khẩu mới thành công cho giảng viên!",
+    };
+  }
+
+  return {
+    status: 1,
+    message: "Không tìm thấy người dùng với tên đăng nhập này!",
+  };
+};
+
 module.exports = {
   login,
   hashPassword,
   changePassword,
   findAccount,
+  getEmailByUserName,
+  sendEmail,
+  updateForgotPassword,
 };

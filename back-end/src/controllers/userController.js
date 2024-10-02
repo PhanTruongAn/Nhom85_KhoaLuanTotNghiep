@@ -60,9 +60,30 @@ const handleChangePassword = async (req, res) => {
     return res.status(400).json(data);
   }
 };
+const handleFindAccount = async (req, res) => {
+  try {
+    const data = await userService.getEmailByUserName(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(data);
+  }
+};
+const handleSendEmail = async (req, res) => {
+  try {
+    const data = await userService.sendEmail(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(data);
+  }
+};
+
 module.exports = {
   handleLogin,
   handleGetDataFromToken,
   handleLogOut,
   handleChangePassword,
+  handleFindAccount,
+  handleSendEmail,
 };

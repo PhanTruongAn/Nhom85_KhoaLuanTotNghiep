@@ -21,7 +21,8 @@ const initWebRoutes = (app) => {
   router.post("/login", userController.handleLogin);
   router.get("/fetch-token", userController.handleGetDataFromToken);
   router.post("/log-out", userController.handleLogOut);
-
+  router.post("/find-account", userController.handleFindAccount);
+  router.put("/send-email", userController.handleSendEmail);
   //
 
   //Student route
@@ -49,7 +50,7 @@ const initWebRoutes = (app) => {
     studentController.handleFindStudentsByName
   );
   router.put("/student/change-password", userController.handleChangePassword);
-
+  router.get("/find-account", userController.handleFindAccount);
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
@@ -77,6 +78,7 @@ const initWebRoutes = (app) => {
   );
   router.put("/lecturer/change-password", userController.handleChangePassword);
   router.post("/lecturer/create-topic", lecturerController.handleCreateTopics);
+
   //Manager Route
   router.get(
     "/manager/get-all-permission",
