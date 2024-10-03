@@ -12,7 +12,7 @@ function PageNotFound() {
       }}
     >
       <DotLottieReact
-        style={{ width: "90%", height: "100%" }}
+        style={{ marginTop: "20px", width: "90%", height: "100%" }}
         src={animation}
         loop
         autoplay

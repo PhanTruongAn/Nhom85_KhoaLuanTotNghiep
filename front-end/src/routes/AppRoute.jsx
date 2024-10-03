@@ -45,11 +45,11 @@ const AppRoute = () => {
     <>
       <Routes>
         <Route path="/" element={<Navigate to="home" />} />
-        <Route path="*" element={<PageNotFound />} />
         <Route path="/" element={<HomePage />}>
           <Route index path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="forget-password" element={<ForgetPassword />} />
+          <Route path="*" element={<PageNotFound />} />
         </Route>
 
         <Route
