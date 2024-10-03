@@ -134,7 +134,7 @@ const DashBoardManager = () => {
                     width: "80%",
                     height: "auto",
                     alignSelf: "center",
-                    padding: "10px 0 0 10px",
+                    paddingLeft: "10px",
                   }}
                 />
                 <Box

@@ -9,10 +9,11 @@ function PageNotFound() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        // height: "100%",
       }}
     >
       <DotLottieReact
-        style={{ marginTop: "20px", width: "90%", height: "100%" }}
+        style={{ width: "90%", height: "auto" }}
         src={animation}
         loop
         autoplay
