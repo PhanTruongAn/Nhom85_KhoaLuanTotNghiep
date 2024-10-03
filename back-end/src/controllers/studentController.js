@@ -39,9 +39,10 @@ const handleDeleteStudent = async (req, res) => {
     console.log(error);
   }
 };
+
 const handleUpdateStudent = async (req, res) => {
   try {
-    let data = await studentService.updateStudent(req.body);
+    const data = await studentService.updateStudent(req.body);
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);

@@ -1,12 +1,50 @@
-import React from "react";
-import { Avatar, Input, Select } from "antd";
-import { Box, Typography, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Avatar, Input, Select, message, Button } from "antd";
+import { Box, Typography } from "@mui/material";
 import { BookTwoTone } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
 import { useSelector } from "react-redux";
+import StudentApi from "../../../../apis/studentApi";
+
+const { Option } = Select;
 
 function StudentHome() {
   const user = useSelector((state) => state.userInit.user);
+  const [formData, setFormData] = useState({
+    id: user.id,
+    username: user.username || "",
+    fullName: user.fullName || "",
+    phone: user.phone || "",
+    email: user.email || "",
+    gender: user.gender || "",
+    majorName: "",
+    className: "DHKTPM16B",
+    typeTraining: "Đại Học",
+  });
+  const [loading, setLoading] = useState(false);
+
+  // Hàm xử lý thay đổi input
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Hàm xử lý khi nhấn nút Cập nhật
+  const handleUpdate = async () => {
+    setLoading(true);
+    try {
+      const response = await StudentApi.updateById(formData);
+      if (response.status === 0) {
+        message.success("Cập nhật thông tin thành công!");
+      } else {
+        message.error(`Cập nhật thất bại: ${response.message}`);
+      }
+    } catch (error) {
+      message.error("Đã xảy ra lỗi khi cập nhật thông tin.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Box
@@ -43,7 +81,7 @@ function StudentHome() {
                   left: "10px",
                 }}
                 size={80}
-              ></Avatar>
+              />
               <Box sx={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
                 <Box sx={{ marginTop: "5px" }}>
                   <Typography variant="h5" component="h2" gutterBottom>
@@ -54,14 +92,14 @@ function StudentHome() {
                 <Box>
                   <p>
                     <b>Họ và tên: </b>
-                    {user.fullName ? user.fullName : "undefined"}
+                    {user.fullName || "undefined"}
                   </p>
                   <p>
                     <b>Mã số sinh viên: </b>
-                    {user.username ? user.username : "undefined"}
+                    {user.username || "undefined"}
                   </p>
                   <p>
-                    <b>Giới tính: </b> {user.gender ? user.gender : "undefined"}
+                    <b>Giới tính: </b> {user.gender || "undefined"}
                   </p>
                 </Box>
               </Box>
@@ -84,8 +122,8 @@ function StudentHome() {
             >
               <BookTwoTone
                 style={{
-                  fontSize: "80px", // Match the avatar size
-                  color: "rgb(8, 56, 127)", // Match the avatar color
+                  fontSize: "80px",
+                  color: "rgb(8, 56, 127)",
                 }}
               />
               <Box sx={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
@@ -105,7 +143,7 @@ function StudentHome() {
                   </p>
                   <p>
                     <a>
-                      <i>Xem chi tiế</i>t
+                      <i>Xem chi tiết</i>
                     </a>
                   </p>
                 </Box>
@@ -122,7 +160,7 @@ function StudentHome() {
           boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}
       >
-        <form style={{ padding: 10 }}>
+        <form style={{ padding: 10 }} onSubmit={(e) => e.preventDefault()}>
           <h5>Cập nhật thông tin</h5>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
             <Box
@@ -133,7 +171,9 @@ function StudentHome() {
                 Mã Sinh viên *
               </label>
               <Input
-                defaultValue={user.username ? user.username : "undefined"}
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
               />
             </Box>
             <Box
@@ -144,7 +184,9 @@ function StudentHome() {
                 Họ và tên *
               </label>
               <Input
-                defaultValue={user.fullName ? user.fullName : "undefined"}
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
               />
             </Box>
           </Box>
@@ -156,7 +198,11 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Số điện thoại *
               </label>
-              <Input defaultValue={user.phone ? user.phone : "undefined"} />
+              <Input
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+              />
             </Box>
             <Box
               className="col-6"
@@ -165,7 +211,11 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Email *
               </label>
-              <Input defaultValue={user.email ? user.email : "undefined"} />
+              <Input
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -174,7 +224,11 @@ function StudentHome() {
                 Giới tính
               </label>
               <Select
-                defaultValue={user.gender ? user.gender : "undefined"}
+                name="gender"
+                value={formData.gender}
+                onChange={(value) =>
+                  setFormData({ ...formData, gender: value })
+                }
                 style={{ width: "100%" }}
               >
                 <Option value="Nam">Nam</Option>
@@ -185,7 +239,12 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Chuyên ngành
               </label>
-              <Input placeholder="Kỹ thuật phần mềm" />
+              <Input
+                name="majorName"
+                value={formData.majorName}
+                onChange={handleChange}
+                placeholder="Kỹ thuật phần mềm"
+              />
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -193,20 +252,33 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Lớp danh nghĩa
               </label>
-              <Input defaultValue="DHKTPM16B" />
+              <Input
+                name="className"
+                value={formData.className}
+                onChange={handleChange}
+              />
             </Box>
             <Box sx={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
               <label style={{ textAlign: "left", display: "block" }}>
                 Chương trình đào tạo
               </label>
-              <Select defaultValue="Đại Học" style={{ width: "100%" }}>
+              <Select
+                name="typeTraining"
+                value={formData.typeTraining}
+                onChange={(value) =>
+                  setFormData({ ...formData, typeTraining: value })
+                }
+                style={{ width: "100%" }}
+              >
                 <Option value="Đại Học">Đại Học</Option>
                 <Option value="Cao Đẳng">Cao Đẳng</Option>
               </Select>
             </Box>
           </Box>
 
-          <Button variant="contained">Cập nhật</Button>
+          <Button variant="contained" onClick={handleUpdate} loading={loading}>
+            Cập nhật
+          </Button>
         </form>
       </Card>
     </Box>
