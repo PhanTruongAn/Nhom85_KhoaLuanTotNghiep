@@ -114,20 +114,7 @@ const DashBoardManager = () => {
             style={{ position: "relative" }}
           >
             {!collapsed && (
-              <div
-                className="demo-logo-vertical"
-                // style={{
-                //   borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
-                //   position: "absolute",
-                //   left: "0",
-                //   right: "0",
-                //   alignItems: "center",
-                //   display: "flex",
-                //   flexDirection: "column",
-                //   justifyContent: "center",
-                //   padding: "10px",
-                // }}
-              >
+              <div className="demo-logo-vertical">
                 <img
                   src={themes ? logoDark : logoLight}
                   style={{
@@ -200,7 +187,7 @@ const DashBoardManager = () => {
                   onClick={changeTheme}
                   style={{ marginRight: "10px", marginTop: "-3px" }}
                 />
-                <Dropdown menu={<ListNotification />} trigger={["click"]}>
+                <Dropdown overlay={<ListNotification />} trigger={["click"]}>
                   <Button
                     className="bell-icon"
                     size="large"
