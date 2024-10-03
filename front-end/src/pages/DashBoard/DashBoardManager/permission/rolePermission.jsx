@@ -35,7 +35,6 @@ function RolePermission() {
     fetchPermission,
     {
       keepPreviousData: true,
-      staleTime: 1000 * 60 * 5, // Dữ liệu sẽ được coi là mới trong 5 phút
       cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
       refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
       staleTime: 1000,

@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import UpdateModal from "../../../../components/Dashboard/updateModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import { useQuery } from "react-query";
+import CustomButton from "../../../../components/Button/CustomButton";
 const { Option } = Select;
 const { Search } = Input;
 function ListLecturer() {
@@ -54,7 +55,6 @@ function ListLecturer() {
         : lecturerApi.getAll(currentPage, limitUser),
     {
       keepPreviousData: true,
-      staleTime: 1000 * 60 * 5,
       cacheTime: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
       staleTime: 1000,
@@ -312,13 +312,12 @@ function ListLecturer() {
           >
             Thêm mới giảng viên
           </Button>
-          <Button
+          <CustomButton
             onClick={handlerReload}
-            variant="contained"
-            startIcon={<ReloadOutlined spin={loading} />}
-          >
-            Làm mới
-          </Button>
+            loading={loading}
+            text="Làm mới"
+            type="refresh"
+          />
         </Space>
       </Box>
       <Box

@@ -186,14 +186,19 @@ const updateLecturer = async (data) => {
       email: data.email,
       phone: data.phone,
       gender: data.gender,
+      degree: data.degree ? data.degree : "",
     },
     { where: { id: data.id } }
   );
-  if (res) {
+  if (res[0] > 0) {
+    const updatedLecturer = await Lecturer.findOne({
+      where: { id: data.id },
+      attributes: { exclude: ["password", "createdAt", "updatedAt", "RoleId"] },
+    });
     return {
       status: 0,
       message: "Cập nhật thành công!",
-      data: res,
+      data: updatedLecturer,
     };
   } else {
     return {

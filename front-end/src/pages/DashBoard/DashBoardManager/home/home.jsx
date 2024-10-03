@@ -1,12 +1,58 @@
-import React from "react";
-import { Avatar, Input, Select } from "antd";
-import { Box, Typography, Button } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Avatar, Input, Select, message, Form } from "antd";
+import { Box, Typography } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import lecturerApi from "../../../../apis/lecturerApi";
+import CustomButton from "../../../../components/Button/CustomButton";
+import { setUser } from "../../../../redux/userSlice";
 const { Option } = Select;
 
 function ManagerHome() {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [username, setUsername] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [degree, setDegree] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setUsername(user.username || "undefined");
+    setFullName(user.fullName || "undefined");
+    setEmail(user.email || "undefined");
+    setPhone(user.phone || "undefined");
+    setGender(user.gender || "undefined");
+    setDegree(user.degree || "undefined");
+  }, [user]);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const id = user.id;
+    const res = await lecturerApi.updateById({
+      id,
+      username,
+      fullName,
+      email,
+      phone,
+      gender,
+      degree,
+    });
+    setLoading(false);
+    if (res && res.status === 0) {
+      const dataRedux = {
+        ...res.data,
+        role: user.role,
+      };
+      dispatch(setUser(dataRedux));
+      messageApi.success(res.message);
+    } else {
+      messageApi.error(res.message);
+    }
+  };
 
   return (
     <Box
@@ -17,6 +63,7 @@ function ManagerHome() {
         alignItems: "center",
       }}
     >
+      {contextHolder}
       <Card
         sx={{
           marginTop: "10px",
@@ -72,7 +119,7 @@ function ManagerHome() {
           boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}
       >
-        <form style={{ padding: 10 }}>
+        <Form style={{ padding: 10 }}>
           <h5>Cập nhật thông tin</h5>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
             <Box
@@ -83,7 +130,8 @@ function ManagerHome() {
                 Mã Sinh viên *
               </label>
               <Input
-                defaultValue={user.username ? user.username : "undefined"}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </Box>
             <Box
@@ -94,7 +142,8 @@ function ManagerHome() {
                 Họ và tên *
               </label>
               <Input
-                defaultValue={user.fullName ? user.fullName : "undefined"}
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
               />
             </Box>
           </Box>
@@ -106,7 +155,7 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Số điện thoại *
               </label>
-              <Input defaultValue={user.phone ? user.phone : "undefined"} />
+              <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
             </Box>
             <Box
               className="col-6"
@@ -115,7 +164,7 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Email *
               </label>
-              <Input defaultValue={user.email ? user.email : "undefined"} />
+              <Input value={email} onChange={(e) => setEmail(e.target.value)} />
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -124,7 +173,8 @@ function ManagerHome() {
                 Giới tính
               </label>
               <Select
-                defaultValue={user.gender ? user.gender : "undefined"}
+                value={gender}
+                onChange={(value) => setGender(value)}
                 style={{ width: "100%" }}
               >
                 <Option value="Nam">Nam</Option>
@@ -136,7 +186,8 @@ function ManagerHome() {
                 Chức vụ
               </label>
               <Select
-                defaultValue={user.degree ? user.degree : "undefined"}
+                value={degree}
+                onChange={(value) => setDegree(value)}
                 style={{ width: "100%" }}
               >
                 <Option value="THẠC SĨ">THẠC SĨ</Option>
@@ -144,11 +195,13 @@ function ManagerHome() {
               </Select>
             </Box>
           </Box>
-
-          <Button variant="contained" size="small">
-            Cập nhật
-          </Button>
-        </form>
+          <CustomButton
+            onClick={handleSubmit}
+            text="Cập nhật"
+            type="refresh"
+            loading={loading}
+          />
+        </Form>
       </Card>
     </Box>
   );

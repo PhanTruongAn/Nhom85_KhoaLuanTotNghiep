@@ -251,6 +251,45 @@ const createGroupsStudent = async (data) => {
     };
   }
 };
+const paginationGroupsStudent = async (page, limit) => {
+  try {
+    if (!page) {
+      return {
+        status: 1,
+        message: "Số trang không hợp lệ!",
+      };
+    }
+    if (!limit) {
+      return {
+        status: 1,
+        message: "Số phần tử của trang không hợp lệ!",
+      };
+    }
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Group.findAndCountAll({
+      attributes: ["id", "groupName", "topicId", "createdAt"],
+      offset: offset,
+      limit: limit,
+    });
+    const totalPages = Math.ceil(count / limit);
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: {
+        totalRows: count,
+        totalPages: totalPages,
+        groupStudent: rows,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lấy danh sách thất bại!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   paginationPermission,
   getAllPermission,
@@ -261,4 +300,5 @@ module.exports = {
   getRolePermissions,
   assignPermissionsToRole,
   createGroupsStudent,
+  paginationGroupsStudent,
 };

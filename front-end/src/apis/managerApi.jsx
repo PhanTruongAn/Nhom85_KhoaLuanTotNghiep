@@ -25,5 +25,10 @@ const managerApi = {
   createGroupsStudent: (data) => {
     return axiosClient.post(`${baseUrl}/create-groups-student`, data);
   },
+  getGroupsStudent: (page, limit) => {
+    return axiosClient.get(
+      `${baseUrl}/get-groups-student?page=${page}&limit=${limit}`
+    );
+  },
 };
 export default managerApi;

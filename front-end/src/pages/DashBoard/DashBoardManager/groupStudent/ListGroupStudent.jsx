@@ -1,71 +1,80 @@
 import React, { useState } from "react";
-import { Table, Space, message, Input, Select, Button as button } from "antd";
+import { Table, Space, message, Input, Select } from "antd";
 import { Box, Button, Typography } from "@mui/material";
 import {
   EditOutlined,
   DeleteOutlined,
   PlusOutlined,
-  ReloadOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
 import CreateGroupModal from "./CreateGroupModal";
 import UpdateGroupModal from "./UpdateGroupModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-
+import CustomButton from "../../../../components/Button/CustomButton";
+import { useQuery } from "react-query";
+import { formatDate } from "../../../../utils/formatDate";
 const { Search } = Input;
 const { Option } = Select;
-
-const data = [
-  {
-    id: 1,
-    groupName: "Nhóm 1",
-    topicId: "topic_001",
-    createdAt: "2024-01-15T10:00:00Z",
-    updatedAt: "2024-01-20T12:30:00Z",
-  },
-  {
-    id: 2,
-    groupName: "Nhóm 2",
-    topicId: "topic_002",
-    createdAt: "2024-01-16T11:00:00Z",
-    updatedAt: "2024-01-21T13:30:00Z",
-  },
-  {
-    id: 3,
-    groupName: "Nhóm 3",
-    topicId: "topic_001",
-    createdAt: "2024-01-15T10:00:00Z",
-    updatedAt: "2024-01-20T12:30:00Z",
-  },
-  {
-    id: 4,
-    groupName: "Nhóm 4",
-    topicId: "topic_002",
-    createdAt: "2024-01-16T11:00:00Z",
-    updatedAt: "2024-01-21T13:30:00Z",
-  },
-  {
-    id: 5,
-    groupName: "Nhóm 5",
-    topicId: "topic_001",
-    createdAt: "2024-01-15T10:00:00Z",
-    updatedAt: "2024-01-20T12:30:00Z",
-  },
-  {
-    id: 6,
-    groupName: "Nhóm 6",
-    topicId: "topic_002",
-    createdAt: "2024-01-16T11:00:00Z",
-    updatedAt: "2024-01-21T13:30:00Z",
-  },
-];
-
+import managerApi from "../../../../apis/managerApi";
 const ListGroupStudent = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [state, setState] = useState({
+    searchLoading: false,
+    currentPage: 1,
+    pageSize: 5,
+    dataSource: [],
+    loadingData: false,
+    searchValue: "",
+    objectSelect: {},
+    totalRows: null,
+    refreshButton: false,
+  });
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
+
+  // useQuery to fetch data
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ["groupStudent", state.currentPage],
+    () => managerApi.getGroupsStudent(state.currentPage, state.pageSize),
+    {
+      keepPreviousData: true,
+      cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
+      refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
+      staleTime: 1000,
+      onSuccess: (res) => {
+        console.log("check res: ", res);
+        if (res && res.status === 0) {
+          updateState({
+            refreshButton: false,
+            dataSource: res.data.groupStudent,
+            totalRows: res.data.totalRows,
+            loadingData: false,
+          });
+        } else if (res.status === -1 || res.status === 403) {
+          updateState({
+            dataSource: [],
+            loadingData: false,
+            refreshButton: false,
+          });
+          messageApi.error(res.message);
+        }
+      },
+      onError: (err) => {
+        updateState({
+          dataSource: [],
+          loadingData: false,
+          refreshButton: false,
+        });
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
+    }
+  );
 
   const handleOpenCreateModal = () => {
     setOpenCreateModal(true);
@@ -98,6 +107,13 @@ const ListGroupStudent = () => {
     // Thực hiện tìm kiếm nếu cần
   };
 
+  const onRefreshData = () => {
+    updateState({ refreshButton: true });
+    refetch();
+  };
+  const onChangePage = (pageNumber) => {
+    updateState({ currentPage: pageNumber });
+  };
   const columns = [
     {
       title: "ID",
@@ -119,12 +135,9 @@ const ListGroupStudent = () => {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
+      render: (text) => formatDate(text),
     },
-    {
-      title: "Updated At",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-    },
+
     {
       title: "Actions",
       key: "action",
@@ -181,9 +194,18 @@ const ListGroupStudent = () => {
       ),
     },
   ];
-
+  const itemRender = (_, type, originalElement) => {
+    if (type === "prev") {
+      return <Button type="link">Previous</Button>;
+    }
+    if (type === "next") {
+      return <Button type="link">Next</Button>;
+    }
+    return originalElement;
+  };
   return (
     <Box sx={{ padding: "20px" }}>
+      {contextHolder}
       <Box
         sx={{
           display: "flex",
@@ -209,9 +231,12 @@ const ListGroupStudent = () => {
           >
             Thêm mới
           </Button>
-          <Button variant="contained" startIcon={<ReloadOutlined />}>
-            Làm mới
-          </Button>
+          <CustomButton
+            onClick={onRefreshData}
+            text={"Làm mới"}
+            type="refresh"
+            loading={state.refreshButton}
+          />
         </Space>
       </Box>
       <Box
@@ -254,13 +279,35 @@ const ListGroupStudent = () => {
           onChange: setSelectedRowKeys,
         }}
         columns={columns}
-        dataSource={data}
+        dataSource={state.dataSource}
         rowKey="id"
         showSorterTooltip={{
           target: "sorter-icon",
         }}
+        loading={isFetching}
         pagination={{
-          pageSize: 5,
+          total: state.totalRows,
+          current: state.currentPage,
+          pageSize: state.pageSize,
+          onChange: onChangePage,
+          showQuickJumper: true,
+          itemRender: itemRender,
+          responsive: true,
+        }}
+        locale={{
+          emptyText:
+            state.dataSource.length === 0 ? (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                width={"100%"}
+                height={"auto"}
+              >
+                <EmptyData />
+              </Box>
+            ) : null,
         }}
       />
 

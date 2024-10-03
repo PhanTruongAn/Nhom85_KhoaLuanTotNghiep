@@ -23,6 +23,7 @@ import { useQuery } from "react-query";
 import managerApi from "../../../../apis/managerApi";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import EmptyData from "../../../../components/emptydata/EmptyData";
+import CustomButton from "../../../../components/Button/CustomButton";
 const { Search } = Input;
 function ListPermission() {
   const [state, setState] = useState({
@@ -33,6 +34,7 @@ function ListPermission() {
     loadingData: false,
     searchValue: "",
     objectSelect: {},
+    refreshButton: false,
   });
   const [messageApi, contextHolder] = message.useMessage();
   const [searchValue, setSearchValue] = useState("");
@@ -55,11 +57,11 @@ function ListPermission() {
       updateState({
         dataSource: response.data,
         loadingData: false,
-        reloadIcon: false,
+        refreshButton: false,
       });
       // messageApi.success(response.message);
     } else {
-      updateState({ dataSource: [], loadingData: false });
+      updateState({ dataSource: [], loadingData: false, refreshButton: false });
       messageApi.error(response.message);
     }
     return response;
@@ -78,7 +80,7 @@ function ListPermission() {
 
   // Làm mới dữ liệu
   const handleReload = () => {
-    updateState({ loadingData: true });
+    updateState({ refreshButton: true });
     refetch();
     setTimeout(() => {
       messageApi.success("Làm mới dữ liệu thành công!");
@@ -302,13 +304,12 @@ function ListPermission() {
             >
               Thêm mới
             </Button>
-            <Button
+            <CustomButton
               onClick={handleReload}
-              variant="contained"
-              startIcon={<ReloadOutlined />}
-            >
-              Làm mới
-            </Button>
+              loading={state.refreshButton}
+              text="Làm mới"
+              type="refresh"
+            />
           </Space>
         </Box>
       </Box>

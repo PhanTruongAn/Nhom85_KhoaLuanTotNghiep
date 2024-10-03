@@ -110,6 +110,20 @@ const handleCreateGroupsStudent = async (req, res) => {
     });
   }
 };
+const handleGetAllGroupsStudent = async (req, res) => {
+  if (req.query.page && req.query.limit) {
+    const limit = req.query.limit;
+    const page = req.query.page;
+    const data = await service.paginationGroupsStudent(+page, +limit);
+    return res.status(200).json(data);
+  } else {
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi chức năng!",
+      data: null,
+    });
+  }
+};
 module.exports = {
   handleGetAllPermission,
   handleCreatePermission,
@@ -119,4 +133,5 @@ module.exports = {
   handleGetRolePermissions,
   handleAssignPermissions,
   handleCreateGroupsStudent,
+  handleGetAllGroupsStudent,
 };
