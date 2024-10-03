@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button } from "antd";
-import "./ListNotification.scss";
+import { Box, Button } from "@mui/material";
 
 const notifications = [
   {
@@ -45,13 +44,15 @@ function ListNotification() {
   const [sortedNotifications, setSortedNotifications] = useState([]);
   const containerRef = useRef(null);
 
+  // Sort notifications by date (descending order)
   useEffect(() => {
-    const sorted = notifications.sort((a, b) => {
-      return new Date(b.createAt) - new Date(a.createAt);
-    });
+    const sorted = notifications.sort(
+      (a, b) => new Date(b.createAt) - new Date(a.createAt)
+    );
     setSortedNotifications(sorted);
   }, []);
 
+  // Handle scroll event
   const handleScroll = () => {
     if (containerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
@@ -65,36 +66,71 @@ function ListNotification() {
   };
 
   return (
-    <div
+    <Box
       className="notification-container"
       ref={containerRef}
       onScroll={handleScroll}
+      sx={{
+        backgroundColor: "#fff",
+        borderRadius: "8px",
+        padding: "16px",
+        width: "700px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        transition: "box-shadow 0.3s",
+        maxHeight: "400px",
+        overflowY: "auto", // Important to enable scrolling
+        cursor: "pointer",
+        "&::-webkit-scrollbar": {
+          width: "8px",
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "#f1f1f1",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: "#888",
+          borderRadius: "10px",
+        },
+      }}
     >
-      <div className="notification-header">
-        <h2>Thông báo mới</h2>
-        <span>{sortedNotifications.length} Thông báo</span>
-      </div>
+      <Box display="flex" justifyContent="space-between" marginBottom="16px">
+        <Box component="h2" fontSize="18px">
+          Thông báo mới
+        </Box>
+        <Box component="span" fontSize="14px">
+          {sortedNotifications.length} Thông báo
+        </Box>
+      </Box>
       {sortedNotifications.slice(0, visibleCount).map((notification) => (
-        <div
+        <Box
           className="notification-item"
           key={notification.id}
-          style={{ height: "85px" }}
+          sx={{
+            borderRadius: "4px",
+            padding: "12px",
+            marginBottom: "10px",
+            boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+            transition: "background-color 0.3s",
+            "&:hover": {},
+          }}
         >
-          <div className="notification-date">
+          <Box component="div" fontSize="12px">
             {new Date(notification.createAt).toLocaleString("vi-VN")}
-          </div>
-          <div className="notification-title">
+          </Box>
+          <Box component="div" fontSize="14px" fontWeight="bold" margin="4px 0">
             Tiêu đề: {notification.title} (Trọng số: {notification.weight})
-          </div>
-          <div
-            className="notification-footer"
-            style={{ float: "right", fontSize: "12px" }}
-          >
-            <i> Đã xem</i>
-          </div>
-        </div>
+          </Box>
+          <Box component="div" fontSize="12px" textAlign="right">
+            <i>Đã xem</i>
+          </Box>
+        </Box>
       ))}
-    </div>
+      {visibleCount < sortedNotifications.length && (
+        <Button
+          onClick={() => setVisibleCount(visibleCount + 3)}
+          style={{ marginTop: "10px" }}
+        ></Button>
+      )}
+    </Box>
   );
 }
 
