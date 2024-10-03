@@ -119,7 +119,7 @@ function ManagerHome() {
           boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}
       >
-        <Form style={{ padding: 10 }}>
+        <form style={{ padding: 10 }}>
           <h5>Cập nhật thông tin</h5>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
             <Box
@@ -201,7 +201,7 @@ function ManagerHome() {
             type="refresh"
             loading={loading}
           />
-        </Form>
+        </form>
       </Card>
     </Box>
   );

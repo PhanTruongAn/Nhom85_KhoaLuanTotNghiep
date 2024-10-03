@@ -134,7 +134,6 @@ function StudentHome() {
               </label>
               <Input
                 defaultValue={user.username ? user.username : "undefined"}
-                disabled
               />
             </Box>
             <Box

@@ -179,19 +179,29 @@ const deleteStudent = async (data) => {
 };
 
 const updateStudent = async (data) => {
-  const res = await Student.update(
-    {
-      username: data.username,
-      fullName: data.fullName,
-      email: data.email,
-      phone: data.phone,
-      gender: data.gender,
-      className: data.className ? data.className : "",
-      majorName: data.majorName ? data.majorName : "",
-      typeTraining: data.typeTraining ? data.typeTraining : "",
-    },
-    { where: { id: data.id } }
-  );
+  const updateData = {
+    username: data.username,
+    fullName: data.fullName,
+    email: data.email,
+    phone: data.phone,
+    gender: data.gender,
+  };
+
+  if (data.className) {
+    updateData.className = data.className;
+  }
+
+  if (data.majorName) {
+    updateData.majorName = data.majorName;
+  }
+
+  if (data.typeTraining) {
+    updateData.typeTraining = data.typeTraining;
+  }
+
+  const res = await Student.update(updateData, {
+    where: { id: data.id },
+  });
   if (res) {
     return {
       status: 0,

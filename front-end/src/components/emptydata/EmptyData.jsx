@@ -6,7 +6,7 @@ function EmptyData() {
   return (
     <Box>
       <DotLottieReact
-        style={{ width: "100%", height: "auto" }}
+        style={{ width: "100%", height: "100%" }}
         src={emptyDataImage}
         loop
         autoplay

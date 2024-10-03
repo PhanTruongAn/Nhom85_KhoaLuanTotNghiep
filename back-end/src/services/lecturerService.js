@@ -179,17 +179,21 @@ const deleteLecturer = async (data) => {
 };
 
 const updateLecturer = async (data) => {
-  const res = await Lecturer.update(
-    {
-      username: data.username,
-      fullName: data.fullName,
-      email: data.email,
-      phone: data.phone,
-      gender: data.gender,
-      degree: data.degree ? data.degree : "",
-    },
-    { where: { id: data.id } }
-  );
+  const updateData = {
+    username: data.username,
+    fullName: data.fullName,
+    email: data.email,
+    phone: data.phone,
+    gender: data.gender,
+  };
+
+  if (data.degree) {
+    updateData.degree = data.degree;
+  }
+
+  const res = await Lecturer.update(updateData, {
+    where: { id: data.id },
+  });
   if (res[0] > 0) {
     const updatedLecturer = await Lecturer.findOne({
       where: { id: data.id },
