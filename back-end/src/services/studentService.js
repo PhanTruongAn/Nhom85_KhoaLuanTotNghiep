@@ -186,6 +186,9 @@ const updateStudent = async (data) => {
       email: data.email,
       phone: data.phone,
       gender: data.gender,
+      className: data.className ? data.className : "",
+      majorName: data.majorName ? data.majorName : "",
+      typeTraining: data.typeTraining ? data.typeTraining : "",
     },
     { where: { id: data.id } }
   );
