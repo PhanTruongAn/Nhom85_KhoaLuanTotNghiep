@@ -1,25 +1,18 @@
 import React from "react";
-import emptyDataImage from "../../images/anhdong/emtydata.gif";
-
+import emptyDataImage from "../../images/anhdong/empty-data-animation.lottie";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { Box } from "@mui/material";
 function EmptyData() {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <img
+    <Box>
+      <DotLottieReact
+        style={{ width: "100%", height: "auto" }}
         src={emptyDataImage}
-        alt="Loading"
-        style={{ width: "100px", height: "100px" }}
+        loop
+        autoplay
       />
-      <h3 style={{ marginTop: "16px", color: "#555" }}>
-        Không có dữ liệu để hiển thị
-      </h3>
-    </div>
+      <h6 style={{ color: "#555" }}>Không có dữ liệu để hiển thị</h6>
+    </Box>
   );
 }
 

@@ -3,20 +3,26 @@ import * as XLSX from "xlsx";
 import _ from "lodash";
 import { Button, Box } from "@mui/material";
 import studentApi from "../../../../apis/studentApi";
-import { toast } from "react-toastify";
-import { Table, message } from "antd";
+import { Space, Table, message } from "antd";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AddIcon from "@mui/icons-material/Add";
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
 import EmptyData from "../../../../components/emptydata/EmptyData";
+import CustomButton from "../../../../components/Button/CustomButton";
 import AddModal from "./AddModal";
+import { isEmpty } from "lodash";
 const AccountStudent = () => {
+  const [state, setState] = useState({
+    loadingSuccess: false,
+    loadingError: false,
+    loadingData: false,
+  });
   const [messageApi, contextHolder] = message.useMessage();
   const [jsonData, setJsonData] = useState([]);
   const [fileInput, setFileInput] = useState(null);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -27,10 +33,9 @@ const AccountStudent = () => {
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const json = XLSX.utils.sheet_to_json(sheet);
-      setLoading(true);
+      updateState({ loadingData: true });
       setTimeout(() => {
-        setLoading(false);
-
+        updateState({ loadingData: false });
         setJsonData(json);
       }, 1000);
     };
@@ -51,24 +56,30 @@ const AccountStudent = () => {
   };
 
   const handlerSubmit = async () => {
-    setLoading(true);
+    updateState({ loadingSuccess: true });
     const data = persistDataToSave();
     const result = await studentApi.createAccountsStudent(data);
     if (result.status === 0) {
+      updateState({ loadingSuccess: false });
       messageApi.success(result.message);
-      handleCancel();
+      document.getElementById("file-input").value = "";
+      setJsonData([]);
     } else {
-      setLoading(false);
+      updateState({ loadingSuccess: false });
       messageApi.error(result.message);
     }
   };
 
   const handleCancel = () => {
-    setLoading(true);
+    if (isEmpty(jsonData)) {
+      messageApi.warning("Không có file để hủy bỏ!");
+      return;
+    }
+    updateState({ loadingError: true });
     document.getElementById("file-input").value = "";
     setTimeout(() => {
       setJsonData([]);
-      setLoading(false);
+      updateState({ loadingError: false });
     }, 1000);
   };
 
@@ -161,7 +172,7 @@ const AccountStudent = () => {
           columns={columns}
           rowKey="MaSinhVien"
           pagination={{ pageSize: 5 }}
-          loading={loading}
+          loading={state.loadingData}
         />
       ) : (
         <Table
@@ -174,6 +185,7 @@ const AccountStudent = () => {
           dataSource={[]}
           pagination={false}
           rowKey="dataIndex"
+          loading={state.loadingData}
           locale={{
             emptyText: (
               <Box
@@ -181,8 +193,6 @@ const AccountStudent = () => {
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
-                paddingTop={"50px"}
-                style={{ height: "100%" }}
               >
                 <EmptyData />
               </Box>
@@ -190,29 +200,20 @@ const AccountStudent = () => {
           }}
         />
       )}
-      <Button
-        sx={{ alignSelf: "right", marginTop: "10px", textTransform: "none" }}
-        variant="contained"
-        onClick={handlerSubmit}
-        size="small"
-        startIcon={<CheckIcon />}
-      >
-        Xác nhận
-      </Button>
-      <Button
-        sx={{
-          marginTop: "10px",
-          marginLeft: "10px",
-          textTransform: "none",
-        }}
-        variant="contained"
-        onClick={handleCancel}
-        color="error"
-        size="small"
-        startIcon={<ClearIcon />}
-      >
-        Hủy bỏ
-      </Button>
+      <Space>
+        <CustomButton
+          onClick={handlerSubmit}
+          text={"Xác nhận"}
+          type="success"
+          loading={state.loadingSuccess}
+        />
+        <CustomButton
+          onClick={handleCancel}
+          text={"Hủy bỏ"}
+          type="error"
+          loading={state.loadingError}
+        />
+      </Space>
       <AddModal isOpen={open} onClose={handleCloseModal} />
     </Box>
   );

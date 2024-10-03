@@ -169,7 +169,6 @@ function MyPoint() {
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
-                paddingTop={"50px"}
                 style={{ height: "100%" }}
               >
                 <EmptyData />

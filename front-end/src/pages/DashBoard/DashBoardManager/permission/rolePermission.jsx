@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
-import { Select, Table, Tag, message, Input } from "antd";
+import { Select, Table, Tag, message } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import { useQuery } from "react-query";
 import managerApi from "../../../../apis/managerApi";
-// const { Search } = Input;
 import SearchComponent from "../../../../components/SearchComponent/search";
+import CustomButton from "../../../../components/Button/CustomButton";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 function RolePermission() {
   const [state, setState] = useState({
@@ -15,6 +15,7 @@ function RolePermission() {
     loadingData: false,
     searchValue: "",
     searchLoading: false,
+    loadingSuccess: false,
   });
   // Update states
   const updateState = (newState) => {
@@ -128,14 +129,14 @@ function RolePermission() {
   };
   // Xác nhận gán quyền
   const handleSubmit = async () => {
-    updateState({ loadingData: true });
+    updateState({ loadingSuccess: true });
     const data = buildDataToSave();
     const res = await managerApi.assignPermissions(data);
     if (res && res.status === 0) {
-      updateState({ loadingData: false });
+      updateState({ loadingSuccess: false });
       messageApi.success(res.message);
     } else {
-      updateState({ loadingData: false });
+      updateState({ loadingSuccess: false });
       messageApi.error(res.message);
     }
   };
@@ -244,13 +245,30 @@ function RolePermission() {
             responsive: true,
           }}
           loading={state.loadingData}
+          locale={{
+            emptyText:
+              state.dataSource.length === 0 ? (
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  width={"100%"}
+                  height={"auto"}
+                >
+                  <EmptyData />
+                </Box>
+              ) : null,
+          }}
         />
       </Box>
       <Box sx={{ padding: "0px 0px 0px 10px" }}>
-        <Button variant="contained" onClick={handleSubmit}>
-          <CheckOutlined style={{ marginRight: "5px" }} />
-          Xác nhận
-        </Button>
+        <CustomButton
+          onClick={handleSubmit}
+          text={"Gán quyền"}
+          loading={state.loadingSuccess}
+          type="success"
+        />
       </Box>
     </Box>
   );

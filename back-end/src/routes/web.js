@@ -108,6 +108,10 @@ const initWebRoutes = (app) => {
     "/manager/assign-permissions",
     managerController.handleAssignPermissions
   );
+  router.post(
+    "/manager/create-groups-student",
+    managerController.handleCreateGroupsStudent
+  );
   return app.use("/", router);
 };
 export default initWebRoutes;

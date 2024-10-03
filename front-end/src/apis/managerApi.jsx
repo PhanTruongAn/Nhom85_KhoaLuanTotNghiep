@@ -22,5 +22,8 @@ const managerApi = {
   assignPermissions: (data) => {
     return axiosClient.post(`${baseUrl}/assign-permissions`, data);
   },
+  createGroupsStudent: (data) => {
+    return axiosClient.post(`${baseUrl}/create-groups-student`, data);
+  },
 };
 export default managerApi;

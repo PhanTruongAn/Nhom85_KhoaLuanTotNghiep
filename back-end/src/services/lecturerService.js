@@ -1,6 +1,6 @@
 import db from "../models/index";
 import { hashPassword } from "../services/userService";
-import _ from "lodash";
+import _, { isEmpty } from "lodash";
 const { Op } = require("sequelize");
 //Models Database
 const Lecturer = db.Lecturer;
@@ -54,6 +54,13 @@ const createLecturerAccount = async (data) => {
 };
 // Tạo nhiều tài khoản giảng viên
 const createBulkAccountLecturer = async (data) => {
+  if (!data || isEmpty(data)) {
+    return {
+      status: 1,
+      message: "Dữ liệu trống!",
+      data: null,
+    };
+  }
   try {
     const testArr = data;
     const currentAccount = await Lecturer.findAll({

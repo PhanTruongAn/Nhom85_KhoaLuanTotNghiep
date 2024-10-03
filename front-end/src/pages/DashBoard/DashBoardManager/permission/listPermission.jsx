@@ -333,6 +333,21 @@ function ListPermission() {
           responsive: true,
         }}
         loading={state.loadingData}
+        locale={{
+          emptyText:
+            state.dataSource.length === 0 ? (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                width={"100%"}
+                height={"auto"}
+              >
+                <EmptyData />
+              </Box>
+            ) : null,
+        }}
       />
 
       <AddModal isOpen={open} onClose={handleCloseModal} refetch={refetch} />

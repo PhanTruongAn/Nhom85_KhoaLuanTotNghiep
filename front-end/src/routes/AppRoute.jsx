@@ -25,6 +25,7 @@ import ListStudentGroup from "../pages/DashBoard/DashBoardStudent/group/ListStud
 import StudentGroup from "../pages/DashBoard/DashBoardStudent/group/StudentGroup";
 import MyPoint from "../pages/DashBoard/DashBoardStudent/point/MyPoint";
 import Criteria from "../pages/DashBoard/DashBoardStudent/criteria/Criteria";
+import PageNotFound from "../pages/PageNotFound/PageNotFound";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -44,6 +45,7 @@ const AppRoute = () => {
     <>
       <Routes>
         <Route path="/" element={<Navigate to="home" />} />
+        <Route path="*" element={<PageNotFound />} />
         <Route path="/" element={<HomePage />}>
           <Route index path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
@@ -144,6 +146,7 @@ const AppRoute = () => {
             path="criteria"
             element={<PrivateRoute component={<Criteria />} />}
           />
+          <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>
     </>

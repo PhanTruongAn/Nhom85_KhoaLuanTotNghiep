@@ -374,6 +374,21 @@ function ListLecturer() {
           rowKey={"id"}
           scroll={{ x: "max-content" }}
           loading={isFetching}
+          locale={{
+            emptyText:
+              dataSource.length === 0 ? (
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  width={"100%"}
+                  height={"auto"}
+                >
+                  <EmptyData />
+                </Box>
+              ) : null,
+          }}
         />
       </Box>
       <CreateModal

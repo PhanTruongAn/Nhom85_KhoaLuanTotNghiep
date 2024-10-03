@@ -1,35 +1,61 @@
 import React, { useState } from "react";
-import { Form, Input, message } from "antd";
-import { Box, Button } from "@mui/material";
+import { message } from "antd";
+import { Box, Button, TextField, CircularProgress } from "@mui/material";
 import "./ChangePassword.scss";
 import { useSelector } from "react-redux";
 import lecturerApi from "../../apis/lecturerApi";
 import studentApi from "../../apis/studentApi";
 import { Card } from "../../components/Card/Card";
+
 function ChangePassword() {
   const data = useSelector((state) => state.userInit.user);
-
-  const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [formValues, setFormValues] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const onFinish = async () => {
+    if (
+      !formValues.currentPassword ||
+      !formValues.newPassword ||
+      !formValues.confirmPassword
+    ) {
+      messageApi.error("Vui lòng điền đầy đủ thông tin.");
+      return;
+    }
+
+    if (formValues.newPassword !== formValues.confirmPassword) {
+      messageApi.error("Mật khẩu mới và xác nhận mật khẩu không khớp.");
+      return;
+    }
+
     setLoading(true);
     const payload = {
       username: data.username,
       roleName: data.role.name,
-      currentPassword: form.getFieldValue("currentPassword"),
-      newPassword: form.getFieldValue("newPassword"),
+      currentPassword: formValues.currentPassword,
+      newPassword: formValues.newPassword,
     };
     const res =
       data.role.name === "STUDENT"
         ? await studentApi.changePassword(payload)
         : await lecturerApi.changePassword(payload);
+    setLoading(false);
+
     if (res && res.status === 0) {
       messageApi.success(res.message);
-      setLoading(false);
     } else {
       messageApi.error(res.message);
-      setLoading(false);
     }
   };
 
@@ -40,80 +66,75 @@ function ChangePassword() {
         justifyContent: "center",
         alignItems: "center",
         height: "100%",
-
         width: "100%",
       }}
     >
       {contextHolder}
       <Card
+        variant="outlined"
         sx={{
           width: "40%",
           padding: "20px",
           borderRadius: "12px",
         }}
       >
-        <h2
-          style={{
-            textAlign: "center",
-            marginBottom: "20px",
-            fontFamily: "Arial, sans-serif",
-          }}
-        >
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
           Đổi Mật Khẩu
         </h2>
-        <Form form={form} layout="vertical">
-          <Form.Item
+        <Box component="form" noValidate autoComplete="off">
+          <TextField
+            fullWidth
+            variant="outlined"
+            type="password"
             name="currentPassword"
             label="Mật khẩu hiện tại"
-            rules={[
-              { required: true, message: "Vui lòng nhập mật khẩu hiện tại!" },
-            ]}
-          >
-            <Input.Password
-              placeholder="Mật khẩu hiện tại"
-              autoComplete="current-password"
-            />
-          </Form.Item>
+            placeholder="Nhập mật khẩu hiện tại"
+            value={formValues.currentPassword}
+            onChange={handleChange}
+            required
+            margin="normal"
+          />
 
-          <Form.Item
+          <TextField
+            fullWidth
+            variant="outlined"
+            type="password"
             name="newPassword"
             label="Mật khẩu mới"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu mới!" }]}
-          >
-            <Input.Password
-              placeholder="Mật khẩu mới"
-              autoComplete="new-password"
-            />
-          </Form.Item>
+            placeholder="Nhập mật khẩu mới"
+            value={formValues.newPassword}
+            onChange={handleChange}
+            required
+            margin="normal"
+          />
 
-          <Form.Item
+          <TextField
+            fullWidth
+            variant="outlined"
+            type="password"
             name="confirmPassword"
             label="Xác nhận mật khẩu mới"
-            rules={[
-              { required: true, message: "Vui lòng xác nhận mật khẩu mới!" },
-            ]}
-          >
-            <Input.Password
-              placeholder="Xác nhận mật khẩu mới"
-              autoComplete="new-password"
-            />
-          </Form.Item>
+            placeholder="Xác nhận mật khẩu mới"
+            value={formValues.confirmPassword}
+            onChange={handleChange}
+            required
+            margin="normal"
+          />
 
-          <Form.Item>
-            <Button
-              onClick={onFinish}
-              variant="contained"
-              loading={loading}
-              sx={{
-                width: "100%",
-                textTransform: "none",
-                fontWeight: "bold",
-              }}
-            >
-              Đổi Mật Khẩu
-            </Button>
-          </Form.Item>
-        </Form>
+          <Button
+            onClick={onFinish}
+            variant="contained"
+            disabled={loading}
+            sx={{
+              width: "100%",
+              textTransform: "none",
+              fontWeight: "bold",
+              marginTop: "20px",
+            }}
+          >
+            {loading ? <CircularProgress size={24} /> : "Đổi Mật Khẩu"}
+          </Button>
+        </Box>
       </Card>
     </div>
   );

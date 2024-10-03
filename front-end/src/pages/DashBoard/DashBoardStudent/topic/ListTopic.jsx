@@ -172,6 +172,21 @@ function ListTopic() {
             setRowsPerPage(pageSize);
           },
         }}
+        locale={{
+          emptyText:
+            filteredTopics.length === 0 ? (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                width={"100%"}
+                height={"auto"}
+              >
+                <EmptyData />
+              </Box>
+            ) : null,
+        }}
       />
     </Box>
   );

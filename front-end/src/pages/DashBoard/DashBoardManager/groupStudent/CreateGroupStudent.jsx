@@ -1,24 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Box, TextField, Typography } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import AddIcon from "@mui/icons-material/Add";
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
 import CreateGroupModal from "./CreateGroupModal"; // Nhập modal bạn đã tạo
-
+import managerApi from "../../../../apis/managerApi";
+import { message, Space } from "antd";
+import CustomButton from "../../../../components/Button/CustomButton";
 const CreateGroupStudent = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [openModal, setOpenModal] = useState(false);
-  const [startGroup, setStartGroup] = useState("");
-  const [endGroup, setEndGroup] = useState("");
-
-  const handleConfirm = () => {
-    alert(`Nhóm từ ${startGroup} đến ${endGroup} đã được xác nhận!`);
+  const [state, setState] = useState({
+    startGroup: 3,
+    endGroup: 12,
+    loadingSuccess: false,
+    loadingError: false,
+  });
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
+  const buildDataToSave = () => {
+    if (!state.startGroup || state.startGroup === "") {
+      messageApi.warning("Hãy chọn nhóm bắt đầu!");
+      updateState({ loadingSuccess: false });
+      return null;
+    }
+    if (!state.endGroup || state.endGroup === "") {
+      updateState({ loadingSuccess: false });
+      messageApi.warning("Hãy chọn nhóm kết thúc!");
+      return null;
+    }
+    const data = [];
+    for (let i = state.startGroup; i <= state.endGroup; i++) {
+      const groupName = i < 10 ? `00${i}` : 10 <= i < 99 ? `0${i}` : `${i}`;
+      data.push({ groupName });
+    }
+    return data;
+  };
+  const handleConfirm = async () => {
+    updateState({ loadingSuccess: true });
+    const data = buildDataToSave();
+    if (!data) {
+      return data;
+    }
+    const res = await managerApi.createGroupsStudent(data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      updateState({ loadingSuccess: false });
+    } else {
+      messageApi.error(res.message);
+      updateState({ loadingSuccess: false });
+    }
   };
 
   const handleCancel = () => {
-    setStartGroup("");
-    setEndGroup("");
-    alert("Đã hủy bỏ!");
+    updateState({ loadingError: true });
+    updateState({ startGroup: "", endGroup: "" });
+    setTimeout(() => {
+      updateState({ loadingError: false });
+    }, 2000);
   };
 
   const handleOpenModal = () => {
@@ -31,6 +70,7 @@ const CreateGroupStudent = () => {
 
   return (
     <Box className="container-fluid" sx={{ padding: "20px" }}>
+      {contextHolder}
       <Card sx={{ padding: "20px", borderRadius: "8px" }}>
         <Typography
           variant="h5"
@@ -56,15 +96,15 @@ const CreateGroupStudent = () => {
             <TextField
               label="Nhóm bắt đầu"
               variant="outlined"
-              value={startGroup}
-              onChange={(e) => setStartGroup(e.target.value)}
+              value={state.startGroup}
+              onChange={(e) => updateState({ startGroup: e.target.value })}
               required
             />
             <TextField
               label="Nhóm kết thúc"
               variant="outlined"
-              value={endGroup}
-              onChange={(e) => setEndGroup(e.target.value)}
+              value={state.endGroup}
+              onChange={(e) => updateState({ endGroup: e.target.value })}
               required
             />
           </Box>
@@ -77,32 +117,20 @@ const CreateGroupStudent = () => {
             marginTop: "20px",
           }}
         >
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleConfirm}
-            size="small"
-            startIcon={<CheckIcon />}
-            sx={[
-              (theme) => ({
-                marginRight: "10px",
-                ...theme.applyStyles("dark", {
-                  color: "#fff",
-                }),
-              }),
-            ]}
-          >
-            Xác nhận
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={handleCancel}
-            startIcon={<ClearIcon />}
-          >
-            Hủy bỏ
-          </Button>
+          <Space>
+            <CustomButton
+              onClick={handleConfirm}
+              loading={state.loadingSuccess}
+              text={"Tạo danh sách"}
+              type="success"
+            />
+            <CustomButton
+              onClick={handleCancel}
+              loading={state.loadingError}
+              text={"Hủy"}
+              type="error"
+            />
+          </Space>
         </Box>
       </Card>
 

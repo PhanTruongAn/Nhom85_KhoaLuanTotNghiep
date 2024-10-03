@@ -21,9 +21,6 @@ const darkTheme = {
         colorText: "#fff",
       },
     },
-    Form: {
-      labelColor: "#ffffff",
-    },
   },
 };
 

@@ -116,27 +116,33 @@ const DashBoardManager = () => {
             {!collapsed && (
               <div
                 className="demo-logo-vertical"
-                style={{
-                  borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
-                  position: "absolute",
-                  left: "0",
-                  right: "0",
-                  alignItems: "center",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  padding: "10px",
-                }}
+                // style={{
+                //   borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
+                //   position: "absolute",
+                //   left: "0",
+                //   right: "0",
+                //   alignItems: "center",
+                //   display: "flex",
+                //   flexDirection: "column",
+                //   justifyContent: "center",
+                //   padding: "10px",
+                // }}
               >
                 <img
                   src={themes ? logoDark : logoLight}
-                  style={{ width: "80%", height: "auto", alignSelf: "center" }}
+                  style={{
+                    width: "80%",
+                    height: "auto",
+                    alignSelf: "center",
+                    padding: "10px 0 0 10px",
+                  }}
                 />
                 <Box
                   sx={{
                     fontWeight: "700",
                     paddingTop: "10px",
                     fontSize: "14px",
+                    paddingLeft: "10px",
                   }}
                 >
                   KHÓA LUẬN TỐT NGHIỆP
@@ -158,7 +164,7 @@ const DashBoardManager = () => {
               theme={themes ? "dark" : "light"}
               items={items}
               style={{
-                marginTop: "110px",
+                marginTop: "10px",
                 height: "calc(100vh - 110px)",
               }}
             />

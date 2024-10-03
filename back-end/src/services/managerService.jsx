@@ -1,9 +1,10 @@
 import db from "../models/index";
-import _, { includes, map } from "lodash";
+import _ from "lodash";
 import permissionValid from "../validates/permissionValidate";
 const { Op } = require("sequelize");
 
 const Permission = db.Permission;
+const Group = db.Group;
 const RolePermission = db.RolePermission;
 const paginationPermission = async (page, limit) => {
   try {
@@ -221,9 +222,32 @@ const assignPermissionsToRole = async (data) => {
     };
   } else {
     return {
-      status: 0,
+      status: -1,
       message: "Gán quyền thất bại!",
       //  data: listIdPermission,
+    };
+  }
+};
+const createGroupsStudent = async (data) => {
+  if (!data) {
+    return {
+      status: -1,
+      message: "Không có dữ liệu tạo nhóm!",
+    };
+  }
+  const res = await Group.bulkCreate(data);
+  // const _data = res.map((item) => _.pick(item, ["groupName"]));
+  if (res) {
+    return {
+      status: 0,
+      message: "Tạo danh sách nhóm thành công!",
+      // data: _data,
+    };
+  } else {
+    return {
+      status: 0,
+      message: "Tạo danh sách nhóm thất bại!",
+      // data: null,
     };
   }
 };
@@ -236,4 +260,5 @@ module.exports = {
   findByDescription,
   getRolePermissions,
   assignPermissionsToRole,
+  createGroupsStudent,
 };

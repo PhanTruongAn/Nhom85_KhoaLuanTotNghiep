@@ -10,21 +10,27 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import _ from "lodash";
 import * as XLSX from "xlsx";
 import lecturerApi from "../../../../apis/lecturerApi";
+import CustomButton from "../../../../components/Button/CustomButton";
 const { Option } = Select;
 
 const ManagerTopic = () => {
   const user = useSelector((state) => state.userInit.user);
-  const [state, setState] = useState({});
   const [jsonData, setJsonData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [state, setState] = useState({
+    loadingSuccess: false,
+    loadingError: false,
+  });
   const [selectedSheet, setSelectedSheet] = useState("");
   const [sheetNames, setSheetNames] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
-  // console.log("JsonData: ", jsonData[selectedSheet]);
   const fileInputRef = useRef(null); // Tạo ref cho input file
 
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
   const buildDataToSave = () => {
     const data = _.cloneDeep(jsonData[selectedSheet]);
     const dataSave = [];
@@ -146,13 +152,16 @@ const ManagerTopic = () => {
   ];
 
   const handleConfirm = async () => {
+    updateState({ loadingSuccess: true });
     if (!jsonData[selectedSheet] || jsonData[selectedSheet].length === 0) {
       messageApi.warning("Chưa chọn file dữ liệu!.");
+      updateState({ loadingSuccess: false });
     } else {
       setLoading(true);
       const dataSave = buildDataToSave();
       const res = await lecturerApi.createTopics(dataSave);
       if (res && res.status === 0) {
+        updateState({ loadingSuccess: false });
         setLoading(false);
         setJsonData({});
         if (fileInputRef.current) {
@@ -160,6 +169,7 @@ const ManagerTopic = () => {
         }
         messageApi.success(res.message);
       } else {
+        updateState({ loadingSuccess: false });
         setLoading(false);
         messageApi.error(res.message);
       }
@@ -167,12 +177,16 @@ const ManagerTopic = () => {
   };
 
   const handleCancel = () => {
-    setJsonData({});
-    messageApi.info("Đã hủy bỏ file dữ liệu!");
-    // Reset input file
-    if (fileInputRef.current) {
-      fileInputRef.current.value = null; // Xóa file đang chọn
-    }
+    updateState({ loadingError: true });
+    setTimeout(() => {
+      updateState({ loadingError: false });
+      setJsonData({});
+      messageApi.info("Đã hủy bỏ file dữ liệu!");
+      // Reset input file
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null; // Xóa file đang chọn
+      }
+    }, 1000);
   };
 
   return (
@@ -256,12 +270,14 @@ const ManagerTopic = () => {
           locale={{
             emptyText: (
               <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                paddingTop={"50px"}
-                style={{ height: "100%" }}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  height: "auto",
+                }}
               >
                 <EmptyData />
               </Box>
@@ -271,26 +287,20 @@ const ManagerTopic = () => {
       )}
 
       <Box sx={{ marginTop: "10px" }}>
-        <Button
-          variant="contained"
-          onClick={handleConfirm}
-          size="small"
-          startIcon={<CheckIcon />}
-        >
-          Tạo đề tài
-        </Button>
-        <Button
-          sx={{
-            marginLeft: "10px",
-          }}
-          variant="contained"
-          color="error"
-          size="small"
-          onClick={handleCancel}
-          startIcon={<ClearIcon />}
-        >
-          Hủy bỏ
-        </Button>
+        <Space>
+          <CustomButton
+            onClick={handleConfirm}
+            text={"Tạo đề tài"}
+            loading={state.loadingSuccess}
+            type="success"
+          />
+          <CustomButton
+            onClick={handleCancel}
+            text={"Hủy bỏ"}
+            loading={state.loadingError}
+            type="error"
+          />
+        </Space>
       </Box>
 
       <Modal
