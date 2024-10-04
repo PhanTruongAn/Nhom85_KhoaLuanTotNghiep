@@ -51,6 +51,10 @@ const initWebRoutes = (app) => {
   );
   router.put("/student/change-password", userController.handleChangePassword);
   router.get("/find-account", userController.handleFindAccount);
+  router.get(
+    "/student/get-all-group",
+    studentController.handleStudentGetAllGroup
+  );
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
@@ -119,4 +123,5 @@ const initWebRoutes = (app) => {
   router.get("/manager/count-student", managerController.handleCountStudent);
   return app.use("/", router);
 };
+
 export default initWebRoutes;

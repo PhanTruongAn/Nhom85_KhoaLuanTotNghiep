@@ -32,5 +32,11 @@ const studentApi = {
   changePassword: (data) => {
     return axiosClient.put(baseUrl + "/change-password", data);
   },
+
+  getAllGroup: (page, limit) => {
+    return axiosClient.get(
+      `${baseUrl}/get-all-group?page=${page}&limit=${limit}`
+    );
+  },
 };
 export default studentApi;

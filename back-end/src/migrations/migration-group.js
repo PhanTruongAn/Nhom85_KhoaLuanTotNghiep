@@ -15,6 +15,9 @@ module.exports = {
       topicId: {
         type: Sequelize.INTEGER,
       },
+      quantityMember: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

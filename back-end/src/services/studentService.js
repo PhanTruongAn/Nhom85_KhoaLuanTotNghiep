@@ -2,9 +2,8 @@ import db from "../models/index";
 import { hashPassword } from "../services/userService";
 import _, { isEmpty } from "lodash";
 const { Op } = require("sequelize");
-//Models Database
-const Student = db.Student;
-const Role = db.Role;
+const { Student, Group, Role } = require("../models");
+
 // Tạo tài khoản sinh viên
 const createStudentAccount = async (data) => {
   if (!data.fullName) {
@@ -334,6 +333,34 @@ const findStudentsByName = async (page, limit, input) => {
     };
   }
 };
+const getStudentGetAllGroup = async (page, limit) => {
+  try {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Group.findAndCountAll({
+      attributes: ["id", "groupName", "topicId", "quantityMember"],
+      offset: offset,
+      limit: limit,
+    });
+    const totalPages = Math.ceil(count / limit);
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: {
+        totalRows: count,
+        totalPages: totalPages,
+        groups: rows,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lấy danh sách thất bại!",
+      data: null,
+    };
+  }
+};
+
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -344,4 +371,5 @@ module.exports = {
   deleteManyStudent,
   findStudentsByName,
   findStudentsByUserName,
+  getStudentGetAllGroup,
 };

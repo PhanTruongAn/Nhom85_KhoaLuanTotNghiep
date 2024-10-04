@@ -17,9 +17,9 @@ function StudentHome() {
     phone: user.phone || "",
     email: user.email || "",
     gender: user.gender || "",
-    majorName: "",
-    className: "DHKTPM16B",
-    typeTraining: "Đại Học",
+    majorName: user.majorName || "",
+    className: user.className || "",
+    typeTraining: user.typeTraining || "",
   });
   const [loading, setLoading] = useState(false);
 
