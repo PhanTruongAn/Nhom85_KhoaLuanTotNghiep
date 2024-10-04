@@ -2,7 +2,7 @@ import db from "../models/index";
 import _ from "lodash";
 import permissionValid from "../validates/permissionValidate";
 const { Op } = require("sequelize");
-
+const { Student } = require("../models");
 const Permission = db.Permission;
 const Group = db.Group;
 const RolePermission = db.RolePermission;
@@ -290,6 +290,26 @@ const paginationGroupsStudent = async (page, limit) => {
     };
   }
 };
+//Lấy số lượng tổng sinh viên có trong database
+const countStudent = async () => {
+  try {
+    const count = await Student.count();
+    return {
+      status: 0,
+      message: "Lấy tổng số lượng sinh viên thành công!",
+      data: {
+        summary: count,
+      },
+    };
+  } catch (error) {
+    console.error("Có lỗi xảy ra:", error);
+    return {
+      status: 1,
+      message: "Lấy tổng số lượng sinh viên thất bại!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   paginationPermission,
   getAllPermission,
@@ -301,4 +321,5 @@ module.exports = {
   assignPermissionsToRole,
   createGroupsStudent,
   paginationGroupsStudent,
+  countStudent,
 };

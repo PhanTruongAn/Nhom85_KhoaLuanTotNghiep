@@ -124,6 +124,20 @@ const handleGetAllGroupsStudent = async (req, res) => {
     });
   }
 };
+const handleCountStudent = async (req, res) => {
+  try {
+    const data = await service.countStudent();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
 module.exports = {
   handleGetAllPermission,
   handleCreatePermission,
@@ -134,4 +148,5 @@ module.exports = {
   handleAssignPermissions,
   handleCreateGroupsStudent,
   handleGetAllGroupsStudent,
+  handleCountStudent,
 };

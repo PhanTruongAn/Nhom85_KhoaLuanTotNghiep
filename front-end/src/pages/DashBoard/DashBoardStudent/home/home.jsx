@@ -5,7 +5,7 @@ import { BookTwoTone } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
 import { useSelector } from "react-redux";
 import StudentApi from "../../../../apis/studentApi";
-
+import CustomButton from "../../../../components/Button/CustomButton";
 const { Option } = Select;
 
 function StudentHome() {
@@ -275,10 +275,12 @@ function StudentHome() {
               </Select>
             </Box>
           </Box>
-
-          <Button variant="contained" onClick={handleUpdate} loading={loading}>
-            Cập nhật
-          </Button>
+          <CustomButton
+            onClick={handleUpdate}
+            loading={loading}
+            text={"Cập nhật"}
+            type="success"
+          />
         </form>
       </Card>
     </Box>

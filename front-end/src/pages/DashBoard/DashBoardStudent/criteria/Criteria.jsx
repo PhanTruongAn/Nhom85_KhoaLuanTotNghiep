@@ -133,6 +133,7 @@ const Criteria = () => {
       title: "STT",
       dataIndex: "id",
       key: "id",
+      width: "120px",
     },
     {
       title: "Tên tiêu chí",

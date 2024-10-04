@@ -116,7 +116,7 @@ const initWebRoutes = (app) => {
     "/manager/get-groups-student",
     managerController.handleGetAllGroupsStudent
   );
-
+  router.get("/manager/count-student", managerController.handleCountStudent);
   return app.use("/", router);
 };
 export default initWebRoutes;
