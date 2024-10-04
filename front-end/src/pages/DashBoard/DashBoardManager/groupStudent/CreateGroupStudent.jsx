@@ -6,33 +6,64 @@ import CreateGroupModal from "./CreateGroupModal"; // Nhập modal bạn đã t�
 import managerApi from "../../../../apis/managerApi";
 import { message, Space } from "antd";
 import CustomButton from "../../../../components/Button/CustomButton";
+import { useQuery } from "react-query";
 const CreateGroupStudent = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [openModal, setOpenModal] = useState(false);
   const [state, setState] = useState({
-    startGroup: 3,
-    endGroup: 12,
+    memberGroup: 2,
+    totalGroup: 1,
     loadingSuccess: false,
     loadingError: false,
+    numberOfStudent: 1,
   });
+
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
-  const buildDataToSave = () => {
-    if (!state.startGroup || state.startGroup === "") {
-      messageApi.warning("Hãy chọn nhóm bắt đầu!");
-      updateState({ loadingSuccess: false });
-      return null;
+
+  const totalGroup = (numberStudent) => {
+    const member = state.memberGroup;
+    const total = Math.ceil(numberStudent / member);
+    console.log(total);
+    updateState({ totalGroup: total });
+  };
+  const fetchNumberStudent = async () => {
+    const res = await managerApi.countStudent();
+    return res;
+  };
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ["count"],
+    fetchNumberStudent,
+    {
+      keepPreviousData: true,
+      cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
+      refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
+      staleTime: 1000,
+      onSuccess: (res) => {
+        console.log("Check res:", res);
+        if (res && res.status === 0) {
+          updateState({ numberOfStudent: res.data.total });
+          totalGroup(res.data.total);
+        } else {
+          messageApi.error(res.message);
+        }
+      },
     }
-    if (!state.endGroup || state.endGroup === "") {
-      updateState({ loadingSuccess: false });
-      messageApi.warning("Hãy chọn nhóm kết thúc!");
-      return null;
+  );
+
+  const buildDataToSave = () => {
+    if (isNaN(state.memberGroup) || isNaN(state.totalGroup)) {
+      messageApi.warning(
+        "Số lượng thành viên mỗi nhóm và tổng số nhóm phải là số!"
+      );
+      return;
     }
     const data = [];
-    for (let i = state.startGroup; i <= state.endGroup; i++) {
+    for (let i = 1; i <= state.totalGroup; i++) {
       const groupName = i < 10 ? `00${i}` : 10 <= i < 99 ? `0${i}` : `${i}`;
-      data.push({ groupName });
+      const quantityMember = state.memberGroup;
+      data.push({ groupName, quantityMember });
     }
     return data;
   };
@@ -54,7 +85,7 @@ const CreateGroupStudent = () => {
 
   const handleCancel = () => {
     updateState({ loadingError: true });
-    updateState({ startGroup: "", endGroup: "" });
+    updateState({ memberGroup: "", totalGroup: "" });
     setTimeout(() => {
       updateState({ loadingError: false });
     }, 2000);
@@ -67,6 +98,24 @@ const CreateGroupStudent = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+  const onChange = (e) => {
+    const memberGroup = e.target.value;
+    updateState({ memberGroup });
+    if (!memberGroup || Number(memberGroup) <= 0) {
+      updateState({ memberGroup, totalGroup: 0 });
+      return;
+    }
+    if (Number(memberGroup) > state.numberOfStudent) {
+      messageApi.warning(
+        "Số lượng sinh viên mỗi nhóm không được lớn hơn tổng số sinh viên!"
+      );
+      return;
+    }
+    if (state.numberOfStudent) {
+      const total = Math.ceil(state.numberOfStudent / memberGroup);
+      updateState({ totalGroup: total });
+    }
+  };
 
   return (
     <Box className="container-fluid" sx={{ padding: "20px" }}>
@@ -78,33 +127,59 @@ const CreateGroupStudent = () => {
         >
           Tạo Nhóm Sinh Viên
         </Typography>
-        <Button
-          variant="contained"
-          onClick={handleOpenModal}
-          startIcon={<AddIcon />}
-          sx={{ padding: "10px" }}
-        >
-          Thêm một nhóm mới
-        </Button>
+        <Box sx={{ display: "flex", gap: "10px" }}>
+          <TextField
+            label="Tổng số lượng sinh viên"
+            variant="standard"
+            color="warning"
+            slotProps={{
+              input: {
+                readOnly: true,
+              },
+            }}
+            value={state.numberOfStudent}
+          />
+          <Button
+            variant="contained"
+            onClick={handleOpenModal}
+            startIcon={<AddIcon />}
+            sx={{ padding: "10px" }}
+          >
+            Thêm một nhóm mới
+          </Button>
+        </Box>
 
         <Box sx={{ marginBottom: "20px", marginTop: "20px" }}>
           <Typography variant="h5" sx={{ padding: "10px", fontWeight: "bold" }}>
             Tạo nhiều nhóm sinh viên:
           </Typography>
 
-          <Box sx={{ display: "flex", gap: "10px" }}>
+          <Box sx={{ marginTop: "10px", display: "flex", gap: "10px" }}>
             <TextField
-              label="Nhóm bắt đầu"
-              variant="outlined"
-              value={state.startGroup}
-              onChange={(e) => updateState({ startGroup: e.target.value })}
+              label="Tổng số nhóm"
+              variant="standard"
+              color="success"
+              type="number"
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+              value={state.totalGroup}
+              onChange={(e) => updateState({ totalGroup: e.target.value })}
               required
             />
             <TextField
-              label="Nhóm kết thúc"
-              variant="outlined"
-              value={state.endGroup}
-              onChange={(e) => updateState({ endGroup: e.target.value })}
+              label="Số thành viên mỗi nhóm"
+              variant="standard"
+              type="number"
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+              value={state.memberGroup}
+              onChange={(e) => onChange(e)}
               required
             />
           </Box>

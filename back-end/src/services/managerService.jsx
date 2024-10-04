@@ -298,7 +298,7 @@ const countStudent = async () => {
       status: 0,
       message: "Lấy tổng số lượng sinh viên thành công!",
       data: {
-        summary: count,
+        total: count,
       },
     };
   } catch (error) {

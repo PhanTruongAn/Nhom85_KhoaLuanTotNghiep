@@ -30,5 +30,8 @@ const managerApi = {
       `${baseUrl}/get-groups-student?page=${page}&limit=${limit}`
     );
   },
+  countStudent: () => {
+    return axiosClient.get(`${baseUrl}/count-student`);
+  },
 };
 export default managerApi;
