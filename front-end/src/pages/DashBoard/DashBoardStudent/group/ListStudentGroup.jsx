@@ -5,95 +5,65 @@ import { Card } from "../../../../components/Card/Card";
 import Grid from "@mui/material/Grid";
 import studentApi from "../../../../apis/studentApi";
 import "./ListStudentGroup.scss";
+import EmptyData from "../../../../components/emptydata/EmptyData";
+import { useQuery } from "react-query";
+import { isEmpty } from "lodash";
 
 function ListStudentGroup() {
   const [messageApi, contextHolder] = message.useMessage();
   const [state, setState] = useState({
-    currentPage: 1, // Trang hiện tại
-    pageSize: 12, // Kích thước trang
-    dataSource: [], // Dữ liệu đã tải
-    loadingData: false, // Trạng thái đang tải dữ liệu
-    hasMore: true, // Kiểm tra xem còn nhóm nào để tải không
+    currentPage: 1,
+    totalPage: 2,
+    pageSize: 12,
+    dataSource: [],
+    loadingData: false,
   });
-
+  const [dataRow, setDataRow] = useState([]);
   const containerRef = useRef(null);
-  console.log("dataSource", state.dataSource);
 
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
 
-  // Hàm fetch dữ liệu nhóm với phân trang
-  const fetchGroups = async (page) => {
-    if (state.loadingData || !state.hasMore) return; // Nếu đang tải dữ liệu hoặc không còn nhóm nào để tải thì không gọi lại API
-    updateState({ loadingData: true });
-
-    try {
-      const response = await studentApi.getAllGroup(page, state.pageSize);
-      console.log("API Response:", response.data); // Kiểm tra phản hồi từ API
-
-      if (response.data && Array.isArray(response.data.groups)) {
-        const newGroups = response.data.groups;
-        console.log("New Groups:", newGroups); // Kiểm tra nhóm mới nhận được
-
-        if (newGroups.length > 0) {
-          // Nếu có nhóm mới, thêm vào dataSource
-          updateState((prevState) => ({
-            dataSource: [...prevState.dataSource, ...newGroups],
-          }));
-          console.log("Updated dataSource:", [
-            ...state.dataSource,
-            ...newGroups,
-          ]); // Kiểm tra giá trị mới
-        } else {
-          // Nếu không còn nhóm nào để tải
-          updateState({ hasMore: false });
-          messageApi.info("Đã tải hết nhóm.");
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ["groups", state.currentPage],
+    () => studentApi.getAllGroup(state.currentPage, state.pageSize),
+    {
+      enabled: state.currentPage <= state.totalPage,
+      keepPreviousData: true,
+      cacheTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
+      staleTime: 1000,
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          updateState({
+            dataSource: res.data.groups,
+            totalPage: res.data.totalPages,
+          });
+          if (isEmpty(dataRow)) {
+            setDataRow(res.data.groups);
+          } else {
+            setDataRow([...dataRow, ...res.data.groups]);
+          }
+        } else if (res.status === -1 || res.status === 403) {
+          updateState({ dataSource: [], hasMore: false });
+          messageApi.error(res.message);
         }
-      } else {
-        messageApi.error("Dữ liệu không hợp lệ.");
-      }
-    } catch (error) {
-      messageApi.error("Có lỗi xảy ra khi tải dữ liệu.");
-      console.error("Failed to fetch groups:", error);
-    } finally {
-      updateState({ loadingData: false });
+      },
+      onError: (err) => {
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
     }
-  };
-
-  // Hàm load thêm nhóm khi cuộn
-  const loadMoreGroups = () => {
-    if (state.hasMore) {
-      updateState((prevState) => ({
-        currentPage: prevState.currentPage + 1,
-      }));
-    }
-  };
+  );
 
   // Xử lý sự kiện cuộn
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-    console.log(
-      "Scroll Top:",
-      scrollTop,
-      "Scroll Height:",
-      scrollHeight,
-      "Client Height:",
-      clientHeight
-    ); // Kiểm tra giá trị cuộn
-
-    // Kiểm tra nếu người dùng cuộn xuống gần cuối
     if (scrollTop + clientHeight >= scrollHeight - 10) {
-      loadMoreGroups(); // Khi cuộn đến cuối, tải thêm nhóm
+      updateState({ currentPage: state.currentPage + 1 });
     }
   };
 
-  // Lắng nghe sự kiện cuộn và gọi fetchGroups khi currentPage thay đổi
-  useEffect(() => {
-    fetchGroups(state.currentPage); // Gọi API mỗi khi currentPage thay đổi
-  }, [state.currentPage]);
-
-  // Lắng nghe sự kiện cuộn
   useEffect(() => {
     const container = containerRef.current;
     container.addEventListener("scroll", handleScroll);
@@ -103,17 +73,17 @@ function ListStudentGroup() {
         container.removeEventListener("scroll", handleScroll);
       }
     };
-  }, []); // Chỉ lắng nghe sự kiện cuộn 1 lần khi component mount
-
+  }, [state.currentPage]);
   return (
     <Box
       className="list-container"
       ref={containerRef}
-      sx={{ overflowY: "auto", height: "400px" }} // Đảm bảo chiều cao và overflowY đúng
+      sx={{ overflowY: "auto", height: "100%" }}
     >
+      {contextHolder}
       <Grid container spacing={2}>
-        {state.dataSource.length > 0 ? (
-          state.dataSource.map((group) => (
+        {dataRow.length > 0 ? (
+          dataRow.map((group, index) => (
             <Grid item xs={12} sm={6} md={3} key={group.id}>
               <Card variant="elevation">
                 <CardContent>
@@ -132,13 +102,19 @@ function ListStudentGroup() {
             </Grid>
           ))
         ) : (
-          <Typography>Không có nhóm nào để hiển thị.</Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            textAlign={"center"}
+            justifyContent="center"
+            width={"100%"}
+            height={"auto"}
+          >
+            <EmptyData />
+          </Box>
         )}
       </Grid>
-      {state.loadingData && <Typography>Đang tải...</Typography>}
-      {!state.hasMore && !state.loadingData && (
-        <Typography>Không còn nhóm nào để hiển thị.</Typography>
-      )}
     </Box>
   );
 }

@@ -1,8 +1,8 @@
 .list-container {
-  height: 580px; // Chiều cao tính toán cho vùng chứa
+  max-height: 80vh; // Chiều cao tính toán cho vùng chứa
   overflow-y: auto; // Đảm bảo thanh cuộn dọc hoạt động
-  border: 1px solid #ddd; // Đường viền cho vùng chứa
-  border-radius: 8px; // Bo góc
+  // border: 1px solid #ddd; // Đường viền cho vùng chứa
+  // border-radius: 8px; // Bo góc
   padding: 10px;
 
   // Tùy chỉnh thanh cuộn
