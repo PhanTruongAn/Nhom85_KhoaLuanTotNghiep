@@ -279,7 +279,7 @@ const ManagerTopic = () => {
                   height: "auto",
                 }}
               >
-                <EmptyData />
+                <EmptyData text={"Bạn chọn chọn file!"} />
               </Box>
             ),
           }}

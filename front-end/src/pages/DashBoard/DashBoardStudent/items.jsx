@@ -20,12 +20,12 @@ const items = [
   {
     key: "group",
     icon: <GroupOutlined />,
-    label: "Nhóm của tôi",
+    label: "Nhóm",
     children: [
       {
         key: "list-student-group",
         icon: <OrderedListOutlined />,
-        label: "Danh sách nhóm",
+        label: "Danh sách",
       },
       {
         key: "my-group",

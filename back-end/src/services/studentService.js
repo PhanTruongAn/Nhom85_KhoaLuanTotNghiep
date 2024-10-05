@@ -382,7 +382,7 @@ const joinGroup = async (data) => {
   }
   const res = await Group.findOne({
     where: { id: data.groupId },
-    attributes: { exclude: ["createdAt", "updatedAt"] },
+    attributes: { exclude: ["createdAt", "updatedAt", "TopicId"] },
     include: {
       model: Student,
       as: "students",
@@ -432,6 +432,48 @@ const joinGroup = async (data) => {
   }
 };
 
+const getInfoMyGroup = async (groupId) => {
+  console.log("Check:", groupId);
+  if (!groupId) {
+    return {
+      status: -1,
+      message: "Dữ liệu không hợp lệ.",
+      data: null,
+    };
+  }
+  const res = await Group.findOne({
+    where: {
+      id: groupId,
+    },
+    attributes: { exclude: ["createdAt", "updatedAt", "TopicId"] },
+    include: {
+      model: Student,
+      as: "students",
+      attributes: [
+        "id",
+        "fullName",
+        "email",
+        "phone",
+        "isLeader",
+        "gender",
+        "username",
+      ],
+    },
+  });
+  if (res) {
+    return {
+      status: 0,
+      message: "Lấy thông tin nhóm thành công!",
+      data: res,
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin nhóm!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -444,4 +486,5 @@ module.exports = {
   findStudentsByUserName,
   getStudentGetAllGroup,
   joinGroup,
+  getInfoMyGroup,
 };

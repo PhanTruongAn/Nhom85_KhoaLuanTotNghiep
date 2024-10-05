@@ -8,9 +8,11 @@ import "./ListStudentGroup.scss";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
-import { useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "../../../../redux/userSlice";
+import CustomButton from "../../../../components/Button/CustomButton";
 function ListStudentGroup() {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
   const [messageApi, contextHolder] = message.useMessage();
   const [state, setState] = useState({
@@ -21,6 +23,7 @@ function ListStudentGroup() {
     loadingData: false,
   });
   const [dataRow, setDataRow] = useState([]);
+  const [loadingStates, setLoadingStates] = useState({});
   const containerRef = useRef(null);
 
   const updateState = (newState) => {
@@ -81,15 +84,19 @@ function ListStudentGroup() {
   }, [state.currentPage]);
 
   const handleJoinGroup = async (groupId) => {
+    setLoadingStates((prev) => ({ ...prev, [groupId]: true }));
     const data = {
       groupId: groupId,
       studentId: user.id,
     };
     const res = await studentApi.joinGroup(data);
     if (res && res.status === 0) {
+      dispatch(setUser({ ...user, groupId: res.data.id }));
       messageApi.success(res.message);
+      setLoadingStates((prev) => ({ ...prev, [groupId]: false }));
     } else {
       messageApi.error(res.message);
+      setLoadingStates((prev) => ({ ...prev, [groupId]: false }));
     }
   };
   return (
@@ -116,15 +123,22 @@ function ListStudentGroup() {
                     Trạng thái:{" "}
                     {group.status === "FULL" ? "Đã đầy" : "Có thể tham gia"}
                   </Typography>
-                  <Button
+                  <CustomButton
+                    disabled={group.status === "FULL"}
+                    sx={{ mt: 2 }}
                     onClick={(e) => handleJoinGroup(group.id)}
+                    text="Tham gia nhóm"
+                    type="success"
+                    loading={loadingStates[group.id] || state.loading}
+                  />
+                  {/* <Button
                     disabled={group.status === "FULL"}
                     variant="contained"
                     color="primary"
                     sx={{ mt: 2 }}
                   >
                     Tham gia nhóm
-                  </Button>
+                  </Button> */}
                 </CardContent>
               </Card>
             </Grid>
@@ -139,7 +153,9 @@ function ListStudentGroup() {
             width={"100%"}
             height={"auto"}
           >
-            <EmptyData />
+            <EmptyData
+              text={isEmpty(dataRow) ? null : "Không có dữ liệu để hiển thị!"}
+            />
           </Box>
         )}
       </Grid>

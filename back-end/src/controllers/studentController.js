@@ -104,6 +104,15 @@ const handleJoinGroup = async (req, res) => {
     console.log(error);
   }
 };
+const handleGetInfoMyGroup = async (req, res) => {
+  try {
+    const { group } = req.query;
+    const data = await studentService.getInfoMyGroup(group);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   handleCreateStudentAccount,
   handleBulkCreate,
@@ -115,4 +124,5 @@ module.exports = {
   handleFindStudentsByName,
   handleStudentGetAllGroup,
   handleJoinGroup,
+  handleGetInfoMyGroup,
 };

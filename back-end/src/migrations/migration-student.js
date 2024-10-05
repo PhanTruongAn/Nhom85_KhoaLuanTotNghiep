@@ -15,6 +15,10 @@ module.exports = {
       email: {
         type: Sequelize.STRING,
       },
+      isLeader: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       phone: {
         type: Sequelize.STRING,
       },

@@ -10,6 +10,9 @@ const studentApi = {
   joinGroup: (data) => {
     return axiosClient.post(baseUrl + "/join-group", data);
   },
+  getMyGroup: (group) => {
+    return axiosClient.get(baseUrl + `/my-group?group=${group}`);
+  },
   getAll: (page, limit) => {
     return axiosClient.get(`${baseUrl}/get-all?page=${page}&limit=${limit}`);
   },

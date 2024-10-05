@@ -55,6 +55,7 @@ const initWebRoutes = (app) => {
     "/student/get-all-group",
     studentController.handleStudentGetAllGroup
   );
+  router.get("/student/my-group", studentController.handleGetInfoMyGroup);
   router.post("/student/join-group", studentController.handleJoinGroup);
   //Lecturer route
   router.post(
