@@ -337,7 +337,7 @@ const getStudentGetAllGroup = async (page, limit) => {
   try {
     const offset = (page - 1) * limit;
     const { count, rows } = await Group.findAndCountAll({
-      attributes: ["id", "groupName", "topicId", "quantityMember"],
+      attributes: ["id", "groupName", "numOfMembers", "status"],
       offset: offset,
       limit: limit,
     });
@@ -360,6 +360,77 @@ const getStudentGetAllGroup = async (page, limit) => {
     };
   }
 };
+const joinGroup = async (data) => {
+  if (!data) {
+    return {
+      status: -1,
+      message: "Dữ liệu không hợp lệ!",
+    };
+  }
+
+  const checkStudentGroup = await Student.findOne({
+    where: {
+      id: data.studentId,
+    },
+  });
+  const { groupId } = checkStudentGroup;
+  if (groupId) {
+    return {
+      status: 1,
+      message: "Bạn đã tham gia nhóm khác rồi!",
+    };
+  }
+  const res = await Group.findOne({
+    where: { id: data.groupId },
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: {
+      model: Student,
+      as: "students",
+      attributes: ["id", "fullName"],
+    },
+  });
+
+  if (!res) {
+    return {
+      status: 1,
+      message: "Nhóm không tồn tại!",
+      data: null,
+    };
+  }
+
+  const { numOfMembers, id } = res;
+  const students = res.students.length;
+
+  if (students >= numOfMembers) {
+    return {
+      status: 1,
+      message: "Nhóm đã đầy!",
+    };
+  }
+
+  const update = await Student.update(
+    { groupId: id },
+    { where: { id: data.studentId } }
+  );
+
+  if (update[0] > 0) {
+    if (students + 1 === numOfMembers) {
+      await Group.update({ status: "FULL" }, { where: { id } });
+    }
+
+    return {
+      status: 0,
+      message: "Tham gia nhóm thành công!",
+      data: res,
+    };
+  } else {
+    return {
+      status: 1,
+      message: "Tham gia nhóm thất bại! Không tìm thấy sinh viên.",
+      data: null,
+    };
+  }
+};
 
 module.exports = {
   createStudentAccount,
@@ -372,4 +443,5 @@ module.exports = {
   findStudentsByName,
   findStudentsByUserName,
   getStudentGetAllGroup,
+  joinGroup,
 };

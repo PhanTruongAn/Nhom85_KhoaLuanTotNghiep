@@ -10,6 +10,9 @@ const managerApi = {
   deleteById: (data) => {
     return axiosClient.delete(baseUrl + "/delete-permission", { data });
   },
+  deleteGroupStudent: (data) => {
+    return axiosClient.delete(baseUrl + "/delete-group-student", { data });
+  },
   updateById: (data) => {
     return axiosClient.put(baseUrl + "/update-permission", data);
   },

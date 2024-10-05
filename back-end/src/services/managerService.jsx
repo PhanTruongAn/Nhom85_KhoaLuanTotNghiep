@@ -2,10 +2,8 @@ import db from "../models/index";
 import _ from "lodash";
 import permissionValid from "../validates/permissionValidate";
 const { Op } = require("sequelize");
-const { Student } = require("../models");
-const Permission = db.Permission;
-const Group = db.Group;
-const RolePermission = db.RolePermission;
+const { Student, Permission, Group, RolePermission } = require("../models");
+
 const paginationPermission = async (page, limit) => {
   try {
     const offset = (page - 1) * limit;
@@ -235,7 +233,14 @@ const createGroupsStudent = async (data) => {
       message: "Không có dữ liệu tạo nhóm!",
     };
   }
-  const res = await Group.bulkCreate(data);
+  const _data = [];
+  for (let i = 1; i <= data.totalGroup; i++) {
+    const groupName = i < 10 ? `00${i}` : 10 <= i < 99 ? `0${i}` : `${i}`;
+    const numOfMembers = data.numOfMembers;
+    const status = "NOT_FULL";
+    _data.push({ groupName, numOfMembers, status });
+  }
+  const res = await Group.bulkCreate(_data);
   // const _data = res.map((item) => _.pick(item, ["groupName"]));
   if (res) {
     return {
@@ -310,6 +315,30 @@ const countStudent = async () => {
     };
   }
 };
+const deleteGroupStudent = async (data) => {
+  if (!data && !data.id) {
+    return {
+      status: 1,
+      message: "Dữ liệu không hợp lệ!",
+    };
+  }
+  const res = await Group.destroy({
+    where: {
+      id: data.id,
+    },
+  });
+  if (res) {
+    return {
+      status: 0,
+      message: "Xoá nhóm thành công!",
+    };
+  } else {
+    return {
+      status: 0,
+      message: "Xoá nhóm thất bại!",
+    };
+  }
+};
 module.exports = {
   paginationPermission,
   getAllPermission,
@@ -322,4 +351,5 @@ module.exports = {
   createGroupsStudent,
   paginationGroupsStudent,
   countStudent,
+  deleteGroupStudent,
 };

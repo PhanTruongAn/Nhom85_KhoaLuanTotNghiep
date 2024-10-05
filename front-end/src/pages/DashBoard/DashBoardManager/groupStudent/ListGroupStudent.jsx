@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Space, message, Input, Select } from "antd";
+import { Table, Space, message, Input, Select, Popconfirm } from "antd";
 import { Box, Button, Typography } from "@mui/material";
 import {
   EditOutlined,
@@ -48,7 +48,6 @@ const ListGroupStudent = () => {
       refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
       staleTime: 1000,
       onSuccess: (res) => {
-        console.log("check res: ", res);
         if (res && res.status === 0) {
           updateState({
             refreshButton: false,
@@ -94,8 +93,14 @@ const ListGroupStudent = () => {
     setSelectedGroup(null);
   };
 
-  const handleDeleteGroup = (id) => {
-    message.success(`Deleted group with ID: ${id}`);
+  const onPopConfirmDelete = async (record) => {
+    const res = await managerApi.deleteGroupStudent(record);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      refetch();
+    } else {
+      messageApi.error(res.message);
+    }
   };
 
   const handleDeleteMany = () => {
@@ -178,18 +183,27 @@ const ListGroupStudent = () => {
             Sửa
           </Button>
 
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            sx={{
-              marginLeft: "10px",
-              textTransform: "none",
-            }}
-            startIcon={<DeleteOutlined />}
+          <Popconfirm
+            title="Xóa nhóm"
+            description="Bạn có chắc muốn xóa nhóm này?"
+            onConfirm={(e) => onPopConfirmDelete(record)}
+            okText="Đồng ý"
+            cancelText="Không"
           >
-            Xóa
-          </Button>
+            <Button
+              // onClick={(e) => showUpdateModal(record)}
+              variant="contained"
+              color="error"
+              size="small"
+              sx={{
+                marginLeft: "10px",
+                textTransform: "none",
+              }}
+              startIcon={<DeleteOutlined />}
+            >
+              Xóa
+            </Button>
+          </Popconfirm>
         </>
       ),
     },

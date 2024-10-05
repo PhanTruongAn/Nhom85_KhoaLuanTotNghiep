@@ -9,7 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Group.hasMany(models.Student);
+      Group.hasMany(models.Student, {
+        foreignKey: "groupId",
+        as: "students",
+      });
       Group.belongsTo(models.Topic, {
         foreignKey: "topicId",
       });
@@ -19,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       groupName: DataTypes.STRING,
       topicId: DataTypes.INTEGER,
-      quantityMember: DataTypes.INTEGER,
+      numOfMembers: DataTypes.INTEGER,
+      status: DataTypes.STRING,
     },
     {
       sequelize,

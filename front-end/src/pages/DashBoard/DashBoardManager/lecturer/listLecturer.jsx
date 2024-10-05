@@ -13,9 +13,8 @@ import {
   DeleteOutlined,
   ReloadOutlined,
   PlusOutlined,
-} from "@ant-design/icons"; // Thêm biểu tượng UserOutlined
+} from "@ant-design/icons";
 import { Box, Typography, Button } from "@mui/material";
-// import AddModal from "./AddModal";
 import CreateModal from "../../../../components/Dashboard/createModal";
 import lecturerApi from "../../../../apis/lecturerApi";
 import { useNavigate } from "react-router-dom";
@@ -250,7 +249,6 @@ function ListLecturer() {
             title="Xóa sinh viên"
             description="Bạn có chắc muốn xóa sinh viên này?"
             onConfirm={(e) => onPopConfirmDelete(record)}
-            // onCancel={onPopConfirmCancel}
             okText="Đồng ý"
             cancelText="Không"
           >

@@ -55,6 +55,7 @@ const initWebRoutes = (app) => {
     "/student/get-all-group",
     studentController.handleStudentGetAllGroup
   );
+  router.post("/student/join-group", studentController.handleJoinGroup);
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
@@ -99,6 +100,10 @@ const initWebRoutes = (app) => {
   router.delete(
     "/manager/delete-permission",
     managerController.handleDeletePermission
+  );
+  router.delete(
+    "/manager/delete-group-student",
+    managerController.handleDeleteGroupStudent
   );
   router.get(
     "/manager/find-permission",

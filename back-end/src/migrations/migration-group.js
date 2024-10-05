@@ -15,8 +15,11 @@ module.exports = {
       topicId: {
         type: Sequelize.INTEGER,
       },
-      quantityMember: {
+      numOfMembers: {
         type: Sequelize.INTEGER,
+      },
+      status: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

@@ -8,8 +8,10 @@ import "./ListStudentGroup.scss";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
+import { useSelector } from "react-redux";
 
 function ListStudentGroup() {
+  const user = useSelector((state) => state.userInit.user);
   const [messageApi, contextHolder] = message.useMessage();
   const [state, setState] = useState({
     currentPage: 1,
@@ -59,7 +61,10 @@ function ListStudentGroup() {
   // Xử lý sự kiện cuộn
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-    if (scrollTop + clientHeight >= scrollHeight - 10) {
+    if (
+      scrollTop + clientHeight >= scrollHeight - 10 &&
+      state.currentPage < state.totalPage
+    ) {
       updateState({ currentPage: state.currentPage + 1 });
     }
   };
@@ -74,6 +79,19 @@ function ListStudentGroup() {
       }
     };
   }, [state.currentPage]);
+
+  const handleJoinGroup = async (groupId) => {
+    const data = {
+      groupId: groupId,
+      studentId: user.id,
+    };
+    const res = await studentApi.joinGroup(data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+    } else {
+      messageApi.error(res.message);
+    }
+  };
   return (
     <Box
       className="list-container"
@@ -92,9 +110,19 @@ function ListStudentGroup() {
                   </Typography>
                   <Divider sx={{ my: 1, borderBottomWidth: 2 }} />
                   <Typography sx={{ mb: "10px" }} color="text.secondary">
-                    Số lượng sinh viên: {group.quantityMember || 0} / 2
+                    Số lượng tối đa: {group.numOfMembers}
                   </Typography>
-                  <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+                  <Typography color="text.secondary">
+                    Trạng thái:{" "}
+                    {group.status === "FULL" ? "Đã đầy" : "Có thể tham gia"}
+                  </Typography>
+                  <Button
+                    onClick={(e) => handleJoinGroup(group.id)}
+                    disabled={group.status === "FULL"}
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 2 }}
+                  >
                     Tham gia nhóm
                   </Button>
                 </CardContent>

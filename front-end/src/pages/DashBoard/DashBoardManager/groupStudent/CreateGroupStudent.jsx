@@ -59,12 +59,10 @@ const CreateGroupStudent = () => {
       );
       return;
     }
-    const data = [];
-    for (let i = 1; i <= state.totalGroup; i++) {
-      const groupName = i < 10 ? `00${i}` : 10 <= i < 99 ? `0${i}` : `${i}`;
-      const quantityMember = state.memberGroup;
-      data.push({ groupName, quantityMember });
-    }
+    const data = {
+      totalGroup: state.totalGroup,
+      numOfMembers: state.memberGroup,
+    };
     return data;
   };
   const handleConfirm = async () => {
@@ -81,14 +79,6 @@ const CreateGroupStudent = () => {
       messageApi.error(res.message);
       updateState({ loadingSuccess: false });
     }
-  };
-
-  const handleCancel = () => {
-    updateState({ loadingError: true });
-    updateState({ memberGroup: "", totalGroup: "" });
-    setTimeout(() => {
-      updateState({ loadingError: false });
-    }, 2000);
   };
 
   const handleOpenModal = () => {
@@ -139,14 +129,6 @@ const CreateGroupStudent = () => {
             }}
             value={state.numberOfStudent}
           />
-          <Button
-            variant="contained"
-            onClick={handleOpenModal}
-            startIcon={<AddIcon />}
-            sx={{ padding: "10px" }}
-          >
-            Thêm một nhóm mới
-          </Button>
         </Box>
 
         <Box sx={{ marginBottom: "20px", marginTop: "20px" }}>
@@ -199,12 +181,14 @@ const CreateGroupStudent = () => {
               text={"Tạo danh sách"}
               type="success"
             />
-            <CustomButton
-              onClick={handleCancel}
-              loading={state.loadingError}
-              text={"Hủy"}
-              type="error"
-            />
+            <Button
+              variant="contained"
+              onClick={handleOpenModal}
+              startIcon={<AddIcon />}
+              // sx={{ padding: "10px" }}
+            >
+              Thêm một nhóm mới
+            </Button>
           </Space>
         </Box>
       </Card>
