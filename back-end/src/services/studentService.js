@@ -433,7 +433,6 @@ const joinGroup = async (data) => {
 };
 
 const getInfoMyGroup = async (groupId) => {
-  console.log("Check:", groupId);
   if (!groupId) {
     return {
       status: -1,
@@ -474,6 +473,57 @@ const getInfoMyGroup = async (groupId) => {
     };
   }
 };
+
+const studentLeaveGroup = async (data) => {
+  console.log("check data: ", data);
+  if (!data) {
+    return {
+      status: -1,
+      message: "Dữ liệu không hợp lệ!",
+    };
+  }
+  const res = await Group.findOne({
+    where: { id: data.groupId },
+    include: {
+      model: Student,
+      as: "students",
+    },
+  });
+
+  if (!res) {
+    return {
+      status: 1,
+      message: "Nhóm không tồn tại!",
+      data: null,
+    };
+  }
+
+  const { id, numOfMembers } = res;
+  const students = res.students.length;
+  const update = await Student.update(
+    { groupId: null },
+    {
+      where: { id: data.studentId },
+    }
+  );
+
+  if (update[0] > 0) {
+    if (students - 1 < numOfMembers) {
+      await Group.update({ status: "NOT_FULL" }, { where: { id } });
+    }
+
+    return {
+      status: 0,
+      message: "Rời nhóm thành công!",
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Rời nhóm thất bại! Không tìm thấy sinh viên.",
+      data: null,
+    };
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -487,4 +537,5 @@ module.exports = {
   getStudentGetAllGroup,
   joinGroup,
   getInfoMyGroup,
+  studentLeaveGroup,
 };

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Input, Select, message, Button } from "antd";
+import { Input, Select, message, Col } from "antd";
 import { Box, Typography } from "@mui/material";
 import { BookTwoTone } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
 import { useSelector } from "react-redux";
 import StudentApi from "../../../../apis/studentApi";
 import CustomButton from "../../../../components/Button/CustomButton";
+import Avatar from "../../../../components/Avatar/Avatar";
 const { Option } = Select;
 
 function StudentHome() {
@@ -68,21 +69,19 @@ function StudentHome() {
             }}
           >
             <Box
-              style={{
+              sx={{
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
               }}
             >
-              <Avatar
-                style={{
-                  backgroundColor: "rgb(8, 56, 127)",
-                  verticalAlign: "middle",
-                  left: "10px",
-                }}
-                size={80}
-              />
-              <Box sx={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
+              <Col span={12}>
+                <Box sx={{ marginLeft: "-30px" }}>
+                  <Avatar gender={user.gender} />
+                </Box>
+              </Col>
+
+              <Box sx={{ flex: 1, textAlign: "left", marginLeft: "-50px" }}>
                 <Box sx={{ marginTop: "5px" }}>
                   <Typography variant="h5" component="h2" gutterBottom>
                     Thông tin cá nhân

@@ -1,23 +1,22 @@
 import React, { useState } from "react";
 import { Row, Col, message } from "antd";
 import { HomeOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Button, Box } from "@mui/material"; // Thêm Box từ Material-UI
 import { Card } from "../../../../components/Card/Card";
-import { Link, Typography } from "@mui/material";
+import { Link, Typography, CircularProgress, Button, Box } from "@mui/material";
 import "./StudentGroup.scss";
 import studentApi from "../../../../apis/studentApi";
 import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
-import { setGroup } from "../../../../redux/userSlice";
+import { setGroup, setUser } from "../../../../redux/userSlice";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-
+import Avatar from "../../../../components/Avatar/Avatar";
 const StudentGroup = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
   const group = useSelector((state) => state.userInit.group);
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [loading, setLoading] = useState(false);
   const getMyGroup = async () => {
     const res = await studentApi.getMyGroup(user.groupId);
     return res;
@@ -33,7 +32,6 @@ const StudentGroup = () => {
       refetchOnWindowFocus: false,
       staleTime: 1000,
       onSuccess: (res) => {
-        console.log(res);
         if (res && res.status === 0) {
           messageApi.success(res.message);
           dispatch(setGroup(res.data));
@@ -47,6 +45,23 @@ const StudentGroup = () => {
     }
   );
 
+  const handleLeaveGroup = async () => {
+    setLoading(true);
+    const data = {
+      studentId: user.id,
+      groupId: group.id,
+    };
+    const res = await studentApi.leaveGroup(data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      setLoading(false);
+      dispatch(setUser({ ...user, groupId: null }));
+      dispatch(setGroup({}));
+    } else {
+      setLoading(false);
+      messageApi.error(res.message);
+    }
+  };
   return (
     <div style={{ padding: "20px" }}>
       {contextHolder}
@@ -76,27 +91,35 @@ const StudentGroup = () => {
                     transition: "transform 0.2s",
                   }}
                 >
-                  <Row style={{ padding: "5px" }}>
-                    <Col span={24}>
+                  <Row gutter={4} style={{ alignItems: "center" }}>
+                    <Col span={5}>
+                      <Box sx={{ marginLeft: "-30px" }}>
+                        <Avatar gender={item.gender} />
+                      </Box>
+                    </Col>
+
+                    <Col span={19}>
                       <Typography variant="h5" fontWeight="bold">
                         Sinh viên {index + 1}: {item.fullName}
                       </Typography>
-                    </Col>
-                  </Row>
-                  <Row gutter={16} style={{ padding: "5px" }}>
-                    <Col span={12}>
-                      <Typography>Mã số sinh viên: {item.username}</Typography>
-                    </Col>
-                    <Col span={12} style={{ TypographyAlign: "left" }}>
-                      <Typography>Số điện thoại: {item.phone}</Typography>
-                    </Col>
-                  </Row>
-                  <Row gutter={16} style={{ padding: "5px" }}>
-                    <Col span={12}>
-                      <Typography>Email liên hệ: {item.email}</Typography>
-                    </Col>
-                    <Col span={12} style={{ TypographyAlign: "left" }}>
-                      <Typography>Giới tính: {item.gender}</Typography>
+                      <Row gutter={4}>
+                        <Col span={10}>
+                          <Typography>
+                            Mã số sinh viên: {item.username}
+                          </Typography>
+                        </Col>
+                        <Col span={10} style={{ textAlign: "left" }}>
+                          <Typography>Số điện thoại: {item.phone}</Typography>
+                        </Col>
+                      </Row>
+                      <Row gutter={4}>
+                        <Col span={10}>
+                          <Typography>Email liên hệ: {item.email}</Typography>
+                        </Col>
+                        <Col span={10} style={{ textAlign: "left" }}>
+                          <Typography>Giới tính: {item.gender}</Typography>
+                        </Col>
+                      </Row>
                     </Col>
                   </Row>
                 </Card>
@@ -107,7 +130,18 @@ const StudentGroup = () => {
               <Link>Xem Đề tài của tôi</Link>
             </Col>
             <Col>
-              <Button variant="contained" startIcon={<LogoutOutlined />}>
+              <Button
+                variant="contained"
+                disabled={loading}
+                onClick={handleLeaveGroup}
+                startIcon={
+                  loading ? (
+                    <CircularProgress size={20} color="primary" />
+                  ) : (
+                    <LogoutOutlined />
+                  )
+                }
+              >
                 Rời nhóm
               </Button>
             </Col>

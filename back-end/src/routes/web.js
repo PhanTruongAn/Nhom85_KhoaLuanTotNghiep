@@ -57,6 +57,10 @@ const initWebRoutes = (app) => {
   );
   router.get("/student/my-group", studentController.handleGetInfoMyGroup);
   router.post("/student/join-group", studentController.handleJoinGroup);
+  router.put(
+    "/student/leave-group",
+    studentController.handleGStudentLeaveGroup
+  );
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
