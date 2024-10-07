@@ -13,6 +13,10 @@ const studentApi = {
   leaveGroup: (data) => {
     return axiosClient.put(baseUrl + "/leave-group", data);
   },
+  removeMember: (data) => {
+    return axiosClient.put(baseUrl + "/remove-member-from-group", data);
+  },
+
   getMyGroup: (group) => {
     return axiosClient.get(baseUrl + `/my-group?group=${group}`);
   },

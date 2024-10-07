@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, message } from "antd";
+import { Row, Col, message, Space } from "antd";
 import { HomeOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
 import { Link, Typography, CircularProgress, Button, Box } from "@mui/material";
@@ -11,12 +11,21 @@ import { useSelector, useDispatch } from "react-redux";
 import { setGroup, setUser } from "../../../../redux/userSlice";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import Avatar from "../../../../components/Avatar/Avatar";
+import CustomButton from "../../../../components/Button/CustomButton";
 const StudentGroup = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
   const group = useSelector((state) => state.userInit.group);
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
+  const [state, setState] = useState({
+    loadingButtonSuccess: false,
+    loadingButtonError: false,
+  });
+
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
   const getMyGroup = async () => {
     const res = await studentApi.getMyGroup(user.groupId);
     return res;
@@ -62,6 +71,23 @@ const StudentGroup = () => {
       messageApi.error(res.message);
     }
   };
+
+  const handleRemoveMemberFromGroup = async (studentId) => {
+    updateState({ loadingButtonError: true });
+    const data = {
+      studentId: studentId,
+      groupId: group.id,
+    };
+    const res = await studentApi.removeMember(data);
+    if (res && res.status === 0) {
+      updateState({ loadingButtonError: false });
+      dispatch(setGroup(res.data));
+      messageApi.success(res.message);
+    } else {
+      updateState({ loadingButtonError: false });
+      messageApi.error(res.message);
+    }
+  };
   return (
     <div style={{ padding: "20px" }}>
       {contextHolder}
@@ -92,13 +118,13 @@ const StudentGroup = () => {
                   }}
                 >
                   <Row gutter={4} style={{ alignItems: "center" }}>
-                    <Col span={5}>
+                    <Col span={4}>
                       <Box sx={{ marginLeft: "-30px" }}>
                         <Avatar gender={item.gender} />
                       </Box>
                     </Col>
 
-                    <Col span={19}>
+                    <Col span={15}>
                       <Typography variant="h5" fontWeight="bold">
                         Sinh viên {index + 1}: {item.fullName}
                       </Typography>
@@ -121,6 +147,24 @@ const StudentGroup = () => {
                         </Col>
                       </Row>
                     </Col>
+                    {item.isLeader || user.username === item.username ? null : (
+                      <Col span={5}>
+                        <Space direction="vertical">
+                          <CustomButton
+                            type="success"
+                            text="Chọn làm nhóm trưởng"
+                          />
+                          <CustomButton
+                            type="error"
+                            text="Xóa khỏi nhóm"
+                            onClick={(e) =>
+                              handleRemoveMemberFromGroup(item.id)
+                            }
+                            loading={state.loadingButtonError}
+                          />
+                        </Space>
+                      </Col>
+                    )}
                   </Row>
                 </Card>
               );

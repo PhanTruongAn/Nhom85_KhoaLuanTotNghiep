@@ -407,9 +407,9 @@ const joinGroup = async (data) => {
       message: "Nhóm đã đầy!",
     };
   }
-
+  const isFirstStudent = students === 0;
   const update = await Student.update(
-    { groupId: id },
+    { groupId: id, isLeader: isFirstStudent ? true : false },
     { where: { id: data.studentId } }
   );
 
@@ -500,6 +500,18 @@ const studentLeaveGroup = async (data) => {
 
   const { id, numOfMembers } = res;
   const students = res.students.length;
+  const student = await Student.findOne({
+    where: {
+      id: data.studentId,
+    },
+  });
+  const { isLeader } = student;
+  if (isLeader) {
+    return {
+      status: 1,
+      message: "Bạn hãy chọn 1 thành viên khác làm nhóm trưởng",
+    };
+  }
   const update = await Student.update(
     { groupId: null },
     {
@@ -524,6 +536,49 @@ const studentLeaveGroup = async (data) => {
     };
   }
 };
+const removeMemberFromGroup = async (data) => {
+  const { groupId, studentId } = data;
+  if (!groupId && !studentId) {
+    return {
+      status: -1,
+      message: "Thông tin nhóm hoặc sinh viên cần xóa không hợp lệ!",
+    };
+  }
+  const result = await studentLeaveGroup(data);
+
+  if (result && result.status === 0) {
+    const updateGroup = await Group.findOne({
+      where: {
+        id: groupId,
+      },
+      attributes: { exclude: ["createdAt", "updatedAt", "TopicId"] },
+      include: {
+        model: Student,
+        as: "students",
+        attributes: [
+          "id",
+          "fullName",
+          "email",
+          "phone",
+          "isLeader",
+          "gender",
+          "username",
+        ],
+      },
+    });
+    return {
+      status: 0,
+      message: "Đã xóa thành viên khỏi nhóm!",
+      data: updateGroup,
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Xóa thành viên khỏi nhóm thất bại!",
+    };
+  }
+};
+
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -538,4 +593,5 @@ module.exports = {
   joinGroup,
   getInfoMyGroup,
   studentLeaveGroup,
+  removeMemberFromGroup,
 };

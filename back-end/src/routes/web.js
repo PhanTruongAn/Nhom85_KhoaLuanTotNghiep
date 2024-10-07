@@ -61,6 +61,12 @@ const initWebRoutes = (app) => {
     "/student/leave-group",
     studentController.handleGStudentLeaveGroup
   );
+
+  router.put(
+    "/student/remove-member-from-group",
+    studentController.handleRemoveMemberFromGroup
+  );
+
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
