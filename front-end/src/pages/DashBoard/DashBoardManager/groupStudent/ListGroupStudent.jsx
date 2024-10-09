@@ -50,6 +50,7 @@ const ListGroupStudent = () => {
       staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
+          console.log("Check data: ", res);
           updateState({
             refreshButton: false,
             dataSource: res.data.groupStudent,
@@ -293,20 +294,19 @@ const ListGroupStudent = () => {
           selectedRowKeys,
           onChange: setSelectedRowKeys,
         }}
+        style={{ overflow: "auto" }}
+        bordered
         columns={columns}
         dataSource={state.dataSource}
         rowKey="id"
-        showSorterTooltip={{
-          target: "sorter-icon",
-        }}
+        scroll={{ x: "max-content" }}
         loading={isFetching}
         pagination={{
+          pageSizeOptions: [state.pageSize],
           total: state.totalRows,
           current: state.currentPage,
           pageSize: state.pageSize,
           onChange: onChangePage,
-          showQuickJumper: true,
-          itemRender: itemRender,
           responsive: true,
         }}
         locale={{

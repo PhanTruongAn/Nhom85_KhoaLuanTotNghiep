@@ -13,14 +13,14 @@ function StudentHome() {
   const user = useSelector((state) => state.userInit.user);
   const [formData, setFormData] = useState({
     id: user.id,
-    username: user.username || "",
-    fullName: user.fullName || "",
-    phone: user.phone || "",
-    email: user.email || "",
-    gender: user.gender || "",
-    majorName: user.majorName || "",
-    className: user.className || "",
-    typeTraining: user.typeTraining || "",
+    username: user.username || "undefined",
+    fullName: user.fullName || "undefined",
+    phone: user.phone || "undefined",
+    email: user.email || "undefined",
+    gender: user.gender || "undefined",
+    majorName: user.majorName || "undefined",
+    className: user.className || "undefined",
+    typeTraining: user.typeTraining || "undefined",
   });
   const [loading, setLoading] = useState(false);
 

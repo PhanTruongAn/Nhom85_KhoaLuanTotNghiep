@@ -193,6 +193,7 @@ function ListTopicManager() {
         style={{ padding: "10px" }}
         columns={columns}
         dataSource={filteredTopics}
+        rowKey={(record) => record.id}
         pagination={{
           current: page,
           pageSize: rowsPerPage,
