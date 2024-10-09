@@ -275,6 +275,19 @@ const paginationGroupsStudent = async (page, limit) => {
       attributes: ["id", "groupName", "topicId", "createdAt"],
       offset: offset,
       limit: limit,
+      include: {
+        model: Student,
+        as: "students",
+        attributes: [
+          "id",
+          "fullName",
+          "email",
+          "phone",
+          "isLeader",
+          "gender",
+          "username",
+        ],
+      },
     });
     const totalPages = Math.ceil(count / limit);
     return {
