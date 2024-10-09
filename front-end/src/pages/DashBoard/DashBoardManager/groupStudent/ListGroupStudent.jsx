@@ -35,6 +35,8 @@ const ListGroupStudent = () => {
     totalRows: null,
     refreshButton: false,
   });
+  console.log("selectedGroup", selectedGroup);
+
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
