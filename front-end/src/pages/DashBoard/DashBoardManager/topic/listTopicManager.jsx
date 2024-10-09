@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import SearchIcon from "@mui/icons-material/Search";
 import { Table } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -151,8 +152,15 @@ function ListTopicManager() {
           >
             Xem chi tiết
           </Button>
-          <Button variant="contained">Sửa</Button>
-          <Button variant="contained" color="error">
+          <Button variant="contained" endIcon={<EditOutlined />} size="small">
+            Sửa
+          </Button>
+          <Button
+            variant="contained"
+            endIcon={<DeleteOutlined />}
+            size="small"
+            color="error"
+          >
             Xóa
           </Button>
         </div>
@@ -164,7 +172,12 @@ function ListTopicManager() {
     <Box>
       <Typography
         fontWeight="bold"
-        sx={{ justifyContent: "center", textAlign: "center", fontSize: "20px" }}
+        sx={{
+          justifyContent: "center",
+          textAlign: "center",
+          fontSize: "20px",
+          marginTop: "10px",
+        }}
       >
         Danh sách đề tài
       </Typography>

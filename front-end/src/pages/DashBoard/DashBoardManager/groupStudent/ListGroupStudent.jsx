@@ -15,6 +15,7 @@ import { useQuery } from "react-query";
 import { formatDate } from "../../../../utils/formatDate";
 const { Search } = Input;
 const { Option } = Select;
+import { InfoCircleOutlined } from "@ant-design/icons";
 import managerApi from "../../../../apis/managerApi";
 const ListGroupStudent = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -150,18 +151,18 @@ const ListGroupStudent = () => {
         <>
           <Button
             onClick={() => handleOpenUpdateModal(record)}
-            variant="contained"
+            variant="outlined"
             size="small"
-            sx={[
-              (theme) => ({
-                marginLeft: "10px",
-                textTransform: "none",
-                ...theme.applyStyles("dark", {
-                  background: "#1DA57A",
-                }),
-              }),
-            ]}
-            startIcon={<EyeOutlined />}
+            // sx={[
+            //   (theme) => ({
+            //     marginLeft: "10px",
+            //     textTransform: "none",
+            //     ...theme.applyStyles("dark", {
+            //       background: "#1DA57A",
+            //     }),
+            //   }),
+            // ]}
+            endIcon={<InfoCircleOutlined />}
           >
             Xem chi tiết
           </Button>
@@ -178,7 +179,7 @@ const ListGroupStudent = () => {
                 }),
               }),
             ]}
-            startIcon={<EditOutlined />}
+            endIcon={<EditOutlined />}
           >
             Sửa
           </Button>
@@ -199,7 +200,7 @@ const ListGroupStudent = () => {
                 marginLeft: "10px",
                 textTransform: "none",
               }}
-              startIcon={<DeleteOutlined />}
+              endIcon={<DeleteOutlined />}
             >
               Xóa
             </Button>

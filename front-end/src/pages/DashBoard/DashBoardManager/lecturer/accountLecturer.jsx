@@ -193,7 +193,7 @@ const AccountLecturer = () => {
                 alignItems="center"
                 justifyContent="center"
               >
-                <EmptyData text={"Bạn chọn chọn file!"} />
+                <EmptyData text={"Bạn hãy chọn file!"} />
               </Box>
             ),
           }}

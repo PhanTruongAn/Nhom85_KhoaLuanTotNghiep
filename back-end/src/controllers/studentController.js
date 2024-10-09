@@ -129,7 +129,14 @@ const handleRemoveMemberFromGroup = async (req, res) => {
     console.log(error);
   }
 };
-
+const handleTransferTeamLeader = async (req, res) => {
+  try {
+    const data = await studentService.transferTeamLeader(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   handleCreateStudentAccount,
   handleBulkCreate,
@@ -144,4 +151,5 @@ module.exports = {
   handleGetInfoMyGroup,
   handleGStudentLeaveGroup,
   handleRemoveMemberFromGroup,
+  handleTransferTeamLeader,
 };

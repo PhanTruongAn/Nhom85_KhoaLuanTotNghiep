@@ -2,8 +2,7 @@ import React, { useState, useRef } from "react"; // Thêm useRef
 import { Button, Box, IconButton } from "@mui/material";
 import { Table, message, Tooltip, Select, Modal, Space } from "antd";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import EmptyData from "../../../../components/emptydata/EmptyData";
@@ -141,7 +140,7 @@ const ManagerTopic = () => {
               size="small"
               color="error"
               sx={{ textTransform: "none" }}
-              endIcon={<InfoCircleOutlined />}
+              endIcon={<DeleteOutlined />}
             >
               Xóa
             </Button>
@@ -279,7 +278,7 @@ const ManagerTopic = () => {
                   height: "auto",
                 }}
               >
-                <EmptyData text={"Bạn chọn chọn file!"} />
+                <EmptyData text={"Bạn hãy chọn file!"} />
               </Box>
             ),
           }}

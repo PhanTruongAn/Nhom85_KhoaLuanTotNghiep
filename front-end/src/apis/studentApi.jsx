@@ -16,6 +16,9 @@ const studentApi = {
   removeMember: (data) => {
     return axiosClient.put(baseUrl + "/remove-member-from-group", data);
   },
+  transferLeader: (data) => {
+    return axiosClient.put(baseUrl + "/transfer-team-leader", data);
+  },
 
   getMyGroup: (group) => {
     return axiosClient.get(baseUrl + `/my-group?group=${group}`);

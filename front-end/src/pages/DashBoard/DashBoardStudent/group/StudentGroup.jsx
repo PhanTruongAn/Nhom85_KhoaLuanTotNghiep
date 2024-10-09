@@ -42,7 +42,7 @@ const StudentGroup = () => {
       staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
-          messageApi.success(res.message);
+          // messageApi.success(res.message);
           dispatch(setGroup(res.data));
         } else {
           messageApi.error(res.message);
@@ -81,11 +81,29 @@ const StudentGroup = () => {
     const res = await studentApi.removeMember(data);
     if (res && res.status === 0) {
       updateState({ loadingButtonError: false });
-      dispatch(setGroup(res.data));
       messageApi.success(res.message);
+      refetch();
     } else {
       updateState({ loadingButtonError: false });
       messageApi.error(res.message);
+    }
+  };
+
+  const handleTransferLeader = async (memberId) => {
+    updateState({ loadingButtonSuccess: true });
+    const data = {
+      leaderId: user.id,
+      memberId: memberId,
+    };
+    const res = await studentApi.transferLeader(data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      updateState({ loadingButtonSuccess: false });
+      dispatch(setUser({ ...user, isLeader: false }));
+      refetch();
+    } else {
+      messageApi.error(res.message);
+      updateState({ loadingButtonSuccess: false });
     }
   };
   return (
@@ -153,6 +171,8 @@ const StudentGroup = () => {
                           <CustomButton
                             type="success"
                             text="Chọn làm nhóm trưởng"
+                            onClick={(e) => handleTransferLeader(item.id)}
+                            loading={state.loadingButtonSuccess}
                           />
                           <CustomButton
                             type="error"

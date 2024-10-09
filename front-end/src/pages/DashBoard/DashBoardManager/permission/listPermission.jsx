@@ -224,7 +224,7 @@ function ListPermission() {
                 }),
               }),
             ]}
-            startIcon={<EditOutlined />}
+            endIcon={<EditOutlined />}
           >
             Sửa
           </Button>
@@ -245,7 +245,7 @@ function ListPermission() {
                 marginLeft: "10px",
                 textTransform: "none",
               }}
-              startIcon={<DeleteOutlined />}
+              endIcon={<DeleteOutlined />}
             >
               Xóa
             </Button>

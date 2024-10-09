@@ -241,7 +241,7 @@ function ListLecturer() {
                 }),
               }),
             ]}
-            startIcon={<EditOutlined />}
+            endIcon={<EditOutlined />}
           >
             Sửa
           </Button>
@@ -261,7 +261,7 @@ function ListLecturer() {
                 marginLeft: "10px",
                 textTransform: "none",
               }}
-              startIcon={<DeleteOutlined />}
+              endIcon={<DeleteOutlined />}
             >
               Xóa
             </Button>

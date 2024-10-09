@@ -218,7 +218,7 @@ function ListStudent() {
                 }),
               }),
             ]}
-            startIcon={<EditOutlined />}
+            endIcon={<EditOutlined />}
           >
             Sửa
           </Button>
@@ -237,7 +237,7 @@ function ListStudent() {
                 marginLeft: "10px",
                 textTransform: "none",
               }}
-              startIcon={<DeleteOutlined />}
+              endIcon={<DeleteOutlined />}
             >
               Xóa
             </Button>

@@ -547,29 +547,9 @@ const removeMemberFromGroup = async (data) => {
   const result = await studentLeaveGroup(data);
 
   if (result && result.status === 0) {
-    const updateGroup = await Group.findOne({
-      where: {
-        id: groupId,
-      },
-      attributes: { exclude: ["createdAt", "updatedAt", "TopicId"] },
-      include: {
-        model: Student,
-        as: "students",
-        attributes: [
-          "id",
-          "fullName",
-          "email",
-          "phone",
-          "isLeader",
-          "gender",
-          "username",
-        ],
-      },
-    });
     return {
       status: 0,
       message: "Đã xóa thành viên khỏi nhóm!",
-      data: updateGroup,
     };
   } else {
     return {
@@ -578,7 +558,46 @@ const removeMemberFromGroup = async (data) => {
     };
   }
 };
-
+const transferTeamLeader = async (data) => {
+  if (!data) {
+    return {
+      status: -1,
+      message: "Dữ liệu không hợp lệ!",
+    };
+  }
+  const { leaderId, memberId } = data;
+  const leader = await Student.update(
+    {
+      isLeader: false,
+    },
+    {
+      where: {
+        id: leaderId,
+      },
+    }
+  );
+  const member = await Student.update(
+    {
+      isLeader: true,
+    },
+    {
+      where: {
+        id: memberId,
+      },
+    }
+  );
+  if (leader && member) {
+    return {
+      status: 0,
+      message: "Chuyển quyền nhóm trưởng thành công!",
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Chuyển quyền nhóm trưởng thất bại!",
+    };
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -594,4 +613,5 @@ module.exports = {
   getInfoMyGroup,
   studentLeaveGroup,
   removeMemberFromGroup,
+  transferTeamLeader,
 };
