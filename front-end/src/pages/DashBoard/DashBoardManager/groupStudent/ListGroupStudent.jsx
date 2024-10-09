@@ -35,7 +35,6 @@ const ListGroupStudent = () => {
     totalRows: null,
     refreshButton: false,
   });
-  console.log("selectedGroup", selectedGroup);
 
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -52,19 +51,16 @@ const ListGroupStudent = () => {
       staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
-          console.log("Check data: ", res);
           updateState({
             refreshButton: false,
-            dataSource: res.data.groupStudent,
+            dataSource: res.data.groupStudent.map((group) => ({
+              ...group,
+              topicName: group.topic?.title || "Chưa có đề tài", // Lấy tên đề tài
+            })),
             totalRows: res.data.totalRows,
             loadingData: false,
           });
-        } else if (res.status === -1 || res.status === 403) {
-          updateState({
-            dataSource: [],
-            loadingData: false,
-            refreshButton: false,
-          });
+        } else {
           messageApi.error(res.message);
         }
       },
@@ -136,9 +132,9 @@ const ListGroupStudent = () => {
       sorter: (a, b) => a.groupName.localeCompare(b.groupName),
     },
     {
-      title: "Topic ID",
-      dataIndex: "topicId",
-      key: "topicId",
+      title: "Tên Đề Tài", // Thay đổi tiêu đề cột
+      dataIndex: "topicName", // Sử dụng thuộc tính mới cho tên đề tài
+      key: "topicName",
     },
     {
       title: "Created At",
@@ -146,7 +142,6 @@ const ListGroupStudent = () => {
       key: "createdAt",
       render: (text) => formatDate(text),
     },
-
     {
       title: "Actions",
       key: "action",
@@ -156,15 +151,6 @@ const ListGroupStudent = () => {
             onClick={() => handleOpenUpdateModal(record)}
             variant="outlined"
             size="small"
-            // sx={[
-            //   (theme) => ({
-            //     marginLeft: "10px",
-            //     textTransform: "none",
-            //     ...theme.applyStyles("dark", {
-            //       background: "#1DA57A",
-            //     }),
-            //   }),
-            // ]}
             endIcon={<InfoCircleOutlined />}
           >
             Xem chi tiết
@@ -173,20 +159,11 @@ const ListGroupStudent = () => {
             onClick={() => handleOpenUpdateModal(record)}
             variant="contained"
             size="small"
-            sx={[
-              (theme) => ({
-                marginLeft: "10px",
-                textTransform: "none",
-                ...theme.applyStyles("dark", {
-                  background: "#1DA57A",
-                }),
-              }),
-            ]}
             endIcon={<EditOutlined />}
+            sx={{ marginLeft: "10px" }}
           >
             Sửa
           </Button>
-
           <Popconfirm
             title="Xóa nhóm"
             description="Bạn có chắc muốn xóa nhóm này?"
@@ -195,15 +172,11 @@ const ListGroupStudent = () => {
             cancelText="Không"
           >
             <Button
-              // onClick={(e) => showUpdateModal(record)}
               variant="contained"
               color="error"
               size="small"
-              sx={{
-                marginLeft: "10px",
-                textTransform: "none",
-              }}
               endIcon={<DeleteOutlined />}
+              sx={{ marginLeft: "10px" }}
             >
               Xóa
             </Button>
