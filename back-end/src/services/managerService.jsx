@@ -2,7 +2,13 @@ import db from "../models/index";
 import _ from "lodash";
 import permissionValid from "../validates/permissionValidate";
 const { Op } = require("sequelize");
-const { Student, Permission, Group, RolePermission } = require("../models");
+const {
+  Student,
+  Permission,
+  Group,
+  RolePermission,
+  Topic,
+} = require("../models");
 
 const paginationPermission = async (page, limit) => {
   try {
@@ -272,23 +278,31 @@ const paginationGroupsStudent = async (page, limit) => {
     }
     const offset = (page - 1) * limit;
     const { count, rows } = await Group.findAndCountAll({
-      attributes: ["id", "groupName", "topicId", "createdAt"],
+      attributes: ["id", "groupName", "createdAt"],
       offset: offset,
       limit: limit,
-      include: {
-        model: Student,
-        as: "students",
-        attributes: [
-          "id",
-          "fullName",
-          "email",
-          "phone",
-          "isLeader",
-          "gender",
-          "username",
-        ],
-      },
+      include: [
+        {
+          model: Student,
+          as: "students",
+          attributes: [
+            "id",
+            "fullName",
+            "email",
+            "phone",
+            "isLeader",
+            "gender",
+            "username",
+          ],
+        },
+        {
+          model: Topic,
+          as: "topic",
+          attributes: ["id", "title"],
+        },
+      ],
     });
+
     const totalPages = Math.ceil(count / limit);
     return {
       status: 0,

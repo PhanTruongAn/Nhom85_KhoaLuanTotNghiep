@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Group.belongsTo(models.Topic, {
         foreignKey: "topicId",
+        as: "topic",
       });
     }
   }
