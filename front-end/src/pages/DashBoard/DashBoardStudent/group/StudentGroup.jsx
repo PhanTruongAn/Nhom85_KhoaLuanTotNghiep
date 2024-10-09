@@ -12,20 +12,18 @@ import { setGroup, setUser } from "../../../../redux/userSlice";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import Avatar from "../../../../components/Avatar/Avatar";
 import CustomButton from "../../../../components/Button/CustomButton";
+
 const StudentGroup = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
   const group = useSelector((state) => state.userInit.group);
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
-  const [state, setState] = useState({
-    loadingButtonSuccess: false,
-    loadingButtonError: false,
-  });
 
-  const updateState = (newState) => {
-    setState((prevState) => ({ ...prevState, ...newState }));
-  };
+  // Tạo trạng thái loading riêng cho nút "Chọn làm nhóm trưởng" và "Xóa khỏi nhóm"
+  const [loadingTransferLeader, setLoadingTransferLeader] = useState({});
+  const [loadingRemoveMember, setLoadingRemoveMember] = useState({});
+
   const getMyGroup = async () => {
     const res = await studentApi.getMyGroup(user.groupId);
     return res;
@@ -42,7 +40,6 @@ const StudentGroup = () => {
       staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
-          // messageApi.success(res.message);
           dispatch(setGroup(res.data));
         } else {
           messageApi.error(res.message);
@@ -73,24 +70,28 @@ const StudentGroup = () => {
   };
 
   const handleRemoveMemberFromGroup = async (studentId) => {
-    updateState({ loadingButtonError: true });
+    // Thiết lập trạng thái loading cho nút "Xóa khỏi nhóm"
+    setLoadingRemoveMember((prev) => ({ ...prev, [studentId]: true }));
+
     const data = {
       studentId: studentId,
       groupId: group.id,
     };
     const res = await studentApi.removeMember(data);
     if (res && res.status === 0) {
-      updateState({ loadingButtonError: false });
       messageApi.success(res.message);
       refetch();
     } else {
-      updateState({ loadingButtonError: false });
       messageApi.error(res.message);
     }
+    // Kết thúc trạng thái loading
+    setLoadingRemoveMember((prev) => ({ ...prev, [studentId]: false }));
   };
 
   const handleTransferLeader = async (memberId) => {
-    updateState({ loadingButtonSuccess: true });
+    // Thiết lập trạng thái loading cho nút "Chọn làm nhóm trưởng"
+    setLoadingTransferLeader((prev) => ({ ...prev, [memberId]: true }));
+
     const data = {
       leaderId: user.id,
       memberId: memberId,
@@ -98,14 +99,15 @@ const StudentGroup = () => {
     const res = await studentApi.transferLeader(data);
     if (res && res.status === 0) {
       messageApi.success(res.message);
-      updateState({ loadingButtonSuccess: false });
       dispatch(setUser({ ...user, isLeader: false }));
       refetch();
     } else {
       messageApi.error(res.message);
-      updateState({ loadingButtonSuccess: false });
     }
+    // Kết thúc trạng thái loading
+    setLoadingTransferLeader((prev) => ({ ...prev, [memberId]: false }));
   };
+
   return (
     <div style={{ padding: "20px" }}>
       {contextHolder}
@@ -142,7 +144,7 @@ const StudentGroup = () => {
                       </Box>
                     </Col>
 
-                    <Col span={15}>
+                    <Col span={14}>
                       <Typography variant="h5" fontWeight="bold">
                         Sinh viên {index + 1}: {item.fullName}
                       </Typography>
@@ -165,22 +167,20 @@ const StudentGroup = () => {
                         </Col>
                       </Row>
                     </Col>
-                    {item.isLeader || user.username === item.username ? null : (
-                      <Col span={5}>
+                    {user.isLeader && item.id !== user.id && (
+                      <Col span={6}>
                         <Space direction="vertical">
                           <CustomButton
                             type="success"
                             text="Chọn làm nhóm trưởng"
-                            onClick={(e) => handleTransferLeader(item.id)}
-                            loading={state.loadingButtonSuccess}
+                            onClick={() => handleTransferLeader(item.id)}
+                            loading={loadingTransferLeader[item.id] || false} // Sử dụng trạng thái loading riêng cho nút "Chọn làm nhóm trưởng"
                           />
                           <CustomButton
                             type="error"
                             text="Xóa khỏi nhóm"
-                            onClick={(e) =>
-                              handleRemoveMemberFromGroup(item.id)
-                            }
-                            loading={state.loadingButtonError}
+                            onClick={() => handleRemoveMemberFromGroup(item.id)}
+                            loading={loadingRemoveMember[item.id] || false} // Sử dụng trạng thái loading riêng cho nút "Xóa khỏi nhóm"
                           />
                         </Space>
                       </Col>

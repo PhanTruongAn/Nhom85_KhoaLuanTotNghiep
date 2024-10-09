@@ -203,7 +203,8 @@ const DashBoardStudent = () => {
                 margin: "24px 16px",
                 color: themes ? "#fff" : "#000",
                 background: themes ? "#152f40" : "#fff",
-                overflow: "auto",
+                overflowY: "auto",
+                maxHeight: "590px",
               }}
             >
               <Outlet />
