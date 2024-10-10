@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       Topic.hasMany(models.Group);
       Topic.belongsTo(models.Lecturer, {
         foreignKey: "lecturerId",
+        as: "lecturer",
       });
     }
   }

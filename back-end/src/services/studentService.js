@@ -2,7 +2,7 @@ import db from "../models/index";
 import { hashPassword } from "../services/userService";
 import _, { isEmpty } from "lodash";
 const { Op } = require("sequelize");
-const { Student, Group, Role } = require("../models");
+const { Student, Group, Role, Topic, Lecturer } = require("../models");
 
 // Tạo tài khoản sinh viên
 const createStudentAccount = async (data) => {
@@ -598,6 +598,42 @@ const transferTeamLeader = async (data) => {
     };
   }
 };
+
+const getInfoMyTopic = async (topic) => {
+  if (!topic) {
+    return {
+      status: -1,
+      message: "Dữ liệu không hợp lệ!",
+      data: null,
+    };
+  }
+  const result = await Topic.findOne({
+    where: {
+      id: topic,
+    },
+    attributes: {
+      exclude: ["createdAt", "updatedAt", "LecturerId", "lecturerId"],
+    },
+    include: {
+      model: Lecturer,
+      as: "lecturer",
+      attributes: ["id", "fullName", "email", "phone"],
+    },
+  });
+  if (result) {
+    return {
+      status: 0,
+      message: "Lấy thông tin đề tài thành công!",
+      data: result,
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin đề tài!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -614,4 +650,5 @@ module.exports = {
   studentLeaveGroup,
   removeMemberFromGroup,
   transferTeamLeader,
+  getInfoMyTopic,
 };

@@ -213,14 +213,12 @@ const StudentGroup = () => {
         </>
       ) : (
         <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          textAlign="center"
-          justifyContent="center"
-          width="100%"
-          height="auto"
-          alignSelf="center"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "60vh", // Căn giữa theo chiều dọc với chiều cao 70% view height
+          }}
         >
           <EmptyData
             text={!user.groupId ? "Bạn hãy tham gia nhóm trước đã!" : null}

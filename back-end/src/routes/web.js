@@ -70,7 +70,7 @@ const initWebRoutes = (app) => {
     "/student/transfer-team-leader",
     studentController.handleTransferTeamLeader
   );
-
+  router.get("/student/my-topic", studentController.handleGetInfoMyTopic);
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",

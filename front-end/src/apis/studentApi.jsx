@@ -19,9 +19,11 @@ const studentApi = {
   transferLeader: (data) => {
     return axiosClient.put(baseUrl + "/transfer-team-leader", data);
   },
-
   getMyGroup: (group) => {
     return axiosClient.get(baseUrl + `/my-group?group=${group}`);
+  },
+  getMyTopic: (topic) => {
+    return axiosClient.get(baseUrl + `/my-topic?topic=${topic}`);
   },
   getAll: (page, limit) => {
     return axiosClient.get(`${baseUrl}/get-all?page=${page}&limit=${limit}`);

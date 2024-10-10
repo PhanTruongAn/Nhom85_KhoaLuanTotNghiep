@@ -176,12 +176,12 @@ function ListTopic() {
           emptyText:
             filteredTopics.length === 0 ? (
               <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                width={"100%"}
-                height={"auto"}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "60vh",
+                }}
               >
                 <EmptyData />
               </Box>
