@@ -27,6 +27,8 @@ import MyPoint from "../pages/DashBoard/DashBoardStudent/point/MyPoint";
 import Criteria from "../pages/DashBoard/DashBoardStudent/criteria/Criteria";
 import PageNotFound from "../pages/PageNotFound/PageNotFound";
 import ListTopicManager from "../pages/DashBoard/DashBoardManager/topic/listTopicManager";
+import ListGroupTopicLecturer from "../pages/DashBoard/DashBoardManager/point/listGroupTopicLecturer";
+import PointTopicStudent from "../pages/DashBoard/DashBoardManager/point/pointTopicStudent";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -150,6 +152,10 @@ const AppRoute = () => {
           <Route
             path="manage-list-topic"
             element={<PrivateRoute component={<ListTopicManager />} />}
+          />
+          <Route
+            path="point-list-group"
+            element={<PrivateRoute component={<ListGroupTopicLecturer />} />}
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>

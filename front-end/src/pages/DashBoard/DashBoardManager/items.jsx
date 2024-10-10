@@ -11,9 +11,9 @@ import {
   LockOutlined,
   KeyOutlined,
   UsergroupAddOutlined,
-  TableOutlined,
   FileExcelOutlined,
   BarChartOutlined,
+  TableOutlined,
 } from "@ant-design/icons";
 import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -124,14 +124,20 @@ const getItems = (isManager) => {
               },
             ],
           },
+          {
+            key: "point",
+            icon: <TableOutlined />,
+            label: "Chấm điểm",
+            children: [
+              {
+                key: "point-list-group",
+                icon: <OrderedListOutlined />,
+                label: "Danh sách nhóm",
+              },
+            ],
+          },
         ]
       : []),
-    {
-      key: "tieu-chi-danh-gia",
-      icon: <TableOutlined />,
-      label: "Tiêu chí đánh giá",
-    },
-
     {
       key: "notification",
       icon: <NotificationOutlined />,
