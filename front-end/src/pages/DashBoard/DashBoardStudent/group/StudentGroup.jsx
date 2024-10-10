@@ -33,7 +33,7 @@ const StudentGroup = () => {
     ["my-group"],
     getMyGroup,
     {
-      enabled: isEmpty(group),
+      enabled: !!user.groupId && isEmpty(group),
       keepPreviousData: true,
       cacheTime: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
@@ -217,12 +217,10 @@ const StudentGroup = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "60vh", // Căn giữa theo chiều dọc với chiều cao 70% view height
+            height: "60vh", // Căn giữa theo chiều dọc với chiều cao 60% view height
           }}
         >
-          <EmptyData
-            text={!user.groupId ? "Bạn hãy tham gia nhóm trước đã!" : null}
-          />
+          <EmptyData text={!user.groupId ? "Bạn chưa tham gia nhóm!" : null} />
         </Box>
       )}
     </div>

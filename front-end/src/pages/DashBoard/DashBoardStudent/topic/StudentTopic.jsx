@@ -95,65 +95,81 @@ const ProjectDetails = () => {
         </Box>
       ) : (
         <div>
-          <Card
-            sx={{ marginBottom: "20px", padding: "10px" }}
-            variant="elevation"
-          >
-            <Typography sx={{ fontWeight: 700 }}>
-              THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN
-            </Typography>
-            <Typography>Họ và tên giảng viên: Đặng Thị Thu Hà</Typography>
-            <Typography>Email liên hệ: dtthuha79@gmail.com</Typography>
-            <Typography>Số điện thoại: 0903016048</Typography>
-          </Card>
-
-          <Card
-            style={{ marginBottom: "20px", padding: "10px" }}
-            variant="elevation"
-          >
-            <Typography sx={{ fontSize: "18px" }}>TÊN ĐỀ TÀI:</Typography>
-            <Typography sx={{ fontSize: "18px", fontWeight: "bold" }}>
-              Xây dựng website đăng ký đề tài và giám sát thực hiện khóa luận
-              tốt nghiệp cho sinh viên Khoa CNTT-IUH
-            </Typography>
-
-            <DownOutlined
-              onClick={toggleDetails}
-              style={{
-                fontSize: "24px",
-                float: "right",
-                marginTop: "-35px",
-                cursor: "pointer",
-              }}
-            />
-          </Card>
-
-          {showDetails && (
-            <Collapse
-              expandIcon={({ isActive }) => (
-                <InfoCircleOutlined rotate={isActive ? 90 : 0} />
-              )}
-              style={{
-                borderRadius: "10px",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+          {/* Kiểm tra nếu không có dữ liệu topic */}
+          {isEmpty(topicData) ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "60vh",
               }}
             >
-              <Panel header="Dự kiến sản phẩm nghiên cứu của đề tài">
-                <Typography>
-                  - Website cho phép SV đăng ký đề tài KLTN (chọn đề tài,
-                  GVHD,...)
-                  <br />- GV giám sát việc đăng ký của SV với mời GV, thiết lập
-                  các khoảng thời gian theo tiến độ thực hiện đề tài.
+              <EmptyData
+                text={isEmpty(topicData) ? "Bạn chưa có đề tài!" : null}
+              />
+            </Box>
+          ) : (
+            <>
+              <Card
+                sx={{ marginBottom: "20px", padding: "10px" }}
+                variant="elevation"
+              >
+                <Typography sx={{ fontWeight: 700 }}>
+                  THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN
                 </Typography>
-              </Panel>
+                <Typography>Họ và tên giảng viên: Đặng Thị Thu Hà</Typography>
+                <Typography>Email liên hệ: dtthuha79@gmail.com</Typography>
+                <Typography>Số điện thoại: 0903016048</Typography>
+              </Card>
 
-              {/* Other Panels */}
-            </Collapse>
+              <Card
+                style={{ marginBottom: "20px", padding: "10px" }}
+                variant="elevation"
+              >
+                <Typography sx={{ fontSize: "18px" }}>TÊN ĐỀ TÀI:</Typography>
+                <Typography sx={{ fontSize: "18px", fontWeight: "bold" }}>
+                  Xây dựng website đăng ký đề tài và giám sát thực hiện khóa
+                  luận tốt nghiệp cho sinh viên Khoa CNTT-IUH
+                </Typography>
+
+                <DownOutlined
+                  onClick={toggleDetails}
+                  style={{
+                    fontSize: "24px",
+                    float: "right",
+                    marginTop: "-35px",
+                    cursor: "pointer",
+                  }}
+                />
+              </Card>
+
+              {showDetails && (
+                <Collapse
+                  expandIcon={({ isActive }) => (
+                    <InfoCircleOutlined rotate={isActive ? 90 : 0} />
+                  )}
+                  style={{
+                    borderRadius: "10px",
+                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  <Panel header="Dự kiến sản phẩm nghiên cứu của đề tài">
+                    <Typography>
+                      - Website cho phép SV đăng ký đề tài KLTN (chọn đề tài,
+                      GVHD,...)
+                      <br />- GV giám sát việc đăng ký của SV với mời GV, thiết
+                      lập các khoảng thời gian theo tiến độ thực hiện đề tài.
+                    </Typography>
+                  </Panel>
+                </Collapse>
+              )}
+
+              <Button icon={<ReadOutlined />} style={{ marginTop: "20px" }}>
+                HỦY ĐĂNG KÝ ĐỀ TÀI
+              </Button>
+            </>
           )}
-
-          <Button icon={<ReadOutlined />} style={{ marginTop: "20px" }}>
-            HỦY ĐĂNG KÝ ĐỀ TÀI
-          </Button>
         </div>
       )}
     </div>
