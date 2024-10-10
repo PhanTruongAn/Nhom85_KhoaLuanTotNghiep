@@ -25,6 +25,9 @@ const studentApi = {
   getMyTopic: (topic) => {
     return axiosClient.get(baseUrl + `/my-topic?topic=${topic}`);
   },
+  viewDetailsTopic: (id) => {
+    return axiosClient.get(baseUrl + `/details-topic?id=${id}`);
+  },
   getAll: (page, limit) => {
     return axiosClient.get(`${baseUrl}/get-all?page=${page}&limit=${limit}`);
   },
@@ -55,6 +58,9 @@ const studentApi = {
     return axiosClient.get(
       `${baseUrl}/get-all-group?page=${page}&limit=${limit}`
     );
+  },
+  getAllTopics: (page, limit) => {
+    return axiosClient.get(`${baseUrl}/topics?page=${page}&limit=${limit}`);
   },
 };
 export default studentApi;

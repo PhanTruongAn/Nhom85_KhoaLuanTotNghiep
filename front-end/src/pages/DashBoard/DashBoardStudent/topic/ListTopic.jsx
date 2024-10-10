@@ -12,54 +12,90 @@ import {
   InputAdornment,
   Box,
 } from "@mui/material";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import SearchIcon from "@mui/icons-material/Search";
-import { Table, Pagination } from "antd";
+import { Table, Pagination, message, Modal } from "antd";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-
-const initialTopics = [
-  {
-    id: 1,
-    title:
-      "XÂY DỰNG WEBSITE ĐĂNG KÝ ĐỀ TÀI VÀ GIÁM SÁT THỰC HIỆN KHÓA LUẬN TỐT NGHIỆP CHO SINH VIÊN KHOA CNTT-IUH",
-    lecturer: "Giảng viên A",
-    groupCount: 1,
-  },
-  {
-    id: 2,
-    title:
-      "XÂY DỰNG WEBSITE ĐĂNG KÝ ĐỀ TÀI VÀ GIÁM SÁT THỰC HIỆN KHÓA LUẬN TỐT NGHIỆP CHO SINH VIÊN KHOA CNTT-IUH",
-    lecturer: "Giảng viên B",
-    groupCount: 2,
-  },
-  {
-    id: 3,
-    title:
-      "XÂY DỰNG WEBSITE ĐĂNG KÝ ĐỀ TÀI VÀ GIÁM SÁT THỰC HIỆN KHÓA LUẬN TỐT NGHIỆP CHO SINH VIÊN KHOA CNTT-IUH",
-    lecturer: "Giảng viên C",
-    groupCount: 1,
-  },
-  {
-    id: 4,
-    title:
-      "XÂY DỰNG WEBSITE ĐĂNG KÝ ĐỀ TÀI VÀ GIÁM SÁT THỰC HIỆN KHÓA LUẬN TỐT NGHIỆP CHO SINH VIÊN KHOA CNTT-IUH",
-    lecturer: "Giảng viên D",
-    groupCount: 0,
-  },
-  {
-    id: 5,
-    title:
-      "XÂY DỰNG WEBSITE ĐĂNG KÝ ĐỀ TÀI VÀ GIÁM SÁT THỰC HIỆN KHÓA LUẬN TỐT NGHIỆP CHO SINH VIÊN KHOA CNTT-IUH",
-    lecturer: "Giảng viên D",
-    groupCount: 0,
-  },
-];
-
+import studentApi from "../../../../apis/studentApi";
+import { useQuery } from "react-query";
+import { isEmpty } from "lodash";
 function ListTopic() {
-  const [topics] = useState(initialTopics);
+  const [state, setState] = useState({
+    currentPage: 1,
+    totalRows: null,
+    pageSize: 5,
+    topics: [],
+    loadingData: false,
+    currentRecord: {},
+    isModalLoading: false,
+    isModalVisible: false,
+  });
+  const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchBy, setSearchBy] = useState("title");
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const {
+    data: topicsData,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery(
+    ["topics", state.currentPage, state.pageSize],
+    () => studentApi.getAllTopics(state.currentPage, state.pageSize),
+    {
+      // enabled: state.currentPage <= state.totalPage,
+      keepPreviousData: true,
+      cacheTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
+      staleTime: 1000,
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          updateState({
+            topics: res.data.topics,
+            totalRows: res.data.totalRows,
+          });
+        } else {
+          updateState({ topics: [] });
+          messageApi.error(res.message);
+        }
+      },
+      onError: (err) => {
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
+    }
+  );
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
+  const viewDetailTopic = async (id) => {
+    updateState({ isModalVisible: true, isModalLoading: true });
+
+    const res = await studentApi.viewDetailsTopic(id);
+    if (res && res.status === 0) {
+      const { data } = res;
+      const dataConvert = {
+        "Tên đề tài": data.title,
+        "Mô tả": data.description,
+        "Mục tiêu": data.goals,
+        "Yêu cầu": data.requirement,
+        "Chuẩn đầu ra": data.standardOutput,
+        "Trạng thái": data.status,
+        "Số lượng nhóm": data.quantityGroup,
+        "Giảng viên": data.lecturer.fullName,
+        Email: data.lecturer.email,
+      };
+      updateState({ currentRecord: dataConvert, isModalLoading: false });
+    } else {
+      updateState({ currentRecord: {}, isModalLoading: false });
+      messageApi.error(res.message);
+    }
+  };
+
+  const onCloseModal = () => {
+    updateState({ isModalVisible: false });
+  };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -72,15 +108,21 @@ function ListTopic() {
     setPage(1);
   };
 
-  const filteredTopics = topics.filter((topic) =>
-    searchBy === "title"
-      ? topic.title.toLowerCase().includes(searchTerm.toLowerCase())
-      : topic.lecturer.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredTopics = state.topics.filter((topic) =>
+  //   searchBy === "title"
+  //     ? topic.title.toLowerCase().includes(searchTerm.toLowerCase())
+  //     : topic.lecturer.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
-  const totalRows = filteredTopics.length;
-
+  const onPageChange = (pageNumber) => {
+    updateState({ currentPage: pageNumber });
+  };
   const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
     {
       title: "Tên đề tài",
       dataIndex: "title",
@@ -89,13 +131,13 @@ function ListTopic() {
     },
     {
       title: "Giảng viên",
-      dataIndex: "lecturer",
       key: "lecturer",
+      render: (text, record) => record.lecturer?.fullName || "N/A",
     },
     {
       title: "Số lượng nhóm",
-      dataIndex: "groupCount",
-      key: "groupCount",
+      dataIndex: "quantityGroup",
+      key: "quantityGroup",
       render: (text) => `${text} / 2`,
     },
     {
@@ -103,15 +145,31 @@ function ListTopic() {
       key: "action",
       render: (text, record) => (
         <div style={{ display: "flex", gap: "8px" }}>
-          <Button variant="contained">Xem chi tiết</Button>
-          <Button variant="contained">Tham gia</Button>
+          <Button
+            variant="outlined"
+            size="small"
+            endIcon={<InfoCircleOutlined />}
+            onClick={(e) => viewDetailTopic(record.id)}
+          >
+            Xem chi tiết
+          </Button>
+          <Button variant="contained" size="small">
+            Đăng ký
+          </Button>
         </div>
       ),
     },
   ];
 
+  const handlePageSizeChange = (newPageSize) => {
+    updateState({
+      pageSize: newPageSize,
+      currentPage: 1,
+    });
+  };
   return (
     <Box>
+      {contextHolder}
       <Grid
         container
         spacing={2}
@@ -162,32 +220,53 @@ function ListTopic() {
 
       <Table
         columns={columns}
-        dataSource={filteredTopics}
+        dataSource={state.topics}
+        rowKey="id"
         pagination={{
-          current: page,
-          pageSize: rowsPerPage,
-          total: totalRows,
-          onChange: (page, pageSize) => {
-            setPage(page);
-            setRowsPerPage(pageSize);
-          },
+          showSizeChanger: true,
+          pageSizeOptions: ["5", "10", "20"],
+          onShowSizeChange: (current, size) => handlePageSizeChange(size),
+          current: state.currentPage,
+          pageSize: state.pageSize,
+          total: state.totalRows,
+          onChange: onPageChange,
         }}
+        loading={isFetching}
         locale={{
           emptyText:
-            filteredTopics.length === 0 ? (
+            state.topics.length === 0 ? (
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: "60vh",
                 }}
               >
-                <EmptyData />
+                <EmptyData
+                  text={isEmpty(topicsData) ? "Không có dữ liệu! " : null}
+                />
               </Box>
             ) : null,
         }}
       />
+      <Modal
+        title="Chi tiết đề tài"
+        open={state.isModalVisible}
+        onCancel={onCloseModal}
+        footer={null}
+        width={"80%"}
+        loading={state.isModalLoading}
+      >
+        {state.currentRecord && (
+          <Box>
+            {Object.keys(state.currentRecord).map((key) => (
+              <Box key={key} sx={{ marginBottom: "10px" }}>
+                <strong>{key}:</strong> {state.currentRecord[key]}
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Modal>
     </Box>
   );
 }

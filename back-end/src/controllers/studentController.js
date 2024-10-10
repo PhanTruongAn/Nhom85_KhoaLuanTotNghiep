@@ -146,6 +146,27 @@ const handleGetInfoMyTopic = async (req, res) => {
     console.log(error);
   }
 };
+const handleStudentGetAllTopics = async (req, res) => {
+  const { page, limit } = req.query;
+  if (page && limit) {
+    const data = await studentService.studentGetAllTopics(+page, +limit);
+    return res.status(200).json(data);
+  } else {
+    return res.status(400).json({
+      status: 1,
+      message: "Dữ liệu truyền vào không hợp lệ!",
+    });
+  }
+};
+const handleGetDetailsTopic = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const data = await studentService.viewDetailsTopic(id);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports = {
   handleCreateStudentAccount,
@@ -163,4 +184,6 @@ module.exports = {
   handleRemoveMemberFromGroup,
   handleTransferTeamLeader,
   handleGetInfoMyTopic,
+  handleStudentGetAllTopics,
+  handleGetDetailsTopic,
 };

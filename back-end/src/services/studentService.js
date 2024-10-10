@@ -634,6 +634,73 @@ const getInfoMyTopic = async (topic) => {
     };
   }
 };
+const studentGetAllTopics = async (page, limit) => {
+  try {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Topic.findAndCountAll({
+      attributes: ["id", "title", "quantityGroup", "status"],
+      offset: offset,
+      limit: limit,
+      include: {
+        model: Lecturer,
+        as: "lecturer",
+        attributes: ["fullName", "gender"],
+      },
+    });
+    const totalPages = Math.ceil(count / limit);
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: {
+        totalRows: count,
+        totalPages: totalPages,
+        topics: rows,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lấy danh sách thất bại!",
+      data: null,
+    };
+  }
+};
+
+const viewDetailsTopic = async (topicId) => {
+  if (!topicId) {
+    return {
+      status: -1,
+      message: "Dữ liệu không hợp lệ!",
+    };
+  }
+  const result = await Topic.findOne({
+    where: {
+      id: topicId,
+    },
+    include: {
+      model: Lecturer,
+      as: "lecturer",
+      attributes: ["fullName", "email"],
+    },
+    attributes: {
+      exclude: ["createdAt", "updatedAt", "lecturerId", "LecturerId"],
+    },
+  });
+  if (result) {
+    return {
+      status: 0,
+      message: "Lấy thông tin chi tiết đề tài thành công!",
+      data: result,
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin đề tài!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -651,4 +718,6 @@ module.exports = {
   removeMemberFromGroup,
   transferTeamLeader,
   getInfoMyTopic,
+  studentGetAllTopics,
+  viewDetailsTopic,
 };

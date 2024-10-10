@@ -191,7 +191,6 @@ function ListTopicManager() {
 
       <Table
         style={{ padding: "10px" }}
-        rowKey={(record) => record.id}
         columns={columns}
         dataSource={filteredTopics}
         rowKey={(record) => record.id}

@@ -84,63 +84,105 @@ const ProjectDetails = () => {
   return (
     <div style={{ padding: "10px" }}>
       {contextHolder}
-      <Card sx={{ marginBottom: "10px", padding: "10px" }} variant="elevation">
-        <Typography sx={{ fontWeight: 700 }}>
-          THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN
-        </Typography>
-        <Typography>
-          Họ và tên giảng viên: {displayedTopic.lecturer?.fullName || "N/A"}
-        </Typography>
-        <Typography>
-          Email liên hệ: {displayedTopic.lecturer?.email || "N/A"}
-        </Typography>
-        <Typography>
-          Số điện thoại: {displayedTopic.lecturer?.phone || "N/A"}
-        </Typography>
-      </Card>
-
-      <Box sx={{ overflow: "auto", maxHeight: "390px" }}>
-        <Card
-          style={{ marginBottom: "10px", padding: "10px" }}
-          variant="elevation"
+      {isLoadingGroup || isLoadingTopic ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "60vh",
+          }}
         >
-          <Typography sx={{ fontSize: "18px" }}>
-            <b>TÊN ĐỀ TÀI:</b> {displayedTopic.title || "N/A"}
-          </Typography>
+          <EmptyData />
+        </Box>
+      ) : (
+        <>
+          {isEmpty(topicData) ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "60vh",
+              }}
+            >
+              <EmptyData
+                text={
+                  isEmpty(group)
+                    ? "Bạn chưa tham gia nhóm!"
+                    : "Nhóm bạn chưa tham gia đề tài!"
+                }
+              />
+            </Box>
+          ) : (
+            <>
+              <Card
+                sx={{ marginBottom: "10px", padding: "10px" }}
+                variant="elevation"
+              >
+                <Typography sx={{ fontWeight: 700 }}>
+                  THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN
+                </Typography>
+                <Typography>
+                  Họ và tên giảng viên:{" "}
+                  {displayedTopic.lecturer?.fullName || "N/A"}
+                </Typography>
+                <Typography>
+                  Email liên hệ: {displayedTopic.lecturer?.email || "N/A"}
+                </Typography>
+                <Typography>
+                  Số điện thoại: {displayedTopic.lecturer?.phone || "N/A"}
+                </Typography>
+              </Card>
 
-          <DownOutlined
-            onClick={toggleDetails}
-            style={{
-              fontSize: "24px",
-              float: "right",
-              marginTop: "-35px",
-              cursor: "pointer",
-            }}
-          />
-        </Card>
+              <Box sx={{ overflow: "auto", maxHeight: "390px" }}>
+                <Card
+                  style={{ marginBottom: "10px", padding: "10px" }}
+                  variant="elevation"
+                >
+                  <Typography sx={{ fontSize: "18px" }}>
+                    <b>TÊN ĐỀ TÀI:</b> {displayedTopic.title || "N/A"}
+                  </Typography>
 
-        {showDetails && (
-          <Card style={{ marginBottom: "10px", padding: "10px" }}>
-            <Typography>
-              <strong>Mô tả:</strong> {displayedTopic.description || "N/A"}
-            </Typography>
-            <Typography>
-              <strong>Mục tiêu:</strong> {displayedTopic.goals || "N/A"}
-            </Typography>
-            <Typography>
-              <strong>Yêu cầu:</strong> {displayedTopic.requirement || "N/A"}
-            </Typography>
-            <Typography>
-              <strong>Chuẩn đầu ra:</strong>{" "}
-              {displayedTopic.standardOutput || "N/A"}
-            </Typography>
-          </Card>
-        )}
-      </Box>
+                  <DownOutlined
+                    onClick={toggleDetails}
+                    style={{
+                      fontSize: "24px",
+                      float: "right",
+                      marginTop: "-35px",
+                      cursor: "pointer",
+                    }}
+                  />
+                </Card>
 
-      <Button icon={<ReadOutlined />} style={{ marginTop: "10px" }}>
-        HỦY ĐĂNG KÝ ĐỀ TÀI
-      </Button>
+                {showDetails && (
+                  <Card style={{ marginBottom: "10px", padding: "10px" }}>
+                    <Typography>
+                      <strong>Mô tả:</strong>{" "}
+                      {displayedTopic.description || "N/A"}
+                    </Typography>
+                    <Typography>
+                      <strong>Mục tiêu:</strong> {displayedTopic.goals || "N/A"}
+                    </Typography>
+                    <Typography>
+                      <strong>Yêu cầu:</strong>{" "}
+                      {displayedTopic.requirement || "N/A"}
+                    </Typography>
+                    <Typography>
+                      <strong>Chuẩn đầu ra:</strong>{" "}
+                      {displayedTopic.standardOutput || "N/A"}
+                    </Typography>
+                  </Card>
+                )}
+              </Box>
+
+              <Button icon={<ReadOutlined />} style={{ marginTop: "10px" }}>
+                HỦY ĐĂNG KÝ ĐỀ TÀI
+              </Button>
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 };

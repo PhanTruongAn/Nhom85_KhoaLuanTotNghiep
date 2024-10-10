@@ -19,7 +19,7 @@ function EmptyData({ text }) {
         autoplay
       />
       <Typography variant="h6" sx={{ marginTop: "16px" }}>
-        {text ? text : "Loading..."}
+        {text ? text : "Đang tải dữ liệu..."}
       </Typography>
     </Box>
   );
