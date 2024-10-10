@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import { Button, message } from "antd";
-import { DownOutlined, ReadOutlined } from "@ant-design/icons";
-import { Box, Typography } from "@mui/material";
+import { Collapse, Button, message } from "antd";
+import {
+  InfoCircleOutlined,
+  DownOutlined,
+  ReadOutlined,
+} from "@ant-design/icons";
+import { Typography, Box } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import studentApi from "../../../../apis/studentApi";
 import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
-import { setMyTopic } from "../../../../redux/userSlice";
+import { setGroup, setMyTopic } from "../../../../redux/userSlice";
+import EmptyData from "../../../../components/emptydata/EmptyData";
+const { Panel } = Collapse;
 
 const ProjectDetails = () => {
   const dispatch = useDispatch();
@@ -16,8 +22,37 @@ const ProjectDetails = () => {
   const topic = useSelector((state) => state.userInit.topic);
   const [messageApi, contextHolder] = message.useMessage();
   const [showDetails, setShowDetails] = useState(false);
-  const toggleDetails = () => setShowDetails(!showDetails);
+  const [topicId, setTopicId] = useState();
+  const toggleDetails = () => {
+    setShowDetails(!showDetails);
+  };
 
+  // Fetch group data
+  const { data: groupData, isLoading: isLoadingGroup } = useQuery(
+    ["my-group"],
+    async () => {
+      const res = await studentApi.getMyGroup(user.groupId);
+      return res;
+    },
+    {
+      enabled: !!user.groupId && isEmpty(group), // Chỉ chạy nếu user có groupId và group redux rỗng
+      cacheTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
+      staleTime: 1000,
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          dispatch(setGroup(res.data));
+        } else {
+          messageApi.error(res.message);
+        }
+      },
+      onError: (error) => {
+        messageApi.error("Có lỗi xảy ra khi lấy thông tin group: " + error);
+      },
+    }
+  );
+
+  // Fetch topic data
   const { data: topicData, isLoading: isLoadingTopic } = useQuery(
     ["my-topic"],
     async () => {
@@ -25,12 +60,13 @@ const ProjectDetails = () => {
       return res;
     },
     {
-      enabled: !!group?.topicId && isEmpty(topic),
+      enabled: !!group?.topicId && isEmpty(topic), // Chỉ chạy nếu group có topicId và topic redux rỗng
       cacheTime: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
       staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
+          console.log("Topic data: ", res);
           dispatch(setMyTopic(res.data));
           messageApi.success(res.message);
         } else {
@@ -42,6 +78,7 @@ const ProjectDetails = () => {
       },
     }
   );
+
   const displayedTopic = topic || {};
 
   return (
