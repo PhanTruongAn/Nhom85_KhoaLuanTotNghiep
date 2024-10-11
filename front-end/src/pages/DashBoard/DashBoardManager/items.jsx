@@ -14,6 +14,7 @@ import {
   FileExcelOutlined,
   BarChartOutlined,
   TableOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -132,7 +133,7 @@ const getItems = (isManager) => {
               {
                 key: "point-list-group",
                 icon: <OrderedListOutlined />,
-                label: "Danh sách nhóm",
+                label: "Danh sách ",
               },
             ],
           },
@@ -142,6 +143,18 @@ const getItems = (isManager) => {
       key: "notification",
       icon: <NotificationOutlined />,
       label: "Thông báo",
+      children: [
+        {
+          key: "create-notification",
+          icon: <PlusOutlined />,
+          label: "Tạo thông báo",
+        },
+        {
+          key: "manage-notification",
+          icon: <OrderedListOutlined />,
+          label: "Danh sách ",
+        },
+      ],
     },
     {
       key: "setting",

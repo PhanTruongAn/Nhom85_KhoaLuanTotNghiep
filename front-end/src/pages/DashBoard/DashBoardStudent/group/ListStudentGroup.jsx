@@ -11,6 +11,9 @@ import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../../../redux/userSlice";
 import CustomButton from "../../../../components/Button/CustomButton";
+import ConfirmModal from "../../../../components/modal/confirmModal";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+
 function ListStudentGroup() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
@@ -24,6 +27,8 @@ function ListStudentGroup() {
   });
   const [dataRow, setDataRow] = useState([]);
   const [loadingStates, setLoadingStates] = useState({});
+  const [selectedGroup, setSelectedGroup] = useState(null); // Thêm trạng thái để quản lý nhóm được chọn
+  const [isModalOpen, setIsModalOpen] = useState(false); // Thêm trạng thái để quản lý việc mở modal
   const containerRef = useRef(null);
 
   const updateState = (newState) => {
@@ -83,22 +88,31 @@ function ListStudentGroup() {
     };
   }, [state.currentPage]);
 
-  const handleJoinGroup = async (groupId) => {
-    setLoadingStates((prev) => ({ ...prev, [groupId]: true }));
-    const data = {
-      groupId: groupId,
-      studentId: user.id,
-    };
-    const res = await studentApi.joinGroup(data);
-    if (res && res.status === 0) {
-      dispatch(setUser({ ...user, groupId: res.data.id }));
-      messageApi.success(res.message);
-      setLoadingStates((prev) => ({ ...prev, [groupId]: false }));
-    } else {
-      messageApi.error(res.message);
-      setLoadingStates((prev) => ({ ...prev, [groupId]: false }));
+  const handleJoinGroup = (group) => {
+    setSelectedGroup(group); // Lưu thông tin nhóm được chọn
+    setIsModalOpen(true); // Mở modal
+  };
+
+  const confirmJoinGroup = async () => {
+    if (selectedGroup) {
+      setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: true }));
+      const data = {
+        groupId: selectedGroup.id,
+        studentId: user.id,
+      };
+      const res = await studentApi.joinGroup(data);
+      if (res && res.status === 0) {
+        dispatch(setUser({ ...user, groupId: res.data.id }));
+        messageApi.success(res.message);
+        setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: false }));
+      } else {
+        messageApi.error(res.message);
+        setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: false }));
+      }
+      setIsModalOpen(false); // Đóng modal sau khi xác nhận
     }
   };
+
   return (
     <Box
       className="list-container"
@@ -126,19 +140,11 @@ function ListStudentGroup() {
                   <CustomButton
                     disabled={group.status === "FULL"}
                     sx={{ mt: 2 }}
-                    onClick={(e) => handleJoinGroup(group.id)}
+                    onClick={(e) => handleJoinGroup(group)}
                     text="Tham gia nhóm"
                     type="success"
                     loading={loadingStates[group.id] || state.loading}
                   />
-                  {/* <Button
-                    disabled={group.status === "FULL"}
-                    variant="contained"
-                    color="primary"
-                    sx={{ mt: 2 }}
-                  >
-                    Tham gia nhóm
-                  </Button> */}
                 </CardContent>
               </Card>
             </Grid>
@@ -159,6 +165,15 @@ function ListStudentGroup() {
           </Box>
         )}
       </Grid>
+      {isModalOpen && (
+        <ConfirmModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={confirmJoinGroup}
+          description={`Bạn có chắc chắn muốn tham gia nhóm ${selectedGroup?.groupName}?`}
+          icon={<GroupAddIcon />}
+        />
+      )}
     </Box>
   );
 }

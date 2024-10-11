@@ -86,6 +86,12 @@ export default function Login() {
       }
     }
   };
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handlerLogin();
+    }
+  };
   return (
     <SignInContainer direction="column" justifyContent="space-between">
       {contextHolder}
@@ -105,6 +111,7 @@ export default function Login() {
             width: "100%",
             gap: 2,
           }}
+          onKeyDown={handleKeyDown}
         >
           <FormControl sx={{ m: 1 }} variant="standard">
             <TextField
