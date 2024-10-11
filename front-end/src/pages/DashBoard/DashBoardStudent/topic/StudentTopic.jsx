@@ -54,6 +54,7 @@ const ProjectDetails = () => {
     },
     {
       enabled: !!group?.topicId && isEmpty(topic),
+      keepPreviousData: true,
       cacheTime: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
       staleTime: 1000,

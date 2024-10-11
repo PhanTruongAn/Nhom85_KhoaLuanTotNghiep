@@ -11,8 +11,8 @@ import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../../../redux/userSlice";
 import CustomButton from "../../../../components/Button/CustomButton";
-import ConfirmModal from "../../../../components/modal/confirmModal";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import ConfirmModal from "../../../../components/Modal/confirmModal";
 
 function ListStudentGroup() {
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ function ListStudentGroup() {
     totalPage: 2,
     pageSize: 12,
     dataSource: [],
-    loadingData: false,
+    loadingIcon: false,
   });
   const [dataRow, setDataRow] = useState([]);
   const [loadingStates, setLoadingStates] = useState({});
@@ -95,19 +95,22 @@ function ListStudentGroup() {
 
   const confirmJoinGroup = async () => {
     if (selectedGroup) {
-      setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: true }));
+      // setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: true }));
       const data = {
         groupId: selectedGroup.id,
         studentId: user.id,
       };
+      updateState({ loadingIcon: true });
       const res = await studentApi.joinGroup(data);
       if (res && res.status === 0) {
         dispatch(setUser({ ...user, groupId: res.data.id }));
         messageApi.success(res.message);
-        setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: false }));
+        updateState({ loadingIcon: false });
+        // setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: false }));
       } else {
+        updateState({ loadingIcon: false });
         messageApi.error(res.message);
-        setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: false }));
+        // setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: false }));
       }
       setIsModalOpen(false); // Đóng modal sau khi xác nhận
     }
@@ -137,14 +140,15 @@ function ListStudentGroup() {
                     Trạng thái:{" "}
                     {group.status === "FULL" ? "Đã đầy" : "Có thể tham gia"}
                   </Typography>
-                  <CustomButton
+
+                  <Button
                     disabled={group.status === "FULL"}
                     sx={{ mt: 2 }}
                     onClick={(e) => handleJoinGroup(group)}
-                    text="Tham gia nhóm"
-                    type="success"
-                    loading={loadingStates[group.id] || state.loading}
-                  />
+                    variant="contained"
+                  >
+                    Tham gia nhóm
+                  </Button>
                 </CardContent>
               </Card>
             </Grid>
@@ -172,6 +176,7 @@ function ListStudentGroup() {
           onConfirm={confirmJoinGroup}
           description={`Bạn có chắc chắn muốn tham gia nhóm ${selectedGroup?.groupName}?`}
           icon={<GroupAddIcon />}
+          loading={state.loadingIcon}
         />
       )}
     </Box>

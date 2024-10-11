@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import SearchIcon from "@mui/icons-material/Search";
+import TopicIcon from "@mui/icons-material/Topic";
 import { Table, Pagination, message, Modal } from "antd";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import studentApi from "../../../../apis/studentApi";
@@ -21,6 +22,7 @@ import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { setGroup } from "../../../../redux/userSlice";
+import ConfirmModal from "../../../../components/Modal/confirmModal";
 function ListTopic() {
   const group = useSelector((state) => state.userInit.group);
   const user = useSelector((state) => state.userInit.user);
@@ -38,9 +40,9 @@ function ListTopic() {
   const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchBy, setSearchBy] = useState("title");
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [selectedTopicId, setSelectedTopicId] = useState(null);
+  const [loadingConfirm, setLoadingConfirm] = useState(false);
   const {
     data: topicsData,
     isLoading,
@@ -98,32 +100,40 @@ function ListTopic() {
     }
   };
 
-  const joinTopic = async (id) => {
+  const handleConfirmJoin = async () => {
+    setLoadingConfirm(true);
     const data = {
       groupId: user.groupId,
-      topicId: id,
+      topicId: selectedTopicId,
     };
     const res = await studentApi.joinTopic(data);
     if (res && res.status === 0) {
       messageApi.success(res.message);
-      dispatch(setGroup({ ...group, topicId: id }));
+      dispatch(setGroup({ ...group, topicId: selectedTopicId }));
+      setIsConfirmModalOpen(false);
     } else {
       messageApi.error(res.message);
     }
+    setLoadingConfirm(false);
   };
+
+  // Hàm mở modal confirm join topic
+  const handleRegisterClick = (id) => {
+    setSelectedTopicId(id); // Lưu lại ID đề tài
+    setIsConfirmModalOpen(true); // Mở modal
+  };
+
   const onCloseModal = () => {
     updateState({ isModalVisible: false });
   };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
-    setPage(1);
   };
 
   const handleSearchByChange = (event) => {
     setSearchBy(event.target.value);
     setSearchTerm("");
-    setPage(1);
   };
 
   // const filteredTopics = state.topics.filter((topic) =>
@@ -175,7 +185,7 @@ function ListTopic() {
           <Button
             variant="contained"
             size="small"
-            onClick={(e) => joinTopic(record.id)}
+            onClick={(e) => handleRegisterClick(record.id)}
           >
             Đăng ký
           </Button>
@@ -290,6 +300,14 @@ function ListTopic() {
           </Box>
         )}
       </Modal>
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        icon={<TopicIcon />}
+        onConfirm={handleConfirmJoin}
+        description="Bạn có chắc chắn muốn đăng ký đề tài này không?"
+        loading={loadingConfirm}
+      />
     </Box>
   );
 }
