@@ -19,7 +19,12 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import studentApi from "../../../../apis/studentApi";
 import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
+import { useDispatch, useSelector } from "react-redux";
+import { setGroup } from "../../../../redux/userSlice";
 function ListTopic() {
+  const group = useSelector((state) => state.userInit.group);
+  const user = useSelector((state) => state.userInit.user);
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     currentPage: 1,
     totalRows: null,
@@ -93,6 +98,19 @@ function ListTopic() {
     }
   };
 
+  const joinTopic = async (id) => {
+    const data = {
+      groupId: user.groupId,
+      topicId: id,
+    };
+    const res = await studentApi.joinTopic(data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      dispatch(setGroup({ ...group, topicId: id }));
+    } else {
+      messageApi.error(res.message);
+    }
+  };
   const onCloseModal = () => {
     updateState({ isModalVisible: false });
   };
@@ -136,9 +154,10 @@ function ListTopic() {
     },
     {
       title: "Số lượng nhóm",
-      dataIndex: "quantityGroup",
+      // dataIndex: "quantityGroup",
       key: "quantityGroup",
-      render: (text) => `${text} / 2`,
+      render: (text, record) =>
+        `${record.groupCount} / ${record.quantityGroup}`,
     },
     {
       title: "Hành động",
@@ -153,7 +172,11 @@ function ListTopic() {
           >
             Xem chi tiết
           </Button>
-          <Button variant="contained" size="small">
+          <Button
+            variant="contained"
+            size="small"
+            onClick={(e) => joinTopic(record.id)}
+          >
             Đăng ký
           </Button>
         </div>

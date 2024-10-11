@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import { Collapse, Button, message } from "antd";
-import {
-  InfoCircleOutlined,
-  DownOutlined,
-  ReadOutlined,
-} from "@ant-design/icons";
-import { Typography, Box } from "@mui/material";
+import { Button, Typography, Box } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import studentApi from "../../../../apis/studentApi";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,7 +7,11 @@ import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
 import { setGroup, setMyTopic } from "../../../../redux/userSlice";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-const { Panel } = Collapse;
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { message } from "antd";
 
 const ProjectDetails = () => {
   const dispatch = useDispatch();
@@ -21,11 +19,6 @@ const ProjectDetails = () => {
   const group = useSelector((state) => state.userInit.group);
   const topic = useSelector((state) => state.userInit.topic);
   const [messageApi, contextHolder] = message.useMessage();
-  const [showDetails, setShowDetails] = useState(false);
-  const [topicId, setTopicId] = useState();
-  const toggleDetails = () => {
-    setShowDetails(!showDetails);
-  };
 
   // Fetch group data
   const { data: groupData, isLoading: isLoadingGroup } = useQuery(
@@ -35,7 +28,7 @@ const ProjectDetails = () => {
       return res;
     },
     {
-      enabled: !!user.groupId && isEmpty(group), // Chỉ chạy nếu user có groupId và group redux rỗng
+      enabled: !!user.groupId && isEmpty(group),
       cacheTime: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
       staleTime: 1000,
@@ -60,13 +53,12 @@ const ProjectDetails = () => {
       return res;
     },
     {
-      enabled: !!group?.topicId && isEmpty(topic), // Chỉ chạy nếu group có topicId và topic redux rỗng
+      enabled: !!group?.topicId && isEmpty(topic),
       cacheTime: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
       staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
-          console.log("Topic data: ", res);
           dispatch(setMyTopic(res.data));
           messageApi.success(res.message);
         } else {
@@ -81,8 +73,13 @@ const ProjectDetails = () => {
 
   const displayedTopic = topic || {};
 
+  const handleCancelTopic = () => {
+    // Logic hủy đề tài
+    messageApi.info("Hủy đăng ký đề tài thành công!");
+  };
+
   return (
-    <div style={{ padding: "10px" }}>
+    <Box style={{ padding: "10px" }}>
       {contextHolder}
       {isLoadingGroup || isLoadingTopic ? (
         <Box
@@ -134,29 +131,27 @@ const ProjectDetails = () => {
                   Số điện thoại: {displayedTopic.lecturer?.phone || "N/A"}
                 </Typography>
               </Card>
-
-              <Box sx={{ overflow: "auto", maxHeight: "390px" }}>
-                <Card
-                  style={{ marginBottom: "10px", padding: "10px" }}
-                  variant="elevation"
+              <Box>
+                <Accordion
+                  sx={[
+                    (theme) => ({
+                      ...theme.applyStyles("dark", {
+                        backgroundImage:
+                          "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
+                      }),
+                    }),
+                  ]}
                 >
-                  <Typography sx={{ fontSize: "18px" }}>
-                    <b>TÊN ĐỀ TÀI:</b> {displayedTopic.title || "N/A"}
-                  </Typography>
-
-                  <DownOutlined
-                    onClick={toggleDetails}
-                    style={{
-                      fontSize: "24px",
-                      float: "right",
-                      marginTop: "-35px",
-                      cursor: "pointer",
-                    }}
-                  />
-                </Card>
-
-                {showDetails && (
-                  <Card style={{ marginBottom: "10px", padding: "10px" }}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1-content"
+                    id="panel1-header"
+                  >
+                    <Typography sx={{ fontSize: "18px" }}>
+                      <b>TÊN ĐỀ TÀI:</b> {displayedTopic.title || "N/A"}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
                     <Typography>
                       <strong>Mô tả:</strong>{" "}
                       {displayedTopic.description || "N/A"}
@@ -172,18 +167,39 @@ const ProjectDetails = () => {
                       <strong>Chuẩn đầu ra:</strong>{" "}
                       {displayedTopic.standardOutput || "N/A"}
                     </Typography>
-                  </Card>
-                )}
-              </Box>
+                  </AccordionDetails>
+                </Accordion>
 
-              <Button icon={<ReadOutlined />} style={{ marginTop: "10px" }}>
-                HỦY ĐĂNG KÝ ĐỀ TÀI
-              </Button>
+                {/* Accordion for canceling the topic */}
+                <Accordion
+                  sx={[
+                    (theme) => ({
+                      ...theme.applyStyles("dark", {
+                        backgroundImage:
+                          "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
+                      }),
+                    }),
+                  ]}
+                >
+                  <AccordionSummary
+                    aria-controls="panel2-content"
+                    id="panel2-header"
+                  >
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={handleCancelTopic}
+                    >
+                      HỦY ĐĂNG KÝ ĐỀ TÀI
+                    </Button>
+                  </AccordionSummary>
+                </Accordion>
+              </Box>
             </>
           )}
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

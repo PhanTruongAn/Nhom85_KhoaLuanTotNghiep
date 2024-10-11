@@ -1,7 +1,10 @@
 import db from "../models/index";
 import { hashPassword } from "../services/userService";
 import _, { isEmpty } from "lodash";
+import { sequelize } from "../models";
+import { raw } from "express";
 const { Op } = require("sequelize");
+const { literal } = require("sequelize");
 const { Student, Group, Role, Topic, Lecturer } = require("../models");
 
 // Tạo tài khoản sinh viên
@@ -638,7 +641,18 @@ const studentGetAllTopics = async (page, limit) => {
   try {
     const offset = (page - 1) * limit;
     const { count, rows } = await Topic.findAndCountAll({
-      attributes: ["id", "title", "quantityGroup", "status"],
+      attributes: [
+        "id",
+        "title",
+        "quantityGroup",
+        "status",
+        [
+          literal(
+            `(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)`
+          ),
+          "groupCount",
+        ],
+      ],
       offset: offset,
       limit: limit,
       include: {
@@ -701,6 +715,100 @@ const viewDetailsTopic = async (topicId) => {
     };
   }
 };
+
+const joinTopic = async (data) => {
+  if (!data.groupId) {
+    return {
+      status: -1,
+      message: "Bạn chưa tham gia nhóm!",
+    };
+  }
+  if (!data.topicId) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin đề tài!",
+    };
+  }
+
+  // Tìm Group
+  const group = await Group.findOne({
+    where: {
+      id: data.groupId,
+    },
+  });
+
+  if (!group) {
+    return {
+      status: -1,
+      message: "Không tìm thấy nhóm!",
+    };
+  }
+
+  const { topicId } = group;
+
+  // Kiểm tra nếu nhóm đã có đề tài
+  if (topicId) {
+    return {
+      status: -1,
+      message:
+        "Nhóm bạn đã có đề tài rồi. Hãy hủy trước khi đăng ký đề tài mới",
+    };
+  }
+
+  // Kiểm tra thông tin topic
+  const checkTopic = await Topic.findOne({
+    where: { id: data.topicId },
+    attributes: [
+      "id",
+      "quantityGroup",
+      [
+        literal(
+          `(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)`
+        ),
+        "groupCount",
+      ],
+    ],
+    raw: true, // Trả về đối tượng đơn giản
+  });
+
+  if (!checkTopic) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin đề tài!",
+    };
+  }
+
+  const { quantityGroup, groupCount } = checkTopic;
+  // Kiểm tra số lượng nhóm đã đăng ký
+  if (groupCount >= quantityGroup) {
+    return {
+      status: -1,
+      message: "Đề tài này đã đủ nhóm đăng ký!",
+    };
+  } else {
+    // Cập nhật thông tin nhóm
+    const update = await Group.update(
+      { topicId: data.topicId },
+      {
+        where: {
+          id: data.groupId,
+        },
+      }
+    );
+    if (update[0] > 0) {
+      return {
+        status: 0,
+        message: "Đăng ký đề tài thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Đăng ký đề tài thất bại!",
+      };
+    }
+  }
+};
+
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -720,4 +828,5 @@ module.exports = {
   getInfoMyTopic,
   studentGetAllTopics,
   viewDetailsTopic,
+  joinTopic,
 };
