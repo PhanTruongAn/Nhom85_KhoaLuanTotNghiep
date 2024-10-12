@@ -31,6 +31,18 @@ const getItems = (isManager) => {
       key: "term",
       icon: <BarChartOutlined />,
       label: "Học kì",
+      children: [
+        {
+          key: "create-term",
+          icon: <PlusOutlined />,
+          label: "Tạo học kì",
+        },
+        {
+          key: "list-term",
+          icon: <OrderedListOutlined />,
+          label: "Danh sách",
+        },
+      ],
     },
     {
       key: "manager-topic",
