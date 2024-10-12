@@ -13,7 +13,9 @@ const studentApi = {
   joinTopic: (data) => {
     return axiosClient.post(baseUrl + "/join-topic", data);
   },
-
+  leaveTopic: (data) => {
+    return axiosClient.put(baseUrl + "/leave-topic", data);
+  },
   leaveGroup: (data) => {
     return axiosClient.put(baseUrl + "/leave-group", data);
   },

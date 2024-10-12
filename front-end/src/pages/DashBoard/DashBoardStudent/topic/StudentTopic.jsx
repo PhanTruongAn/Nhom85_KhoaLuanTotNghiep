@@ -12,16 +12,21 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { message } from "antd";
-
+import CustomButton from "../../../../components/Button/CustomButton";
 const ProjectDetails = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
   const group = useSelector((state) => state.userInit.group);
   const topic = useSelector((state) => state.userInit.topic);
   const [messageApi, contextHolder] = message.useMessage();
+  const [loading, setLoading] = useState(false);
 
   // Fetch group data
-  const { data: groupData, isLoading: isLoadingGroup } = useQuery(
+  const {
+    data: groupData,
+    isLoading: isLoadingGroup,
+    refetch: refetchGroup,
+  } = useQuery(
     ["my-group"],
     async () => {
       const res = await studentApi.getMyGroup(user.groupId);
@@ -74,9 +79,23 @@ const ProjectDetails = () => {
 
   const displayedTopic = topic || {};
 
-  const handleCancelTopic = () => {
-    // Logic hủy đề tài
-    messageApi.info("Hủy đăng ký đề tài thành công!");
+  const handleCancelTopic = async () => {
+    setLoading(true);
+    const data = {
+      studentId: user.id,
+      groupId: group.id,
+    };
+    const res = await studentApi.leaveTopic(data);
+    if (res && res.status === 0) {
+      dispatch(setGroup({ ...group, topicId: null }));
+      dispatch(setMyTopic({}));
+      refetchGroup();
+      setLoading(false);
+      messageApi.success(res.message);
+    } else {
+      setLoading(false);
+      messageApi.error(res.message);
+    }
   };
 
   return (
@@ -95,7 +114,7 @@ const ProjectDetails = () => {
         </Box>
       ) : (
         <>
-          {isEmpty(topicData) ? (
+          {isEmpty(topic) ? (
             <Box
               sx={{
                 display: "flex",
@@ -186,13 +205,19 @@ const ProjectDetails = () => {
                     aria-controls="panel2-content"
                     id="panel2-header"
                   >
-                    <Button
+                    {/* <Button
                       variant="contained"
                       color="error"
                       onClick={handleCancelTopic}
                     >
                       HỦY ĐĂNG KÝ ĐỀ TÀI
-                    </Button>
+                    </Button> */}
+                    <CustomButton
+                      text="HỦY ĐĂNG KÝ ĐỀ TÀI"
+                      onClick={handleCancelTopic}
+                      type="error"
+                      loading={loading}
+                    />
                   </AccordionSummary>
                 </Accordion>
               </Box>

@@ -3,6 +3,7 @@ import { Button, CircularProgress } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import CachedIcon from "@mui/icons-material/Cached";
+import PropTypes from "prop-types";
 function CustomButton({ onClick, loading, text, type, sx, disabled }) {
   const isSuccess = type === "success";
   const isError = type === "error";
@@ -34,5 +35,10 @@ function CustomButton({ onClick, loading, text, type, sx, disabled }) {
     </Button>
   );
 }
-
+CustomButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  text: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+};
 export default CustomButton;

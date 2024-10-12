@@ -1,6 +1,6 @@
 import db from "../models/index";
 import { hashPassword } from "../services/userService";
-import _, { isEmpty } from "lodash";
+import _, { isEmpty, update } from "lodash";
 import { sequelize } from "../models";
 import { raw } from "express";
 const { Op } = require("sequelize");
@@ -808,7 +808,59 @@ const joinTopic = async (data) => {
     }
   }
 };
+const leaveTopic = async (data) => {
+  const { studentId, groupId } = data;
+  if (!studentId) {
+    return {
+      status: -1,
+      message: "Thông tin sinh viên không hợp lê!",
+    };
+  }
+  if (!groupId) {
+    return {
+      status: -1,
+      message: "Thông tin nhóm không hợp lệ!",
+    };
+  }
 
+  const isStudentLeader = await Student.findOne({
+    where: {
+      id: studentId,
+    },
+    raw: true,
+  });
+  if (!isStudentLeader) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin sinh viên!",
+    };
+  }
+  if (!isStudentLeader.isLeader) {
+    return {
+      status: -1,
+      message: "Chỉ có nhóm trưởng mới có thể hủy đăng ký đề tài!",
+    };
+  } else {
+    const updateGroup = await Group.update(
+      {
+        topicId: null,
+      },
+      {
+        where: {
+          id: groupId,
+        },
+      }
+    );
+    if (updateGroup[0] > 0) {
+      return {
+        status: 0,
+        message: "Hủy đăng ký đề tài thành công!",
+      };
+    } else {
+      return { status: -1, message: "Hủy đăng ký đề tài thất bại!" };
+    }
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -829,4 +881,5 @@ module.exports = {
   studentGetAllTopics,
   viewDetailsTopic,
   joinTopic,
+  leaveTopic,
 };

@@ -74,7 +74,7 @@ const initWebRoutes = (app) => {
   router.get("/student/topics", studentController.handleStudentGetAllTopics);
   router.get("/student/details-topic", studentController.handleGetDetailsTopic);
   router.post("/student/join-topic", studentController.handleJoinTopic);
-
+  router.put("/student/leave-topic", studentController.handleLeaveTopic);
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
