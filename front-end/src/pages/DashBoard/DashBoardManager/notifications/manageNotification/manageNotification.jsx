@@ -97,7 +97,7 @@ function ManageNotification() {
             }}
             endIcon={<DeleteOutlined />}
           >
-            Delete
+            Xóa
           </Button>
         </Space>
       ),

@@ -30,6 +30,8 @@ import ListTopicManager from "../pages/DashBoard/DashBoardManager/topic/listTopi
 import ListGroupTopicLecturer from "../pages/DashBoard/DashBoardManager/point/listGroupTopicLecturer";
 import CreateNotification from "../pages/DashBoard/DashBoardManager/notifications/manageNotification/createNotification";
 import ManageNotification from "../pages/DashBoard/DashBoardManager/notifications/manageNotification/manageNotification";
+import ListTerm from "../pages/DashBoard/DashBoardManager/term/listTerm";
+import CreateTerm from "../pages/DashBoard/DashBoardManager/term/createTerm";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -165,6 +167,14 @@ const AppRoute = () => {
           <Route
             path="manage-notification"
             element={<PrivateRoute component={<ManageNotification />} />}
+          />
+          <Route
+            path="list-term"
+            element={<PrivateRoute component={<ListTerm />} />}
+          />
+          <Route
+            path="create-term"
+            element={<PrivateRoute component={<CreateTerm />} />}
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>
