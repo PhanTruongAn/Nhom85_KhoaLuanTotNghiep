@@ -45,6 +45,13 @@ module.exports = {
       },
       groupId: {
         type: Sequelize.INTEGER,
+        allowNull: true, // Cho phép groupId là null
+        references: {
+          model: "Groups", // Tên bảng mà groupId tham chiếu đến
+          key: "id", // Cột chính của bảng Groups
+        },
+        onDelete: "SET NULL", // Khi Group bị xóa, đặt groupId về null
+        onUpdate: "CASCADE", // Khi groupId trong Groups được cập nhật, nó sẽ thay đổi tương ứng trong Students
       },
       majorId: {
         type: Sequelize.INTEGER,

@@ -233,35 +233,61 @@ const assignPermissionsToRole = async (data) => {
   }
 };
 const createGroupsStudent = async (data) => {
-  if (!data) {
+  if (!data.estimateGroupStudent || data.estimateGroupStudent <= 0) {
     return {
       status: -1,
-      message: "Không có dữ liệu tạo nhóm!",
+      message: "Số lượng nhóm cần tạo không hợp lệ!",
     };
   }
+
   const _data = [];
-  for (let i = 1; i <= data.totalGroup; i++) {
-    const groupName = i < 10 ? `00${i}` : 10 <= i < 99 ? `0${i}` : `${i}`;
+
+  // Tìm nhóm có groupName lớn nhất và đảm bảo rằng groupName là chuỗi số hợp lệ
+  const lastGroup = await Group.findOne({
+    order: [["groupName", "DESC"]], // Lấy nhóm có groupName lớn nhất
+  });
+
+  let countGroup = 0;
+
+  if (lastGroup) {
+    const groupNameAsNumber = parseInt(lastGroup.groupName, 10); // Chuyển đổi groupName thành số nguyên
+    if (!isNaN(groupNameAsNumber)) {
+      countGroup = groupNameAsNumber;
+    } else {
+      // Nếu không chuyển đổi được thành số, trả về lỗi
+      return {
+        status: -1,
+        message: "Lỗi: groupName không hợp lệ!",
+      };
+    }
+  }
+  // Giới hạn số nhóm tạo ra (ví dụ không quá 100 nhóm một lần)
+  const maxGroupsToCreate = 100;
+  const groupsToCreate = Math.min(data.estimateGroupStudent, maxGroupsToCreate);
+
+  for (let i = countGroup + 1; i <= countGroup + groupsToCreate; i++) {
+    const groupName = i < 10 ? `00${i}` : i < 100 ? `0${i}` : `${i}`; // Định dạng tên nhóm
     const numOfMembers = data.numOfMembers;
     const status = "NOT_FULL";
     _data.push({ groupName, numOfMembers, status });
   }
+
   const res = await Group.bulkCreate(_data);
-  // const _data = res.map((item) => _.pick(item, ["groupName"]));
+
   if (res) {
     return {
       status: 0,
       message: "Tạo danh sách nhóm thành công!",
-      // data: _data,
+      data: _data,
     };
   } else {
     return {
       status: 0,
       message: "Tạo danh sách nhóm thất bại!",
-      // data: null,
     };
   }
 };
+
 const paginationGroupsStudent = async (page, limit) => {
   try {
     if (!page) {
@@ -325,19 +351,21 @@ const paginationGroupsStudent = async (page, limit) => {
 //Lấy số lượng tổng sinh viên có trong database
 const countStudent = async () => {
   try {
-    const count = await Student.count();
+    const countStudent = await Student.count();
+    const countGroup = await Group.count();
     return {
       status: 0,
-      message: "Lấy tổng số lượng sinh viên thành công!",
+      message: "Lấy tổng số lượng sinh viên và tổng số nhóm thành công!",
       data: {
-        total: count,
+        totalStudent: countStudent,
+        totalGroup: countGroup,
       },
     };
   } catch (error) {
     console.error("Có lỗi xảy ra:", error);
     return {
       status: 1,
-      message: "Lấy tổng số lượng sinh viên thất bại!",
+      message: "Lấy tổng số lượng sinh viên và tổng số nhóm thất bại!",
       data: null,
     };
   }

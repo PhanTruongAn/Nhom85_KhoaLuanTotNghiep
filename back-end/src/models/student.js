@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Student.belongsTo(models.Group, {
         foreignKey: "groupId",
-        // foreignKeyConstraint: true,
+        onDelete: "SET NULL",
       });
       Student.belongsTo(models.Major, {
         foreignKey: "majorId",

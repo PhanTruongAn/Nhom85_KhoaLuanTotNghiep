@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
       Group.hasMany(models.Student, {
         foreignKey: "groupId",
         as: "students",
+        onDelete: "SET NULL",
+        hooks: true, // Cần bật hooks để Sequelize xử lý cascade hoặc set null
       });
       Group.belongsTo(models.Topic, {
         foreignKey: "topicId",
