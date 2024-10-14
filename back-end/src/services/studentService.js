@@ -871,7 +871,7 @@ const searchTopicWithNameOrLecturer = async (search) => {
   const results = await Topic.findAll({
     where: {
       [Op.or]: [
-        { title: { [Op.like]: `${search}` } },
+        { title: { [Op.like]: `%${search}%` } },
         { "$lecturer.fullName$": { [Op.like]: `%${search}%` } },
       ],
     },

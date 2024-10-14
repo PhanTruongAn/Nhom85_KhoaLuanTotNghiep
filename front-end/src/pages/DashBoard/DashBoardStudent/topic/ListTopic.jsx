@@ -45,6 +45,7 @@ function ListTopic() {
   const [selectedTopicId, setSelectedTopicId] = useState(null);
   const [loadingConfirm, setLoadingConfirm] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [pages, setPages] = useState([1]);
   const {
     data: topicsData,
     isLoading,
@@ -67,16 +68,17 @@ function ListTopic() {
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({
+            loadingData: false,
             topics: res.data.topics,
             totalRows: res?.data?.totalRows || 0,
           });
         } else {
-          updateState({ topics: [], totalRows: 0 });
+          updateState({ topics: [], totalRows: 0, loadingData: false });
           // messageApi.error(res.message);
         }
       },
       onError: (err) => {
-        updateState({ topics: [], totalRows: 0 });
+        updateState({ topics: [], totalRows: 0, loadingData: false });
         messageApi.error("Lỗi khi lấy dữ liệu!");
       },
     }
@@ -148,10 +150,14 @@ function ListTopic() {
     setSearchBy(event.target.value);
     setSearchTerm("");
   };
-
   const onPageChange = (pageNumber) => {
+    if (!pages.includes(pageNumber)) {
+      pages.push(pageNumber);
+      updateState({ loadingData: true });
+    }
     updateState({ currentPage: pageNumber });
   };
+
   const columns = [
     {
       title: "ID",
@@ -260,7 +266,7 @@ function ListTopic() {
 
       <Table
         columns={columns}
-        dataSource={state.topics}
+        dataSource={topicsData ? topicsData.data.topics : state.topics}
         rowKey="id"
         pagination={{
           showSizeChanger: true,
@@ -271,7 +277,7 @@ function ListTopic() {
           total: state.totalRows,
           onChange: onPageChange,
         }}
-        loading={isFetching}
+        loading={state.loadingData}
         locale={{
           emptyText: isEmpty(state.topics) ? (
             <Box
@@ -281,11 +287,19 @@ function ListTopic() {
                 alignItems: "center",
               }}
             >
-              <EmptyData
-                text={isEmpty(state.topics) ? "Không có dữ liệu! " : null}
-              />
+              <EmptyData />
             </Box>
-          ) : null,
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <EmptyData text="Không có dữ liệu!" />
+            </Box>
+          ),
         }}
       />
       <Modal
