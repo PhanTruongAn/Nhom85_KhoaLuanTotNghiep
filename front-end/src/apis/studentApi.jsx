@@ -56,6 +56,9 @@ const studentApi = {
       `${baseUrl}/find-by-name?page=${page}&limit=${limit}&input=${input}`
     );
   },
+  findTopic: (value) => {
+    return axiosClient.get(`${baseUrl}/find-topic?search=${value}`);
+  },
   changePassword: (data) => {
     return axiosClient.put(baseUrl + "/change-password", data);
   },

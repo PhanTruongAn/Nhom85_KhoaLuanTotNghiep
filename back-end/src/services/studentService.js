@@ -861,6 +861,59 @@ const leaveTopic = async (data) => {
     }
   }
 };
+const searchTopicWithNameOrLecturer = async (search) => {
+  if (!search) {
+    return {
+      status: -1,
+      message: "Dữ liệu tìm kiếm không hợp lệ!",
+    };
+  }
+  const results = await Topic.findAll({
+    where: {
+      [Op.or]: [
+        { title: { [Op.like]: `${search}` } },
+        { "$lecturer.fullName$": { [Op.like]: `%${search}%` } },
+      ],
+    },
+    attributes: [
+      "id",
+      "title",
+      "quantityGroup",
+      "status",
+      [
+        literal(
+          `(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)`
+        ),
+        "groupCount",
+      ],
+    ],
+    include: [
+      {
+        model: Lecturer,
+        as: "lecturer",
+        attributes: ["fullName", "gender"],
+      },
+    ],
+  });
+  if (!isEmpty(results)) {
+    return {
+      status: 0,
+      message: "Tìm kiếm thành công!",
+      data: {
+        topics: results,
+      },
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Không tìm thấy dữ liệu!",
+      data: {
+        topics: [],
+      },
+    };
+  }
+};
+
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -882,4 +935,5 @@ module.exports = {
   viewDetailsTopic,
   joinTopic,
   leaveTopic,
+  searchTopicWithNameOrLecturer,
 };

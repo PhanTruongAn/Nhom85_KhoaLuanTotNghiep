@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Card,
   CardContent,
   CardHeader,
   Grid,
@@ -10,7 +9,7 @@ import {
 } from "@mui/material";
 import { DatePicker, Input } from "antd";
 import dayjs from "dayjs";
-
+import { Card } from "../../../../components/Card/Card";
 const { RangePicker } = DatePicker;
 
 function CreateTerm() {

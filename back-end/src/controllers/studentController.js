@@ -183,6 +183,16 @@ const handleLeaveTopic = async (req, res) => {
     console.log(error);
   }
 };
+const handleSearchTopicWithNameOrLecturer = async (req, res) => {
+  try {
+    const { search } = req.query;
+    const data = await studentService.searchTopicWithNameOrLecturer(search);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   handleCreateStudentAccount,
   handleBulkCreate,
@@ -203,4 +213,5 @@ module.exports = {
   handleGetDetailsTopic,
   handleJoinTopic,
   handleLeaveTopic,
+  handleSearchTopicWithNameOrLecturer,
 };

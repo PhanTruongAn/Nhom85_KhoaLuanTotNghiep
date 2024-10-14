@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Paper,
   Button,
@@ -52,7 +52,7 @@ function ListTopic() {
     ["topics", state.currentPage, state.pageSize],
     () => studentApi.getAllTopics(state.currentPage, state.pageSize),
     {
-      // enabled: state.currentPage <= state.totalPage,
+      enabled: isEmpty(searchTerm),
       keepPreviousData: true,
       cacheTime: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
@@ -69,10 +69,38 @@ function ListTopic() {
         }
       },
       onError: (err) => {
+        updateState({ topics: [] });
         messageApi.error("Lỗi khi lấy dữ liệu!");
       },
     }
   );
+  useEffect(() => {
+    const fetchData = async () => {
+      if (searchTerm) {
+        const response = await studentApi.findTopic(searchTerm);
+        const topics = response?.data?.topics || []; // Đảm bảo không bị lỗi nếu không có dữ liệu
+        const totalRows = response?.data?.totalRows || 0; // Giá trị mặc định là 0 nếu không có totalRows
+
+        updateState({
+          currentPage: 1,
+          topics: topics,
+          totalRows: totalRows,
+        });
+
+        if (response && response.status === 0) {
+          messageApi.success(response.message);
+        } else {
+          messageApi.error(response.message);
+        }
+      }
+    };
+
+    const delayDebounceFn = setTimeout(() => {
+      fetchData();
+    }, 500); // Thời gian delay 300ms
+
+    return () => clearTimeout(delayDebounceFn); // Hủy bỏ timeout khi component unmount hoặc searchTerm thay đổi
+  }, [searchTerm]);
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
@@ -135,12 +163,6 @@ function ListTopic() {
     setSearchBy(event.target.value);
     setSearchTerm("");
   };
-
-  // const filteredTopics = state.topics.filter((topic) =>
-  //   searchBy === "title"
-  //     ? topic.title.toLowerCase().includes(searchTerm.toLowerCase())
-  //     : topic.lecturer.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
 
   const onPageChange = (pageNumber) => {
     updateState({ currentPage: pageNumber });
@@ -226,7 +248,7 @@ function ListTopic() {
             fullWidth
             size="small"
             variant="outlined"
-            placeholder="Tìm kiếm..."
+            placeholder="Tìm theo tên đề tài hoặc giảng viên"
             value={searchTerm}
             onChange={handleSearchChange}
             InputProps={{
@@ -266,20 +288,19 @@ function ListTopic() {
         }}
         loading={isFetching}
         locale={{
-          emptyText:
-            state.topics.length === 0 ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <EmptyData
-                  text={isEmpty(topicsData) ? "Không có dữ liệu! " : null}
-                />
-              </Box>
-            ) : null,
+          emptyText: isLoading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <EmptyData
+                text={isEmpty(topicsData) ? "Không có dữ liệu! " : null}
+              />
+            </Box>
+          ) : null,
         }}
       />
       <Modal

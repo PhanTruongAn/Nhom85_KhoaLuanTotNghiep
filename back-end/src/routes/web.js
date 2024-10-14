@@ -75,6 +75,11 @@ const initWebRoutes = (app) => {
   router.get("/student/details-topic", studentController.handleGetDetailsTopic);
   router.post("/student/join-topic", studentController.handleJoinTopic);
   router.put("/student/leave-topic", studentController.handleLeaveTopic);
+  router.get(
+    "/student/find-topic",
+    studentController.handleSearchTopicWithNameOrLecturer
+  );
+
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",

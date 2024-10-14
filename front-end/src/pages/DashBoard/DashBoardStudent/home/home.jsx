@@ -3,14 +3,20 @@ import { Input, Select, message, Col } from "antd";
 import { Box, Typography } from "@mui/material";
 import { BookTwoTone } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
-import { useSelector } from "react-redux";
-import StudentApi from "../../../../apis/studentApi";
 import CustomButton from "../../../../components/Button/CustomButton";
 import Avatar from "../../../../components/Avatar/Avatar";
+import { useQuery } from "react-query";
+import { isEmpty } from "lodash";
+import { useSelector, useDispatch } from "react-redux";
+import { setGroup, setUser } from "../../../../redux/userSlice";
+import studentApi from "../../../../apis/studentApi";
 const { Option } = Select;
 
 function StudentHome() {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
+  const group = useSelector((state) => state.userInit.group);
+  const [messageApi, contextHolder] = message.useMessage();
   const [formData, setFormData] = useState({
     id: user.id,
     username: user.username || "undefined",
@@ -23,7 +29,30 @@ function StudentHome() {
     typeTraining: user.typeTraining || "undefined",
   });
   const [loading, setLoading] = useState(false);
-
+  const getMyGroup = async () => {
+    const res = await studentApi.getMyGroup(user.groupId);
+    return res;
+  };
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ["my-group"],
+    getMyGroup,
+    {
+      enabled: !!user.groupId && isEmpty(group),
+      keepPreviousData: true,
+      cacheTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
+      staleTime: 1000,
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          dispatch(setGroup(res.data));
+        } else {
+        }
+      },
+      onError: (error) => {
+        messageApi.error("Có lỗi xảy ra: " + error);
+      },
+    }
+  );
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -32,14 +61,14 @@ function StudentHome() {
   const handleUpdate = async () => {
     setLoading(true);
     try {
-      const response = await StudentApi.updateById(formData);
+      const response = await studentApi.updateById(formData);
       if (response.status === 0) {
-        message.success("Cập nhật thông tin thành công!");
+        messageApi.success("Cập nhật thông tin thành công!");
       } else {
-        message.error(`Cập nhật thất bại: ${response.message}`);
+        messageApi.error(`Cập nhật thất bại: ${response.message}`);
       }
     } catch (error) {
-      message.error("Đã xảy ra lỗi khi cập nhật thông tin.");
+      messageApi.error("Đã xảy ra lỗi khi cập nhật thông tin.");
     } finally {
       setLoading(false);
     }
@@ -55,6 +84,7 @@ function StudentHome() {
         alignItems: "center",
       }}
     >
+      {contextHolder}
       <Box
         className="row col-12"
         sx={{ margin: "10px 10px 10px", alignSelf: "center" }}
@@ -128,13 +158,21 @@ function StudentHome() {
                 <hr />
                 <Box>
                   <p>
-                    <b>Tên nhóm:</b>
+                    <b>
+                      Tên nhóm:<i> Nhóm {group.groupName}</i>
+                    </b>
                   </p>
                   <p>
-                    <b>Trạng thái đề tài:</b>
+                    <b>
+                      Trạng thái đề tài:
+                      <i>
+                        {" "}
+                        {group.topicId ? "Đã có đề tài" : "Chưa có đề tài"}
+                      </i>
+                    </b>
                   </p>
                   <p>
-                    <a>
+                    <a href="my-topic">
                       <i>Xem chi tiết</i>
                     </a>
                   </p>
