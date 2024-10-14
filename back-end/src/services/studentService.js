@@ -908,7 +908,7 @@ const searchTopicWithNameOrLecturer = async (search) => {
       status: -1,
       message: "Không tìm thấy dữ liệu!",
       data: {
-        topics: [],
+        topics: null,
       },
     };
   }

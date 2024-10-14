@@ -23,6 +23,7 @@ import { isEmpty } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { setGroup } from "../../../../redux/userSlice";
 import ConfirmModal from "../../../../components/Modal/confirmModal";
+import { useDebounce } from "@uidotdev/usehooks";
 function ListTopic() {
   const group = useSelector((state) => state.userInit.group);
   const user = useSelector((state) => state.userInit.user);
@@ -43,16 +44,22 @@ function ListTopic() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [selectedTopicId, setSelectedTopicId] = useState(null);
   const [loadingConfirm, setLoadingConfirm] = useState(false);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const {
     data: topicsData,
     isLoading,
     isFetching,
     refetch,
   } = useQuery(
-    ["topics", state.currentPage, state.pageSize],
-    () => studentApi.getAllTopics(state.currentPage, state.pageSize),
+    ["topics", state.currentPage, state.pageSize, debouncedSearchTerm],
+    () => {
+      if (debouncedSearchTerm) {
+        return handleFindTopic();
+      } else {
+        return studentApi.getAllTopics(state.currentPage, state.pageSize);
+      }
+    },
     {
-      enabled: isEmpty(searchTerm),
       keepPreviousData: true,
       cacheTime: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
@@ -61,46 +68,24 @@ function ListTopic() {
         if (res && res.status === 0) {
           updateState({
             topics: res.data.topics,
-            totalRows: res.data.totalRows,
+            totalRows: res?.data?.totalRows || 0,
           });
         } else {
-          updateState({ topics: [] });
-          messageApi.error(res.message);
+          updateState({ topics: [], totalRows: 0 });
+          // messageApi.error(res.message);
         }
       },
       onError: (err) => {
-        updateState({ topics: [] });
+        updateState({ topics: [], totalRows: 0 });
         messageApi.error("Lỗi khi lấy dữ liệu!");
       },
     }
   );
-  useEffect(() => {
-    const fetchData = async () => {
-      if (searchTerm) {
-        const response = await studentApi.findTopic(searchTerm);
-        const topics = response?.data?.topics || []; // Đảm bảo không bị lỗi nếu không có dữ liệu
-        const totalRows = response?.data?.totalRows || 0; // Giá trị mặc định là 0 nếu không có totalRows
+  const handleFindTopic = async () => {
+    const res = await studentApi.findTopic(searchTerm);
+    return res;
+  };
 
-        updateState({
-          currentPage: 1,
-          topics: topics,
-          totalRows: totalRows,
-        });
-
-        if (response && response.status === 0) {
-          messageApi.success(response.message);
-        } else {
-          messageApi.error(response.message);
-        }
-      }
-    };
-
-    const delayDebounceFn = setTimeout(() => {
-      fetchData();
-    }, 500); // Thời gian delay 300ms
-
-    return () => clearTimeout(delayDebounceFn); // Hủy bỏ timeout khi component unmount hoặc searchTerm thay đổi
-  }, [searchTerm]);
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
@@ -288,7 +273,7 @@ function ListTopic() {
         }}
         loading={isFetching}
         locale={{
-          emptyText: isLoading ? (
+          emptyText: isEmpty(state.topics) ? (
             <Box
               sx={{
                 display: "flex",
@@ -297,7 +282,7 @@ function ListTopic() {
               }}
             >
               <EmptyData
-                text={isEmpty(topicsData) ? "Không có dữ liệu! " : null}
+                text={isEmpty(state.topics) ? "Không có dữ liệu! " : null}
               />
             </Box>
           ) : null,

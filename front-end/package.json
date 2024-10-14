@@ -17,6 +17,7 @@
     "@mui/icons-material": "^6.0.2",
     "@mui/material": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.7",
+    "@uidotdev/usehooks": "^2.4.1",
     "antd": "^5.20.5",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
