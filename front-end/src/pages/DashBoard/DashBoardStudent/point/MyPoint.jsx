@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Table } from "antd";
 import { TableOutlined } from "@ant-design/icons";
 
@@ -46,7 +38,15 @@ const data = [
 
 function MyPoint() {
   return (
-    <Box padding={3} sx={{ width: "100%", height: "580px", borderRadius: 2 }}>
+    <Box
+      padding={3}
+      sx={{
+        width: "100%",
+        height: "auto", // Change height to auto for responsiveness
+        borderRadius: 2,
+        overflow: "hidden", // Prevents overflow
+      }}
+    >
       <Box
         display="flex"
         alignItems="center"
@@ -98,6 +98,8 @@ function MyPoint() {
           padding: "10px",
           borderRadius: "8px",
         }}
+        // Added responsive styles for the table
+        scroll={{ x: "max-content" }} // Enables horizontal scroll if needed
       />
     </Box>
   );

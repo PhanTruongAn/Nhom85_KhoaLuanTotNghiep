@@ -3,7 +3,7 @@ import { Row, Col, message, Space } from "antd";
 import { HomeOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
 import { Link, Typography, CircularProgress, Button, Box } from "@mui/material";
-import "./StudentGroup.scss";
+
 import studentApi from "../../../../apis/studentApi";
 import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
@@ -19,8 +19,6 @@ const StudentGroup = () => {
   const group = useSelector((state) => state.userInit.group);
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
-
-  // Tạo trạng thái loading riêng cho nút "Chọn làm nhóm trưởng" và "Xóa khỏi nhóm"
   const [loadingTransferLeader, setLoadingTransferLeader] = useState({});
   const [loadingRemoveMember, setLoadingRemoveMember] = useState({});
 
@@ -70,7 +68,6 @@ const StudentGroup = () => {
   };
 
   const handleRemoveMemberFromGroup = async (studentId) => {
-    // Thiết lập trạng thái loading cho nút "Xóa khỏi nhóm"
     setLoadingRemoveMember((prev) => ({ ...prev, [studentId]: true }));
 
     const data = {
@@ -84,12 +81,10 @@ const StudentGroup = () => {
     } else {
       messageApi.error(res.message);
     }
-    // Kết thúc trạng thái loading
     setLoadingRemoveMember((prev) => ({ ...prev, [studentId]: false }));
   };
 
   const handleTransferLeader = async (memberId) => {
-    // Thiết lập trạng thái loading cho nút "Chọn làm nhóm trưởng"
     setLoadingTransferLeader((prev) => ({ ...prev, [memberId]: true }));
 
     const data = {
@@ -104,7 +99,6 @@ const StudentGroup = () => {
     } else {
       messageApi.error(res.message);
     }
-    // Kết thúc trạng thái loading
     setLoadingTransferLeader((prev) => ({ ...prev, [memberId]: false }));
   };
 
@@ -137,50 +131,50 @@ const StudentGroup = () => {
                     transition: "transform 0.2s",
                   }}
                 >
-                  <Row gutter={4} style={{ alignItems: "center" }}>
-                    <Col span={4}>
+                  <Row gutter={[16, 16]} style={{ alignItems: "center" }}>
+                    <Col xs={24} sm={4}>
                       <Box sx={{ marginLeft: "-30px" }}>
                         <Avatar gender={item.gender} />
                       </Box>
                     </Col>
 
-                    <Col span={14}>
+                    <Col xs={24} sm={14}>
                       <Typography variant="h5" fontWeight="bold">
                         Sinh viên {index + 1}: {item.fullName}
                       </Typography>
                       <Row gutter={4}>
-                        <Col span={10}>
+                        <Col span={12}>
                           <Typography>
                             Mã số sinh viên: {item.username}
                           </Typography>
                         </Col>
-                        <Col span={10} style={{ textAlign: "left" }}>
+                        <Col span={12} style={{ textAlign: "left" }}>
                           <Typography>Số điện thoại: {item.phone}</Typography>
                         </Col>
                       </Row>
                       <Row gutter={4}>
-                        <Col span={10}>
+                        <Col span={12}>
                           <Typography>Email liên hệ: {item.email}</Typography>
                         </Col>
-                        <Col span={10} style={{ textAlign: "left" }}>
+                        <Col span={12} style={{ textAlign: "left" }}>
                           <Typography>Giới tính: {item.gender}</Typography>
                         </Col>
                       </Row>
                     </Col>
                     {user.isLeader && item.id !== user.id && (
-                      <Col span={6}>
+                      <Col xs={24} sm={6}>
                         <Space direction="vertical">
                           <CustomButton
                             type="success"
                             text="Chọn làm nhóm trưởng"
                             onClick={() => handleTransferLeader(item.id)}
-                            loading={loadingTransferLeader[item.id] || false} // Sử dụng trạng thái loading riêng cho nút "Chọn làm nhóm trưởng"
+                            loading={loadingTransferLeader[item.id] || false}
                           />
                           <CustomButton
                             type="error"
                             text="Xóa khỏi nhóm"
                             onClick={() => handleRemoveMemberFromGroup(item.id)}
-                            loading={loadingRemoveMember[item.id] || false} // Sử dụng trạng thái loading riêng cho nút "Xóa khỏi nhóm"
+                            loading={loadingRemoveMember[item.id] || false}
                           />
                         </Space>
                       </Col>
@@ -217,7 +211,7 @@ const StudentGroup = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "60vh", // Căn giữa theo chiều dọc với chiều cao 60% view height
+            height: "60vh",
           }}
         >
           <EmptyData text={!user.groupId ? "Bạn chưa tham gia nhóm!" : null} />

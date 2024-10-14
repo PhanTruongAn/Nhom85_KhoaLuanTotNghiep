@@ -26,9 +26,8 @@ function ListStudentGroup() {
     loadingIcon: false,
   });
   const [dataRow, setDataRow] = useState([]);
-  const [loadingStates, setLoadingStates] = useState({});
-  const [selectedGroup, setSelectedGroup] = useState(null); // Thêm trạng thái để quản lý nhóm được chọn
-  const [isModalOpen, setIsModalOpen] = useState(false); // Thêm trạng thái để quản lý việc mở modal
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const containerRef = useRef(null);
 
   const updateState = (newState) => {
@@ -66,7 +65,6 @@ function ListStudentGroup() {
     }
   );
 
-  // Xử lý sự kiện cuộn
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
     if (
@@ -89,13 +87,12 @@ function ListStudentGroup() {
   }, [state.currentPage]);
 
   const handleJoinGroup = (group) => {
-    setSelectedGroup(group); // Lưu thông tin nhóm được chọn
-    setIsModalOpen(true); // Mở modal
+    setSelectedGroup(group);
+    setIsModalOpen(true);
   };
 
   const confirmJoinGroup = async () => {
     if (selectedGroup) {
-      // setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: true }));
       const data = {
         groupId: selectedGroup.id,
         studentId: user.id,
@@ -106,13 +103,11 @@ function ListStudentGroup() {
         dispatch(setUser({ ...user, groupId: res.data.id }));
         messageApi.success(res.message);
         updateState({ loadingIcon: false });
-        // setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: false }));
       } else {
         updateState({ loadingIcon: false });
         messageApi.error(res.message);
-        // setLoadingStates((prev) => ({ ...prev, [selectedGroup.id]: false }));
       }
-      setIsModalOpen(false); // Đóng modal sau khi xác nhận
+      setIsModalOpen(false);
     }
   };
 

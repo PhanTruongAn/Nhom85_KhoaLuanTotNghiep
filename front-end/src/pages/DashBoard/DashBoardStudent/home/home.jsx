@@ -24,13 +24,11 @@ function StudentHome() {
   });
   const [loading, setLoading] = useState(false);
 
-  // Hàm xử lý thay đổi input
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Hàm xử lý khi nhấn nút Cập nhật
   const handleUpdate = async () => {
     setLoading(true);
     try {
@@ -61,7 +59,7 @@ function StudentHome() {
         className="row col-12"
         sx={{ margin: "10px 10px 10px", alignSelf: "center" }}
       >
-        <Box className="col-6">
+        <Box className="col-12 col-md-6" sx={{ marginBottom: "10px" }}>
           <Card
             sx={{
               borderRadius: "8px",
@@ -80,7 +78,6 @@ function StudentHome() {
                   <Avatar gender={user.gender} />
                 </Box>
               </Col>
-
               <Box sx={{ flex: 1, textAlign: "left", marginLeft: "-50px" }}>
                 <Box sx={{ marginTop: "5px" }}>
                   <Typography variant="h5" component="h2" gutterBottom>
@@ -105,7 +102,7 @@ function StudentHome() {
             </Box>
           </Card>
         </Box>
-        <Box className="col-6">
+        <Box className="col-12 col-md-6" sx={{ marginBottom: "10px" }}>
           <Card
             sx={{
               borderRadius: "8px",
@@ -120,10 +117,7 @@ function StudentHome() {
               }}
             >
               <BookTwoTone
-                style={{
-                  fontSize: "80px",
-                  color: "rgb(8, 56, 127)",
-                }}
+                style={{ fontSize: "80px", color: "rgb(8, 56, 127)" }}
               />
               <Box sx={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
                 <Box sx={{ marginTop: "5px" }}>
@@ -131,7 +125,6 @@ function StudentHome() {
                     Thông tin nhóm đề tài
                   </Typography>
                 </Box>
-
                 <hr />
                 <Box>
                   <p>
@@ -163,8 +156,8 @@ function StudentHome() {
           <h5>Cập nhật thông tin</h5>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
             <Box
-              className="col-6"
-              sx={{ marginBottom: "16px", paddingRight: "10px" }}
+              className="col-12 col-md-6"
+              sx={{ marginBottom: "10px", paddingRight: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
                 Mã Sinh viên *
@@ -176,8 +169,8 @@ function StudentHome() {
               />
             </Box>
             <Box
-              className="col-6"
-              sx={{ marginBottom: "16px", paddingLeft: "10px" }}
+              className="col-12 col-md-6"
+              sx={{ marginBottom: "10px", paddingLeft: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
                 Họ và tên *
@@ -191,8 +184,8 @@ function StudentHome() {
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
             <Box
-              className="col-6"
-              sx={{ marginBottom: "16px", paddingRight: "10px" }}
+              className="col-12 col-md-6"
+              sx={{ marginBottom: "10px", paddingRight: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
                 Số điện thoại *
@@ -204,8 +197,8 @@ function StudentHome() {
               />
             </Box>
             <Box
-              className="col-6"
-              sx={{ marginBottom: "16px", paddingLeft: "10px" }}
+              className="col-12 col-md-6"
+              sx={{ marginBottom: "10px", paddingLeft: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
                 Email *
@@ -218,7 +211,10 @@ function StudentHome() {
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
-            <Box sx={{ marginBottom: "16px", flex: 1 }}>
+            <Box
+              className="col-12 col-md-6"
+              sx={{ marginBottom: "10px", paddingRight: "10px" }}
+            >
               <label style={{ textAlign: "left", display: "block" }}>
                 Giới tính
               </label>
@@ -234,7 +230,10 @@ function StudentHome() {
                 <Option value="Nữ">Nữ</Option>
               </Select>
             </Box>
-            <Box sx={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
+            <Box
+              className="col-12 col-md-6"
+              sx={{ marginBottom: "10px", paddingLeft: "10px" }}
+            >
               <label style={{ textAlign: "left", display: "block" }}>
                 Chuyên ngành
               </label>
@@ -247,7 +246,10 @@ function StudentHome() {
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
-            <Box sx={{ marginBottom: "16px", flex: 1 }}>
+            <Box
+              className="col-12 col-md-6"
+              sx={{ marginBottom: "10px", paddingRight: "10px" }}
+            >
               <label style={{ textAlign: "left", display: "block" }}>
                 Lớp danh nghĩa
               </label>
@@ -257,7 +259,10 @@ function StudentHome() {
                 onChange={handleChange}
               />
             </Box>
-            <Box sx={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
+            <Box
+              className="col-12 col-md-6"
+              sx={{ marginBottom: "10px", paddingLeft: "10px" }}
+            >
               <label style={{ textAlign: "left", display: "block" }}>
                 Chương trình đào tạo
               </label>

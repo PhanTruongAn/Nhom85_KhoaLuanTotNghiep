@@ -43,7 +43,7 @@ const criteriaData = [
     ],
   },
   {
-    title: "Tiêu chí Đánh giá Phân biện",
+    title: "Tiêu chí Đánh giá phản biện",
     criteria: [
       { id: 1, name: "Evaluate the implemented results.", maxPoints: 10 },
       {
@@ -148,22 +148,33 @@ const Criteria = () => {
   ];
 
   return (
-    <Box style={{ padding: "20px", overflow: "hidden" }}>
-      <Box display="flex" alignItems="center" justifyContent="space-between">
+    <Box
+      sx={{
+        padding: { xs: "10px", sm: "20px" },
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ flexWrap: "wrap" }}
+      >
         <Box display="flex" alignItems="center">
           <AuditOutlined style={{ fontSize: "26px", marginBottom: "10px" }} />
           <Typography
             variant="h5"
             fontWeight="bold"
-            sx={{ margin: "0 10px 10px" }}
+            sx={{ margin: { xs: "0 5px 10px", sm: "0 10px 10px" } }} // Responsive margin
           >
             Tiêu chí Đánh giá
           </Typography>
         </Box>
         <Select
           defaultValue={0}
-          style={{ width: "300px", marginBottom: "10px" }}
-          h
+          style={{ width: "100%", maxWidth: "300px", marginBottom: "10px" }} // Make Select full width with max
           onChange={handleChange}
         >
           {criteriaData.map((section, index) => (

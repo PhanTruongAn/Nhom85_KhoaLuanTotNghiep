@@ -13,6 +13,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { message } from "antd";
 import CustomButton from "../../../../components/Button/CustomButton";
+
 const ProjectDetails = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
@@ -99,7 +100,13 @@ const ProjectDetails = () => {
   };
 
   return (
-    <Box style={{ padding: "10px" }}>
+    <Box
+      sx={{
+        padding: { xs: "5px", sm: "10px" },
+        width: "100%",
+        maxHeight: "80vh",
+      }}
+    >
       {contextHolder}
       {isLoadingGroup || isLoadingTopic ? (
         <Box
@@ -171,7 +178,8 @@ const ProjectDetails = () => {
                       <b>TÊN ĐỀ TÀI:</b> {displayedTopic.title || "N/A"}
                     </Typography>
                   </AccordionSummary>
-                  <AccordionDetails>
+                  <AccordionDetails sx={{ minHeight: "150px" }}>
+                    {/* Set minHeight to prevent layout shift */}
                     <Typography>
                       <strong>Mô tả:</strong>{" "}
                       {displayedTopic.description || "N/A"}
@@ -205,18 +213,12 @@ const ProjectDetails = () => {
                     aria-controls="panel2-content"
                     id="panel2-header"
                   >
-                    {/* <Button
-                      variant="contained"
-                      color="error"
-                      onClick={handleCancelTopic}
-                    >
-                      HỦY ĐĂNG KÝ ĐỀ TÀI
-                    </Button> */}
                     <CustomButton
                       text="HỦY ĐĂNG KÝ ĐỀ TÀI"
                       onClick={handleCancelTopic}
                       type="error"
                       loading={loading}
+                      fullWidth // Make the button full width
                     />
                   </AccordionSummary>
                 </Accordion>

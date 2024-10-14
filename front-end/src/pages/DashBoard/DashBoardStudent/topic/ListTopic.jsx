@@ -206,9 +206,9 @@ function ListTopic() {
       <Grid
         container
         spacing={2}
-        sx={{ paddingTop: "10px", paddingLeft: "10px" }}
+        sx={{ paddingTop: "10px", paddingLeft: { xs: "5px", sm: "10px" } }} // Responsive padding
       >
-        <Grid item xs={12} sm={2}>
+        <Grid item xs={12} sm={2} md={2}>
           <FormControl fullWidth variant="outlined" size="small">
             <InputLabel>Tìm theo</InputLabel>
             <Select
@@ -221,7 +221,7 @@ function ListTopic() {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={3} md={3}>
           <TextField
             fullWidth
             size="small"
@@ -245,7 +245,7 @@ function ListTopic() {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          fontSize: "20px",
+          fontSize: { xs: "18px", sm: "20px" }, // Responsive font size
         }}
       >
         Danh sách đề tài
@@ -287,7 +287,7 @@ function ListTopic() {
         open={state.isModalVisible}
         onCancel={onCloseModal}
         footer={null}
-        width={"80%"}
+        width="80%"
         loading={state.isModalLoading}
       >
         {state.currentRecord && (

@@ -1,6 +1,14 @@
 .list-topic {
-  max-height: 400px; // Đặt chiều cao tối đa cho vùng chứa
-  overflow-y: auto; // Chỉ hiển thị thanh cuộn khi cần
-  border: 1px solid #ddd; // Đường viền cho vùng chứa
-  border-radius: 8px; // Bo góc
+  max-height: 400px; /* Đặt chiều cao tối đa cho vùng chứa */
+  overflow-y: auto; /* Chỉ hiển thị thanh cuộn khi cần */
+  border: 1px solid #ddd; /* Đường viền cho vùng chứa */
+  border-radius: 8px; /* Bo góc */
+  padding: 10px; /* Thêm padding cho vùng chứa */
+  margin: 0 auto; /* Căn giữa vùng chứa */
+}
+
+@media (max-width: 600px) {
+  .list-topic {
+    max-height: 300px; /* Giảm chiều cao tối đa cho màn hình nhỏ */
+  }
 }
