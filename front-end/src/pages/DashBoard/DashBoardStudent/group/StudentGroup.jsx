@@ -5,7 +5,7 @@ import { Card } from "../../../../components/Card/Card";
 import { Link, Typography, CircularProgress, Button, Box } from "@mui/material";
 
 import studentApi from "../../../../apis/studentApi";
-import { useQuery } from "react-query";
+import CustomHooks from "../../../../utils/hooks";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { setGroup, setUser } from "../../../../redux/userSlice";
@@ -24,30 +24,15 @@ const StudentGroup = () => {
 
   const getMyGroup = async () => {
     const res = await studentApi.getMyGroup(user.groupId);
-    return res;
+    if (res && res.status === 0) {
+      dispatch(setGroup(res.data));
+    } else {
+      messageApi.error(res.message);
+    }
+    return res.data;
   };
 
-  const { data, isLoading, isFetching, refetch } = useQuery(
-    ["my-group"],
-    getMyGroup,
-    {
-      enabled: !!user.groupId && isEmpty(group),
-      keepPreviousData: true,
-      cacheTime: 1000 * 60 * 10,
-      refetchOnWindowFocus: false,
-      staleTime: 1000,
-      onSuccess: (res) => {
-        if (res && res.status === 0) {
-          dispatch(setGroup(res.data));
-        } else {
-          messageApi.error(res.message);
-        }
-      },
-      onError: (error) => {
-        messageApi.error("Có lỗi xảy ra: " + error);
-      },
-    }
-  );
+  const { isSuccess } = CustomHooks.useQuery(["my-group"], getMyGroup);
 
   const handleLeaveGroup = async () => {
     setLoading(true);
@@ -108,11 +93,14 @@ const StudentGroup = () => {
       {!isEmpty(group) ? (
         <>
           <Row align="middle" style={{ marginBottom: "20px" }}>
-            <HomeOutlined style={{ fontSize: "26px" }} />
+            <HomeOutlined style={{ fontSize: "26px", color: "#006ed3" }} />
             <Typography
               variant="h5"
               fontWeight="bold"
-              sx={{ margin: "5px 10px" }}
+              sx={{
+                margin: "5px 10px",
+                color: "#006ed3",
+              }}
             >
               Nhóm số: {group.groupName}
             </Typography>

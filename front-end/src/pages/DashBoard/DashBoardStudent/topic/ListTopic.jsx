@@ -18,8 +18,8 @@ import TopicIcon from "@mui/icons-material/Topic";
 import { Table, Pagination, message, Modal } from "antd";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import studentApi from "../../../../apis/studentApi";
-import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
+import CustomHooks from "../../../../utils/hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { setGroup } from "../../../../redux/userSlice";
 import ConfirmModal from "../../../../components/Modal/confirmModal";
@@ -50,21 +50,18 @@ function ListTopic() {
     data: topicsData,
     isLoading,
     isFetching,
-    refetch,
-  } = useQuery(
+    isSuccess,
+  } = CustomHooks.useQuery(
     ["topics", state.currentPage, state.pageSize, debouncedSearchTerm],
     () => {
       if (debouncedSearchTerm) {
+        updateState({ loadingData: true });
         return handleFindTopic();
       } else {
         return studentApi.getAllTopics(state.currentPage, state.pageSize);
       }
     },
     {
-      keepPreviousData: true,
-      cacheTime: 1000 * 60 * 10,
-      refetchOnWindowFocus: false,
-      staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({
@@ -131,8 +128,6 @@ function ListTopic() {
     }
     setLoadingConfirm(false);
   };
-
-  // Hàm mở modal confirm join topic
   const handleRegisterClick = (id) => {
     setSelectedTopicId(id); // Lưu lại ID đề tài
     setIsConfirmModalOpen(true); // Mở modal
@@ -274,7 +269,7 @@ function ListTopic() {
           onShowSizeChange: (current, size) => handlePageSizeChange(size),
           current: state.currentPage,
           pageSize: state.pageSize,
-          total: state.totalRows,
+          total: isSuccess ? topicsData.data.totalRows : state.totalRows,
           onChange: onPageChange,
         }}
         loading={state.loadingData}

@@ -1,6 +1,7 @@
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 export const Card = styled(MuiCard)(({ theme }) => ({
+  backgroundColor: "#ebf6ff",
   ...theme.applyStyles("dark", {
     // backgroundColor: "#153645",
     backgroundImage:

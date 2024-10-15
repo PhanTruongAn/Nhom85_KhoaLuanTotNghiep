@@ -163,11 +163,16 @@ const Criteria = () => {
         sx={{ flexWrap: "wrap" }}
       >
         <Box display="flex" alignItems="center">
-          <AuditOutlined style={{ fontSize: "26px", marginBottom: "10px" }} />
+          <AuditOutlined
+            style={{ fontSize: "26px", marginBottom: "10px", color: "#006ed3" }}
+          />
           <Typography
             variant="h5"
             fontWeight="bold"
-            sx={{ margin: { xs: "0 5px 10px", sm: "0 10px 10px" } }} // Responsive margin
+            sx={{
+              margin: { xs: "0 5px 10px", sm: "0 10px 10px" },
+              color: "#006ed3",
+            }}
           >
             Tiêu chí Đánh giá
           </Typography>

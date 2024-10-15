@@ -5,11 +5,12 @@ import { BookTwoTone } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
 import CustomButton from "../../../../components/Button/CustomButton";
 import Avatar from "../../../../components/Avatar/Avatar";
-import { useQuery } from "react-query";
+import CustomHooks from "../../../../utils/hooks";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { setGroup, setUser } from "../../../../redux/userSlice";
 import studentApi from "../../../../apis/studentApi";
+
 const { Option } = Select;
 
 function StudentHome() {
@@ -29,30 +30,21 @@ function StudentHome() {
     typeTraining: user.typeTraining || "undefined",
   });
   const [loading, setLoading] = useState(false);
+
   const getMyGroup = async () => {
     const res = await studentApi.getMyGroup(user.groupId);
-    return res;
-  };
-  const { data, isLoading, isFetching, refetch } = useQuery(
-    ["my-group"],
-    getMyGroup,
-    {
-      enabled: !!user.groupId && isEmpty(group),
-      keepPreviousData: true,
-      cacheTime: 1000 * 60 * 10,
-      refetchOnWindowFocus: false,
-      staleTime: 1000,
-      onSuccess: (res) => {
-        if (res && res.status === 0) {
-          dispatch(setGroup(res.data));
-        } else {
-        }
-      },
-      onError: (error) => {
-        messageApi.error("Có lỗi xảy ra: " + error);
-      },
+    if (res && res.status === 0) {
+      dispatch(setGroup(res.data));
+    } else {
+      messageApi.error(ree.message);
     }
+    return res.data;
+  };
+  const { isLoading, isError, data, error } = CustomHooks.useQuery(
+    ["my-group"],
+    getMyGroup
   );
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -110,8 +102,19 @@ function StudentHome() {
               </Col>
               <Box sx={{ flex: 1, textAlign: "left", marginLeft: "-50px" }}>
                 <Box sx={{ marginTop: "5px" }}>
-                  <Typography variant="h5" component="h2" gutterBottom>
-                    Thông tin cá nhân
+                  <Typography
+                    variant="h5"
+                    component="h2"
+                    gutterBottom
+                    sx={[
+                      (theme) => ({
+                        ...theme.applyStyles("light", {
+                          color: "#006ed3",
+                        }),
+                      }),
+                    ]}
+                  >
+                    <b> Thông tin cá nhân</b>
                   </Typography>
                 </Box>
                 <hr />
@@ -151,8 +154,19 @@ function StudentHome() {
               />
               <Box sx={{ flex: 1, textAlign: "left", marginLeft: "20px" }}>
                 <Box sx={{ marginTop: "5px" }}>
-                  <Typography variant="h5" component="h2" gutterBottom>
-                    Thông tin nhóm đề tài
+                  <Typography
+                    variant="h5"
+                    component="h2"
+                    gutterBottom
+                    sx={[
+                      (theme) => ({
+                        ...theme.applyStyles("light", {
+                          color: "#006ed3",
+                        }),
+                      }),
+                    ]}
+                  >
+                    <b>Thông tin nhóm đề tài</b>
                   </Typography>
                 </Box>
                 <hr />
@@ -191,7 +205,18 @@ function StudentHome() {
         }}
       >
         <form style={{ padding: 10 }} onSubmit={(e) => e.preventDefault()}>
-          <h5>Cập nhật thông tin</h5>
+          <Typography
+            variant="h6"
+            sx={[
+              (theme) => ({
+                ...theme.applyStyles("light", {
+                  color: "#006ed3",
+                }),
+              }),
+            ]}
+          >
+            <b> Cập nhật thông tin</b>
+          </Typography>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
             <Box
               className="col-12 col-md-6"

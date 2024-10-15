@@ -3,7 +3,7 @@ import { Button, Typography, Box } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import studentApi from "../../../../apis/studentApi";
 import { useSelector, useDispatch } from "react-redux";
-import { useQuery } from "react-query";
+import CustomHooks from "../../../../utils/hooks";
 import { isEmpty } from "lodash";
 import { setGroup, setMyTopic } from "../../../../redux/userSlice";
 import EmptyData from "../../../../components/emptydata/EmptyData";
@@ -27,7 +27,7 @@ const ProjectDetails = () => {
     data: groupData,
     isLoading: isLoadingGroup,
     refetch: refetchGroup,
-  } = useQuery(
+  } = CustomHooks.useQuery(
     ["my-group"],
     async () => {
       const res = await studentApi.getMyGroup(user.groupId);
@@ -35,9 +35,6 @@ const ProjectDetails = () => {
     },
     {
       enabled: !!user.groupId && isEmpty(group),
-      cacheTime: 1000 * 60 * 10,
-      refetchOnWindowFocus: false,
-      staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
           dispatch(setGroup(res.data));
@@ -52,18 +49,13 @@ const ProjectDetails = () => {
   );
 
   // Fetch topic data
-  const { data: topicData, isLoading: isLoadingTopic } = useQuery(
+  const { data: topicData, isLoading: isLoadingTopic } = CustomHooks.useQuery(
     ["my-topic"],
     async () => {
       const res = await studentApi.getMyTopic(group?.topicId);
       return res;
     },
     {
-      enabled: !!group?.topicId && isEmpty(topic),
-      keepPreviousData: true,
-      cacheTime: 1000 * 60 * 10,
-      refetchOnWindowFocus: false,
-      staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
           dispatch(setMyTopic(res.data));
@@ -144,7 +136,16 @@ const ProjectDetails = () => {
                 sx={{ marginBottom: "10px", padding: "10px" }}
                 variant="elevation"
               >
-                <Typography sx={{ fontWeight: 700 }}>
+                <Typography
+                  sx={[
+                    (theme) => ({
+                      ...theme.applyStyles("light", {
+                        color: "#006ed3",
+                        fontWeight: "700",
+                      }),
+                    }),
+                  ]}
+                >
                   THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN
                 </Typography>
                 <Typography>
@@ -162,6 +163,7 @@ const ProjectDetails = () => {
                 <Accordion
                   sx={[
                     (theme) => ({
+                      backgroundColor: "#ebf6ff",
                       ...theme.applyStyles("dark", {
                         backgroundImage:
                           "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
@@ -174,7 +176,16 @@ const ProjectDetails = () => {
                     aria-controls="panel1-content"
                     id="panel1-header"
                   >
-                    <Typography sx={{ fontSize: "18px" }}>
+                    <Typography
+                      sx={[
+                        (theme) => ({
+                          fontSize: "18px",
+                          ...theme.applyStyles("light", {
+                            color: "#006ed3",
+                          }),
+                        }),
+                      ]}
+                    >
                       <b>TÊN ĐỀ TÀI:</b> {displayedTopic.title || "N/A"}
                     </Typography>
                   </AccordionSummary>
@@ -202,6 +213,7 @@ const ProjectDetails = () => {
                 <Accordion
                   sx={[
                     (theme) => ({
+                      backgroundColor: "#ebf6ff",
                       ...theme.applyStyles("dark", {
                         backgroundImage:
                           "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",

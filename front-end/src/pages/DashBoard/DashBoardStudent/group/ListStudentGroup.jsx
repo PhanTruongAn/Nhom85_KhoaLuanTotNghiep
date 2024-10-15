@@ -1,77 +1,57 @@
 import React, { useState, useRef, useEffect } from "react";
-import { CardContent, Typography, Button, Divider, Box } from "@mui/material";
+import {
+  CardContent,
+  Typography,
+  Button,
+  Divider,
+  Box,
+  Grid,
+  CircularProgress,
+} from "@mui/material";
 import { message } from "antd";
 import { Card } from "../../../../components/Card/Card";
-import Grid from "@mui/material/Grid";
 import studentApi from "../../../../apis/studentApi";
 import "./ListStudentGroup.scss";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-import { useQuery } from "react-query";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../../../redux/userSlice";
-import CustomButton from "../../../../components/Button/CustomButton";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import ConfirmModal from "../../../../components/Modal/confirmModal";
+import CustomHooks from "../../../../utils/hooks";
 
 function ListStudentGroup() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
   const [messageApi, contextHolder] = message.useMessage();
-  const [state, setState] = useState({
-    currentPage: 1,
-    totalPage: 2,
-    pageSize: 12,
-    dataSource: [],
-    loadingIcon: false,
-  });
-  const [dataRow, setDataRow] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loadingIcon, setLoadingIcon] = useState(false);
   const containerRef = useRef(null);
 
-  const updateState = (newState) => {
-    setState((prevState) => ({ ...prevState, ...newState }));
+  // Hàm lấy danh sách nhóm
+  const fetchGroups = async ({ pageParam = 1 }) => {
+    const res = await studentApi.getAllGroup(pageParam, 12);
+    if (res && res.status === 0) {
+      return {
+        groups: res.data.groups,
+        totalPages: res.data.totalPages,
+        nextPage: pageParam < res.data.totalPages ? pageParam + 1 : undefined,
+      };
+    } else {
+      throw new Error(res.message);
+    }
   };
 
-  const { data, isLoading, isFetching, refetch } = useQuery(
-    ["groups", state.currentPage],
-    () => studentApi.getAllGroup(state.currentPage, state.pageSize),
-    {
-      enabled: state.currentPage <= state.totalPage,
-      keepPreviousData: true,
-      cacheTime: 1000 * 60 * 10,
-      refetchOnWindowFocus: false,
-      staleTime: 1000,
-      onSuccess: (res) => {
-        if (res && res.status === 0) {
-          updateState({
-            dataSource: res.data.groups,
-            totalPage: res.data.totalPages,
-          });
-          if (isEmpty(dataRow)) {
-            setDataRow(res.data.groups);
-          } else {
-            setDataRow([...dataRow, ...res.data.groups]);
-          }
-        } else if (res.status === -1 || res.status === 403) {
-          updateState({ dataSource: [], hasMore: false });
-          messageApi.error(res.message);
-        }
-      },
-      onError: (err) => {
-        messageApi.error("Lỗi khi lấy dữ liệu!");
-      },
-    }
-  );
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
+    CustomHooks.useInfiniteQuery(["groups"], fetchGroups, {
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+    });
 
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-    if (
-      scrollTop + clientHeight >= scrollHeight - 10 &&
-      state.currentPage < state.totalPage
-    ) {
-      updateState({ currentPage: state.currentPage + 1 });
+    if (scrollTop + clientHeight >= scrollHeight - 10 && hasNextPage) {
+      fetchNextPage();
     }
   };
 
@@ -84,7 +64,7 @@ function ListStudentGroup() {
         container.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [state.currentPage]);
+  }, [hasNextPage]);
 
   const handleJoinGroup = (group) => {
     setSelectedGroup(group);
@@ -97,19 +77,21 @@ function ListStudentGroup() {
         groupId: selectedGroup.id,
         studentId: user.id,
       };
-      updateState({ loadingIcon: true });
+      setLoadingIcon(true);
       const res = await studentApi.joinGroup(data);
       if (res && res.status === 0) {
         dispatch(setUser({ ...user, groupId: res.data.id }));
         messageApi.success(res.message);
-        updateState({ loadingIcon: false });
       } else {
-        updateState({ loadingIcon: false });
         messageApi.error(res.message);
       }
+      setLoadingIcon(false);
       setIsModalOpen(false);
     }
   };
+
+  // Làm phẳng mảng dữ liệu từ kết quả phân trang
+  const groups = data ? data.pages.flatMap((page) => page.groups) : [];
 
   return (
     <Box
@@ -119,13 +101,23 @@ function ListStudentGroup() {
     >
       {contextHolder}
       <Grid container spacing={2}>
-        {dataRow.length > 0 ? (
-          dataRow.map((group, index) => (
+        {groups.length > 0 ? (
+          groups.map((group) => (
             <Grid item xs={12} sm={6} md={3} key={group.id}>
-              <Card variant="elevation">
+              <Card variant="elevation" className="item">
                 <CardContent>
-                  <Typography variant="h5" component="div">
-                    Nhóm số: {group.groupName}
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    sx={[
+                      (theme) => ({
+                        ...theme.applyStyles("light", {
+                          color: "#006ed3",
+                        }),
+                      }),
+                    ]}
+                  >
+                    <b> Nhóm số: {group.groupName}</b>
                   </Typography>
                   <Divider sx={{ my: 1, borderBottomWidth: 2 }} />
                   <Typography sx={{ mb: "10px" }} color="text.secondary">
@@ -139,7 +131,7 @@ function ListStudentGroup() {
                   <Button
                     disabled={group.status === "FULL"}
                     sx={{ mt: 2 }}
-                    onClick={(e) => handleJoinGroup(group)}
+                    onClick={() => handleJoinGroup(group)}
                     variant="contained"
                   >
                     Tham gia nhóm
@@ -159,11 +151,19 @@ function ListStudentGroup() {
             height={"auto"}
           >
             <EmptyData
-              text={isEmpty(dataRow) ? null : "Không có dữ liệu để hiển thị!"}
+              text={isEmpty(groups) ? null : "Không có dữ liệu để hiển thị!"}
             />
           </Box>
         )}
       </Grid>
+      {isFetchingNextPage && (
+        <Box display="flex" justifyContent="center" sx={{ my: 2 }}>
+          <CircularProgress size="30px" />
+          <Typography variant="h6" sx={{ ml: 1 }}>
+            Đang tải thêm dữ liệu...
+          </Typography>
+        </Box>
+      )}
       {isModalOpen && (
         <ConfirmModal
           open={isModalOpen}
@@ -171,7 +171,7 @@ function ListStudentGroup() {
           onConfirm={confirmJoinGroup}
           description={`Bạn có chắc chắn muốn tham gia nhóm ${selectedGroup?.groupName}?`}
           icon={<GroupAddIcon />}
-          loading={state.loadingIcon}
+          loading={loadingIcon}
         />
       )}
     </Box>
