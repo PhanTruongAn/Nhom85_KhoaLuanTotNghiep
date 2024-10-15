@@ -54,19 +54,23 @@ const handleDeletePermission = async (req, res) => {
 };
 
 const handleFindByDescription = async (req, res) => {
-  const { input } = req.query;
+  const { search } = req.query;
   try {
-    if (input) {
-      const data = await service.findByDescription(input);
+    if (search) {
+      const data = await service.findByDescription(search);
       return res.status(200).json(data);
     } else {
       return res.status(400).json({
-        status: 1,
+        status: -1,
         message: "Dữ liệu truyền vào không hợp lệ!",
       });
     }
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+    });
   }
 };
 const handleGetRolePermissions = async (req, res) => {

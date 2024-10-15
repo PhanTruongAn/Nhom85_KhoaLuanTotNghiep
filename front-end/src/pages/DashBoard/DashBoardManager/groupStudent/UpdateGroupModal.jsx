@@ -30,19 +30,57 @@ const UpdateGroupModal = ({
         sx={{
           width: 800,
           // bgcolor: "#001529",
-          // bgcolor: "background.paper",
+          bgcolor: "background.paper",
           borderRadius: 2,
           boxShadow: 24,
           p: 4,
         }}
       >
-        <Typography id="modal-title" variant="h5" component="h2" gutterBottom>
-          <strong>Tên nhóm:</strong> {groupSelect?.groupName}
+        <Typography
+          id="modal-title"
+          variant="h5"
+          component="h2"
+          gutterBottom
+          sx={[
+            (theme) => ({
+              fontWeight: "700",
+              ...theme.applyStyles("light", {
+                color: "#006ed3",
+              }),
+            }),
+          ]}
+        >
+          <strong>Tên nhóm: {groupSelect?.groupName}</strong>
         </Typography>
-        <Typography variant="h6" component="h2" gutterBottom>
-          <strong>Tên đề tài:</strong> {groupSelect?.topic?.title}
+        <Typography
+          variant="h6"
+          component="h2"
+          gutterBottom
+          sx={[
+            (theme) => ({
+              fontWeight: "700",
+              ...theme.applyStyles("light", {
+                color: "#006ed3",
+              }),
+            }),
+          ]}
+        >
+          <strong>Đề tài:</strong>{" "}
+          {groupSelect?.topic?.title || "Chưa có đề tài"}
         </Typography>
-        <Typography variant="h6" component="h2" gutterBottom>
+        <Typography
+          variant="h6"
+          component="h2"
+          gutterBottom
+          sx={[
+            (theme) => ({
+              fontWeight: "700",
+              ...theme.applyStyles("light", {
+                color: "#006ed3",
+              }),
+            }),
+          ]}
+        >
           <strong>Danh sách sinh viên:</strong>
         </Typography>
         <Box
@@ -55,6 +93,7 @@ const UpdateGroupModal = ({
           {groupSelect?.students?.map((student, index) => (
             <Card
               key={student.id}
+              variant="outlined"
               sx={{
                 padding: 2,
                 border: "1px solid #ddd",

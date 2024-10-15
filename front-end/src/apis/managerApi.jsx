@@ -16,8 +16,8 @@ const managerApi = {
   updateById: (data) => {
     return axiosClient.put(baseUrl + "/update-permission", data);
   },
-  findByDescription: (input) => {
-    return axiosClient.get(baseUrl + `/find-permission?input=${input}`);
+  findByDescription: (search) => {
+    return axiosClient.get(baseUrl + `/find-permission?search=${search}`);
   },
   getRolePermissions: (data) => {
     return axiosClient.post(`${baseUrl}/get-role-permissions`, data);

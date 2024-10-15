@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { Select, Table, Tag, message } from "antd";
-import { CheckOutlined } from "@ant-design/icons";
-import { useQuery } from "react-query";
+import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomButton from "../../../../components/Button/CustomButton";
 import EmptyData from "../../../../components/emptydata/EmptyData";
+import { useDebounce } from "@uidotdev/usehooks";
+import { isEmpty } from "lodash";
 function RolePermission() {
   const [state, setState] = useState({
     dataSource: [],
@@ -24,20 +25,18 @@ function RolePermission() {
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
+  const debouncedSearchTerm = useDebounce(state.searchValue, 500);
   // Fetch data permissions
   const fetchPermission = async () => {
     updateState({ loadingData: true });
     const res = await managerApi.getAllPermission();
     return res;
   };
-  const { data, isLoading, isFetching, refetch } = useQuery(
-    ["data1"],
+
+  const { data, isSuccess, refetch } = CustomHooks.useQuery(
+    ["data"],
     fetchPermission,
     {
-      keepPreviousData: true,
-      cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
-      refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
-      staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({ dataSource: res.data, loadingData: false });
@@ -88,31 +87,29 @@ function RolePermission() {
       searchValue: value,
     });
   };
-  const onClear = () => {
-    updateState({ searchValue: "", currentPage: 1 });
-    refetch();
-  };
-  const onSearch = () => {
-    if (state.searchValue === "") {
-      messageApi.warning("Hãy nhập thông tin tìm kiếm!");
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      onSearch(debouncedSearchTerm);
     } else {
-      let filterData = [];
-      filterData =
-        state.searchValue !== ""
-          ? state.dataSource.filter((item) =>
-              item.description
-                .toLowerCase()
-                .includes(state.searchValue.toLowerCase())
-            )
-          : data.data;
+      updateState({ dataSource: data?.data || [] });
+    }
+  }, [debouncedSearchTerm]);
+  const onSearch = () => {
+    let filterData = [];
+    filterData =
+      state.searchValue !== ""
+        ? state.dataSource.filter((item) =>
+            item.description
+              .toLowerCase()
+              .includes(state.searchValue.toLowerCase())
+          )
+        : data.data;
 
-      if (filterData.length > 0) {
-        messageApi.success("Tìm kiếm thành công!");
-        updateState({ dataSource: filterData });
-      } else {
-        messageApi.error("Không tìm thấy dữ liệu!");
-        updateState({ dataSource: data.data });
-      }
+    if (filterData.length > 0) {
+      updateState({ dataSource: filterData });
+    } else {
+      messageApi.error("Không tìm thấy dữ liệu!");
+      updateState({ dataSource: data.data });
     }
   };
   // Tạo đối tượng để gán quyền
@@ -224,7 +221,6 @@ function RolePermission() {
             onChange={onInputChange}
             loading={state.searchLoading}
             onSearch={onSearch}
-            onClear={onClear}
             value={state.searchValue}
           />
         </Box>
@@ -236,7 +232,7 @@ function RolePermission() {
           columns={columns}
           rowKey={"id"}
           // dataSource={state.dataSource} // Sử dụng dữ liệu đã lọc
-          dataSource={state.dataSource ? state.dataSource : data.data}
+          dataSource={data ? data.data : state.dataSource}
           pagination={{
             current: state.currentPage,
             pageSize: state.pageSize,
@@ -245,19 +241,20 @@ function RolePermission() {
           }}
           loading={state.loadingData}
           locale={{
-            emptyText:
-              state.dataSource.length === 0 ? (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  width={"100%"}
-                  height={"auto"}
-                >
-                  <EmptyData />
-                </Box>
-              ) : null,
+            emptyText: isEmpty(state.dataSource) ? (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                width={"100%"}
+                height={"auto"}
+              >
+                <EmptyData />
+              </Box>
+            ) : (
+              <EmptyData text="Không có dữ liệu!" />
+            ),
           }}
         />
       </Box>

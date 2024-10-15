@@ -1,5 +1,5 @@
 import db from "../models/index";
-import _ from "lodash";
+import _, { isEmpty } from "lodash";
 import permissionValid from "../validates/permissionValidate";
 const { Op } = require("sequelize");
 const {
@@ -142,10 +142,9 @@ const deletePermission = async (data) => {
   }
 };
 const findByDescription = async (input) => {
-  console.log("Check input>>>>>>>>>>>: ", input);
   if (!input) {
     return {
-      status: 1,
+      status: -1,
       message: "Hãy nhập thông tin cần tìm!",
     };
   }
@@ -157,7 +156,7 @@ const findByDescription = async (input) => {
     },
     attributes: ["id", "apiPath", "description", "method"],
   });
-  if (res) {
+  if (!isEmpty(res)) {
     return {
       status: 0,
       message: "Tìm kiếm thành công!",
@@ -165,7 +164,7 @@ const findByDescription = async (input) => {
     };
   } else {
     return {
-      status: 0,
+      status: -1,
       message: "Không tìm thấy dữ liệu nào trùng khớp!",
       data: [],
     };
@@ -304,7 +303,7 @@ const paginationGroupsStudent = async (page, limit) => {
     }
     const offset = (page - 1) * limit;
     const { count, rows } = await Group.findAndCountAll({
-      attributes: ["id", "groupName", "createdAt"],
+      attributes: ["id", "groupName", "numOfMembers"],
       offset: offset,
       limit: limit,
       include: [

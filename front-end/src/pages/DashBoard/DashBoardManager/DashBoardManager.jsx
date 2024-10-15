@@ -207,11 +207,10 @@ const DashBoardManager = () => {
               style={{
                 margin: "24px 16px",
                 color: themes ? "#fff" : "#000",
-                minHeight: 280,
-                height: "100%",
+                overflowY: "auto",
+                maxHeight: "590px",
                 background: themes ? "#152f40" : "#fff",
                 borderRadius: borderRadiusLG,
-                overflow: "auto",
               }}
             >
               <Outlet />

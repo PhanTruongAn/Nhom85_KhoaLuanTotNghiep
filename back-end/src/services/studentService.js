@@ -247,47 +247,35 @@ const deleteManyStudent = async (data) => {
   }
 };
 
-const findStudentsByUserName = async (page, limit, input) => {
-  try {
-    const offset = (page - 1) * limit;
-    const { count, rows } = await Student.findAndCountAll({
-      where: {
-        username: {
-          [Op.like]: `${input}%`,
+const findStudentsByUserNameOrFullName = async (search) => {
+  const results = await Student.findAll({
+    where: {
+      [Op.or]: [
+        {
+          username: {
+            [Op.like]: `%${search}%`,
+          },
         },
+        { fullName: { [Op.like]: `%${search}%` } },
+      ],
+    },
+    attributes: ["id", "username", "fullName", "gender", "email", "phone"],
+  });
+  if (!isEmpty(results)) {
+    return {
+      status: 0,
+      message: "Tìm kiếm thành công!",
+      data: {
+        students: results,
       },
-      attributes: ["id", "username", "fullName", "gender", "email", "phone"],
-      include: {
-        model: Role,
-        attributes: ["id", "name", "description"],
-      },
-      offset: offset,
-      limit: limit,
-    });
-    const totalPages = Math.ceil(count / limit);
-    if (rows.length > 0) {
-      return {
-        status: 0,
-        message: "Tìm kiếm thành công!",
-        data: {
-          totalRows: count,
-          totalPages: totalPages,
-          students: rows,
-        },
-      };
-    } else {
-      return {
-        status: 0,
-        message: "Không tìm thấy thông tin khớp dữ liệu nhập vào!",
-        data: null,
-      };
-    }
-  } catch (error) {
-    console.log(error);
+    };
+  } else {
     return {
       status: -1,
-      message: "Tìm kiếm thất bại!",
-      data: null,
+      message: "Không tìm thấy dữ liệu!",
+      data: {
+        students: null,
+      },
     };
   }
 };
@@ -923,7 +911,7 @@ module.exports = {
   updateStudent,
   deleteManyStudent,
   findStudentsByName,
-  findStudentsByUserName,
+  findStudentsByUserNameOrFullName,
   getStudentGetAllGroup,
   joinGroup,
   getInfoMyGroup,

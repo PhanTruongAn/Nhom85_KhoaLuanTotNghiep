@@ -70,19 +70,24 @@ const handleFindLecturersByName = async (req, res) => {
     });
   }
 };
-const handleFindLecturersByUserName = async (req, res) => {
-  const { page, limit, input } = req.query;
-  if (page && limit && input) {
-    const data = await lecturerService.findLecturersByUserName(
-      +page,
-      +limit,
-      input
-    );
-    return res.status(200).json(data);
-  } else {
+const handleFindLecturersByUserNameOrFullName = async (req, res) => {
+  try {
+    const { search } = req.query;
+    if (search) {
+      const data = await lecturerService.findLecturersByUserNameOrFullName(
+        search
+      );
+      return res.status(200).json(data);
+    } else {
+      return res.status(400).json({
+        status: -1,
+        message: "Dữ liệu truyền vào không hợp lệ!",
+      });
+    }
+  } catch (error) {
     return res.status(400).json({
-      status: 1,
-      message: "Dữ liệu truyền vào không hợp lệ!",
+      status: -1,
+      message: "Lỗi hệ thống!",
     });
   }
 };
@@ -107,6 +112,6 @@ module.exports = {
   handleUpdateLecturer,
   handleDeleteManyLecturer,
   handleFindLecturersByName,
-  handleFindLecturersByUserName,
+  handleFindLecturersByUserNameOrFullName,
   handleCreateTopics,
 };

@@ -19,11 +19,13 @@ import {
 import { Box, Typography, Button } from "@mui/material";
 import AddModal from "./addModal";
 import UpdateModal from "./updateModal";
-import { useQuery } from "react-query";
+import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
+import { useDebounce } from "@uidotdev/usehooks";
+import { isEmpty } from "lodash";
 const { Search } = Input;
 function ListPermission() {
   const [state, setState] = useState({
@@ -32,7 +34,6 @@ function ListPermission() {
     pageSize: 5,
     dataSource: [],
     loadingData: false,
-    searchValue: "",
     objectSelect: {},
     refreshButton: false,
   });
@@ -41,7 +42,7 @@ function ListPermission() {
   const [open, setOpen] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
-
+  const debouncedSearchTerm = useDebounce(searchValue, 500);
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
@@ -49,10 +50,7 @@ function ListPermission() {
   //Fetch All Permission
   const fetchPermissions = async () => {
     updateState({ loadingData: true });
-    const response =
-      state.searchValue !== ""
-        ? await managerApi.findByDescription(state.searchValue)
-        : await managerApi.getAllPermission();
+    const response = await managerApi.getAllPermission();
     if (response && response.status === 0) {
       updateState({
         dataSource: response.data,
@@ -66,15 +64,30 @@ function ListPermission() {
     }
     return response;
   };
+  const findByDescription = async () => {
+    const response = await managerApi.findByDescription(searchValue);
+    if (response && response.status === 0) {
+      updateState({
+        dataSource: response.data,
+        loadingData: false,
+        refreshButton: false,
+      });
+      messageApi.success(response.message);
+    } else {
+      updateState({ dataSource: [], loadingData: false, refreshButton: false });
+      messageApi.error(response.message);
+    }
+    return response;
+  };
   // useQuery to fetch data
-  const { data, isLoading, isFetching, refetch } = useQuery(
-    ["data"],
-    fetchPermissions,
-    {
-      keepPreviousData: true,
-      staleTime: 1000 * 60 * 5, // Dữ liệu sẽ được coi là mới trong 5 phút
-      cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
-      refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
+  const { data, isSuccess, refetch } = CustomHooks.useQuery(
+    ["data", debouncedSearchTerm],
+    () => {
+      if (debouncedSearchTerm) {
+        return findByDescription();
+      } else {
+        return fetchPermissions();
+      }
     }
   );
 
@@ -131,36 +144,9 @@ function ListPermission() {
   };
   const onInputChange = (e) => {
     const value = e.target.value;
-    updateState({
-      searchValue: value,
-    });
+    setSearchValue(value);
   };
-  const onClear = () => {
-    updateState({ searchValue: "", currentPage: 1 });
-    setTimeout(() => {
-      refetch();
-    }, 100);
-  };
-  const onSearch = async (value, _e, info) => {
-    if (value) {
-      updateState({ searchLoading: true, loadingData: true });
-      const res = await managerApi.findByDescription(value);
-      if (res && res.status === 0 && res.data) {
-        messageApi.success(res.message);
-        updateState({
-          currentPage: 1,
-          searchLoading: false,
-          dataSource: res.data,
-          loadingData: false,
-        });
-      } else {
-        updateState({ searchLoading: false, loadingData: false });
-        messageApi.error(res.message);
-      }
-    } else {
-      messageApi.error("Hãy nhập thông tin tìm kiếm!");
-    }
-  };
+
   const columns = [
     {
       title: "ID",
@@ -289,8 +275,6 @@ function ListPermission() {
               placeholder={"Tìm theo mô tả"}
               onChange={onInputChange}
               loading={state.searchLoading}
-              onSearch={onSearch}
-              onClear={onClear}
               value={state.searchValue}
             />
           </Box>
@@ -335,19 +319,20 @@ function ListPermission() {
         }}
         loading={state.loadingData}
         locale={{
-          emptyText:
-            state.dataSource.length === 0 ? (
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                width={"100%"}
-                height={"auto"}
-              >
-                <EmptyData />
-              </Box>
-            ) : null,
+          emptyText: isEmpty(state.dataSource) ? (
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              width={"100%"}
+              height={"auto"}
+            >
+              <EmptyData />
+            </Box>
+          ) : (
+            <EmptyData text="Không có dữ liệu!" />
+          ),
         }}
       />
 

@@ -6,8 +6,9 @@ import CreateGroupModal from "./CreateGroupModal"; // Nhập modal bạn đã t�
 import managerApi from "../../../../apis/managerApi";
 import { message, Space } from "antd";
 import CustomButton from "../../../../components/Button/CustomButton";
-import { useQuery } from "react-query";
+import CustomHooks from "../../../../utils/hooks";
 import EmptyData from "../../../../components/emptydata/EmptyData";
+import { isEmpty } from "lodash";
 const CreateGroupStudent = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [openModal, setOpenModal] = useState(false);
@@ -27,35 +28,23 @@ const CreateGroupStudent = () => {
   const estimateGroupStudent = (numberStudent) => {
     const member = state.memberGroup;
     const total = Math.ceil(numberStudent / member);
-    console.log(total);
+
     updateState({ estimateGroupStudent: total });
   };
   const fetchNumberStudent = async () => {
     const res = await managerApi.countStudent();
-    return res;
-  };
-  const { data, isLoading, isFetching, refetch } = useQuery(
-    ["count"],
-    fetchNumberStudent,
-    {
-      keepPreviousData: true,
-      cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
-      refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
-      staleTime: 1000,
-      onSuccess: (res) => {
-        console.log("Check res:", res);
-        if (res && res.status === 0) {
-          updateState({
-            numberOfStudent: res.data.totalStudent,
-            totalExistingGroups: res.data.totalGroup,
-          });
-          estimateGroupStudent(res.data.totalStudent);
-        } else {
-          messageApi.error(res.message);
-        }
-      },
+    if (res && res.status === 0) {
+      updateState({
+        numberOfStudent: res.data.totalStudent,
+        totalExistingGroups: res.data.totalGroup,
+      });
+      estimateGroupStudent(res.data.totalStudent);
+    } else {
+      messageApi.error(res.message);
     }
-  );
+    return res.data;
+  };
+  const { data } = CustomHooks.useQuery(["count"], fetchNumberStudent);
 
   const buildDataToSave = () => {
     if (isNaN(state.memberGroup) || isNaN(state.estimateGroupStudent)) {
@@ -115,7 +104,7 @@ const CreateGroupStudent = () => {
   return (
     <Box className="container-fluid" sx={{ padding: "20px" }}>
       {contextHolder}
-      {isFetching ? (
+      {isEmpty(data) ? (
         <Box
           sx={{
             display: "flex",
@@ -130,7 +119,15 @@ const CreateGroupStudent = () => {
         <Card sx={{ padding: "20px", borderRadius: "8px" }}>
           <Typography
             variant="h5"
-            sx={{ marginBottom: "20px", fontWeight: "bold" }}
+            sx={[
+              (theme) => ({
+                fontWeight: "bold",
+                marginBottom: "20px",
+                ...theme.applyStyles("light", {
+                  color: "#006ed3",
+                }),
+              }),
+            ]}
           >
             Tạo Nhóm Sinh Viên
           </Typography>
@@ -144,7 +141,7 @@ const CreateGroupStudent = () => {
                   readOnly: true,
                 },
               }}
-              value={state.numberOfStudent}
+              value={data ? data.totalStudent : state.numberOfStudent}
             />
             <TextField
               label="Số lượng nhóm hiện có"
@@ -155,14 +152,21 @@ const CreateGroupStudent = () => {
                   readOnly: true,
                 },
               }}
-              value={state.totalExistingGroups}
+              value={data ? data.totalGroup : state.totalExistingGroups}
             />
           </Box>
 
-          <Box sx={{ marginBottom: "20px", marginTop: "20px" }}>
+          <Box sx={{ marginBottom: "20px", marginTop: "30px" }}>
             <Typography
               variant="h5"
-              sx={{ padding: "10px", fontWeight: "bold" }}
+              sx={[
+                (theme) => ({
+                  fontWeight: "bold",
+                  ...theme.applyStyles("light", {
+                    color: "#006ed3",
+                  }),
+                }),
+              ]}
             >
               Tạo nhiều nhóm sinh viên:
             </Typography>
@@ -171,7 +175,6 @@ const CreateGroupStudent = () => {
               <TextField
                 label="Ước lượng số nhóm"
                 variant="standard"
-                color="success"
                 type="number"
                 slotProps={{
                   inputLabel: {

@@ -55,7 +55,6 @@ function ListTopic() {
     ["topics", state.currentPage, state.pageSize, debouncedSearchTerm],
     () => {
       if (debouncedSearchTerm) {
-        updateState({ loadingData: true });
         return handleFindTopic();
       } else {
         return studentApi.getAllTopics(state.currentPage, state.pageSize);
@@ -71,7 +70,7 @@ function ListTopic() {
           });
         } else {
           updateState({ topics: [], totalRows: 0, loadingData: false });
-          // messageApi.error(res.message);
+          messageApi.error(res.message);
         }
       },
       onError: (err) => {
@@ -204,6 +203,7 @@ function ListTopic() {
 
   const handlePageSizeChange = (newPageSize) => {
     updateState({
+      loadingData: true,
       pageSize: newPageSize,
       currentPage: 1,
     });
@@ -271,6 +271,7 @@ function ListTopic() {
           pageSize: state.pageSize,
           total: isSuccess ? topicsData.data.totalRows : state.totalRows,
           onChange: onPageChange,
+          responsive: true,
         }}
         loading={state.loadingData}
         locale={{

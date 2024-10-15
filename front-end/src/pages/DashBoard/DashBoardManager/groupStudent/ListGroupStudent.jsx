@@ -11,7 +11,7 @@ import CreateGroupModal from "./CreateGroupModal";
 import UpdateGroupModal from "./UpdateGroupModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
-import { useQuery } from "react-query";
+import CustomHooks from "../../../../utils/hooks";
 import { formatDate } from "../../../../utils/formatDate";
 const { Search } = Input;
 const { Option } = Select;
@@ -24,6 +24,7 @@ const ListGroupStudent = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [pages, setPages] = useState([1]);
   const [state, setState] = useState({
     searchLoading: false,
     currentPage: 1,
@@ -41,22 +42,15 @@ const ListGroupStudent = () => {
   };
 
   // useQuery to fetch data
-  const { data, isLoading, isFetching, refetch } = useQuery(
-    ["groupStudent", state.currentPage],
+  const { data: groupsData, refetch } = CustomHooks.useQuery(
+    ["groupStudent", state.currentPage, state.pageSize],
     () => managerApi.getGroupsStudent(state.currentPage, state.pageSize),
     {
-      keepPreviousData: true,
-      cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
-      refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
-      staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({
             refreshButton: false,
-            dataSource: res.data.groupStudent.map((group) => ({
-              ...group,
-              topicName: group.topic?.title || "Chưa có đề tài", // Lấy tên đề tài
-            })),
+            dataSource: res.data.groupStudent,
             totalRows: res.data.totalRows,
             loadingData: false,
           });
@@ -102,7 +96,13 @@ const ListGroupStudent = () => {
       messageApi.error(res.message);
     }
   };
-
+  const handlePageSizeChange = (newPageSize) => {
+    updateState({
+      loadingData: true,
+      pageSize: newPageSize,
+      currentPage: 1,
+    });
+  };
   const handleDeleteMany = () => {
     message.success(`Deleted groups: ${selectedRowKeys.join(", ")}`);
   };
@@ -117,8 +117,13 @@ const ListGroupStudent = () => {
     refetch();
   };
   const onChangePage = (pageNumber) => {
+    if (!pages.includes(pageNumber)) {
+      pages.push(pageNumber);
+      updateState({ loadingData: true });
+    }
     updateState({ currentPage: pageNumber });
   };
+
   const columns = [
     {
       title: "ID",
@@ -126,24 +131,23 @@ const ListGroupStudent = () => {
       key: "id",
     },
     {
-      title: "Group Name",
+      title: "Tên nhóm",
       dataIndex: "groupName",
       key: "groupName",
       sorter: (a, b) => a.groupName.localeCompare(b.groupName),
     },
     {
       title: "Tên Đề Tài", // Thay đổi tiêu đề cột
-      dataIndex: "topicName", // Sử dụng thuộc tính mới cho tên đề tài
       key: "topicName",
+      render: (record) => record.topic?.title || "Chưa có đề tài",
     },
     {
-      title: "Created At",
-      dataIndex: "createdAt",
+      title: "Số lượng thành viên",
       key: "createdAt",
-      render: (text) => formatDate(text),
+      render: (record) => record.students.length + "/" + record.numOfMembers,
     },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "action",
       render: (_, record) => (
         <>
@@ -269,16 +273,18 @@ const ListGroupStudent = () => {
           selectedRowKeys,
           onChange: setSelectedRowKeys,
         }}
-        style={{ overflow: "auto" }}
         bordered
         columns={columns}
-        dataSource={state.dataSource}
+        dataSource={
+          groupsData ? groupsData.data.groupStudent : state.dataSource
+        }
         rowKey="id"
-        scroll={{ x: "max-content" }}
-        loading={isFetching}
+        loading={state.loadingData}
         pagination={{
-          pageSizeOptions: [state.pageSize],
-          total: state.totalRows,
+          showSizeChanger: true,
+          pageSizeOptions: ["5", "10", "20"],
+          onShowSizeChange: (current, size) => handlePageSizeChange(size),
+          total: groupsData ? groupsData.data.totalRows : state.totalRows,
           current: state.currentPage,
           pageSize: state.pageSize,
           onChange: onChangePage,

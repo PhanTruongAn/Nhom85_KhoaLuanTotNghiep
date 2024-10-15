@@ -15,9 +15,9 @@ import { useNavigate } from "react-router-dom";
 import UpdateModal from "../../../../components/Dashboard/updateModal";
 import CreateModal from "../../../../components/Dashboard/createModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-import { useQuery } from "react-query";
+import CustomHooks from "../../../../utils/hooks";
 import CustomButton from "../../../../components/Button/CustomButton";
-
+import { useDebounce } from "@uidotdev/usehooks";
 const { Option } = Select;
 const { Search } = Input;
 
@@ -35,18 +35,24 @@ function ListStudent() {
   const [dataSource, setDataSource] = useState([]);
   const [userSelect, setUserSelect] = useState({});
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const debouncedSearchTerm = useDebounce(searchValue, 500);
+
   const [state, setState] = useState({
     searchLoading: false,
   });
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
-  const { data, isLoading, isFetching, refetch } = useQuery(
-    ["students", currentPage],
-    () =>
-      searchValue
-        ? studentApi.findByUserName(currentPage, limitUser, searchValue)
-        : studentApi.getAll(currentPage, limitUser),
+  const { data, isLoading, isFetching, refetch } = CustomHooks.useQuery(
+    ["students", currentPage, debouncedSearchTerm, limitUser],
+    () => {
+      if (debouncedSearchTerm) {
+        return handleFindStudent();
+      } else {
+        return studentApi.getAll(currentPage, limitUser);
+      }
+    },
+
     {
       keepPreviousData: true,
       cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
@@ -76,13 +82,27 @@ function ListStudent() {
   const onChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+  const handleFindStudent = async () => {
+    const res = await studentApi.findByUserNameOrFullName(searchValue);
+    return res;
+  };
   const handleCloseModal = () => {
     setOpen(false);
-    if (currentPage === totalPages && dataSource.length === 5) {
+    if (
+      currentPage === totalPages &&
+      dataSource.length === (limitUser == 5 ? 5 : limitUser == 10 ? 10 : 20)
+    ) {
       setCurrentPage(currentPage + 1);
-    } else if (currentPage === totalPages && dataSource.length < 5) {
+    } else if (
+      currentPage === totalPages &&
+      dataSource.length < (limitUser == 5 ? 5 : limitUser == 10 ? 10 : 20)
+    ) {
       setCurrentPage(currentPage);
-    } else if (currentPage < totalPages && totalRows % 10 !== 0) {
+    } else if (
+      currentPage < totalPages &&
+      data.data.totalRows %
+        (limitUser == 5 ? 5 : limitUser == 10 ? 10 : 20 !== 0)
+    ) {
       setCurrentPage(totalPages);
     } else {
       setCurrentPage(totalPages + 1);
@@ -149,26 +169,9 @@ function ListStudent() {
       messageApi.error(res.message);
     }
   };
-  const onSearch = async (value, _e, info) => {
-    if (value) {
-      updateState({ searchLoading: true });
-      const res = await studentApi.findByUserName(1, limitUser, value);
-      if (res && res.status === 0 && res.data) {
-        setCurrentPage(1);
-        messageApi.success(res.message);
-        setDataSource(res.data.students);
-        setTotalRows(res.data.totalRows);
-        setTotalPages(res.data.totalPages);
-        updateState({ searchLoading: false });
-      } else {
-        updateState({ searchLoading: false });
-        messageApi.error(res.message);
-      }
-    } else {
-      messageApi.error("Hãy nhập dữ liệu tìm kiếm!");
-    }
+  const handlePageSizeChange = (newPageSize) => {
+    setLimitUser(newPageSize);
   };
-
   const columns = [
     {
       title: "ID",
@@ -246,15 +249,7 @@ function ListStudent() {
       ),
     },
   ];
-  const itemRender = (_, type, originalElement) => {
-    if (type === "prev") {
-      return <Button type="link">Previous</Button>;
-    }
-    if (type === "next") {
-      return <Button type="link">Next</Button>;
-    }
-    return originalElement;
-  };
+
   return (
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
@@ -266,20 +261,12 @@ function ListStudent() {
           alignItems: "center",
         }}
       >
-        <Space>
-          <Search
-            placeholder="Nhập thông tin"
-            onSearch={onSearch}
-            onChange={(e) => setSearchValue(e.target.value)}
-            enterButton
-            loading={state.searchLoading}
-          />
-
-          <Select placeholder="Tìm kiếm theo">
-            <Option value="fullName">Tên đầy đủ</Option>
-            <Option value="username">Mã sinh viên</Option>
-          </Select>
-        </Space>
+        <Search
+          placeholder="Tìm theo mã sinh viên hoặc họ tên sinh viên"
+          onChange={(e) => setSearchValue(e.target.value)}
+          enterButton
+          loading={state.searchLoading}
+        />
       </Box>
       <Box sx={{ float: "right" }}>
         <Space>
@@ -340,12 +327,14 @@ function ListStudent() {
           dataSource={dataSource}
           bordered
           pagination={{
+            showSizeChanger: true,
+            pageSizeOptions: ["5", "10", "20"],
+            onShowSizeChange: (current, size) => handlePageSizeChange(size),
             total: totalRows,
             current: currentPage,
             pageSize: limitUser,
             onChange: onChange,
             showQuickJumper: true,
-            itemRender: itemRender,
             responsive: true,
           }}
           columns={columns}

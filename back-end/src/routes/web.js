@@ -42,8 +42,8 @@ const initWebRoutes = (app) => {
     studentController.handleDeleteManyStudent
   );
   router.get(
-    "/student/find-by-username",
-    studentController.handleFindStudentsByUserName
+    "/student/find-student",
+    studentController.handleFindStudentsByUserNameOrFullName
   );
   router.get(
     "/student/find-by-name",
@@ -98,8 +98,8 @@ const initWebRoutes = (app) => {
     lecturerController.handleDeleteManyLecturer
   );
   router.get(
-    "/lecturer/find-by-username",
-    lecturerController.handleFindLecturersByUserName
+    "/lecturer/find-lecturer",
+    lecturerController.handleFindLecturersByUserNameOrFullName
   );
   router.get(
     "/lecturer/find-by-name",

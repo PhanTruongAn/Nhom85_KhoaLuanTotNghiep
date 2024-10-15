@@ -88,7 +88,19 @@ function ManagerHome() {
           </Col>
           <Box sx={{ flex: 1, textAlign: "left", marginLeft: "-50px" }}>
             <Box sx={{ marginTop: "5px" }}>
-              <Typography variant="h5" component="h2" gutterBottom>
+              <Typography
+                variant="h5"
+                component="h2"
+                gutterBottom
+                sx={[
+                  (theme) => ({
+                    fontWeight: "700",
+                    ...theme.applyStyles("light", {
+                      color: "#006ed3",
+                    }),
+                  }),
+                ]}
+              >
                 Thông tin cá nhân
               </Typography>
             </Box>
@@ -118,7 +130,21 @@ function ManagerHome() {
         }}
       >
         <form style={{ padding: 10 }}>
-          <h5>Cập nhật thông tin</h5>
+          <Typography
+            variant="h5"
+            sx={[
+              (theme) => ({
+                textAlign: "center",
+                margin: "10px",
+                fontWeight: "700",
+                ...theme.applyStyles("light", {
+                  color: "#006ed3",
+                }),
+              }),
+            ]}
+          >
+            Cập nhật thông tin
+          </Typography>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
             <Box
               className="col-6"

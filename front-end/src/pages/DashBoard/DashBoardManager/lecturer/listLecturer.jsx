@@ -21,8 +21,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UpdateModal from "../../../../components/Dashboard/updateModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-import { useQuery } from "react-query";
+import CustomHooks from "../../../../utils/hooks";
 import CustomButton from "../../../../components/Button/CustomButton";
+import { useDebounce } from "@uidotdev/usehooks";
 const { Option } = Select;
 const { Search } = Input;
 function ListLecturer() {
@@ -40,18 +41,23 @@ function ListLecturer() {
   const [userSelect, setUserSelect] = useState({});
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [listRole, setListRole] = useState();
+  const debouncedSearchTerm = useDebounce(searchValue, 500);
   const [state, setState] = useState({
     searchLoading: false,
   });
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
-  const { data, isLoading, isFetching, refetch } = useQuery(
-    ["lecturers", currentPage],
-    () =>
-      searchValue
-        ? lecturerApi.findByUserName(currentPage, limitUser, searchValue)
-        : lecturerApi.getAll(currentPage, limitUser),
+  const { data, isLoading, isFetching, refetch } = CustomHooks.useQuery(
+    ["lecturers", currentPage, limitUser, debouncedSearchTerm],
+    () => {
+      if (debouncedSearchTerm) {
+        return handleFindLecturer();
+      } else {
+        return lecturerApi.getAll(currentPage, limitUser);
+      }
+    },
+
     {
       keepPreviousData: true,
       cacheTime: 1000 * 60 * 10,
@@ -74,6 +80,10 @@ function ListLecturer() {
       },
     }
   );
+  const handleFindLecturer = async () => {
+    const res = await lecturerApi.findLecturer(searchValue);
+    return res;
+  };
   useEffect(() => {
     getRoles();
   }, []);
@@ -89,11 +99,21 @@ function ListLecturer() {
   };
   const handleCloseModal = () => {
     setOpen(false);
-    if (currentPage === totalPages && dataSource.length === 5) {
+    if (
+      currentPage === totalPages &&
+      dataSource.length === (limitUser == 5 ? 5 : limitUser == 10 ? 10 : 20)
+    ) {
       setCurrentPage(currentPage + 1);
-    } else if (currentPage === totalPages && dataSource.length < 5) {
+    } else if (
+      currentPage === totalPages &&
+      dataSource.length < (limitUser == 5 ? 5 : limitUser == 10 ? 10 : 20)
+    ) {
       setCurrentPage(currentPage);
-    } else if (currentPage < totalPages && totalRows % 10 !== 0) {
+    } else if (
+      currentPage < totalPages &&
+      data.data.totalRows %
+        (limitUser == 5 ? 5 : limitUser == 10 ? 10 : 20 !== 0)
+    ) {
       setCurrentPage(totalPages);
     } else {
       setCurrentPage(totalPages + 1);
@@ -109,26 +129,6 @@ function ListLecturer() {
 
   const onChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-  };
-
-  const onSearch = async (value, _e, info) => {
-    if (value) {
-      updateState({ searchLoading: true });
-      const res = await lecturerApi.findByUserName(1, limitUser, value);
-      if (res && res.status === 0 && res.data) {
-        setCurrentPage(1);
-        messageApi.success(res.message);
-        setDataSource(res.data.lecturers);
-        setTotalRows(res.data.totalRows);
-        setTotalPages(res.data.totalPages);
-        updateState({ searchLoading: false });
-      } else {
-        updateState({ searchLoading: false });
-        messageApi.error(res.message);
-      }
-    } else {
-      messageApi.error("Hãy nhập dữ liệu tìm kiếm!");
-    }
   };
 
   const showUpdateModal = (record) => {
@@ -174,6 +174,9 @@ function ListLecturer() {
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
+  const handlePageSizeChange = (newPageSize) => {
+    setLimitUser(newPageSize);
+  };
   const rowSelection = {
     // selectedRowKeys,
     onChange: onSelectChange,
@@ -183,15 +186,7 @@ function ListLecturer() {
       Table.SELECTION_NONE,
     ],
   };
-  const itemRender = (_, type, originalElement) => {
-    if (type === "prev") {
-      return <Button type="link">Previous</Button>;
-    }
-    if (type === "next") {
-      return <Button type="link">Next</Button>;
-    }
-    return originalElement;
-  };
+
   const columns = [
     {
       title: "ID",
@@ -283,23 +278,12 @@ function ListLecturer() {
           alignItems: "flex-start", // Căn chỉnh các phần tử
         }}
       >
-        <Space>
-          <Search
-            placeholder="Nhập thông tin"
-            onSearch={onSearch}
-            onChange={(e) => setSearchValue(e.target.value)}
-            enterButton
-            loading={state.searchLoading}
-          />
-
-          <Select
-            placeholder="Tìm kiếm theo"
-            style={{ width: "100%", marginTop: { xs: "8px", sm: "0" } }}
-          >
-            <Option value="fullName">Tên đầy đủ</Option>
-            <Option value="username">Mã giảng viên</Option>
-          </Select>
-        </Space>
+        <Search
+          placeholder="Tìm theo mã giảng viên hoặc tên đầy đủ"
+          onChange={(e) => setSearchValue(e.target.value)}
+          enterButton
+          loading={state.searchLoading}
+        />
       </Box>
       <Box sx={{ float: "right" }}>
         <Space>
@@ -359,12 +343,14 @@ function ListLecturer() {
           dataSource={dataSource}
           bordered
           pagination={{
+            showSizeChanger: true,
+            pageSizeOptions: ["5", "10", "20"],
+            onShowSizeChange: (current, size) => handlePageSizeChange(size),
             total: totalRows,
             current: currentPage,
             pageSize: limitUser,
             onChange: onChange,
             showQuickJumper: true,
-            itemRender: itemRender,
             responsive: true,
           }}
           columns={columns}
