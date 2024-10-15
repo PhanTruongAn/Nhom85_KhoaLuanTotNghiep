@@ -16,21 +16,35 @@
       }
     }
 
-    // Thêm CSS cho dropdown
-    .ant-dropdown {
-      min-width: 300px; // Đặt chiều rộng tối thiểu cho dropdown
-      max-width: calc(
-        100vw - 40px
-      ); // Đảm bảo không vượt quá chiều rộng màn hình
-      overflow: auto; // Thêm cuộn nếu nội dung quá lớn
-      z-index: 1000; // Đảm bảo nó nằm trên các phần tử khác
+    // Responsive adjustments for the header
+    @media (max-width: 768px) {
+      padding: 10px 10px;
+      flex-direction: column;
+      align-items: flex-start;
+
+      .bell-icon {
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .ant-dropdown {
+    min-width: 300px;
+    max-width: calc(100vw - 40px);
+    overflow: auto;
+    z-index: 1000;
+
+    // Responsive dropdown adjustments
+    @media (max-width: 768px) {
+      min-width: 250px; // Reduce min-width for smaller screens
+      max-width: calc(100vw - 20px); // Adjust for smaller screen widths
     }
   }
 
   .notification-dropdown {
     position: absolute;
-    right: 0; // Đặt vị trí bên phải
-    top: 60px; // Đặt chiều cao dựa trên tiêu đề
+    right: 0;
+    top: 60px;
     background-color: #fff;
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -50,6 +64,13 @@
       &:hover {
         background-color: rgba(0, 104, 209, 0.1);
       }
+    }
+
+    // Adjust the dropdown width and positioning for smaller screens
+    @media (max-width: 768px) {
+      width: calc(100vw - 40px);
+      right: 10px; // Center it more on smaller screens
+      top: 50px; // Adjust based on available space
     }
   }
 }
