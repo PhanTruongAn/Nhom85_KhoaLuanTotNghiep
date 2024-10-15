@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { message } from "antd";
-import { Box, Button, TextField, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import "./ChangePassword.scss";
 import { useSelector } from "react-redux";
 import lecturerApi from "../../apis/lecturerApi";
@@ -71,16 +77,27 @@ function ChangePassword() {
     >
       {contextHolder}
       <Card
-        variant="outlined"
+        variant="elevation"
         sx={{
           width: "40%",
           padding: "20px",
           borderRadius: "12px",
         }}
       >
-        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+        <Typography
+          variant="h4"
+          sx={[
+            (theme) => ({
+              textAlign: "center",
+              marginBottom: "20px",
+              ...theme.applyStyles("light", {
+                color: "#006ed3",
+              }),
+            }),
+          ]}
+        >
           Đổi Mật Khẩu
-        </h2>
+        </Typography>
         <Box component="form" noValidate autoComplete="off">
           <TextField
             fullWidth
