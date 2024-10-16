@@ -185,13 +185,13 @@ const DashBoardManager = () => {
                   size="large"
                   icon={themes ? <SunOutlined /> : <MoonOutlined />}
                   onClick={changeTheme}
-                  style={{ marginRight: "10px", marginTop: "-3px" }}
+                  style={{ marginRight: "10px", marginTop: "10px" }}
                 />
                 <Dropdown overlay={<ListNotification />} trigger={["click"]}>
                   <Button
                     className="bell-icon"
                     size="large"
-                    style={{ marginRight: "30px" }}
+                    style={{ marginRight: "30px", marginTop: "10px" }}
                     icon={<BellOutlined />}
                   >
                     {notifications > 0 && (
