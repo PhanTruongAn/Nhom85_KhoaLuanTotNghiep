@@ -95,7 +95,7 @@ export default function Login() {
   return (
     <SignInContainer direction="column" justifyContent="space-between">
       {contextHolder}
-      <Card variant="outlined">
+      <Card variant="outlined" sx={{ marginBottom: "110px" }}>
         <Box>
           <img style={{ width: "100px", height: "auto" }} src={logo} />
         </Box>
