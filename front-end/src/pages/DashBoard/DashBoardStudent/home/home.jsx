@@ -166,7 +166,7 @@ function StudentHome() {
                       }),
                     ]}
                   >
-                    <b>Thông tin nhóm đề tài</b>
+                    <b>Thông tin nhóm</b>
                   </Typography>
                 </Box>
                 <hr />

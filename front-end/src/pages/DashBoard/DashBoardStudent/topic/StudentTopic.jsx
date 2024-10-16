@@ -52,10 +52,11 @@ const ProjectDetails = () => {
   const { data: topicData, isLoading: isLoadingTopic } = CustomHooks.useQuery(
     ["my-topic"],
     async () => {
-      const res = await studentApi.getMyTopic(group?.topicId);
+      const res = await studentApi.getMyTopic(group.topicId);
       return res;
     },
     {
+      enabled: !isEmpty(group),
       onSuccess: (res) => {
         if (res && res.status === 0) {
           dispatch(setMyTopic(res.data));

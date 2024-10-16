@@ -189,7 +189,7 @@ const Criteria = () => {
           ))}
         </Select>
       </Box>
-      <Card
+      {/* <Card
         title={criteriaData[selectedCriteria].title}
         style={{ overflow: "hidden" }}
       >
@@ -200,7 +200,14 @@ const Criteria = () => {
           pagination={false}
           scroll={{ y: 340 }}
         />
-      </Card>
+      </Card> */}
+      <Table
+        dataSource={criteriaData[selectedCriteria].criteria}
+        columns={columns}
+        rowKey="id"
+        pagination={false}
+        scroll={{ y: 580 }}
+      />
     </Box>
   );
 };

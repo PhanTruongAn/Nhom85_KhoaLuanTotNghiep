@@ -8,7 +8,15 @@ import {
   BellOutlined,
 } from "@ant-design/icons";
 import "./DashBoardStudent.scss";
-import { Button, Layout, Menu, Dropdown, ConfigProvider, Modal } from "antd";
+import {
+  Button,
+  Layout,
+  Menu,
+  Dropdown,
+  ConfigProvider,
+  Modal,
+  Drawer,
+} from "antd"; // Thêm Drawer
 import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
@@ -35,6 +43,7 @@ const DashBoardStudent = () => {
   });
   const [modal, contextHolder] = Modal.useModal();
   const [collapsed, setCollapsed] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false); // State cho Drawer (modal của Sider)
   const [notifications, setNotifications] = useState(5);
   const [openKeys, setOpenKeys] = useState([]); // State để theo dõi menu con đang mở
 
@@ -67,6 +76,7 @@ const DashBoardStudent = () => {
     if (key === "log-out") {
       confirmLogout();
     } else {
+      setDrawerVisible(false);
       navigate(key);
     }
   };
@@ -86,13 +96,25 @@ const DashBoardStudent = () => {
     localStorage.setItem("themeDark", newTheme);
   };
 
+  // Mở Drawer (Sider dưới dạng modal)
+  const openDrawer = () => {
+    setDrawerVisible(true);
+  };
+
+  // Đóng Drawer
+  const closeDrawer = () => {
+    setDrawerVisible(false);
+  };
+
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       {contextHolder}
       <ThemeProvider theme={themes ? themeDark : themeLight}>
         <CssBaseline />
-        <Layout className="container-fluid p-0 admin-container">
+        <Layout className="container-fluid p-0 student-container">
+          {/* Sider cho màn hình lớn hơn 768px */}
           <Sider
+            className="ant-sider-desktop"
             trigger={null}
             collapsible
             collapsed={collapsed}
@@ -132,7 +154,7 @@ const DashBoardStudent = () => {
                 window.location.pathname || "/dashboard/home"
               }
               openKeys={openKeys}
-              onOpenChange={handleOpenChange} // Thêm hàm này để quản lý trạng thái mở
+              onOpenChange={handleOpenChange} // Quản lý trạng thái mở
               mode="inline"
               theme={themes ? "dark" : "light"}
               items={items}
@@ -142,8 +164,42 @@ const DashBoardStudent = () => {
               }}
             />
           </Sider>
+
+          {/* Drawer cho màn hình nhỏ hơn 768px */}
+          <Drawer
+            title="Menu"
+            placement="left"
+            onClose={closeDrawer}
+            open={drawerVisible}
+            className="ant-sider-mobile custom-drawer"
+            bodyStyle={{ padding: 0 }}
+          >
+            <div className="drawer-body">
+              <Menu
+                selectedKeys={
+                  window.location.pathname.split("/dashboard/")[1] ||
+                  window.location.pathname
+                }
+                onClick={(e) => {
+                  handlePath(e);
+                  closeDrawer(); // Đóng Drawer khi chọn Tab
+                }}
+                defaultSelectedKeys={
+                  window.location.pathname || "/dashboard/home"
+                }
+                openKeys={openKeys}
+                onOpenChange={handleOpenChange}
+                mode="inline"
+                theme={themes ? "dark" : "light"}
+                items={items}
+                className="custom-menu"
+              />
+            </div>
+          </Drawer>
+
           <Layout className="container-fluid p-0">
             <Header
+              className="header-content"
               style={{
                 padding: 0,
                 backgroundColor: themes ? "#001529" : "#ffffff",
@@ -164,12 +220,15 @@ const DashBoardStudent = () => {
                     />
                   )
                 }
-                onClick={() => setCollapsed(!collapsed)}
+                onClick={() => {
+                  if (window.innerWidth < 769) {
+                    openDrawer(); // Mở Drawer cho màn hình nhỏ
+                  } else {
+                    setCollapsed(!collapsed); // Toggle Sider cho màn hình lớn
+                  }
+                }}
               />
-              <div className="student-container" style={{ float: "right" }}>
-                <span style={{ marginRight: "10px" }}>
-                  Chào mừng quay lại <strong>{user.fullName}</strong>
-                </span>
+              <div className="option" style={{ float: "right" }}>
                 <Button
                   className={`btn-logOut ${
                     themes ? "dark-theme" : "light-theme"
@@ -183,9 +242,6 @@ const DashBoardStudent = () => {
                   <Button
                     className="bell-icon"
                     size="large"
-                    style={{
-                      marginRight: "30px",
-                    }}
                     icon={<BellOutlined />}
                   >
                     {notifications > 0 && (
@@ -203,8 +259,8 @@ const DashBoardStudent = () => {
                 margin: "24px 16px",
                 color: themes ? "#fff" : "#000",
                 background: themes ? "#152f40" : "#fff",
-                overflowY: "auto",
-                maxHeight: "590px",
+                overflow: "auto",
+                height: "100%",
               }}
             >
               <Outlet />

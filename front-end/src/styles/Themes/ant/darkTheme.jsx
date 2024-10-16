@@ -1,3 +1,5 @@
+import { Drawer } from "antd";
+
 const darkTheme = {
   token: {
     // colorPrimary: "#1DA57A",
@@ -20,6 +22,11 @@ const darkTheme = {
       Panel: {
         colorText: "#fff",
       },
+    },
+    Drawer: {
+      colorText: "#fff",
+      colorIcon: "#fff",
+      colorBgElevated: "#001529",
     },
   },
 };

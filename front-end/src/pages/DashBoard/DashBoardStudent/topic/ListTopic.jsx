@@ -273,6 +273,7 @@ function ListTopic() {
           onChange: onPageChange,
           responsive: true,
         }}
+        scroll={{ x: 500 }}
         loading={state.loadingData}
         locale={{
           emptyText: isEmpty(state.topics) ? (

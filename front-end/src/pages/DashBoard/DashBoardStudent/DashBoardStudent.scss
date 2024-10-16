@@ -1,76 +1,57 @@
 .student-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  // height: 100vh;
+
   .header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    padding: 10px 20px;
-    font-weight: 600;
-
-    .bell-icon {
-      transition: background-color 0.3s, color 0.3s;
-
-      &:hover {
-        background-color: rgba(0, 104, 209, 0.2);
-        color: #0068d1;
-      }
+    .option {
+      margin-right: 20px;
     }
+    .collapsed-button {
+      margin-left: 10px;
+    }
+  }
+  .custom-drawer {
+    // background-color: #001529;
 
-    // Responsive adjustments for the header
-    @media (max-width: 768px) {
-      padding: 10px 10px;
+    .drawer-body {
+      display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      height: 100%; // Đảm bảo body Drawer chiếm hết chiều cao
+    }
 
-      .bell-icon {
-        margin-top: 10px;
-      }
+    .custom-menu {
+      flex-grow: 1; // Menu chiếm toàn bộ chiều cao còn lại của Drawer
+      height: 100%; // Đảm bảo Menu chiếm hết body
+      overflow: auto; // Để Menu có thể cuộn nếu nội dung quá dài
     }
   }
 
-  .ant-dropdown {
-    min-width: 300px;
-    max-width: calc(100vw - 40px);
-    overflow: auto;
-    z-index: 1000;
+  // Khi màn hình lớn
+  @media (min-width: 769px) {
+    .ant-sider-desktop {
+      display: block; // Hiển thị Sider trên màn hình lớn
+    }
 
-    // Responsive dropdown adjustments
-    @media (max-width: 768px) {
-      min-width: 250px; // Reduce min-width for smaller screens
-      max-width: calc(100vw - 20px); // Adjust for smaller screen widths
+    .ant-sider-mobile {
+      display: none; // Ẩn Drawer trên màn hình lớn
     }
   }
 
-  .notification-dropdown {
-    position: absolute;
-    right: 0;
-    top: 60px;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    width: 600px;
-    padding: 10px;
-    display: none;
-
-    &.show {
-      display: block;
+  // Khi màn hình nhỏ hơn 768px
+  @media (max-width: 768px) {
+    .ant-sider-desktop {
+      display: none; // Ẩn Sider trên màn hình nhỏ
     }
 
-    .notification-item {
-      padding: 8px 12px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-
-      &:hover {
-        background-color: rgba(0, 104, 209, 0.1);
-      }
+    .ant-sider-mobile {
+      display: block; // Hiển thị Drawer (modal)
     }
 
-    // Adjust the dropdown width and positioning for smaller screens
-    @media (max-width: 768px) {
-      width: calc(100vw - 40px);
-      right: 10px; // Center it more on smaller screens
-      top: 50px; // Adjust based on available space
+    .ant-layout-content {
+      flex: 1;
+      margin-left: 0;
     }
   }
 }
