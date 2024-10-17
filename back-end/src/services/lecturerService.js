@@ -361,7 +361,9 @@ const createTopics = async (data) => {
     };
   }
 };
+// const getMyTopics = async ()=>{
 
+// }
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,

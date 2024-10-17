@@ -54,6 +54,9 @@ module.exports = {
       endReportDate: {
         type: Sequelize.DATE,
       },
+      startReportDate: {
+        type: Sequelize.DATE,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

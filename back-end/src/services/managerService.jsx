@@ -1,6 +1,7 @@
 import db from "../models/index";
 import _, { isEmpty } from "lodash";
 import permissionValid from "../validates/permissionValidate";
+import { isFieldDate, isValidSemester } from "../validates/termValidate";
 const { Op } = require("sequelize");
 const {
   Student,
@@ -8,6 +9,7 @@ const {
   Group,
   RolePermission,
   Topic,
+  Term,
 } = require("../models");
 
 const paginationPermission = async (page, limit) => {
@@ -393,6 +395,121 @@ const deleteGroupStudent = async (data) => {
     };
   }
 };
+const createNewTerm = async (data) => {
+  if (!data) {
+    return {
+      status: -1,
+      message: "Dữ liệu học kì mới không có!",
+    };
+  }
+  const {
+    name,
+    startDate,
+    endDate,
+    endChooseGroupDate,
+    endChooseTopicDate,
+    endDiscussionDate,
+    endPublicResultDate,
+    endPublicTopicDate,
+    endReportDate,
+    startChooseGroupDate,
+    startChooseTopicDate,
+    startDiscussionDate,
+    startPublicResultDate,
+    startPublicTopicDate,
+    startReportDate,
+  } = data;
+  const fieldsToCheck = [
+    startDate,
+    endDate,
+    endChooseGroupDate,
+    endChooseTopicDate,
+    endDiscussionDate,
+    endPublicResultDate,
+    endPublicTopicDate,
+    endReportDate,
+    startChooseGroupDate,
+    startChooseTopicDate,
+    startDiscussionDate,
+    startPublicResultDate,
+    startPublicTopicDate,
+    startReportDate,
+  ];
+  const fieldNames = {
+    startDate: "Ngày bắt đầu",
+    endDate: "Ngày kết thúc",
+    startChooseGroupDate: "Ngày bắt đầu chọn nhóm",
+    endChooseGroupDate: "Ngày kết thúc chọn nhóm",
+    startChooseTopicDate: "Ngày bắt đầu chọn đề tài",
+    endChooseTopicDate: "Ngày kết thúc chọn đề tài",
+    startDiscussionDate: "Ngày bắt đầu thảo luận",
+    endDiscussionDate: "Ngày kết thúc thảo luận",
+    startReportDate: "Ngày bắt đầu báo cáo",
+    endReportDate: "Ngày kết thúc báo cáo",
+    startPublicResultDate: "Ngày bắt đầu công bố kết quả",
+    endPublicResultDate: "Ngày kết thúc công bố kết quả",
+  };
+  if (name === "") {
+    return {
+      status: -1,
+      message: "Tên học kì mới không được trống",
+    };
+  }
+  console.log(data);
+  const validName = isValidSemester(name);
+  if (validName.status !== 0) {
+    return validName;
+  }
+  let isValid = true;
+  let errorMessage = "";
+  for (let field of fieldsToCheck) {
+    if (field !== undefined && field !== null && !isFieldDate(field)) {
+      isValid = false;
+      const fieldName = Object.keys(fieldNames).find(
+        (key) => fieldNames[key] === field
+      );
+      errorMessage = `${fieldNames[fieldName]} không phải dạng Date!`;
+      break;
+    }
+  }
+  if (!isValid) {
+    return {
+      status: 1,
+      message: errorMessage,
+    };
+  }
+  const result = await Term.create({
+    name,
+    startDate,
+    endDate,
+    endChooseGroupDate,
+    endChooseTopicDate,
+    endDiscussionDate,
+    endPublicResultDate,
+    endPublicTopicDate,
+    endReportDate,
+    startChooseGroupDate,
+    startChooseTopicDate,
+    startDiscussionDate,
+    startPublicResultDate,
+    startPublicTopicDate,
+    startReportDate,
+  });
+  if (result && typeof result === "object") {
+    const rawData = result.get({ plain: true });
+    return {
+      status: 0,
+      message: "Tạo học kì mới thành công!",
+      data: rawData,
+    };
+  } else {
+    return {
+      status: 0,
+      message: "Tạo học kì mới thất bại!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   paginationPermission,
   getAllPermission,
@@ -406,4 +523,5 @@ module.exports = {
   paginationGroupsStudent,
   countStudent,
   deleteGroupStudent,
+  createNewTerm,
 };

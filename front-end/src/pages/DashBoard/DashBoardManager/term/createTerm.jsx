@@ -7,12 +7,14 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { DatePicker, Input } from "antd";
+import { DatePicker, Input, message } from "antd";
 import dayjs from "dayjs";
 import { Card } from "../../../../components/Card/Card";
+import managerApi from "../../../../apis/managerApi";
 const { RangePicker } = DatePicker;
 
 function CreateTerm() {
+  const [messageApi, contextHolder] = message.useMessage();
   const [term, setTerm] = useState({
     name: "",
     startDate: null,
@@ -23,12 +25,15 @@ function CreateTerm() {
     endChooseTopicDate: null,
     startDiscussionDate: null,
     endDiscussionDate: null,
-    startReportDate: null,
     endReportDate: null,
     startPublicResultDate: null,
     endPublicResultDate: null,
+    startPublicTopicDate: null,
+    endPublicTopicDate: null,
+    startReportDate: null,
   });
 
+  // console.log("Check endReportDate: ", term.endReportDate);
   const handleDateChange = (date, dateString, field) => {
     setTerm({ ...term, [field]: date });
   };
@@ -38,17 +43,27 @@ function CreateTerm() {
     setTerm({ ...term, [name]: value });
   };
 
-  const handleSubmit = () => {
-    console.log(term);
+  const handleSubmit = async () => {
+    const res = await managerApi.createTerm(term);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+    } else {
+      messageApi.error(res.message);
+    }
   };
 
   return (
     <Box sx={{ maxHeight: 560, overflow: "auto", padding: "13px" }}>
+      {contextHolder}
       <Box p={3}>
-        <Typography variant="h5" gutterBottom>
-          Tạo Học Kỳ Mới
-        </Typography>
-        <Card elevation={3} style={{ marginBottom: "20px" }}>
+        <Card elevation={3} sx={{ marginBottom: "20px" }}>
+          <Typography
+            variant="h5"
+            gutterBottom
+            sx={{ margin: "10px 0 20px 10px" }}
+          >
+            Tạo Học Kỳ Mới
+          </Typography>
           <CardContent>
             <Input
               placeholder="Tên học kỳ"
@@ -76,6 +91,11 @@ function CreateTerm() {
             title: "Thời gian tham gia nhóm",
             start: "startChooseGroupDate",
             end: "endChooseGroupDate",
+          },
+          {
+            title: "Thời gian công bố đề tài",
+            start: "startPublicTopicDate",
+            end: "endPublicTopicDate",
           },
           {
             title: "Thời gian chọn đề tài",

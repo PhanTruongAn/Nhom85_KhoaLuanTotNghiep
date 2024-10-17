@@ -156,6 +156,20 @@ const handleDeleteGroupStudent = async (req, res) => {
     });
   }
 };
+const handleCreateNewTerm = async (req, res) => {
+  try {
+    const data = await service.createNewTerm(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
 module.exports = {
   handleGetAllPermission,
   handleCreatePermission,
@@ -168,4 +182,5 @@ module.exports = {
   handleGetAllGroupsStudent,
   handleCountStudent,
   handleDeleteGroupStudent,
+  handleCreateNewTerm,
 };
