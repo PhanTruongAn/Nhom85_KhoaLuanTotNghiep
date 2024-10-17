@@ -107,7 +107,7 @@ function ListNotification() {
             padding: "12px",
             marginBottom: "10px",
             boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
-            transition: "background-color 0.3s",
+            transition: "background-color 0.3s ease-in-out",
             "&:hover": {
               backgroundColor: "#e6f7ff",
               color: "black",
