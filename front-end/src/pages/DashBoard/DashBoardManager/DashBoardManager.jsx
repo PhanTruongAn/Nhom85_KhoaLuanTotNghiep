@@ -11,9 +11,8 @@ import "./DashBoardManager.scss";
 import {
   Button,
   Layout,
-  Menu,
+  Menu as MenuAtnd,
   theme,
-  Dropdown,
   ConfigProvider,
   Modal,
 } from "antd";
@@ -21,7 +20,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import getItems from "./items.jsx";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { Box, ThemeProvider } from "@mui/material";
+import { ThemeProvider, Box, Popover, Select, MenuItem } from "@mui/material"; // Popover từ MUI
 import CssBaseline from "@mui/material/CssBaseline";
 import authApi from "../../../apis/authApi.jsx";
 import lightTheme from "../../../styles/themes/ant/lightTheme.jsx";
@@ -36,6 +35,8 @@ const { Header, Sider, Content } = Layout;
 
 const DashBoardManager = () => {
   const [notifications, setNotifications] = useState(5);
+  const [selectedOption, setSelectedOption] = useState("option1");
+
   const navigate = useNavigate();
   const user = useSelector((state) => state.userInit.user);
   const isManager = user.role.name === "MANAGER" || user.role.name === "ADMIN";
@@ -49,6 +50,19 @@ const DashBoardManager = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [openKeys, setOpenKeys] = useState([]); // State để theo dõi menu con đang mở
   const [modal, contextHolder] = Modal.useModal();
+  const [anchorEl, setAnchorEl] = useState(null); // State cho Popover (MUI)
+
+  // Xử lý mở Popover
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Đóng Popover
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl); // Kiểm tra Popover mở hay đóng
 
   const confirm = () => {
     modal.confirm({
@@ -114,7 +128,7 @@ const DashBoardManager = () => {
             style={{ position: "relative" }}
           >
             {!collapsed && (
-              <div className="demo-logo-vertical">
+              <Box className="demo-logo-vertical">
                 <img
                   src={themes ? logoDark : logoLight}
                   style={{
@@ -134,9 +148,36 @@ const DashBoardManager = () => {
                 >
                   KHÓA LUẬN TỐT NGHIỆP
                 </Box>
-              </div>
+                <Select
+                  value={selectedOption}
+                  onChange={(event) => setSelectedOption(event.target.value)}
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    width: 200,
+                    marginRight: "10px",
+                    marginTop: "10px",
+                    backgroundColor: themes ? "#2c3e50" : "#f0f0f0",
+                    color: themes ? "#fff" : "#000",
+                    borderRadius: "8px",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: themes ? "#34495e" : "#d9d9d9",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: themes ? "#1abc9c" : "#40a9ff",
+                    },
+                    "& .MuiSelect-icon": {
+                      color: themes ? "#fff" : "#000",
+                    },
+                  }}
+                >
+                  <MenuItem value="option1">Hk1_2022-2023</MenuItem>
+                  <MenuItem value="option2">Hk1_2022-2023</MenuItem>
+                  <MenuItem value="option3">Hk1_2022-2023</MenuItem>
+                </Select>
+              </Box>
             )}
-            <Menu
+            <MenuAtnd
               selectedKeys={[
                 window.location.pathname.split("/dashboard/")[1] ||
                   window.location.pathname,
@@ -152,7 +193,7 @@ const DashBoardManager = () => {
               items={items}
               style={{
                 marginTop: "10px",
-                height: "calc(100vh - 110px)",
+                height: "calc(92vh - 110px)",
               }}
             />
           </Sider>
@@ -174,7 +215,7 @@ const DashBoardManager = () => {
                 }
                 onClick={() => setCollapsed(!collapsed)}
               />
-              <div className="student-container" style={{ float: "right" }}>
+              <Box className="student-container" sx={{ float: "right" }}>
                 <span style={{ marginRight: "10px" }}>
                   Chào mừng quay lại <strong>{user.fullName}</strong>
                 </span>
@@ -187,21 +228,38 @@ const DashBoardManager = () => {
                   onClick={changeTheme}
                   style={{ marginRight: "10px", marginTop: "10px" }}
                 />
-                <Dropdown overlay={<ListNotification />} trigger={["click"]}>
-                  <Button
-                    className="bell-icon"
-                    size="large"
-                    style={{ marginRight: "30px", marginTop: "10px" }}
-                    icon={<BellOutlined />}
-                  >
-                    {notifications > 0 && (
-                      <span className="notification-badge">
-                        {notifications}
-                      </span>
-                    )}
-                  </Button>
-                </Dropdown>
-              </div>
+                {/* Popover MUI thay cho Dropdown */}
+                <Button
+                  className="bell-icon"
+                  size="large"
+                  icon={<BellOutlined />}
+                  onClick={handlePopoverOpen}
+                  style={{ marginRight: "10px", marginTop: "10px" }}
+                >
+                  {notifications > 0 && (
+                    <span className="notification-badge">{notifications}</span>
+                  )}
+                </Button>
+
+                {/* Hiển thị Popover */}
+                <Popover
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handlePopoverClose}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  <Box sx={{ p: 2 }}>
+                    <ListNotification />
+                  </Box>
+                </Popover>
+              </Box>
             </Header>
             <Content
               style={{

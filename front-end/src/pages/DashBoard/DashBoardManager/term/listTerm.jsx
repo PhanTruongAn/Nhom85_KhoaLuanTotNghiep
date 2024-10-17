@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import { Table, Input, Modal, Form, Typography } from "antd";
+import { Table, Input } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   SearchOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Box,
+} from "@mui/material";
 import UpdateTerm from "./UpdateTerm";
 import ViewTerm from "./viewTerm";
 
-const { Title } = Typography;
 const { Search } = Input;
 
 const initialData = [
@@ -125,10 +131,10 @@ const ListTerm = () => {
   ];
 
   return (
-    <div style={{ padding: "20px" }}>
-      <Title level={6} style={{ textAlign: "center" }}>
+    <Box sx={{ padding: "20px" }}>
+      <Typography variant="h4" sx={{ textAlign: "center" }}>
         List of Terms
-      </Title>
+      </Typography>
       <Search
         placeholder="Search by name"
         enterButton={<SearchOutlined />}
@@ -137,33 +143,38 @@ const ListTerm = () => {
       />
       <Table columns={columns} dataSource={filteredData} rowKey="id" />
 
-      <Modal
-        title={`Chỉnh sửa ${currentTerm?.name}`}
-        visible={isEditModalVisible}
-        onCancel={handleEditModalCancel}
-        footer={null}
-        width="75%"
+      <Dialog
+        open={isEditModalVisible}
+        onClose={handleEditModalCancel}
+        maxWidth="md"
+        fullWidth
       >
-        {currentTerm && (
-          <UpdateTerm
-            term={currentTerm}
-            onOk={handleEditModalOk}
-            onCancel={handleEditModalCancel}
-          />
-        )}
-      </Modal>
-      <Modal
-        title={`Xem thông tin ${currentTerm?.name}`}
-        visible={isViewModalVisible}
-        onCancel={handleViewModalCancel}
-        footer={null}
-        width="75%"
+        <DialogTitle>{`Chỉnh sửa ${currentTerm?.name}`}</DialogTitle>
+        <DialogContent>
+          {currentTerm && (
+            <UpdateTerm
+              term={currentTerm}
+              onOk={handleEditModalOk}
+              onCancel={handleEditModalCancel}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={isViewModalVisible}
+        onClose={handleViewModalCancel}
+        maxWidth="md"
+        fullWidth
       >
-        {currentTerm && (
-          <ViewTerm term={currentTerm} onCancel={handleViewModalCancel} />
-        )}
-      </Modal>
-    </div>
+        <DialogTitle>{`Xem thông tin ${currentTerm?.name}`}</DialogTitle>
+        <DialogContent>
+          {currentTerm && (
+            <ViewTerm term={currentTerm} onCancel={handleViewModalCancel} />
+          )}
+        </DialogContent>
+      </Dialog>
+    </Box>
   );
 };
 

@@ -11,8 +11,7 @@ import "./DashBoardStudent.scss";
 import {
   Button,
   Layout,
-  Menu,
-  Dropdown,
+  Menu as MenuAtnd,
   ConfigProvider,
   Modal,
   Drawer,
@@ -21,7 +20,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { ThemeProvider, Box } from "@mui/material";
+import { ThemeProvider, Box, Popover, TextField } from "@mui/material"; // Popover từ MUI
 import CssBaseline from "@mui/material/CssBaseline";
 import authApi from "../../../apis/authApi.jsx";
 import lightTheme from "../../../styles/themes/ant/lightTheme.jsx";
@@ -46,6 +45,28 @@ const DashBoardStudent = () => {
   const [drawerVisible, setDrawerVisible] = useState(false); // State cho Drawer (modal của Sider)
   const [notifications, setNotifications] = useState(5);
   const [openKeys, setOpenKeys] = useState([]); // State để theo dõi menu con đang mở
+  const [anchorEl, setAnchorEl] = useState(null); // State cho Popover (MUI)
+  // Mở Drawer (Sider dưới dạng modal)
+  const openDrawer = () => {
+    setDrawerVisible(true);
+  };
+
+  // Đóng Drawer
+  const closeDrawer = () => {
+    setDrawerVisible(false);
+  };
+
+  // Xử lý mở Popover
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Đóng Popover
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl); // Kiểm tra Popover mở hay đóng
 
   const confirmLogout = () => {
     modal.confirm({
@@ -96,16 +117,6 @@ const DashBoardStudent = () => {
     localStorage.setItem("themeDark", newTheme);
   };
 
-  // Mở Drawer (Sider dưới dạng modal)
-  const openDrawer = () => {
-    setDrawerVisible(true);
-  };
-
-  // Đóng Drawer
-  const closeDrawer = () => {
-    setDrawerVisible(false);
-  };
-
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       {contextHolder}
@@ -121,7 +132,7 @@ const DashBoardStudent = () => {
             style={{ position: "relative" }}
           >
             {!collapsed && (
-              <div className="demo-logo-vertical">
+              <Box className="demo-logo-vertical">
                 <img
                   src={themes ? logoDark : logoLight}
                   style={{
@@ -142,9 +153,30 @@ const DashBoardStudent = () => {
                 >
                   KHÓA LUẬN TỐT NGHIỆP
                 </Box>
-              </div>
+                <Box
+                  sx={{
+                    fontWeight: "bold",
+                    paddingY: "2px", // Reduced padding to avoid layout expansion
+                    paddingX: "6px", // Reduced padding to avoid extra space
+                    fontSize: "13px", // Slightly smaller font size
+                    maxWidth: "80%", // Limit the width to prevent layout stretching
+                    margin: "10px auto",
+                    textAlign: "center",
+                    borderRadius: "8px",
+                    boxShadow: themes
+                      ? "0 2px 5px rgba(255, 255, 255, 0.2)"
+                      : "0 2px 5px rgba(0, 0, 0, 0.1)",
+                    border: themes
+                      ? "1px solid rgba(255, 255, 255, 0.2)"
+                      : "1px solid rgba(0, 0, 0, 0.1)",
+                    backgroundColor: themes ? "#2c3e50" : "#fff",
+                  }}
+                >
+                  Hk1_2021-2022
+                </Box>
+              </Box>
             )}
-            <Menu
+            <MenuAtnd
               selectedKeys={
                 window.location.pathname.split("/dashboard/")[1] ||
                 window.location.pathname
@@ -160,7 +192,7 @@ const DashBoardStudent = () => {
               items={items}
               style={{
                 marginTop: "10px",
-                height: "calc(100vh - 110px)",
+                height: "calc(95vh - 110px)",
               }}
             />
           </Sider>
@@ -174,8 +206,8 @@ const DashBoardStudent = () => {
             className="ant-sider-mobile custom-drawer"
             bodyStyle={{ padding: 0 }}
           >
-            <div className="drawer-body">
-              <Menu
+            <Box className="drawer-body">
+              <MenuAtnd
                 selectedKeys={
                   window.location.pathname.split("/dashboard/")[1] ||
                   window.location.pathname
@@ -194,7 +226,7 @@ const DashBoardStudent = () => {
                 items={items}
                 className="custom-menu"
               />
-            </div>
+            </Box>
           </Drawer>
 
           <Layout className="container-fluid p-0">
@@ -228,7 +260,7 @@ const DashBoardStudent = () => {
                   }
                 }}
               />
-              <div className="option" style={{ float: "right" }}>
+              <Box className="option" sx={{ float: "right" }}>
                 <Button
                   className={`btn-logOut ${
                     themes ? "dark-theme" : "light-theme"
@@ -238,20 +270,37 @@ const DashBoardStudent = () => {
                   onClick={changeTheme}
                   style={{ marginRight: "10px", marginTop: "-3px" }}
                 />
-                <Dropdown overlay={<ListNotification />} trigger={["click"]}>
-                  <Button
-                    className="bell-icon"
-                    size="large"
-                    icon={<BellOutlined />}
-                  >
-                    {notifications > 0 && (
-                      <span className="notification-badge">
-                        {notifications}
-                      </span>
-                    )}
-                  </Button>
-                </Dropdown>
-              </div>
+                {/* Popover MUI thay cho Dropdown */}
+                <Button
+                  className="bell-icon"
+                  size="large"
+                  icon={<BellOutlined />}
+                  onClick={handlePopoverOpen}
+                >
+                  {notifications > 0 && (
+                    <span className="notification-badge">{notifications}</span>
+                  )}
+                </Button>
+
+                {/* Hiển thị Popover */}
+                <Popover
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handlePopoverClose}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  <Box sx={{ p: 2 }}>
+                    <ListNotification />
+                  </Box>
+                </Popover>
+              </Box>
             </Header>
 
             <Content
