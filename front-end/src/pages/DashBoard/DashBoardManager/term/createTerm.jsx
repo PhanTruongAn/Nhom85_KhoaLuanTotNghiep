@@ -11,10 +11,12 @@ import { DatePicker, Input, message } from "antd";
 import dayjs from "dayjs";
 import { Card } from "../../../../components/Card/Card";
 import managerApi from "../../../../apis/managerApi";
+import CustomButton from "../../../../components/Button/CustomButton";
 const { RangePicker } = DatePicker;
 
 function CreateTerm() {
   const [messageApi, contextHolder] = message.useMessage();
+  const [loading, setLoading] = useState(false);
   const [term, setTerm] = useState({
     name: "",
     startDate: null,
@@ -44,10 +46,13 @@ function CreateTerm() {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const res = await managerApi.createTerm(term);
     if (res && res.status === 0) {
+      setLoading(false);
       messageApi.success(res.message);
     } else {
+      setLoading(false);
       messageApi.error(res.message);
     }
   };
@@ -162,9 +167,12 @@ function CreateTerm() {
         ))}
 
         <Box display="flex" justifyContent="center" mt={3}>
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
-            Tạo học kỳ mới
-          </Button>
+          <CustomButton
+            text="Tạo học kì mới"
+            onClick={handleSubmit}
+            type="success"
+            loading={loading}
+          />
         </Box>
       </Box>
     </Box>

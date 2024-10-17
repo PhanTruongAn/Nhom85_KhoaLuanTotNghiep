@@ -40,7 +40,7 @@ function CreateModal({
       messageApi.success(result.message);
       setLoading(false);
       setData(user);
-      getData();
+      if (getData) getData();
       form.resetFields();
       onSubmit();
     } else if (result.status === 1) {

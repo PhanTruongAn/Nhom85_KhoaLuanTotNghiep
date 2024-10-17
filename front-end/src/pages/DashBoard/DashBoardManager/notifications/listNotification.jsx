@@ -110,6 +110,7 @@ function ListNotification() {
             transition: "background-color 0.3s",
             "&:hover": {
               backgroundColor: "#e6f7ff",
+              color: "black",
             },
           }}
         >

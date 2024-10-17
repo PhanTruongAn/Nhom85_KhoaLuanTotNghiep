@@ -133,7 +133,7 @@ const ListTerm = () => {
   return (
     <Box sx={{ padding: "20px" }}>
       <Typography variant="h4" sx={{ textAlign: "center" }}>
-        List of Terms
+        Danh sách học kì
       </Typography>
       <Search
         placeholder="Search by name"

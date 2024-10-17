@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "roleId",
       });
       Lecturer.hasMany(models.Topic);
+      Lecturer.belongsToMany(models.Term, {
+        through: "TermLecturer",
+        foreignKey: "lecturerId",
+        onDelete: "CASCADE",
+        as: "terms",
+      });
     }
   }
   Lecturer.init(

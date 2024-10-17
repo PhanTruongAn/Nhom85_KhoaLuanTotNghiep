@@ -18,6 +18,7 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomHooks from "../../../../utils/hooks";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
+import { isEmpty } from "lodash";
 const { Option } = Select;
 const { Search } = Input;
 
@@ -43,7 +44,7 @@ function ListStudent() {
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
-  const { data, isLoading, isFetching, refetch } = CustomHooks.useQuery(
+  const { data, isSuccess, isFetching, refetch } = CustomHooks.useQuery(
     ["students", currentPage, debouncedSearchTerm, limitUser],
     () => {
       if (debouncedSearchTerm) {
@@ -342,19 +343,22 @@ function ListStudent() {
           scroll={{ x: "max-content" }}
           loading={isFetching}
           locale={{
-            emptyText:
-              dataSource.length === 0 ? (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  width={"100%"}
-                  height={"auto"}
-                >
+            emptyText: (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                width={"100%"}
+                height={"auto"}
+              >
+                {isFetching ? (
                   <EmptyData />
-                </Box>
-              ) : null,
+                ) : dataSource.length === 0 ? (
+                  <EmptyData text="Không có dữ liệu!" />
+                ) : null}
+              </Box>
+            ),
           }}
         />
       </Box>

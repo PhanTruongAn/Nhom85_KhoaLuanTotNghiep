@@ -36,7 +36,7 @@ const createLecturerAccount = async (data) => {
     const lecturer = await Lecturer.create({
       ...data,
       password: hashPass,
-      roleId: data.roleId,
+      roleId: data?.roleId || 2,
     });
     if (lecturer) {
       return {

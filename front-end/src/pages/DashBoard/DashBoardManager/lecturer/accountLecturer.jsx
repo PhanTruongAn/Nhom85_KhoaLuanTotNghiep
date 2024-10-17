@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import _ from "lodash";
 import { Button, Box } from "@mui/material";
@@ -7,9 +7,7 @@ import { toast } from "react-toastify";
 import { Space, Table, message } from "antd";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AddIcon from "@mui/icons-material/Add";
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
-import AddModal from "./AddModal";
+import CreateModal from "../../../../components/Dashboard/createModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { isEmpty } from "lodash";
@@ -19,6 +17,7 @@ const AccountLecturer = () => {
     loadingError: false,
     loadingData: false,
   });
+  const [listRole, setListRole] = useState();
   const [messageApi, contextHolder] = message.useMessage();
   const [jsonData, setJsonData] = useState([]);
   const [fileInput, setFileInput] = useState(null);
@@ -55,7 +54,15 @@ const AccountLecturer = () => {
     });
     return dataPersist;
   };
-
+  useEffect(() => {
+    getRoles();
+  }, []);
+  const getRoles = async () => {
+    const res = await lecturerApi.getRoles();
+    if (res && res.status === 0) {
+      setListRole(res.data);
+    }
+  };
   const handlerSubmit = async () => {
     updateState({ loadingSuccess: true });
     const data = persistDataToSave();
@@ -213,7 +220,13 @@ const AccountLecturer = () => {
           loading={state.loadingError}
         />
       </Space>
-      <AddModal isOpen={open} onClose={handleCloseModal} />
+      <CreateModal
+        isOpen={open}
+        onSubmit={handleCloseModal}
+        onCancel={handleCloseModal}
+        isStudent={false}
+        listRole={listRole}
+      />
     </Box>
   );
 };

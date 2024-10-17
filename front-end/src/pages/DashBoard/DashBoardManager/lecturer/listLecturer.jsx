@@ -368,7 +368,11 @@ function ListLecturer() {
                   width={"100%"}
                   height={"auto"}
                 >
-                  <EmptyData />
+                  {isFetching ? (
+                    <EmptyData />
+                  ) : dataSource.length === 0 ? (
+                    <EmptyData text="Không có dữ liệu!" />
+                  ) : null}
                 </Box>
               ) : null,
           }}
