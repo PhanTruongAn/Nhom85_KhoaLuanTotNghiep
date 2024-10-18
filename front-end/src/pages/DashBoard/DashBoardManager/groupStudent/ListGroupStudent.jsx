@@ -42,7 +42,11 @@ const ListGroupStudent = () => {
   };
 
   // useQuery to fetch data
-  const { data: groupsData, refetch } = CustomHooks.useQuery(
+  const {
+    data: groupsData,
+    isFetching,
+    refetch,
+  } = CustomHooks.useQuery(
     ["groupStudent", state.currentPage, state.pageSize],
     () => managerApi.getGroupsStudent(state.currentPage, state.pageSize),
     {
@@ -301,7 +305,11 @@ const ListGroupStudent = () => {
                 width={"100%"}
                 height={"auto"}
               >
-                <EmptyData />
+                {isFetching ? (
+                  <EmptyData />
+                ) : state.dataSource.length === 0 ? (
+                  <EmptyData text="Không có dữ liệu!" />
+                ) : null}
               </Box>
             ) : null,
         }}
