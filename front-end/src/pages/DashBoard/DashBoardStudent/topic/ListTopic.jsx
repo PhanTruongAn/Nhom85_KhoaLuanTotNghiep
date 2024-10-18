@@ -261,7 +261,7 @@ function ListTopic() {
 
       <Table
         columns={columns}
-        dataSource={topicsData ? topicsData.data.topics : state.topics}
+        dataSource={topicsData ? topicsData.data?.topics : state.topics}
         rowKey="id"
         pagination={{
           showSizeChanger: true,
@@ -269,14 +269,14 @@ function ListTopic() {
           onShowSizeChange: (current, size) => handlePageSizeChange(size),
           current: state.currentPage,
           pageSize: state.pageSize,
-          total: isSuccess ? topicsData.data.totalRows : state.totalRows,
+          total: isSuccess ? topicsData.data?.totalRows : state.totalRows,
           onChange: onPageChange,
           responsive: true,
         }}
         scroll={{ x: 500 }}
         loading={state.loadingData}
         locale={{
-          emptyText: isEmpty(state.topics) ? (
+          emptyText: (
             <Box
               sx={{
                 display: "flex",
@@ -284,17 +284,11 @@ function ListTopic() {
                 alignItems: "center",
               }}
             >
-              <EmptyData />
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <EmptyData text="Không có dữ liệu!" />
+              {isFetching ? (
+                <EmptyData />
+              ) : isEmpty(state.topics) ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : null}
             </Box>
           ),
         }}

@@ -3,7 +3,7 @@ import emptyDataImage from "../../images/anhdong/robot.lottie";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Box, Typography } from "@mui/material";
 
-function EmptyData({ text }) {
+function EmptyData({ text, isFetching }) {
   return (
     <Box
       display="flex"

@@ -210,6 +210,7 @@ function RolePermission() {
       <Table
         rowSelection={rowSelection}
         columns={columns}
+        rowKey={"id"}
         dataSource={state.filteredData} // Dữ liệu đã lọc
         pagination={{
           current: state.currentPage,

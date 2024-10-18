@@ -173,7 +173,13 @@ function StudentHome() {
                 <Box>
                   <p>
                     <b>
-                      Tên nhóm:<i> Nhóm {group.groupName}</i>
+                      Tên nhóm:
+                      <i>
+                        {" "}
+                        {!isEmpty(group)
+                          ? `Nhóm ${group.name}`
+                          : "Chưa có nhóm"}
+                      </i>
                     </b>
                   </p>
                   <p>

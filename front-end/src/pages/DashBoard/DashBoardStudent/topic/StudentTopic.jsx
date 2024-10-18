@@ -47,16 +47,18 @@ const ProjectDetails = () => {
       },
     }
   );
-
+  console.log("Check topic: ", topic);
   // Fetch topic data
   const { data: topicData, isLoading: isLoadingTopic } = CustomHooks.useQuery(
     ["my-topic"],
     async () => {
-      const res = await studentApi.getMyTopic(group.topicId);
+      const res = await studentApi.getMyTopic(
+        group?.topicId || groupData?.topicId
+      );
       return res;
     },
     {
-      // enabled: !isEmpty(group),
+      enabled: !!group?.topicId && isEmpty(topic),
       onSuccess: (res) => {
         if (res && res.status === 0) {
           dispatch(setMyTopic(res.data));
@@ -70,7 +72,7 @@ const ProjectDetails = () => {
       },
     }
   );
-
+  console.log("Dữ liệu nhóm: ", group, isEmpty(group));
   const displayedTopic = topic || {};
 
   const handleCancelTopic = async () => {

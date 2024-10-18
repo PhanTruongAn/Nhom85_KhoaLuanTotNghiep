@@ -47,7 +47,6 @@ function ListStudentGroup() {
     CustomHooks.useInfiniteQuery(["groups"], fetchGroups, {
       getNextPageParam: (lastPage) => lastPage.nextPage,
     });
-
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
     if (scrollTop + clientHeight >= scrollHeight - 10 && hasNextPage) {
@@ -142,6 +141,8 @@ function ListStudentGroup() {
           ))
         ) : (
           <Box
+            marginTop="50px"
+            // alignSelf="center"
             display="flex"
             flexDirection="column"
             alignItems="center"
@@ -150,9 +151,13 @@ function ListStudentGroup() {
             width={"100%"}
             height={"auto"}
           >
-            <EmptyData
-              text={isEmpty(groups) ? null : "Không có dữ liệu để hiển thị!"}
-            />
+            {isFetching ? (
+              <EmptyData />
+            ) : isEmpty(groups) ? (
+              <EmptyData text="Không có dữ liệu để hiển thị!" />
+            ) : (
+              <EmptyData />
+            )}
           </Box>
         )}
       </Grid>
