@@ -36,7 +36,7 @@ function StudentHome() {
     if (res && res.status === 0) {
       dispatch(setGroup(res.data));
     } else {
-      messageApi.error(ree.message);
+      messageApi.error(res.message);
     }
     return res.data;
   };

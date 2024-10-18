@@ -11,31 +11,31 @@ module.exports = {
       },
       termId: {
         type: Sequelize.INTEGER,
-        references: {
-          model: "Terms", // Tên bảng Term
-          key: "id",
-        },
-        onDelete: "CASCADE",
+        // references: {
+        //   model: "Terms",
+        //   key: "id",
+        // },
+        // onDelete: "CASCADE",
         allowNull: false,
       },
       studentId: {
         type: Sequelize.INTEGER,
-        references: {
-          model: "Students", // Tên bảng Student
-          key: "id",
-        },
-        onDelete: "CASCADE",
+        // references: {
+        //   model: "Students",
+        //   key: "id",
+        // },
+        // onDelete: "CASCADE",
         allowNull: false,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("NOW"),
+        // defaultValue: Sequelize.fn("NOW"),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("NOW"),
+        // defaultValue: Sequelize.fn("NOW"),
       },
     });
   },

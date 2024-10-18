@@ -19,6 +19,9 @@ module.exports = {
       termId: {
         type: Sequelize.INTEGER,
       },
+      roleId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

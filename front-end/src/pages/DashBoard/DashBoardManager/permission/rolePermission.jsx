@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button } from "@mui/material";
-import { Select, Table, Tag, message } from "antd";
+import { Box, Typography } from "@mui/material";
+import { Select, Space, Table, Tag, message } from "antd";
 import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomButton from "../../../../components/Button/CustomButton";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-import { useDebounce } from "@uidotdev/usehooks";
 import { isEmpty } from "lodash";
+
 function RolePermission() {
   const [state, setState] = useState({
-    dataSource: [],
+    dataSource: [], // Dữ liệu gốc sau khi lấy từ server
+    filteredData: [], // Dữ liệu đã được lọc
     currentPage: 1,
     pageSize: 5,
     loadingData: false,
@@ -18,14 +19,15 @@ function RolePermission() {
     searchLoading: false,
     loadingSuccess: false,
   });
-  // Update states
+
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
+
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
-  const debouncedSearchTerm = useDebounce(state.searchValue, 500);
+
   // Fetch data permissions
   const fetchPermission = async () => {
     updateState({ loadingData: true });
@@ -34,12 +36,16 @@ function RolePermission() {
   };
 
   const { data, isSuccess, refetch } = CustomHooks.useQuery(
-    ["data"],
+    ["data1"],
     fetchPermission,
     {
       onSuccess: (res) => {
         if (res && res.status === 0) {
-          updateState({ dataSource: res.data, loadingData: false });
+          updateState({
+            dataSource: res.data, // Lưu toàn bộ dữ liệu
+            filteredData: res.data, // Khởi tạo filteredData giống với dataSource
+            loadingData: false,
+          });
         } else {
           updateState({ dataSource: [], loadingData: false });
           messageApi.error(res.message);
@@ -49,9 +55,9 @@ function RolePermission() {
   );
 
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
+
   // Hiển thị quyền hạn đã được gán theo role đã chọn
   const handleRoleChange = async (value) => {
     setSelectedRole(parseInt(value));
@@ -74,56 +80,38 @@ function RolePermission() {
       updateState({ loadingData: false });
       messageApi.error(res.message);
     }
-    setSelectedRole(value); // Cập nhật giá trị đã chọn
+    setSelectedRole(value);
   };
-  // Chuyển trang
+
   const onPageChange = (pageNumber) => {
     updateState({ currentPage: pageNumber });
   };
-  // Sự kiện input search
+
+  // Sự kiện input search: Lọc dữ liệu ngay khi thay đổi giá trị
   const onInputChange = (e) => {
-    const value = e.target.value;
-    updateState({
-      searchValue: value,
-    });
-  };
-  useEffect(() => {
-    if (debouncedSearchTerm) {
-      onSearch(debouncedSearchTerm);
-    } else {
-      updateState({ dataSource: data?.data || [] });
-    }
-  }, [debouncedSearchTerm]);
-  const onSearch = () => {
-    let filterData = [];
-    filterData =
-      state.searchValue !== ""
-        ? state.dataSource.filter((item) =>
-            item.description
-              .toLowerCase()
-              .includes(state.searchValue.toLowerCase())
-          )
-        : data.data;
+    const value = e.target.value.toLowerCase();
+    updateState({ searchValue: value });
+
+    const filterData = state.dataSource.filter((item) =>
+      item.description.toLowerCase().includes(value)
+    );
 
     if (filterData.length > 0) {
-      updateState({ dataSource: filterData });
+      updateState({ filteredData: filterData });
     } else {
-      messageApi.error("Không tìm thấy dữ liệu!");
-      updateState({ dataSource: data.data });
+      updateState({ filteredData: [] });
     }
   };
-  // Tạo đối tượng để gán quyền
+
   const buildDataToSave = () => {
     const result = {};
     result.roleId = selectedRole;
     result.permissions = selectedRowKeys.map((item) => {
-      let data = { roleId: selectedRole, permissionId: item };
-      return data;
+      return { roleId: selectedRole, permissionId: item };
     });
-
     return result;
   };
-  // Xác nhận gán quyền
+
   const handleSubmit = async () => {
     updateState({ loadingSuccess: true });
     const data = buildDataToSave();
@@ -181,11 +169,7 @@ function RolePermission() {
           default:
             color = "default";
         }
-        return (
-          <Tag color={color} key={method}>
-            {method}
-          </Tag>
-        );
+        return <Tag color={color}>{method}</Tag>;
       },
     },
   ];
@@ -193,15 +177,13 @@ function RolePermission() {
   return (
     <Box>
       {contextHolder}
-      <Box>
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          sx={{ mb: 2, padding: "10px", textAlign: "center" }}
-        >
-          Gán quyền hạn
-        </Typography>
-      </Box>
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        sx={{ mb: 2, padding: "10px", textAlign: "center" }}
+      >
+        Gán quyền hạn
+      </Typography>
       <Box className="row col-6" sx={{ padding: "10px" }}>
         <Box className="col-3">
           <Select
@@ -220,52 +202,54 @@ function RolePermission() {
             placeholder={"Tìm theo mô tả"}
             onChange={onInputChange}
             loading={state.searchLoading}
-            onSearch={onSearch}
+            onSearch={onInputChange}
             value={state.searchValue}
           />
         </Box>
       </Box>
-
-      <Box sx={{ padding: "10px" }}>
-        <Table
-          rowSelection={rowSelection}
-          columns={columns}
-          rowKey={"id"}
-          // dataSource={state.dataSource} // Sử dụng dữ liệu đã lọc
-          dataSource={data ? data.data : state.dataSource}
-          pagination={{
-            current: state.currentPage,
-            pageSize: state.pageSize,
-            onChange: onPageChange,
-            responsive: true,
-          }}
-          loading={state.loadingData}
-          locale={{
-            emptyText: isEmpty(state.dataSource) ? (
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                width={"100%"}
-                height={"auto"}
-              >
-                <EmptyData />
-              </Box>
-            ) : (
-              <EmptyData text="Không có dữ liệu!" />
-            ),
-          }}
-        />
-      </Box>
-      <Box sx={{ padding: "0px 0px 0px 10px" }}>
-        <CustomButton
-          onClick={handleSubmit}
-          text={"Gán quyền"}
-          loading={state.loadingSuccess}
-          type="success"
-        />
-      </Box>
+      <Table
+        rowSelection={rowSelection}
+        columns={columns}
+        dataSource={state.filteredData} // Dữ liệu đã lọc
+        pagination={{
+          current: state.currentPage,
+          pageSize: state.pageSize,
+          onChange: onPageChange,
+          responsive: true,
+        }}
+        loading={state.loadingData}
+        locale={{
+          emptyText: isEmpty(state.dataSource) ? (
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              width={"100%"}
+              height={"auto"}
+            >
+              <EmptyData />
+            </Box>
+          ) : (
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              width={"100%"}
+              height={"auto"}
+            >
+              <EmptyData text="Không có dữ liệu" />
+            </Box>
+          ),
+        }}
+      />
+      <CustomButton
+        onClick={handleSubmit}
+        text="Gán quyền"
+        loading={state.loadingSuccess}
+        type="success"
+      />
     </Box>
   );
 }

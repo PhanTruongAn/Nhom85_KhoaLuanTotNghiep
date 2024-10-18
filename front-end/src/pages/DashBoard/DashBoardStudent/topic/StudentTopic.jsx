@@ -56,7 +56,7 @@ const ProjectDetails = () => {
       return res;
     },
     {
-      enabled: !isEmpty(group),
+      // enabled: !isEmpty(group),
       onSuccess: (res) => {
         if (res && res.status === 0) {
           dispatch(setMyTopic(res.data));

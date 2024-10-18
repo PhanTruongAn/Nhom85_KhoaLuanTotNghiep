@@ -11,20 +11,20 @@ module.exports = {
       },
       termId: {
         type: Sequelize.INTEGER,
-        references: {
-          model: "Terms",
-          key: "id",
-        },
-        onDelete: "CASCADE",
+        // references: {
+        //   model: "Terms",
+        //   key: "id",
+        // },
+        // onDelete: "CASCADE",
         allowNull: false,
       },
       lecturerId: {
         type: Sequelize.INTEGER,
-        references: {
-          model: "Lecturers",
-          key: "id",
-        },
-        onDelete: "CASCADE",
+        // references: {
+        //   model: "Lecturers",
+        //   key: "id",
+        // },
+        // onDelete: "CASCADE",
         allowNull: false,
       },
       createdAt: {

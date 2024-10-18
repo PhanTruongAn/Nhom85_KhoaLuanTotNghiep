@@ -58,7 +58,11 @@ const checkUserPermission = (req, res, next) => {
     const canAccess = permissions.some(
       (item) => item.apiPath === currentUrl || currentUrl.includes(item.apiPath)
     );
-    if (canAccess === true || userAdmin === "ADMIN") {
+    if (
+      canAccess === true ||
+      userAdmin === "ADMIN" ||
+      userAdmin === "MANAGER"
+    ) {
       next();
     } else {
       return res.status(403).json({
