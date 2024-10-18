@@ -1,5 +1,6 @@
 import React from "react";
-import { Form, Input, DatePicker, Button, Row, Col, Card } from "antd";
+import { Form, Input, DatePicker, Row, Col, Card } from "antd";
+import { Button, Box } from "@mui/material";
 import dayjs from "dayjs";
 
 const UpdateTerm = ({ term, onOk, onCancel }) => {
@@ -58,7 +59,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
   };
 
   return (
-    <div
+    <Box
       style={{ height: 480, overflow: "auto", width: "100%", padding: "10px" }}
     >
       <Form
@@ -104,9 +105,8 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
         onFinish={handleSubmit}
       >
         <Form.Item
-          label="Name"
           name="name"
-          rules={[{ required: true, message: "Please input the term name!" }]}
+          rules={[{ required: true, message: "Tên không được bỏ trống!" }]}
         >
           <Input style={{ width: "50%" }} />
         </Form.Item>
@@ -124,6 +124,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -133,6 +134,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -152,6 +154,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -161,6 +164,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -180,6 +184,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -189,6 +194,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -208,6 +214,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -217,6 +224,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -236,6 +244,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -245,6 +254,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -264,6 +274,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
@@ -273,23 +284,38 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: "100%" }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </Form.Item>
             </Col>
           </Row>
         </Card>
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{ marginRight: "10px" }}
-          >
-            Lưu
-          </Button>
-          <Button onClick={onCancel}>Hủy</Button>
-        </Form.Item>
       </Form>
-    </div>
+      <Box sx={{ marginTop: "20px" }}>
+        <Button
+          variant="contained"
+          size="small"
+          sx={{
+            marginLeft: "10px",
+            textTransform: "none",
+          }}
+        >
+          Lưu
+        </Button>
+        <Button
+          variant="contained"
+          size="small"
+          color="error"
+          sx={{
+            marginLeft: "10px",
+            textTransform: "none",
+          }}
+          onClick={onCancel}
+        >
+          Hủy
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
