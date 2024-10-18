@@ -14,7 +14,7 @@ const CreateGroupStudent = () => {
   const [openModal, setOpenModal] = useState(false);
   const [state, setState] = useState({
     memberGroup: 2,
-    estimateGroupStudent: 1,
+    estimateGroupStudent: 0,
     totalExistingGroups: 1,
     loadingSuccess: false,
     loadingError: false,
