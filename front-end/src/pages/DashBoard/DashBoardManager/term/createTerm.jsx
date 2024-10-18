@@ -71,7 +71,7 @@ function CreateTerm() {
           </Typography>
           <CardContent>
             <Input
-              placeholder="Tên học kỳ"
+              placeholder="Nhập tên học kì có định dạng sau: HK1 2024-2025"
               name="name"
               value={term.name}
               onChange={handleInputChange}

@@ -142,12 +142,9 @@ function ListNotification() {
         maxWidth="md"
         PaperProps={{ style: { padding: "20px", height: "500px" } }}
       >
-        <DialogTitle>{selectedNotification?.title}</DialogTitle>
-        <DialogContent>
-          {selectedNotification && (
-            <NotificationDetail notification={selectedNotification} />
-          )}
-        </DialogContent>
+        {selectedNotification && (
+          <NotificationDetail notification={selectedNotification} />
+        )}
       </Dialog>
     </Box>
   );

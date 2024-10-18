@@ -1,22 +1,23 @@
 import React from "react";
-import { Form, Input, Button, Row, Col, Card } from "antd";
+import { Form, Input, Row, Col, Card } from "antd";
+import { Box, Button } from "@mui/material";
 import dayjs from "dayjs";
 
 const ViewTerm = ({ term, onCancel }) => {
   const [form] = Form.useForm();
 
-  const renderReadOnlyField = (label, value) => (
-    <Form.Item label={label}>
+  const renderReadOnlyField = (value) => (
+    <Form.Item>
       <Input value={value} readOnly style={{ width: "50%" }} />
     </Form.Item>
   );
 
   return (
-    <div
+    <Box
       style={{ height: 450, overflow: "auto", width: "100%", padding: "10px" }}
     >
       <Form form={form}>
-        {renderReadOnlyField("Name", term.name)}
+        {renderReadOnlyField(term.name)}
 
         {/* Card for Start and End Dates */}
         <Card
@@ -183,13 +184,19 @@ const ViewTerm = ({ term, onCancel }) => {
             </Col>
           </Row>
         </Card>
-
-        {/* Action Button */}
-        <Form.Item>
-          <Button onClick={onCancel}>Đóng</Button>
-        </Form.Item>
       </Form>
-    </div>
+      <Button
+        variant="contained"
+        size="small"
+        sx={{
+          marginTop: "15px",
+          textTransform: "none",
+        }}
+        onClick={onCancel}
+      >
+        Đóng
+      </Button>
+    </Box>
   );
 };
 
