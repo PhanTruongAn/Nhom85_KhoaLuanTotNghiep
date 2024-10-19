@@ -151,6 +151,8 @@ const initWebRoutes = (app) => {
   );
   router.get("/manager/count-student", managerController.handleCountStudent);
   router.post("/manager/create-term", managerController.handleCreateNewTerm);
+  router.get("/manager/terms", managerController.handleGetTerms);
+  router.put("/manager/update-term", managerController.handleUpdateTerm);
   return app.use("/", router);
 };
 

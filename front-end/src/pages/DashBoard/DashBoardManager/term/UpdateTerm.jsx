@@ -1,109 +1,109 @@
-import React from "react";
-import { Form, Input, DatePicker, Row, Col, Card } from "antd";
+import React, { useState } from "react";
+import { Form, Input, DatePicker, Row, Col, Card, Space, message } from "antd";
 import { Button, Box } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
 import dayjs from "dayjs";
-
+import CustomButton from "../../../../components/Button/CustomButton";
+import managerApi from "../../../../apis/managerApi";
 const UpdateTerm = ({ term, onOk, onCancel }) => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const dateFields = [
+    {
+      title: "Thời gian khóa luận",
+      fields: [
+        { name: "startDate", label: "Start Date" },
+        { name: "endDate", label: "End Date" },
+      ],
+    },
+    {
+      title: "Thời gian tham gia nhóm",
+      fields: [
+        { name: "startChooseGroupDate", label: "Start Date" },
+        { name: "endChooseGroupDate", label: "End Date" },
+      ],
+    },
+    {
+      title: "Thời gian công bố đề tài",
+      fields: [
+        { name: "startPublicTopicDate", label: "Start Date" },
+        { name: "endPublicTopicDate", label: "End Date" },
+      ],
+    },
+    {
+      title: "Thời gian chọn đề tài",
+      fields: [
+        { name: "startChooseTopicDate", label: "Start Date" },
+        { name: "endChooseTopicDate", label: "End Date" },
+      ],
+    },
+    {
+      title: "Thời gian làm đề tài",
+      fields: [
+        { name: "startDiscussionDate", label: "Start Date" },
+        { name: "endDiscussionDate", label: "End Date" },
+      ],
+    },
+    {
+      title: "Thời gian báo cáo khóa luận",
+      fields: [
+        { name: "startReportDate", label: "Start Date" },
+        { name: "endReportDate", label: "End Date" },
+      ],
+    },
+    {
+      title: "Thời gian công bố kết quả",
+      fields: [
+        { name: "startPublicResultDate", label: "Start Date" },
+        { name: "endPublicResultDate", label: "End Date" },
+      ],
+    },
+  ];
 
-  const handleSubmit = (values) => {
-    const updatedValues = {
-      ...values,
-      startDate: values.startDate
-        ? values.startDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      endDate: values.endDate
-        ? values.endDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      endChooseGroupDate: values.endChooseGroupDate
-        ? values.endChooseGroupDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      endChooseTopicDate: values.endChooseTopicDate
-        ? values.endChooseTopicDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      endDiscussionDate: values.endDiscussionDate
-        ? values.endDiscussionDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      endPublicResultDate: values.endPublicResultDate
-        ? values.endPublicResultDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      endPublicTopicDate: values.endPublicTopicDate
-        ? values.endPublicTopicDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      endReportDate: values.endReportDate
-        ? values.endReportDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      startChooseGroupDate: values.startChooseGroupDate
-        ? values.startChooseGroupDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      startChooseTopicDate: values.startChooseTopicDate
-        ? values.startChooseTopicDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      startDiscussionDate: values.startDiscussionDate
-        ? values.startDiscussionDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      startPublicResultDate: values.startPublicResultDate
-        ? values.startPublicResultDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      startPublicTopicDate: values.startPublicTopicDate
-        ? values.startPublicTopicDate.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      createdAt: values.createdAt
-        ? values.createdAt.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-      updatedAt: values.updatedAt
-        ? values.updatedAt.format("YYYY-MM-DD HH:mm:ss")
-        : null,
-    };
-    onOk(updatedValues);
+  const handleSubmit = async (values) => {
+    setLoading(true);
+    const formattedValues = {};
+    Object.keys(values).forEach((key) => {
+      // Kiểm tra nếu giá trị là dayjs hoặc moment
+      if (values[key] && dayjs.isDayjs(values[key])) {
+        formattedValues[key] = values[key].format("YYYY-MM-DD HH:mm:ss");
+      } else {
+        formattedValues[key] = values[key]; // Các giá trị không phải ngày giữ nguyên
+      }
+    });
+    let res = await managerApi.updateTerm(formattedValues);
+    if (res && res.status === 0) {
+      setLoading(false);
+      messageApi.success(res.message);
+      onOk();
+    } else {
+      setLoading(false);
+      messageApi.error(res.message);
+    }
   };
 
   return (
     <Box
       style={{ height: 480, overflow: "auto", width: "100%", padding: "10px" }}
     >
+      {contextHolder}
       <Form
         form={form}
-        initialValues={{
-          ...term,
-          startDate: term.startDate ? dayjs(term.startDate) : null,
-          endDate: term.endDate ? dayjs(term.endDate) : null,
-          endChooseGroupDate: term.endChooseGroupDate
-            ? dayjs(term.endChooseGroupDate)
-            : null,
-          endChooseTopicDate: term.endChooseTopicDate
-            ? dayjs(term.endChooseTopicDate)
-            : null,
-          endDiscussionDate: term.endDiscussionDate
-            ? dayjs(term.endDiscussionDate)
-            : null,
-          endPublicResultDate: term.endPublicResultDate
-            ? dayjs(term.endPublicResultDate)
-            : null,
-          endPublicTopicDate: term.endPublicTopicDate
-            ? dayjs(term.endPublicTopicDate)
-            : null,
-          endReportDate: term.endReportDate ? dayjs(term.endReportDate) : null,
-          startChooseGroupDate: term.startChooseGroupDate
-            ? dayjs(term.startChooseGroupDate)
-            : null,
-          startChooseTopicDate: term.startChooseTopicDate
-            ? dayjs(term.startChooseTopicDate)
-            : null,
-          startDiscussionDate: term.startDiscussionDate
-            ? dayjs(term.startDiscussionDate)
-            : null,
-          startPublicResultDate: term.startPublicResultDate
-            ? dayjs(term.startPublicResultDate)
-            : null,
-          startPublicTopicDate: term.startPublicTopicDate
-            ? dayjs(term.startPublicTopicDate)
-            : null,
-          createdAt: term.createdAt ? dayjs(term.createdAt) : null,
-          updatedAt: term.updatedAt ? dayjs(term.updatedAt) : null,
-        }}
+        initialValues={Object.keys(term).reduce((acc, key) => {
+          if (key.includes("Date")) {
+            acc[key] = term[key] ? dayjs(term[key]) : null;
+          } else {
+            acc[key] = term[key]; // Các trường không phải ngày giữ nguyên
+          }
+          return acc;
+        }, {})}
         onFinish={handleSubmit}
       >
+        <Form.Item name="id" style={{ display: "none" }}>
+          <Input />
+        </Form.Item>
         <Form.Item
           name="name"
           rules={[{ required: true, message: "Tên không được bỏ trống!" }]}
@@ -111,210 +111,56 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
           <Input style={{ width: "50%" }} />
         </Form.Item>
 
-        {/* Card for Start and End Dates */}
-        <Card
-          title="Thời gian khóa luận"
-          bordered={true}
-          style={{ marginBottom: "10px", height: "120px" }}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="Start Date" name="startDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="End Date" name="endDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Card>
+        {/* Mapping date fields */}
+        {dateFields.map((section) => (
+          <Card
+            key={section.title}
+            title={section.title}
+            bordered={true}
+            style={{ marginBottom: "10px", height: "120px" }}
+            hoverable="true"
+          >
+            <Row gutter={16}>
+              {section.fields.map((field) => (
+                <Col span={12} key={field.name}>
+                  <Form.Item label={field.label} name={field.name}>
+                    <DatePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: "100%" }}
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                    />
+                  </Form.Item>
+                </Col>
+              ))}
+            </Row>
+          </Card>
+        ))}
+        <Space style={{ float: "right", marginTop: "10px" }}>
+          <CustomButton
+            onClick={() => form.submit()}
+            sx={[
+              (theme) => ({
+                ...theme.applyStyles("light", {
+                  background: "#ff993a",
+                }),
+              }),
+            ]}
+            text="Xác nhận"
+            type="success"
+            loading={loading}
+          />
 
-        {/* Card for Choose Group Dates */}
-        <Card
-          title="Thời gian tham gia nhóm"
-          bordered={true}
-          style={{ marginBottom: "10px", height: "120px" }}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="Start Date" name="startChooseGroupDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="End Date" name="endChooseGroupDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Card>
-
-        {/* Card for Choose Topic Dates */}
-        <Card
-          title="Thời gian chọn đề tài"
-          bordered={true}
-          style={{ marginBottom: "10px", height: "120px" }}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="Start Date" name="startChooseTopicDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="End Date" name="endChooseTopicDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Card>
-
-        {/* Card for Discussion Dates */}
-        <Card
-          title="Thời gian làm đề tài"
-          bordered={true}
-          style={{ marginBottom: "10px", height: "120px" }}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="Start Date" name="startDiscussionDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="End Date" name="endDiscussionDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Card>
-
-        {/* Card for Report Dates */}
-        <Card
-          title="Thời gian báo cáo khóa luận"
-          bordered={true}
-          style={{ marginBottom: "10px", height: "120px" }}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="Start Date" name="startReportDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="End Date" name="endReportDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Card>
-
-        {/* Card for Public Result Dates */}
-        <Card
-          title="Thời gian công bố kết quả"
-          bordered={true}
-          style={{ marginBottom: "10px", height: "120px" }}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="Start Date" name="startPublicResultDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="End Date" name="endPublicResultDate">
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: "100%" }}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Card>
+          <Button
+            onClick={onCancel}
+            variant="contained"
+            color="error"
+            endIcon={<ClearIcon />}
+          >
+            Hủy bỏ
+          </Button>
+        </Space>
       </Form>
-      <Box sx={{ marginTop: "20px" }}>
-        <Button
-          variant="contained"
-          size="small"
-          sx={{
-            marginLeft: "10px",
-            textTransform: "none",
-          }}
-        >
-          Lưu
-        </Button>
-        <Button
-          variant="contained"
-          size="small"
-          color="error"
-          sx={{
-            marginLeft: "10px",
-            textTransform: "none",
-          }}
-          onClick={onCancel}
-        >
-          Hủy
-        </Button>
-      </Box>
     </Box>
   );
 };

@@ -36,8 +36,14 @@ const managerApi = {
   countStudent: () => {
     return axiosClient.get(`${baseUrl}/count-student`);
   },
+  getTerms: () => {
+    return axiosClient.get(`${baseUrl}/terms`);
+  },
   createTerm: (data) => {
     return axiosClient.post(`${baseUrl}/create-term`, data);
+  },
+  updateTerm: (data) => {
+    return axiosClient.put(baseUrl + "/update-term", data);
   },
 };
 export default managerApi;

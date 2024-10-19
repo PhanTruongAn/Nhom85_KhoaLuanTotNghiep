@@ -170,6 +170,34 @@ const handleCreateNewTerm = async (req, res) => {
     });
   }
 };
+const handleGetTerms = async (req, res) => {
+  try {
+    const data = await service.getTerms();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
+const handleUpdateTerm = async (req, res) => {
+  try {
+    const data = await service.updateTerm(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
 module.exports = {
   handleGetAllPermission,
   handleCreatePermission,
@@ -183,4 +211,6 @@ module.exports = {
   handleCountStudent,
   handleDeleteGroupStudent,
   handleCreateNewTerm,
+  handleGetTerms,
+  handleUpdateTerm,
 };

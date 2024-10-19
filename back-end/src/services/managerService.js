@@ -92,7 +92,7 @@ const updatePermission = async (data) => {
         },
       }
     );
-    if (res) {
+    if (res[0] > 0) {
       return {
         status: 0,
         message: "Cập nhật quyền hạn thành công!",
@@ -455,7 +455,6 @@ const createNewTerm = async (data) => {
       message: "Tên học kì mới không được trống",
     };
   }
-  console.log(data);
   const validName = isValidSemester(name);
   if (validName.status !== 0) {
     return validName;
@@ -476,6 +475,19 @@ const createNewTerm = async (data) => {
     return {
       status: 1,
       message: errorMessage,
+    };
+  }
+
+  const isExistTerm = await Term.findOne({
+    where: {
+      name: name,
+    },
+    raw: true,
+  });
+  if (isExistTerm && typeof isExistTerm === "object") {
+    return {
+      status: -1,
+      message: `Học kì ${isExistTerm.name} đã tồn tại trong hệ thống!`,
     };
   }
   const result = await Term.create({
@@ -510,6 +522,51 @@ const createNewTerm = async (data) => {
     };
   }
 };
+
+const getTerms = async () => {
+  let terms = await Term.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    raw: true,
+  });
+  if (terms && terms.length > 0) {
+    return {
+      status: 0,
+      message: "Lấy danh sách học kì thành công!",
+      data: terms,
+    };
+  }
+  return {
+    status: 1,
+    message: "Danh sách học kì trống!",
+    data: [],
+  };
+};
+
+const updateTerm = async (newData) => {
+  const { id } = newData;
+  if (!id) {
+    return {
+      status: -1,
+      message: "Id không hợp lệ (undefinded hoặc null)!",
+    };
+  }
+  const update = await Term.update(newData, {
+    where: {
+      id: id,
+    },
+  });
+  if (update[0] > 0) {
+    return {
+      status: 0,
+      message: "Cập nhật học kì thành công!",
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Cập nhật học kì thất bại!",
+    };
+  }
+};
 module.exports = {
   paginationPermission,
   getAllPermission,
@@ -524,4 +581,6 @@ module.exports = {
   countStudent,
   deleteGroupStudent,
   createNewTerm,
+  getTerms,
+  updateTerm,
 };
