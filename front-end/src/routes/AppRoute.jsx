@@ -32,6 +32,7 @@ import CreateNotification from "../pages/DashBoard/DashBoardManager/notification
 import ManageNotification from "../pages/DashBoard/DashBoardManager/notifications/manageNotification/manageNotification";
 import ListTerm from "../pages/DashBoard/DashBoardManager/term/listTerm";
 import CreateTerm from "../pages/DashBoard/DashBoardManager/term/createTerm";
+import Statistical from "../pages/DashBoard/DashBoardManager/home/statistical";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -175,6 +176,14 @@ const AppRoute = () => {
           <Route
             path="create-term"
             element={<PrivateRoute component={<CreateTerm />} />}
+          />
+          <Route
+            path="statistical"
+            element={<PrivateRoute component={<Statistical />} />}
+          />
+          <Route
+            path="information"
+            element={<PrivateRoute component={<ManagerHome />} />}
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>

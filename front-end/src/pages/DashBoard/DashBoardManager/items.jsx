@@ -15,6 +15,8 @@ import {
   BarChartOutlined,
   TableOutlined,
   PlusOutlined,
+  AreaChartOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -26,6 +28,14 @@ const getItems = (isManager) => {
       key: "home",
       icon: <HomeOutlined />,
       label: "Trang chủ",
+      children: [
+        {
+          key: "information",
+          icon: <UserOutlined />,
+          label: "Thống tin cá nhân",
+        },
+        { key: "statistical", icon: <AreaChartOutlined />, label: "Thống kê" },
+      ],
     },
     {
       key: "term",
