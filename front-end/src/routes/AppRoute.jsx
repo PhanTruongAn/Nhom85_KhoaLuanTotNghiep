@@ -33,6 +33,7 @@ import ManageNotification from "../pages/DashBoard/DashBoardManager/notification
 import ListTerm from "../pages/DashBoard/DashBoardManager/term/listTerm";
 import CreateTerm from "../pages/DashBoard/DashBoardManager/term/createTerm";
 import Statistical from "../pages/DashBoard/DashBoardManager/home/statistical";
+import ManageMajor from "../pages/DashBoard/DashBoardManager/term/major/manageMajor";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -184,6 +185,10 @@ const AppRoute = () => {
           <Route
             path="information"
             element={<PrivateRoute component={<ManagerHome />} />}
+          />
+          <Route
+            path="manage-major"
+            element={<PrivateRoute component={<ManageMajor />} />}
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>

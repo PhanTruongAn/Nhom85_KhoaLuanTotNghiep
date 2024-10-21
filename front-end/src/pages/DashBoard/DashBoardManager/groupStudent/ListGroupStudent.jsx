@@ -213,13 +213,18 @@ const ListGroupStudent = () => {
           marginBottom: "16px",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box
+          className="col-4"
+          sx={{
+            float: "left",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           <Search
-            placeholder="Nhập thông tin"
-            onSearch={onSearch}
-            onChange={(e) => onSearch(e.target.value)}
+            placeholder="Tìm theo tên nhóm hoặc tên đề tài"
             enterButton
-            style={{ marginRight: "10px" }}
+            loading={state.searchLoading}
           />
         </Box>
         <Space>

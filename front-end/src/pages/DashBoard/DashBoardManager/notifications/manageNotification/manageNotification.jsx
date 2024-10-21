@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Container,
   Button,
   Typography,
   Box,
@@ -30,6 +29,7 @@ const initialData = [
     recipient: "students",
   },
 ];
+const { Search } = Input;
 
 function ManageNotification() {
   const [data, setData] = useState(initialData);
@@ -105,34 +105,21 @@ function ManageNotification() {
   ];
 
   return (
-    <Container sx={{ padding: "20px" }}>
-      {/* Thanh tìm kiếm */}
+    <Box sx={{ padding: "20px" }}>
       <Box
+        className="col-md-4"
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
+          float: "left",
         }}
       >
-        <Input
-          placeholder="Nhập thông tin"
-          prefix={<SearchOutlined />}
-          value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-          style={{
-            width: "500px",
-            borderRadius: "8px",
-            height: "40px",
-          }}
-        />
+        <Search placeholder="Tìm theo tiêu đề thông báo" enterButton />
       </Box>
 
-      <Box>
+      <Box sx={{ marginTop: "30px" }}>
         <Typography
           variant="h5"
           component="h2"
-          sx={{ fontWeight: "bold", textAlign: "center", flex: 1 }}
+          sx={{ fontWeight: "bold", textAlign: "center" }}
         >
           Danh sách thông báo
         </Typography>
@@ -244,7 +231,7 @@ function ManageNotification() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+    </Box>
   );
 }
 

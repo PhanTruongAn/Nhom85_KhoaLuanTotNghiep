@@ -100,7 +100,7 @@ function ListGroupTopicLecturer() {
           value={searchType}
           onChange={handleSearchTypeChange}
           variant="outlined"
-          sx={{ width: "200px" }}
+          size="small"
         >
           <MenuItem value="groupName">Tên nhóm</MenuItem>
           <MenuItem value="topicName">Tên đề tài</MenuItem>
@@ -116,7 +116,7 @@ function ListGroupTopicLecturer() {
               onClick={handleSearch}
             />
           }
-          style={{ width: "600px", height: "50px" }}
+          style={{ width: "500px", height: "30px" }}
         />
       </Box>
 
