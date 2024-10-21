@@ -25,7 +25,7 @@ function StudentHome() {
     phone: user.phone || "undefined",
     email: user.email || "undefined",
     gender: user.gender || "undefined",
-    majorName: user.majorName || "undefined",
+    majorId: user.majorId || "undefined",
     className: user.className || "undefined",
     typeTraining: user.typeTraining || "undefined",
   });
@@ -55,6 +55,7 @@ function StudentHome() {
     try {
       const response = await studentApi.updateById(formData);
       if (response.status === 0) {
+        dispatch(setUser({ ...user, ...formData }));
         messageApi.success("Cập nhật thông tin thành công!");
       } else {
         messageApi.error(`Cập nhật thất bại: ${response.message}`);
@@ -65,7 +66,7 @@ function StudentHome() {
       setLoading(false);
     }
   };
-
+  console.log("Check user: ", user);
   return (
     <Box
       sx={{
