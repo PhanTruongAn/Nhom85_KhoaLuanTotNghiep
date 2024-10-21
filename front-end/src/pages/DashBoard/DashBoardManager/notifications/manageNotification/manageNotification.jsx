@@ -67,9 +67,9 @@ function ManageNotification() {
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Title", dataIndex: "title", key: "title", width: "800px" },
+    { title: "Tiêu đề", dataIndex: "title", key: "title", width: "800px" },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "actions",
       render: (text, record) => (
         <Space>
@@ -107,31 +107,38 @@ function ManageNotification() {
   return (
     <Box sx={{ padding: "20px" }}>
       <Box
-        className="col-md-4"
         sx={{
-          float: "left",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
         }}
       >
-        <Search placeholder="Tìm theo tiêu đề thông báo" enterButton />
+        <Box sx={{ width: "35%" }}>
+          <Search
+            placeholder="Tìm theo tiêu đề thông báo"
+            enterButton
+            onChange={(e) => setSearchKeyword(e.target.value)}
+          />
+        </Box>
       </Box>
 
-      <Box sx={{ marginTop: "30px" }}>
-        <Typography
-          variant="h5"
-          component="h2"
-          sx={{ fontWeight: "bold", textAlign: "center" }}
-        >
-          Danh sách thông báo
-        </Typography>
-        <Table
-          style={{ marginTop: "20px" }}
-          dataSource={filteredData}
-          columns={columns}
-          rowKey="id"
-          bordered
-          pagination={{}}
-        />
-      </Box>
+      <Typography
+        variant="h5"
+        component="h2"
+        sx={{ fontWeight: "bold", textAlign: "center", mb: 2 }}
+      >
+        Danh sách thông báo
+      </Typography>
+
+      <Table
+        style={{ marginTop: "20px" }}
+        dataSource={filteredData}
+        columns={columns}
+        rowKey="id"
+        bordered
+        pagination={{}}
+      />
 
       <Dialog
         open={isUpdateOpen}
@@ -163,7 +170,7 @@ function ManageNotification() {
             <TextField
               label="Tiêu đề"
               variant="outlined"
-              name="Tiêu đề"
+              name="title"
               value={currentNotification?.title || ""}
               onChange={handleChange}
               required
@@ -176,7 +183,7 @@ function ManageNotification() {
             <TextField
               label="Chi tiết"
               variant="outlined"
-              name="Chi tiết"
+              name="details"
               value={currentNotification?.details || ""}
               onChange={handleChange}
               multiline

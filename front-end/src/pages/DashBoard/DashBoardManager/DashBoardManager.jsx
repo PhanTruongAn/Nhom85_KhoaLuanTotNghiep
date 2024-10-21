@@ -151,91 +151,99 @@ const DashBoardManager = () => {
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       <ThemeProvider theme={themes ? themeDark : themeLight}>
         <CssBaseline />
-        <Layout className="container-fluid p-0 admin-container" hasSider>
+        <Layout
+          className="container-fluid p-0 admin-container"
+          hasSider
+          style={{ minHeight: "100vh" }}
+        >
           {contextHolder}
-          <Sider
-            trigger={null}
-            collapsible
-            collapsed={collapsed}
-            style={{ position: "relative" }}
-          >
-            {!collapsed && (
-              <Box className="demo-logo-vertical">
-                <img
-                  src={themes ? logoDark : logoLight}
-                  style={{
-                    width: "80%",
-                    height: "auto",
-                    alignSelf: "center",
-                    paddingLeft: "10px",
-                  }}
-                />
+
+          {!collapsed && (
+            <Box sx={{ width: "250px" }}>
+              <Box sx={{ overflowY: "auto" }}>
                 <Box
+                  className="demo-logo-vertical"
                   sx={{
-                    fontWeight: "700",
-                    paddingTop: "10px",
-                    fontSize: "14px",
-                    paddingLeft: "10px",
-                  }}
-                >
-                  KHÓA LUẬN TỐT NGHIỆP
-                </Box>
-                <Select
-                  value={selectedOption || 1}
-                  onChange={(event) => setSelectedOption(event.target.value)}
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    width: 200,
                     textAlign: "center",
-                    marginRight: "10px",
-                    marginTop: "10px",
-                    backgroundColor: themes ? "#2c3e50" : "#f0f0f0",
-                    color: themes ? "#fff" : "#000",
-                    borderRadius: "8px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: themes ? "#34495e" : "#d9d9d9",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: themes ? "#1abc9c" : "#40a9ff",
-                    },
-                    "& .MuiSelect-icon": {
-                      color: themes ? "#fff" : "#000",
-                    },
+                    backgroundColor: themes ? "#001529" : "#fff",
                   }}
                 >
-                  {terms && terms.length > 0 ? (
-                    terms.map((term, index) => (
-                      <MenuItem key={index} value={term.id}>
-                        {term.name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value="">No terms available</MenuItem>
-                  )}
-                </Select>
+                  <img
+                    src={themes ? logoDark : logoLight}
+                    alt="Logo"
+                    style={{
+                      width: "80%",
+                      height: "auto",
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      fontWeight: "700",
+                      fontSize: "14px",
+                      mt: 1,
+                      color: themes ? "#fff" : "#000",
+                    }}
+                  >
+                    KHÓA LUẬN TỐT NGHIỆP
+                  </Box>
+                  <Select
+                    value={selectedOption || 1}
+                    onChange={(event) => setSelectedOption(event.target.value)}
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      width: 200,
+                      textAlign: "center",
+                      marginRight: "10px",
+                      marginTop: "10px",
+                      backgroundColor: themes ? "#2c3e50" : "#f0f0f0",
+                      color: themes ? "#fff" : "#000",
+                      borderRadius: "8px",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: themes ? "#34495e" : "#d9d9d9",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: themes ? "#1abc9c" : "#40a9ff",
+                      },
+                      "& .MuiSelect-icon": {
+                        color: themes ? "#fff" : "#000",
+                      },
+                    }}
+                  >
+                    {terms && terms.length > 0 ? (
+                      terms.map((term, index) => (
+                        <MenuItem key={index} value={term.id}>
+                          {term.name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem value="">No terms available</MenuItem>
+                    )}
+                  </Select>
+                  <MenuAtnd
+                    selectedKeys={[
+                      window.location.pathname.split("/dashboard/")[1] ||
+                        window.location.pathname,
+                    ]}
+                    onClick={(key) => handlePath(key)}
+                    defaultSelectedKeys={[
+                      window.location.pathname || "/dashboard/home",
+                    ]}
+                    openKeys={openKeys}
+                    onOpenChange={handleOpenChange} // Thêm hàm này để quản lý trạng thái mở
+                    mode="inline"
+                    theme={themes ? "dark" : "light"}
+                    items={items}
+                    style={{
+                      marginTop: "10px",
+                      height: "calc(90vh - 110px)",
+                    }}
+                  />
+                </Box>
               </Box>
-            )}
-            <MenuAtnd
-              selectedKeys={[
-                window.location.pathname.split("/dashboard/")[1] ||
-                  window.location.pathname,
-              ]}
-              onClick={(key) => handlePath(key)}
-              defaultSelectedKeys={[
-                window.location.pathname || "/dashboard/home",
-              ]}
-              openKeys={openKeys}
-              onOpenChange={handleOpenChange} // Thêm hàm này để quản lý trạng thái mở
-              mode="inline"
-              theme={themes ? "dark" : "light"}
-              items={items}
-              style={{
-                marginTop: "10px",
-                height: "calc(92vh - 110px)",
-              }}
-            />
-          </Sider>
+            </Box>
+          )}
+
           <Layout className="container-fluid p-0">
             <Header style={{ padding: 0 }}>
               <Button
@@ -305,7 +313,7 @@ const DashBoardManager = () => {
                 margin: "24px 16px",
                 color: themes ? "#fff" : "#000",
                 overflowY: "auto",
-                maxHeight: "590px",
+                maxHeight: "580px",
                 background: themes ? "#152f40" : "#fff",
                 borderRadius: borderRadiusLG,
               }}
