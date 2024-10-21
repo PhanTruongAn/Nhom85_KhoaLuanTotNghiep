@@ -34,7 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       roleId: DataTypes.INTEGER,
       degree: DataTypes.STRING,
       majorId: DataTypes.INTEGER,
-      isAdmin: DataTypes.BOOLEAN,
     },
     {
       sequelize,

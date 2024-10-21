@@ -34,14 +34,9 @@ module.exports = (sequelize, DataTypes) => {
       gender: DataTypes.STRING,
       roleId: DataTypes.INTEGER,
       className: DataTypes.STRING,
-      majorName: DataTypes.STRING,
       typeTraining: DataTypes.STRING,
       groupId: DataTypes.INTEGER,
       majorId: DataTypes.INTEGER,
-      notifications: {
-        type: DataTypes.JSON,
-        allowNull: true,
-      },
     },
     {
       sequelize,

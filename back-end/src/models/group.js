@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "topicId",
         as: "topic",
       });
+      Group.hasOne(models.Evaluation, {
+        foreignKey: "groupId",
+        as: "evaluation",
+        onDelete: "CASCADE",
+      });
     }
   }
   Group.init(
