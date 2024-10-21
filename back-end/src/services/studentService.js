@@ -5,7 +5,14 @@ import { sequelize } from "../models";
 import { raw } from "express";
 const { Op } = require("sequelize");
 const { literal } = require("sequelize");
-const { Student, Group, Role, Topic, Lecturer } = require("../models");
+const {
+  Student,
+  Group,
+  Role,
+  Topic,
+  Lecturer,
+  TermStudent,
+} = require("../models");
 
 // Tạo tài khoản sinh viên
 const createStudentAccount = async (data) => {
@@ -55,7 +62,9 @@ const createStudentAccount = async (data) => {
 };
 // Tạo nhiều tài khoản sinh viên
 const createBulkAccount = async (data) => {
-  console.log(data);
+  console.log("Type of TermStudent: ", typeof TermStudent); // Kiểm tra kiểu
+  console.log("TermStudent object: ", TermStudent); // Kiểm tra nội dung
+  console.log("Student object: ", Student); // Kiểm tra nội dung
   if (!data || isEmpty(data)) {
     return {
       status: 1,
@@ -83,7 +92,17 @@ const createBulkAccount = async (data) => {
       };
     }
     const _data = _.cloneDeep(persists);
+    const termId = _data[0]?.termId;
+
+    if (!termId) {
+      return {
+        status: 1,
+        message: "Không tìm thấy thông tin học kì!",
+        data: null,
+      };
+    }
     const dataPersist = [];
+
     Object.entries(_data).map(([key, value], index) => {
       dataPersist.push({
         fullName: value.fullName,
@@ -95,11 +114,30 @@ const createBulkAccount = async (data) => {
 
     // console.log("Check persist: ", dataPersist);
     const results = await Student.bulkCreate(dataPersist);
-    if (persists) {
-      return {
-        status: 0,
-        message: `Tạo mới thành công ${persists.length} tài khoản sinh viên!`,
-      };
+    if (results && results.length === dataPersist.length) {
+      const termStudent = results.map((student) => ({
+        termId: termId,
+        studentId: student.id,
+      }));
+
+      // Kiểm tra xem TermStudent có sẵn không
+      console.log("TermStudent data to insert: ", termStudent);
+
+      const termStudents = await TermStudent.bulkCreate(termStudent);
+
+      // Kiểm tra kết quả TermStudent
+      if (termStudents && termStudents.length === termStudent.length) {
+        console.log("TermStudent: ", termStudents);
+        return {
+          status: 0,
+          message: `Tạo mới thành công ${persists.length} tài khoản sinh viên!`,
+        };
+      } else {
+        return {
+          status: -1,
+          message: `Tạo mới tài khoản sinh viên thất bại!`,
+        };
+      }
     }
   } catch (error) {
     console.log(error);

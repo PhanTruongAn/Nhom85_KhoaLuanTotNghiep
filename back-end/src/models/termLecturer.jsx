@@ -1,24 +1,20 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  const TermLecturer = sequelize.define("TermLecturer", {
-    termId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "Term",
-        key: "id",
-      },
-      onDelete: "CASCADE",
+  class TermLecturer extends Model {
+    static associate(models) {
+      // define association here
+    }
+  }
+  TermLecturer.init(
+    {
+      termId: DataTypes.INTEGER,
+      lecturerId: DataTypes.INTEGER,
     },
-    lecturerId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "Lecturer",
-        key: "id",
-      },
-      onDelete: "CASCADE",
-    },
-  });
-
+    {
+      sequelize,
+      modelName: "TermLecturer",
+    }
+  );
   return TermLecturer;
 };

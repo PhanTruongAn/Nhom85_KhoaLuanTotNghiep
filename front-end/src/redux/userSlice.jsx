@@ -9,6 +9,7 @@ const initialState = {
   group: {},
   topic: {},
   terms: [],
+  currentTerm: {},
 };
 22;
 
@@ -41,6 +42,9 @@ const userSlice = createSlice({
     setTerms: (state, action) => {
       state.terms = action.payload;
     },
+    setCurrentTerm: (state, action) => {
+      state.currentTerm = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -56,6 +60,7 @@ const userSlice = createSlice({
       });
   },
 });
-export const { setUser, setGroup, setMyTopic, setTerms } = userSlice.actions;
+export const { setUser, setGroup, setMyTopic, setTerms, setCurrentTerm } =
+  userSlice.actions;
 export { fetchToken };
 export default userSlice.reducer;

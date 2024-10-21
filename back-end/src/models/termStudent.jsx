@@ -1,24 +1,29 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  const TermStudent = sequelize.define("TermStudent", {
-    termId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "Terms",
-        key: "id",
-      },
-      onDelete: "CASCADE",
-    },
-    studentId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "Students",
-        key: "id",
-      },
-      onDelete: "CASCADE",
-    },
-  });
+  class TermStudent extends Model {
+    static associate(models) {
+      TermStudent.belongsTo(models.Student, {
+        foreignKey: "studentId",
+        onDelete: "CASCADE",
+      });
+      TermStudent.belongsTo(models.Term, {
+        foreignKey: "termId",
+        onDelete: "CASCADE",
+      });
+    }
+  }
 
+  TermStudent.init(
+    {
+      termId: DataTypes.INTEGER,
+      studentId: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "TermStudent",
+    }
+  );
+  console.log("TermStudent model initialized");
   return TermStudent;
 };

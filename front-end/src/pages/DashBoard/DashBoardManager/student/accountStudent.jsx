@@ -10,7 +10,9 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import AddModal from "./AddModal";
 import { isEmpty } from "lodash";
+import { useSelector } from "react-redux";
 const AccountStudent = () => {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [state, setState] = useState({
     loadingSuccess: false,
     loadingError: false,
@@ -47,6 +49,7 @@ const AccountStudent = () => {
     const dataPersist = [];
     Object.entries(data).map(([key, value]) => {
       dataPersist.push({
+        termId: currentTerm.id,
         fullName: value.FullName,
         username: value.MaSinhVien,
         password: "123",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MenuFoldOutlined,
   ExclamationCircleOutlined,
@@ -11,7 +11,7 @@ import "./DashBoardManager.scss";
 import {
   Button,
   Layout,
-  Menu as MenuAtnd,
+  Menu as MenuAnt,
   theme,
   ConfigProvider,
   Modal,
@@ -32,13 +32,15 @@ import logoLight from "../../../images/logo-iuh.png";
 import ListNotification from "./notifications/listNotification.jsx";
 import CustomHooks from "../../../utils/hooks.jsx";
 import managerApi from "../../../apis/managerApi.jsx";
-import { setTerms } from "../../../redux/userSlice.jsx";
+import { setCurrentTerm, setTerms } from "../../../redux/userSlice.jsx";
 import { isEmpty } from "lodash";
+import { getCurrentTerm } from "../../../utils/getCurrentTerm.jsx";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardManager = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [notifications, setNotifications] = useState(5);
   const [selectedOption, setSelectedOption] = useState(1);
   const terms = useSelector((state) => state.userInit.terms);
@@ -96,6 +98,12 @@ const DashBoardManager = () => {
 
   const open = Boolean(anchorEl); // Kiểm tra Popover mở hay đóng
 
+  useEffect(() => {
+    const currentTerm = getCurrentTerm(terms);
+    dispatch(setCurrentTerm(currentTerm));
+    setSelectedOption(currentTerm?.id || 1);
+  }, [terms, dispatch]);
+
   const confirm = () => {
     modal.confirm({
       title: "Xác nhận",
@@ -147,6 +155,14 @@ const DashBoardManager = () => {
     setThemes(!themes);
   };
 
+  let onSelectedTerm = (event) => {
+    let value = event.target.value;
+    setSelectedOption(value);
+    let selectedTerm = terms.find((item) => {
+      return value === item.id;
+    });
+    dispatch(setCurrentTerm(selectedTerm));
+  };
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       <ThemeProvider theme={themes ? themeDark : themeLight}>
@@ -187,8 +203,8 @@ const DashBoardManager = () => {
                     KHÓA LUẬN TỐT NGHIỆP
                   </Box>
                   <Select
-                    value={selectedOption || 1}
-                    onChange={(event) => setSelectedOption(event.target.value)}
+                    value={currentTerm?.id || selectedOption}
+                    onChange={(event) => onSelectedTerm(event)}
                     variant="outlined"
                     size="small"
                     sx={{
@@ -220,7 +236,7 @@ const DashBoardManager = () => {
                       <MenuItem value="">No terms available</MenuItem>
                     )}
                   </Select>
-                  <MenuAtnd
+                  <MenuAnt
                     selectedKeys={[
                       window.location.pathname.split("/dashboard/")[1] ||
                         window.location.pathname,

@@ -67,7 +67,7 @@ const getItems = (isManager) => {
         {
           key: "topic",
           icon: <FileExcelOutlined />,
-          label: "Tạo đề tài",
+          label: "Thêm đề tài",
         },
         {
           key: "manage-list-topic",
