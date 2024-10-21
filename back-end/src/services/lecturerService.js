@@ -3,9 +3,8 @@ import { hashPassword } from "../services/userService";
 import _, { isEmpty } from "lodash";
 const { Op } = require("sequelize");
 //Models Database
-const Lecturer = db.Lecturer;
-const Role = db.Role;
-const Topic = db.Topic;
+const { Lecturer, Role, Topic, TermLecturer, Term } = require("../models");
+
 //Tạo tài khoản giảng viên
 const createLecturerAccount = async (data) => {
   if (!data.fullName) {
@@ -364,6 +363,42 @@ const createTopics = async (data) => {
 // const getMyTopics = async ()=>{
 
 // }
+
+const getTerm = async (id) => {
+  try {
+    if (!id) {
+      return {
+        status: -1,
+        message: "Id người dùng không hợp lệ",
+      };
+    }
+    const terms = await Term.findAll({
+      include: {
+        model: Lecturer,
+        as: "lecturers", // Alias đã đặt trong associate
+        where: { id: id },
+        attributes: [], // Không lấy thuộc tính của Lecturer, chỉ lấy thông tin từ Term
+        through: { attributes: [] }, // Bỏ qua bảng trung gian TermLecturer
+      },
+      attributes: ["id", "name", "startDate", "endDate"],
+    });
+    if (terms && terms.length > 0) {
+      return {
+        status: 0,
+        message: "Lấy danh sách term thành công!",
+        data: terms,
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Không tìm thấy dữ liệu!",
+        data: [],
+      };
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -375,4 +410,5 @@ module.exports = {
   findLecturersByUserNameOrFullName,
   findLecturersByName,
   createTopics,
+  getTerm,
 };

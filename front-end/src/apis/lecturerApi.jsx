@@ -30,6 +30,10 @@ const lecturerApi = {
       `${baseUrl}/find-by-name?page=${page}&limit=${limit}&input=${input}`
     );
   },
+  getTerm: (id) => {
+    return axiosClient.get(`${baseUrl}/term?id=${id}`);
+  },
+
   changePassword: (data) => {
     return axiosClient.put(baseUrl + "/change-password", data);
   },

@@ -4,9 +4,6 @@ module.exports = (sequelize, DataTypes) => {
   class Lecturer extends Model {
     static associate(models) {
       // define association here
-      Lecturer.belongsTo(models.Major, {
-        foreignKey: "majorId",
-      });
       Lecturer.belongsTo(models.Role, {
         foreignKey: "roleId",
       });
@@ -33,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
       gender: DataTypes.STRING,
       roleId: DataTypes.INTEGER,
       degree: DataTypes.STRING,
-      majorId: DataTypes.INTEGER,
     },
     {
       sequelize,

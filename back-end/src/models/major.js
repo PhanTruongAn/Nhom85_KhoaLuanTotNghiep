@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       Major.belongsTo(models.Term, {
         foreignKey: "termId",
       });
-      Major.hasMany(models.Lecturer);
+      Major.hasMany(models.Student);
     }
   }
   Major.init(

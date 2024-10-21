@@ -34,9 +34,6 @@ module.exports = {
       degree: {
         type: Sequelize.STRING,
       },
-      majorId: {
-        type: Sequelize.INTEGER,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

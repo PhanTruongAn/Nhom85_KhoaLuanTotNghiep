@@ -103,7 +103,19 @@ const handleCreateTopics = async (req, res) => {
     });
   }
 };
-
+const handleGetTerm = async (req, res) => {
+  try {
+    let { id } = req.query;
+    let data = await lecturerService.getTerm(id);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: 1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 module.exports = {
   handleCreateLecturerAccount,
   handleBulkCreateLecturer,
@@ -114,4 +126,5 @@ module.exports = {
   handleFindLecturersByName,
   handleFindLecturersByUserNameOrFullName,
   handleCreateTopics,
+  handleGetTerm,
 };

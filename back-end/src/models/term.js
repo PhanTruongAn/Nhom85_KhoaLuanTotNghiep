@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Term.belongsToMany(models.Lecturer, {
         through: "TermLecturer",
-        foreignKey: "termId",
+        foreignKey: "lecturerId",
         onDelete: "CASCADE",
         as: "lecturers",
         hooks: true,

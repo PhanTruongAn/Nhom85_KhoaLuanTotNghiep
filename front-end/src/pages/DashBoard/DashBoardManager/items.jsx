@@ -29,12 +29,12 @@ const getItems = (isManager) => {
       icon: <HomeOutlined />,
       label: "Trang chủ",
       children: [
+        { key: "statistical", icon: <AreaChartOutlined />, label: "Thống kê" },
         {
           key: "information",
           icon: <UserOutlined />,
           label: "Thống tin cá nhân",
         },
-        { key: "statistical", icon: <AreaChartOutlined />, label: "Thống kê" },
       ],
     },
     {

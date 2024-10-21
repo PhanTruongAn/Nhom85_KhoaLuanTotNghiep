@@ -19,7 +19,7 @@ import {
 import { Outlet, useNavigate } from "react-router-dom";
 import getItems from "./items.jsx";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ThemeProvider, Box, Popover, Select, MenuItem } from "@mui/material"; // Popover từ MUI
 import CssBaseline from "@mui/material/CssBaseline";
 import authApi from "../../../apis/authApi.jsx";
@@ -30,14 +30,18 @@ import themeLight from "../../../styles/themes/mui/themeLight.jsx";
 import logoDark from "../../../images/Logo-White.png";
 import logoLight from "../../../images/logo-iuh.png";
 import ListNotification from "./notifications/listNotification.jsx";
-
+import CustomHooks from "../../../utils/hooks.jsx";
+import managerApi from "../../../apis/managerApi.jsx";
+import { setTerms } from "../../../redux/userSlice.jsx";
+import { isEmpty } from "lodash";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardManager = () => {
-  const [notifications, setNotifications] = useState(5);
-  const [selectedOption, setSelectedOption] = useState("option1");
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [notifications, setNotifications] = useState(5);
+  const [selectedOption, setSelectedOption] = useState(1);
+  const terms = useSelector((state) => state.userInit.terms);
   const user = useSelector((state) => state.userInit.user);
   const isManager = user.role.name === "MANAGER" || user.role.name === "ADMIN";
   const items = getItems(isManager);
@@ -47,6 +51,34 @@ const DashBoardManager = () => {
     return storedTheme === "true";
   });
 
+  const getTerms = async () => {
+    const res = await managerApi.getTerms();
+    return res;
+  };
+  const {
+    data: termsData,
+    isFetching,
+    refetch,
+  } = CustomHooks.useQuery(
+    ["terms"],
+    getTerms,
+
+    {
+      enabled: isEmpty(terms),
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          dispatch(setTerms(res.data));
+        } else if (res.status === 1) {
+          messageApi.info(res.message);
+        } else {
+          messageApi.error(res.message);
+        }
+      },
+      onError: (error) => {
+        messageApi.error(`${error}!`);
+      },
+    }
+  );
   const [collapsed, setCollapsed] = useState(false);
   const [openKeys, setOpenKeys] = useState([]); // State để theo dõi menu con đang mở
   const [modal, contextHolder] = Modal.useModal();
@@ -149,12 +181,13 @@ const DashBoardManager = () => {
                   KHÓA LUẬN TỐT NGHIỆP
                 </Box>
                 <Select
-                  value={selectedOption}
+                  value={selectedOption || 1}
                   onChange={(event) => setSelectedOption(event.target.value)}
                   variant="outlined"
                   size="small"
                   sx={{
                     width: 200,
+                    textAlign: "center",
                     marginRight: "10px",
                     marginTop: "10px",
                     backgroundColor: themes ? "#2c3e50" : "#f0f0f0",
@@ -171,9 +204,15 @@ const DashBoardManager = () => {
                     },
                   }}
                 >
-                  <MenuItem value="option1">Hk1_2022-2023</MenuItem>
-                  <MenuItem value="option2">Hk1_2022-2023</MenuItem>
-                  <MenuItem value="option3">Hk1_2022-2023</MenuItem>
+                  {terms && terms.length > 0 ? (
+                    terms.map((term, index) => (
+                      <MenuItem key={index} value={term.id}>
+                        {term.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value="">No terms available</MenuItem>
+                  )}
                 </Select>
               </Box>
             )}

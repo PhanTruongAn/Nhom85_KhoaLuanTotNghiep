@@ -18,7 +18,7 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomHooks from "../../../../utils/hooks";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
-import { isEmpty } from "lodash";
+
 const { Option } = Select;
 const { Search } = Input;
 
