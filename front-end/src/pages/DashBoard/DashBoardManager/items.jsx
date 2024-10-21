@@ -52,6 +52,11 @@ const getItems = (isManager) => {
           icon: <OrderedListOutlined />,
           label: "Danh sách",
         },
+        {
+          key: "manage-major",
+          icon: <OrderedListOutlined />,
+          label: "Chuyên ngành",
+        },
       ],
     },
     {

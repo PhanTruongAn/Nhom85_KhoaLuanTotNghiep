@@ -306,12 +306,19 @@ function StudentHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Chuyên ngành
               </label>
-              <Input
+              <Select
                 name="majorName"
                 value={formData.majorName}
-                onChange={handleChange}
-                placeholder="Kỹ thuật phần mềm"
-              />
+                onChange={(value) =>
+                  setFormData({ ...formData, typeTraining: value })
+                }
+                style={{ width: "100%" }}
+              >
+                <Option value="Kỹ Thuật Phần Mềm">Kỹ Thuật Phần Mềm</Option>
+                <Option value="Khoa Học Máy Tính">Khoa Học Máy Tính</Option>
+                <Option value="Khoa Học Dữ Liệu">Khoa Học Dữ Liệu</Option>
+                <Option value="Hệ Thống Thông Tin">Hệ Thống Thông Tin</Option>
+              </Select>
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
