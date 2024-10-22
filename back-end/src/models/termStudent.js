@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "studentId",
         onDelete: "CASCADE",
       });
+
       TermStudent.belongsTo(models.Term, {
         foreignKey: "termId",
         onDelete: "CASCADE",
@@ -24,6 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "TermStudent",
     }
   );
-  console.log("TermStudent model initialized");
+
   return TermStudent;
 };

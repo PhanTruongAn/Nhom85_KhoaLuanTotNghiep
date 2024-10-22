@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { Col, Form, Input, Modal, Row, Select, message, Button } from "antd";
 import _ from "lodash";
 import studentApi from "../../../../apis/studentApi";
+import { useSelector } from "react-redux";
 function AddModal({ onClose, isOpen }) {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -21,7 +23,11 @@ function AddModal({ onClose, isOpen }) {
   };
   const handlerSubmit = async () => {
     setLoading(true);
-    const result = await studentApi.createSingleAccountStudent(data);
+    let dataToSave = {
+      ...data,
+      termId: currentTerm.id,
+    };
+    const result = await studentApi.createSingleAccountStudent(dataToSave);
     if (result && result.status === 0) {
       messageApi.success(result.message);
       setLoading(false);

@@ -34,8 +34,10 @@ const studentApi = {
   viewDetailsTopic: (id) => {
     return axiosClient.get(baseUrl + `/details-topic?id=${id}`);
   },
-  getAll: (page, limit) => {
-    return axiosClient.get(`${baseUrl}/get-all?page=${page}&limit=${limit}`);
+  getAll: (page, limit, term) => {
+    return axiosClient.get(
+      `${baseUrl}/get-all?term=${term}&page=${page}&limit=${limit}`
+    );
   },
   deleteById: (data) => {
     return axiosClient.delete(baseUrl + "/delete", { data });

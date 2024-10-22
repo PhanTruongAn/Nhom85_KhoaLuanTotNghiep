@@ -12,59 +12,83 @@ const {
   Topic,
   Lecturer,
   TermStudent,
+  Term,
 } = require("../models");
 
 // Tạo tài khoản sinh viên
 const createStudentAccount = async (data) => {
-  if (!data.fullName) {
-    return {
-      status: 1,
-      message: "Tên đầy đủ không được trống!",
-    };
-  }
-  if (!data.username) {
-    return {
-      status: 1,
-      message: "Mã sinh viên không được trống!",
-    };
-  }
-  const existStudent = await Student.findOne({
-    where: {
-      username: data.username,
-    },
-  });
-  if (existStudent) {
-    return {
-      status: -1,
-      message: "Sinh viên này đã tồn tại trong hệ thống!",
-    };
-  } else {
-    const defaultPassword = "123";
-    const hashPass = hashPassword(defaultPassword);
-    const student = await Student.create({
-      ...data,
-      password: hashPass,
-      roleId: 1,
+  try {
+    if (!data.fullName) {
+      return {
+        status: 1,
+        message: "Tên đầy đủ không được trống!",
+      };
+    }
+    if (!data.username) {
+      return {
+        status: 1,
+        message: "Mã sinh viên không được trống!",
+      };
+    }
+
+    // Kiểm tra sinh viên đã tồn tại hay chưa
+    const existStudent = await Student.findOne({
+      where: {
+        username: data.username,
+      },
     });
-    if (student) {
+
+    let student;
+
+    // Nếu sinh viên đã tồn tại
+    if (existStudent) {
+      student = existStudent;
+    } else {
+      // Nếu sinh viên chưa tồn tại, tạo sinh viên mới
+      const defaultPassword = "123";
+      const hashPass = hashPassword(defaultPassword);
+      student = await Student.create({
+        ...data,
+        password: hashPass,
+        roleId: 1,
+      });
+    }
+
+    // Kiểm tra xem sinh viên đã tồn tại trong học kỳ này chưa
+    const existTermStudent = await TermStudent.findOne({
+      where: {
+        studentId: student.id,
+        termId: data.termId,
+      },
+    });
+
+    if (existTermStudent) {
+      return {
+        status: -1,
+        message: "Sinh viên này đã tồn tại trong học kỳ này!",
+      };
+    } else {
+      // Nếu sinh viên chưa tồn tại trong học kỳ, thêm vào bảng TermStudent
+      await TermStudent.create({
+        studentId: student.id,
+        termId: data.termId,
+      });
+
       return {
         status: 0,
         message: "Tạo tài khoản sinh viên thành công!",
       };
-    } else {
-      return {
-        status: -1,
-        message: "Tạo tài khoản sinh viên thất bại!",
-        data,
-      };
     }
+  } catch (error) {
+    return {
+      status: -1,
+      message: `${error.message}!`,
+    };
   }
 };
+
 // Tạo nhiều tài khoản sinh viên
 const createBulkAccount = async (data) => {
-  console.log("Type of TermStudent: ", typeof TermStudent); // Kiểm tra kiểu
-  console.log("TermStudent object: ", TermStudent); // Kiểm tra nội dung
-  console.log("Student object: ", Student); // Kiểm tra nội dung
   if (!data || isEmpty(data)) {
     return {
       status: 1,
@@ -121,13 +145,11 @@ const createBulkAccount = async (data) => {
       }));
 
       // Kiểm tra xem TermStudent có sẵn không
-      console.log("TermStudent data to insert: ", termStudent);
 
       const termStudents = await TermStudent.bulkCreate(termStudent);
 
       // Kiểm tra kết quả TermStudent
       if (termStudents && termStudents.length === termStudent.length) {
-        console.log("TermStudent: ", termStudents);
         return {
           status: 0,
           message: `Tạo mới thành công ${persists.length} tài khoản sinh viên!`,
@@ -149,12 +171,24 @@ const createBulkAccount = async (data) => {
   }
 };
 // Lấy danh sách sinh viên
-const getStudentList = async () => {
+const getStudentList = async (term) => {
   const list = await Student.findAll({
     attributes: ["id", "username", "fullName", "gender", "email", "phone"],
-    include: {
-      model: Role,
-    },
+    include: [
+      {
+        model: Role,
+      },
+      {
+        model: Term,
+        as: "terms",
+        through: {
+          attributes: [],
+        },
+        where: {
+          id: term,
+        },
+      },
+    ],
   });
   if (list && list.length > 0) {
     return {
@@ -170,15 +204,27 @@ const getStudentList = async () => {
   };
 };
 // Lấy danh sách phân trang của sinh viên
-const getPaginationStudent = async (page, limit) => {
+const getPaginationStudent = async (page, limit, term) => {
   try {
     const offset = (page - 1) * limit;
     const { count, rows } = await Student.findAndCountAll({
       attributes: ["id", "username", "fullName", "gender", "email", "phone"],
-      include: {
-        model: Role,
-        attributes: ["id", "name", "description"],
-      },
+      include: [
+        {
+          model: Role,
+          attributes: ["id", "name", "description"],
+        },
+        {
+          model: Term,
+          through: {
+            attributes: [],
+          },
+          as: "terms",
+          where: {
+            id: term,
+          },
+        },
+      ],
       offset: offset,
       limit: limit,
     });
@@ -202,10 +248,19 @@ const getPaginationStudent = async (page, limit) => {
   }
 };
 const deleteStudent = async (data) => {
+  if (!data && !data.id && !data.termId) {
+    return {
+      status: -1,
+      message: "Id sinh viên hoặc Id học kì không hợp lệ!",
+    };
+  }
   const res = await Student.destroy({
     where: { id: data.id },
   });
-  if (res) {
+  let res2 = await TermStudent.destroy({
+    where: { studentId: data.id, termId: data.termId },
+  });
+  if (res && res2) {
     return {
       status: 0,
       message: "Xóa thành công!",
@@ -257,13 +312,22 @@ const updateStudent = async (data) => {
   }
 };
 const deleteManyStudent = async (data) => {
+  if (!data && !data.studentId && !data.termId) {
+    return {
+      status: -1,
+      message: "Id sinh viên hoặc Id học kì không hợp lệ!",
+    };
+  }
   try {
     const result = Student.destroy({
       where: {
-        id: data,
+        id: data.studentId,
       },
     });
-    if (result) {
+    let result2 = await TermStudent.destroy({
+      where: { studentId: data.studentId, termId: data.termId },
+    });
+    if (result && result2) {
       return {
         status: 0,
         message: "Xóa thành công!",

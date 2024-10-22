@@ -3,6 +3,7 @@ import { Col, Form, Input, Modal, Row, Select, message, Button } from "antd";
 import _ from "lodash";
 import studentApi from "../../apis/studentApi";
 import lecturerApi from "../../apis/lecturerApi";
+import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
 const { Option } = Select; // Thêm dòng này
 function CreateModal({
@@ -13,6 +14,7 @@ function CreateModal({
   isStudent,
   listRole,
 }) {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const obj = isStudent ? "sinh viên" : "giảng viên";
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
@@ -33,8 +35,12 @@ function CreateModal({
   };
   const handlerSubmit = async () => {
     setLoading(true);
+    let dataToSave = {
+      ...data,
+      termId: currentTerm.id,
+    };
     const result = isStudent
-      ? await studentApi.createSingleAccountStudent(data)
+      ? await studentApi.createSingleAccountStudent(dataToSave)
       : await lecturerApi.createSingleAccountLecturer(data);
     if (result && result.status === 0) {
       messageApi.success(result.message);

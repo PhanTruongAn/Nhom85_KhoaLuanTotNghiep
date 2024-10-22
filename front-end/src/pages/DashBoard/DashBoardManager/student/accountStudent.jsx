@@ -148,12 +148,11 @@ const AccountStudent = () => {
           }}
         >
           <Button
-            sx={{ textTransform: "none" }}
             variant="contained"
             onClick={handleOpenModal}
             startIcon={<AddIcon />}
           >
-            Thêm tài khoản sinh viên
+            Thêm mới sinh viên
           </Button>
         </Box>
       </Box>

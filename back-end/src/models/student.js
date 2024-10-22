@@ -3,6 +3,7 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Student extends Model {
     static associate(models) {
+      // Các mối quan hệ khác
       Student.belongsTo(models.Group, {
         foreignKey: "groupId",
         onDelete: "SET NULL",
@@ -13,16 +14,17 @@ module.exports = (sequelize, DataTypes) => {
       Student.hasMany(models.Notification);
       Student.belongsTo(models.Role, {
         foreignKey: "roleId",
-        // foreignKeyConstraint: true,
       });
+
+      // Mối quan hệ với TermStudent
       Student.belongsToMany(models.Term, {
         through: "TermStudent",
         foreignKey: "studentId",
-        onDelete: "CASCADE",
         as: "terms",
       });
     }
   }
+
   Student.init(
     {
       fullName: DataTypes.STRING,
@@ -43,5 +45,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Student",
     }
   );
+
   return Student;
 };

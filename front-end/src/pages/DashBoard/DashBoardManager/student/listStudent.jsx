@@ -18,12 +18,13 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomHooks from "../../../../utils/hooks";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
-
+import { useSelector } from "react-redux";
 const { Option } = Select;
 const { Search } = Input;
 
 function ListStudent() {
   const navigate = useNavigate();
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -45,12 +46,12 @@ function ListStudent() {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
   const { data, isSuccess, isFetching, refetch } = CustomHooks.useQuery(
-    ["students", currentPage, debouncedSearchTerm, limitUser],
+    ["students", currentPage, debouncedSearchTerm, limitUser, currentTerm],
     () => {
       if (debouncedSearchTerm) {
         return handleFindStudent();
       } else {
-        return studentApi.getAll(currentPage, limitUser);
+        return studentApi.getAll(currentPage, limitUser, currentTerm?.id);
       }
     },
 
@@ -124,12 +125,13 @@ function ListStudent() {
   const onPopConfirmDelete = async (record) => {
     const user = {
       id: record.id,
+      termId: currentTerm.id,
     };
     const res = await studentApi.deleteById(user);
     if (res && res.status === 0) {
       refetch();
       messageApi.success(res.message);
-      if (dataSource.length === 1) {
+      if (dataSource.length === 1 && totalPages !== 1) {
         setCurrentPage(currentPage - 1);
       }
     } else if (res.EC === -1) {
@@ -157,7 +159,8 @@ function ListStudent() {
     ],
   };
   const handleDeleteMany = async () => {
-    const res = await studentApi.deleteMany(selectedRowKeys);
+    let dataDelete = { studentId: selectedRowKeys, termId: currentTerm.id };
+    const res = await studentApi.deleteMany(dataDelete);
     if (res && res.status === 0) {
       refetch();
 

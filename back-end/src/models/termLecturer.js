@@ -16,5 +16,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "TermLecturer",
     }
   );
+
   return TermLecturer;
 };
