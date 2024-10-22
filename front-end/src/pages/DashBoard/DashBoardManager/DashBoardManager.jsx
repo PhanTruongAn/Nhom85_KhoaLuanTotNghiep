@@ -175,8 +175,15 @@ const DashBoardManager = () => {
           {contextHolder}
 
           {!collapsed && (
-            <Box sx={{ width: "250px" }}>
-              <Box sx={{ overflowY: "auto" }}>
+            <Box
+              sx={{
+                width: "250px",
+
+                height: "670px",
+                backgroundColor: themes ? "#001529" : "#fff",
+              }}
+            >
+              <Box>
                 <Box
                   className="demo-logo-vertical"
                   sx={{
@@ -252,7 +259,8 @@ const DashBoardManager = () => {
                     items={items}
                     style={{
                       marginTop: "10px",
-                      height: "calc(90vh - 110px)",
+                      height: "490px", // Adjust height to fill the remaining space
+                      overflowY: "auto",
                     }}
                   />
                 </Box>
