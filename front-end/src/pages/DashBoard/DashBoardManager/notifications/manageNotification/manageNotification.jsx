@@ -13,30 +13,50 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { Table, Space, Input } from "antd"; // Import Input từ Ant Design
+import { Table, Space, Input, message } from "antd"; // Import Input từ Ant Design
 import {
   EditOutlined,
   DeleteOutlined,
   SearchOutlined,
 } from "@ant-design/icons"; // Biểu tượng search
+import managerApi from "../../../../../apis/managerApi";
+import CustomHooks from "../../../../../utils/hooks";
+import { useSelector } from "react-redux";
+import { isEmpty } from "lodash";
 
-const initialData = [
-  { id: 1, title: "Notification 1", details: "Details 1", recipient: "all" },
-  {
-    id: 2,
-    title: "Notification 2",
-    details: "Details 2",
-    recipient: "students",
-  },
-];
 const { Search } = Input;
 
 function ManageNotification() {
-  const [data, setData] = useState(initialData);
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const [data, setData] = useState([]);
+  const [messageApi, contextHolder] = message.useMessage();
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [currentNotification, setCurrentNotification] = useState(null);
-  const [searchKeyword, setSearchKeyword] = useState(""); // State cho từ khóa tìm kiếm
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  const handleGetNotes = async () => {
+    const term = currentTerm.id;
+    let res = await managerApi.getNotes(term);
+    return res;
+  };
+
+  const { data: notesData } = CustomHooks.useQuery(["notes"], handleGetNotes, {
+    enabled: !isEmpty(currentTerm),
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        setData(res.data);
+      } else if (res.status === 1) {
+        messageApi.info(res.message);
+      } else {
+        messageApi.error(res.message);
+      }
+      setLoading(false);
+    },
+    onError: (error) => {
+      messageApi.error(`${error}!`);
+    },
+  });
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
   };
@@ -61,9 +81,9 @@ function ManageNotification() {
     setCurrentNotification((prev) => ({ ...prev, [name]: value }));
   };
 
-  const filteredData = data.filter(
-    (item) => item.title.toLowerCase().includes(searchKeyword.toLowerCase()) // Lọc dữ liệu dựa trên từ khóa tìm kiếm
-  );
+  // const filteredData = data.filter(
+  //   (item) => item.title.toLowerCase().includes(searchKeyword.toLowerCase()) // Lọc dữ liệu dựa trên từ khóa tìm kiếm
+  // );
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
@@ -106,6 +126,7 @@ function ManageNotification() {
 
   return (
     <Box sx={{ padding: "20px" }}>
+      {contextHolder}
       <Box
         sx={{
           display: "flex",
@@ -133,7 +154,7 @@ function ManageNotification() {
 
       <Table
         style={{ marginTop: "20px" }}
-        dataSource={filteredData}
+        dataSource={data}
         columns={columns}
         rowKey="id"
         bordered

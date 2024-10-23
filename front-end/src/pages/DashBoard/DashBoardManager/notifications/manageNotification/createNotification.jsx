@@ -9,20 +9,37 @@ import {
   FormControl,
   Box,
 } from "@mui/material";
-
+import { message } from "antd";
+import { useSelector } from "react-redux";
+import managerApi from "../../../../../apis/managerApi";
+import CustomButton from "../../../../../components/Button/CustomButton";
 function CreateNotification() {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const [messageApi, contextHolder] = message.useMessage();
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   const [recipient, setRecipient] = useState("all");
-
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Title:", title);
-    console.log("Details:", details);
-    console.log("Recipient:", recipient);
-    setTitle("");
-    setDetails("");
-    setRecipient("all");
+    setLoading(true);
+    let dataToSave = {
+      termId: currentTerm.id,
+      title: title,
+      content: details,
+      recipient: recipient,
+    };
+    let res = await managerApi.createNote(dataToSave);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      setTitle("");
+      setDetails("");
+      setRecipient("all");
+      setLoading(false);
+    } else {
+      messageApi.error(res.message);
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,6 +51,7 @@ function CreateNotification() {
         bgcolor: "background.default",
       }}
     >
+      {contextHolder}
       <Box
         component="form"
         onSubmit={handleSubmit}
@@ -78,13 +96,16 @@ function CreateNotification() {
             label="Recipient"
           >
             <MenuItem value="all">Tất cả</MenuItem>
-            <MenuItem value="students">Sinh viên</MenuItem>
-            <MenuItem value="lecturers">Giảng viên</MenuItem>
+            <MenuItem value="student">Sinh viên</MenuItem>
+            <MenuItem value="lecturer">Giảng viên</MenuItem>
           </Select>
         </FormControl>
-        <Button type="submit" variant="contained" color="primary">
-          Gửi thông báo
-        </Button>
+        <CustomButton
+          text=" Gửi thông báo"
+          onClick={handleSubmit}
+          type="success"
+          loading={loading}
+        />
       </Box>
     </Box>
   );

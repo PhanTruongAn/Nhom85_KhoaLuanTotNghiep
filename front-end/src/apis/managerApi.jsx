@@ -57,5 +57,11 @@ const managerApi = {
   updateMajor: (data) => {
     return axiosClient.put(baseUrl + "/update-major", data);
   },
+  createNote: (data) => {
+    return axiosClient.post(`${baseUrl}/create-note`, data);
+  },
+  getNotes: (term) => {
+    return axiosClient.get(baseUrl + `/notes?term=${term}`);
+  },
 };
 export default managerApi;

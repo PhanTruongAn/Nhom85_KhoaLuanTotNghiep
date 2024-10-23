@@ -1,14 +1,17 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Notification extends Model {
+  class Note extends Model {
     static associate(models) {
-      Notification.belongsTo(models.Role, {
+      Note.belongsTo(models.Role, {
         foreignKey: "roleId",
+      });
+      Note.belongsTo(models.Term, {
+        foreignKey: "termId",
       });
     }
   }
-  Notification.init(
+  Note.init(
     {
       title: DataTypes.STRING,
       content: DataTypes.TEXT,
@@ -17,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Notification",
+      modelName: "Note",
     }
   );
-  return Notification;
+  return Note;
 };

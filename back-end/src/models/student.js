@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
       Student.belongsTo(models.Major, {
         foreignKey: "majorId",
       });
-      Student.hasMany(models.Notification);
       Student.belongsTo(models.Role, {
         foreignKey: "roleId",
       });

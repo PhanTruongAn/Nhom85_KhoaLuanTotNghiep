@@ -50,10 +50,10 @@ const DashBoardStudent = () => {
   const [messageApi, contextHolderMessage] = message.useMessage();
   const [modal, contextHolder] = Modal.useModal();
   const [collapsed, setCollapsed] = useState(false);
-  const [drawerVisible, setDrawerVisible] = useState(false); // State cho Drawer (modal của Sider)
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const [notifications, setNotifications] = useState(5);
-  const [openKeys, setOpenKeys] = useState([]); // State để theo dõi menu con đang mở
-  const [anchorEl, setAnchorEl] = useState(null); // State cho Popover (MUI)
+  const [openKeys, setOpenKeys] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
   // Mở Drawer (Sider dưới dạng modal)
   const openDrawer = () => {
     setDrawerVisible(true);

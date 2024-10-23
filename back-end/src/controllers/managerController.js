@@ -254,6 +254,35 @@ const handleUpdateMajor = async (req, res) => {
     });
   }
 };
+const handleCreateNote = async (req, res) => {
+  try {
+    const data = await service.createNote(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
+const handleGetNotes = async (req, res) => {
+  try {
+    let { term } = req.query;
+    const data = await service.getNotes(term);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
 module.exports = {
   handleDeleteMajor,
   handleUpdateMajor,
@@ -273,4 +302,6 @@ module.exports = {
   handleCreateNewTerm,
   handleGetTerms,
   handleUpdateTerm,
+  handleCreateNote,
+  handleGetNotes,
 };

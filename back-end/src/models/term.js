@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "lecturers",
         hooks: true,
       });
+      Term.hasMany(models.Note, {
+        foreignKey: "termId",
+        as: "notes",
+      });
     }
   }
   Term.init(

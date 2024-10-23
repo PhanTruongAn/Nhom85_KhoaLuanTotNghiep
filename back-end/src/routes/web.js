@@ -157,6 +157,8 @@ const initWebRoutes = (app) => {
   router.delete("/manager/delete-major", managerController.handleDeleteMajor);
   router.put("/manager/update-major", managerController.handleUpdateMajor);
   router.get("/manager/majors", managerController.handleGetMajors);
+  router.post("/manager/create-note", managerController.handleCreateNote);
+  router.get("/manager/notes", managerController.handleGetNotes);
   return app.use("/", router);
 };
 

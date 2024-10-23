@@ -11,6 +11,7 @@ const {
   Topic,
   Term,
   Major,
+  Note,
 } = require("../models");
 
 const paginationPermission = async (page, limit) => {
@@ -671,6 +672,94 @@ const updateMajor = async (data) => {
     };
   }
 };
+const createNote = async (data) => {
+  try {
+    const { termId, title, content, recipient } = data;
+    if (!termId) {
+      return {
+        status: -1,
+        message: "Không có dữ liệu học kì!",
+      };
+    }
+    if (!title || !content) {
+      return {
+        status: -1,
+        message: "Tiêu đề hoặc nội dung thông báo không hợp lệ!",
+      };
+    }
+    if (!recipient) {
+      return {
+        status: -1,
+        message: "Không tìm thấy đối tượng cần gửi thông báo!",
+      };
+    }
+    let dataToSave = [];
+
+    // Nếu recipient là "all", gửi cho cả student và lecturer
+    if (recipient === "all") {
+      dataToSave = [
+        { termId, title, content, roleId: 1 }, // Gửi cho student (roleId = 1)
+        { termId, title, content, roleId: 2 }, // Gửi cho lecturer (roleId = 2)
+      ];
+    } else if (recipient === "student") {
+      // Nếu recipient là "student", chỉ gửi cho student (roleId = 1)
+      dataToSave = [{ termId, title, content, roleId: 1 }];
+    } else if (recipient === "lecturer") {
+      // Nếu recipient là "lecturer", chỉ gửi cho lecturer (roleId = 2)
+      dataToSave = [{ termId, title, content, roleId: 2 }];
+    } else {
+      return {
+        status: -1,
+        message: "Đối tượng nhận thông báo không hợp lệ!",
+      };
+    }
+    let result = await Note.bulkCreate(dataToSave);
+    if (result) {
+      return {
+        status: 0,
+        message: "Tạo và gửi thông báo thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Tạo và gửi thông báo thất bại!",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: `Lỗi: ${error.message}`,
+    };
+  }
+};
+
+const getNotes = async (term) => {
+  if (!term) {
+    return {
+      status: -1,
+      message: "Không tìm thấy dữ liệu học kì!",
+    };
+  }
+  let notes = await Note.findAll({
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    where: {
+      termId: term,
+    },
+  });
+  if (notes && notes.length > 0) {
+    return {
+      status: 0,
+      message: "Lấy danh sách thông báo thành công!",
+      data: notes,
+    };
+  } else {
+    return {
+      status: 1,
+      message: "Không tìm thấy danh sách thông báo!",
+    };
+  }
+};
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -691,4 +780,6 @@ module.exports = {
   updateTerm,
   createMajor,
   getMajors,
+  createNote,
+  getNotes,
 };

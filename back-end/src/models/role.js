@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Role.hasMany(models.Student);
       Role.hasMany(models.Lecturer);
-      Role.hasMany(models.Notification);
+      Role.hasMany(models.Note);
     }
   }
   Role.init(
