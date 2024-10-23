@@ -256,7 +256,7 @@ const DashBoardStudent = () => {
             </Box>
           </Drawer>
 
-          <Layout className="container-fluid p-0">
+          <Layout className="container-fluid p-0" style={{ height: "100vh" }}>
             <Header
               className="header-content"
               style={{
