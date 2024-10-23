@@ -7,8 +7,10 @@ const lecturerApi = {
   createSingleAccountLecturer: (data) => {
     return axiosClient.post(baseUrl + "/create-lecturer", data);
   },
-  getAll: (page, limit) => {
-    return axiosClient.get(`${baseUrl}/get-all?page=${page}&limit=${limit}`);
+  getAll: (page, limit, term) => {
+    return axiosClient.get(
+      `${baseUrl}/get-all?term=${term}&page=${page}&limit=${limit}`
+    );
   },
   getRoles: () => {
     return axiosClient.get(baseUrl + "/get-roles");

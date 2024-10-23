@@ -20,10 +20,15 @@ const handleBulkCreateLecturer = async (req, res) => {
 };
 
 const handleLecturerGetAll = async (req, res) => {
-  if (req.query.page && req.query.limit) {
+  if (req.query.page && req.query.limit && req.query.term) {
     let limit = req.query.limit;
     let page = req.query.page;
-    const data = await lecturerService.getPaginationLecturer(+page, +limit);
+    let term = req.query.term;
+    const data = await lecturerService.getPaginationLecturer(
+      +page,
+      +limit,
+      term
+    );
     return res.status(200).json(data);
   } else {
     let data = await lecturerService.getLecturerList();

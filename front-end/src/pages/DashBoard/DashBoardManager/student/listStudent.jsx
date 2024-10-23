@@ -46,7 +46,7 @@ function ListStudent() {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
   const { data, isSuccess, isFetching, refetch } = CustomHooks.useQuery(
-    ["students", currentPage, debouncedSearchTerm, limitUser, currentTerm],
+    ["students", currentPage, debouncedSearchTerm, limitUser, currentTerm.id],
     () => {
       if (debouncedSearchTerm) {
         return handleFindStudent();
@@ -164,7 +164,7 @@ function ListStudent() {
     if (res && res.status === 0) {
       refetch();
 
-      if (selectedRowKeys.length === dataSource.length) {
+      if (selectedRowKeys.length === dataSource.length && totalPages !== 1) {
         setCurrentPage((prev) => Math.max(prev - 1, 1));
       }
       setSelectedRowKeys([]);

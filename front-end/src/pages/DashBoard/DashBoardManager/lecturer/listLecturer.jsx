@@ -24,10 +24,12 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomHooks from "../../../../utils/hooks";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
+import { useSelector } from "react-redux";
 const { Option } = Select;
 const { Search } = Input;
 function ListLecturer() {
   const navigate = useNavigate();
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -49,12 +51,12 @@ function ListLecturer() {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
   const { data, isLoading, isFetching, refetch } = CustomHooks.useQuery(
-    ["lecturers", currentPage, limitUser, debouncedSearchTerm],
+    ["lecturers", currentPage, limitUser, debouncedSearchTerm, currentTerm.id],
     () => {
       if (debouncedSearchTerm) {
         return handleFindLecturer();
       } else {
-        return lecturerApi.getAll(currentPage, limitUser);
+        return lecturerApi.getAll(currentPage, limitUser, currentTerm?.id);
       }
     },
 
@@ -136,11 +138,12 @@ function ListLecturer() {
     setOpenUpdateModal(true);
   };
   const handleDeleteMany = async () => {
-    const res = await lecturerApi.deleteMany(selectedRowKeys);
+    let dataDelete = { lecturerId: selectedRowKeys, termId: currentTerm.id };
+    const res = await lecturerApi.deleteMany(dataDelete);
     if (res && res.status === 0) {
       refetch();
 
-      if (selectedRowKeys.length === dataSource.length) {
+      if (selectedRowKeys.length === dataSource.length && totalPages !== 1) {
         setCurrentPage((prev) => Math.max(prev - 1, 1));
       }
       setSelectedRowKeys([]);
@@ -155,13 +158,14 @@ function ListLecturer() {
   const onPopConfirmDelete = async (record) => {
     const user = {
       id: record.id,
+      termId: currentTerm.id,
     };
     const res = await lecturerApi.deleteById(user);
     // console.log("Res:", res);
     if (res && res.status === 0) {
       messageApi.success(res.message);
       refetch();
-      if (dataSource.length === 1) {
+      if (dataSource.length === 1 && totalPages !== 1) {
         setCurrentPage(currentPage - 1);
       }
     } else if (res.EC === -1) {

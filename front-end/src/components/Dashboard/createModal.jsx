@@ -41,7 +41,7 @@ function CreateModal({
     };
     const result = isStudent
       ? await studentApi.createSingleAccountStudent(dataToSave)
-      : await lecturerApi.createSingleAccountLecturer(data);
+      : await lecturerApi.createSingleAccountLecturer(dataToSave);
     if (result && result.status === 0) {
       messageApi.success(result.message);
       setLoading(false);
@@ -103,7 +103,7 @@ function CreateModal({
                 ]}
               >
                 <Input
-                  placeholder={`Họ và tên sinh viên ${obj}`}
+                  placeholder={`Họ và tên ${obj}`}
                   onChange={(e) => handlerOnChange(e.target.value, "fullName")}
                 />
               </Form.Item>

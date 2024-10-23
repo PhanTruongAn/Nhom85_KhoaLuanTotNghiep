@@ -79,7 +79,7 @@ const initWebRoutes = (app) => {
     "/student/find-topic",
     studentController.handleSearchTopicWithNameOrLecturer
   );
-
+  router.get("/student/term", studentController.handleGetTerm);
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
@@ -153,6 +153,10 @@ const initWebRoutes = (app) => {
   router.post("/manager/create-term", managerController.handleCreateNewTerm);
   router.get("/manager/terms", managerController.handleGetTerms);
   router.put("/manager/update-term", managerController.handleUpdateTerm);
+  router.post("/manager/create-major", managerController.handleCreateMajor);
+  router.delete("/manager/delete-major", managerController.handleDeleteMajor);
+  router.put("/manager/update-major", managerController.handleUpdateMajor);
+  router.get("/manager/majors", managerController.handleGetMajors);
   return app.use("/", router);
 };
 

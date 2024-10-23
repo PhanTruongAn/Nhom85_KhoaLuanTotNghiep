@@ -21,16 +21,22 @@ const createStudentAccount = async (data) => {
     if (!data.fullName) {
       return {
         status: 1,
-        message: "Tên đầy đủ không được trống!",
+        message: "Tên đầy đủ không hợp lệ!",
       };
     }
     if (!data.username) {
       return {
         status: 1,
-        message: "Mã sinh viên không được trống!",
+        message: "Mã sinh viên không hợp lệ!",
       };
     }
 
+    if (!data.termId) {
+      return {
+        status: 1,
+        message: "Mã học kì không hợp lệ!",
+      };
+    }
     // Kiểm tra sinh viên đã tồn tại hay chưa
     const existStudent = await Student.findOne({
       where: {
@@ -164,8 +170,8 @@ const createBulkAccount = async (data) => {
   } catch (error) {
     console.log(error);
     return {
-      status: 1,
-      message: "Lỗi chức năng!",
+      status: -1,
+      message: `Lỗi: ${error.message}!`,
       data: null,
     };
   }
@@ -177,6 +183,7 @@ const getStudentList = async (term) => {
     include: [
       {
         model: Role,
+        attributes: ["id", "name", "description"],
       },
       {
         model: Term,
@@ -1003,7 +1010,55 @@ const searchTopicWithNameOrLecturer = async (search) => {
     };
   }
 };
+const getTerm = async (studentId) => {
+  try {
+    if (!studentId) {
+      return {
+        status: -1,
+        message: "Không tìm thấy id sinh viên",
+      };
+    }
+    let terms = await Term.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: {
+        model: Student,
+        as: "students",
+        attributes: [],
+        through: { attributes: [] },
+        where: {
+          id: studentId,
+        },
+      },
+    });
 
+    let currentDate = new Date();
+    let currentTerm = terms.find((term) => {
+      const startDate = new Date(term.startDate);
+      const endDate = new Date(term.endDate);
+      return currentDate >= startDate && currentDate <= endDate;
+    });
+
+    if (currentTerm) {
+      return {
+        status: 0,
+        message: "Lấy thông tin học kì thành công!",
+        data: currentTerm,
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Không tìm thấy thông tin học kì hiện tại!",
+        data: null,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: `Lỗi ${error.message}!`,
+    };
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -1026,4 +1081,5 @@ module.exports = {
   joinTopic,
   leaveTopic,
   searchTopicWithNameOrLecturer,
+  getTerm,
 };

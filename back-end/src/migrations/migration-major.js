@@ -13,9 +13,6 @@ module.exports = {
       majorName: {
         type: Sequelize.STRING,
       },
-      termId: {
-        type: Sequelize.INTEGER,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

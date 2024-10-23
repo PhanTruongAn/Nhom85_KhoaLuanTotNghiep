@@ -152,7 +152,7 @@ const AccountStudent = () => {
             onClick={handleOpenModal}
             startIcon={<AddIcon />}
           >
-            Thêm mới sinh viên
+            Thêm tài khoản sinh viên
           </Button>
         </Box>
       </Box>

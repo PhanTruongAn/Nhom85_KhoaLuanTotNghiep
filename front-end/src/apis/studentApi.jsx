@@ -71,5 +71,8 @@ const studentApi = {
   getAllTopics: (page, limit) => {
     return axiosClient.get(`${baseUrl}/topics?page=${page}&limit=${limit}`);
   },
+  getTerm: (id) => {
+    return axiosClient.get(baseUrl + `/term?student=${id}`);
+  },
 };
 export default studentApi;

@@ -11,7 +11,9 @@ import CreateModal from "../../../../components/Dashboard/createModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { isEmpty } from "lodash";
+import { useSelector } from "react-redux";
 const AccountLecturer = () => {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [state, setState] = useState({
     loadingSuccess: false,
     loadingError: false,
@@ -47,6 +49,7 @@ const AccountLecturer = () => {
     const dataPersist = [];
     Object.entries(data).map(([key, value]) => {
       dataPersist.push({
+        termId: currentTerm.id,
         fullName: value.FullName,
         username: value.MaGiangVien,
         password: "123",
@@ -153,7 +156,6 @@ const AccountLecturer = () => {
           }}
         >
           <Button
-            sx={{ textTransform: "none" }}
             variant="contained"
             onClick={handleOpenModal}
             startIcon={<AddIcon />}

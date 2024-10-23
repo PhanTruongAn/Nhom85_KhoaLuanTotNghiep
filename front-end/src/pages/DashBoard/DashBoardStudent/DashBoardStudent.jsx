@@ -15,11 +15,12 @@ import {
   ConfigProvider,
   Modal,
   Drawer,
+  message,
 } from "antd"; // Thêm Drawer
 import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ThemeProvider, Box, Popover, TextField } from "@mui/material"; // Popover từ MUI
 import CssBaseline from "@mui/material/CssBaseline";
 import authApi from "../../../apis/authApi.jsx";
@@ -30,16 +31,23 @@ import darkTheme from "../../../styles/themes/ant/darkTheme.jsx";
 import logoDark from "../../../images/Logo-White.png";
 import logoLight from "../../../images/logo-iuh.png";
 import ListNotification from "./notifications/listNotification.jsx";
-
+import { getCurrentTerm } from "../../../utils/getCurrentTerm.jsx";
+import { setCurrentTerm, setTerms } from "../../../redux/userSlice.jsx";
+import { isEmpty } from "lodash";
+import CustomHooks from "../../../utils/hooks.jsx";
+import studentApi from "../../../apis/studentApi.jsx";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardStudent = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const user = useSelector((state) => state.userInit.user);
   const [themes, setThemes] = useState(() => {
     const storedTheme = localStorage.getItem("themeDark");
     return storedTheme === "true";
   });
+  const [messageApi, contextHolderMessage] = message.useMessage();
   const [modal, contextHolder] = Modal.useModal();
   const [collapsed, setCollapsed] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false); // State cho Drawer (modal của Sider)
@@ -50,7 +58,25 @@ const DashBoardStudent = () => {
   const openDrawer = () => {
     setDrawerVisible(true);
   };
+  const getTerm = async () => {
+    let id = user.id;
+    let res = await studentApi.getTerm(id);
+    return res;
+  };
 
+  const { data: termData } = CustomHooks.useQuery(["term"], getTerm, {
+    enabled: isEmpty(currentTerm),
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        dispatch(setCurrentTerm(res.data));
+      } else {
+        messageApi.error(res.message);
+      }
+    },
+    onError: (error) => {
+      messageApi.error(`${error}!`);
+    },
+  });
   // Đóng Drawer
   const closeDrawer = () => {
     setDrawerVisible(false);
@@ -120,6 +146,7 @@ const DashBoardStudent = () => {
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       {contextHolder}
+      {contextHolderMessage}
       <ThemeProvider theme={themes ? themeDark : themeLight}>
         <CssBaseline />
         <Layout className="container-fluid p-0 student-container">
@@ -158,7 +185,7 @@ const DashBoardStudent = () => {
                     fontWeight: "bold",
                     paddingY: "2px", // Reduced padding to avoid layout expansion
                     paddingX: "6px", // Reduced padding to avoid extra space
-                    fontSize: "13px", // Slightly smaller font size
+                    fontSize: "15px", // Slightly smaller font size
                     maxWidth: "80%", // Limit the width to prevent layout stretching
                     margin: "10px auto",
                     textAlign: "center",
@@ -172,7 +199,7 @@ const DashBoardStudent = () => {
                     backgroundColor: themes ? "#2c3e50" : "#fff",
                   }}
                 >
-                  Hk1_2021-2022
+                  {currentTerm.name}
                 </Box>
               </Box>
             )}

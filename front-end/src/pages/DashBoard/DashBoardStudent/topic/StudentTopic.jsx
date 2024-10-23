@@ -49,7 +49,11 @@ const ProjectDetails = () => {
   );
   console.log("Check topic: ", topic);
   // Fetch topic data
-  const { data: topicData, isLoading: isLoadingTopic } = CustomHooks.useQuery(
+  const {
+    data: topicData,
+    isLoading: isLoadingTopic,
+    isFetching,
+  } = CustomHooks.useQuery(
     ["my-topic"],
     async () => {
       const res = await studentApi.getMyTopic(
@@ -103,7 +107,7 @@ const ProjectDetails = () => {
       }}
     >
       {contextHolder}
-      {isLoadingGroup || isLoadingTopic ? (
+      {isFetching ? (
         <Box
           sx={{
             display: "flex",

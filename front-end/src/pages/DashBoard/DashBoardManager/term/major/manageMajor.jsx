@@ -9,32 +9,124 @@ import {
   Box,
   Typography,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
-import { Table } from "antd";
-import { Add, Edit, Delete, Refresh } from "@mui/icons-material";
-
-// Dữ liệu mẫu
-const data = [
-  {
-    id: 1,
-    majorName: "Computer Science",
-    createdAt: "2023-05-01",
-    updatedAt: "2023-10-12",
-  },
-  {
-    id: 2,
-    majorName: "Information Technology",
-    createdAt: "2023-06-15",
-    updatedAt: "2023-10-14",
-  },
-];
-
+import { Table, message, Popconfirm } from "antd";
+import { Add, Edit, Delete, Refresh, Check } from "@mui/icons-material";
+import CustomHooks from "../../../../../utils/hooks";
+import managerApi from "../../../../../apis/managerApi";
+import { isEmpty } from "lodash";
+import { formatDate } from "../../../../../utils/formatDate";
+import EmptyData from "../../../../../components/emptydata/EmptyData";
 const MajorManagement = () => {
+  const [state, setState] = useState({
+    loading: false,
+    loadingButton: false,
+    refreshButton: false,
+    majors: [],
+  });
+  const [messageApi, contextHolder] = message.useMessage();
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedMajor, setSelectedMajor] = useState({
+    id: null,
     majorName: "",
   });
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
+
+  const getMajors = async () => {
+    let res = await managerApi.getMajors();
+    return res;
+  };
+
+  const {
+    data: majorData,
+    isFetching,
+    refetch,
+  } = CustomHooks.useQuery(["majors"], getMajors, {
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        updateState({ loading: false, majors: res.data, refreshButton: false });
+        if (isEmpty(state.majors) && isEmpty(majorData)) {
+          messageApi.success(res.message);
+        }
+      } else {
+        updateState({ loading: false, majors: [], refreshButton: false });
+        messageApi.error(res.message);
+      }
+    },
+    onError: (err) => {
+      updateState({ loading: false, majors: [], refreshButton: false });
+      messageApi.error("Lỗi: ", err.message);
+    },
+  });
+
+  const handleAdd = () => {
+    setSelectedMajor({ majorName: "" });
+    setIsEditing(false);
+    setOpen(true);
+  };
+
+  const handleEdit = (major) => {
+    setSelectedMajor(major);
+    setIsEditing(true);
+    setOpen(true);
+  };
+
+  const handleDelete = async (record) => {
+    let data = {
+      id: record.id,
+    };
+    const res = await managerApi.deleteMajor(data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      updateState({ loading: true });
+      refetch();
+    } else {
+      messageApi.error(res.message);
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedMajor({ majorName: "", id: null });
+  };
+
+  const handleSave = async () => {
+    updateState({ loadingButton: true });
+
+    const isValid = selectedMajor.majorName !== "";
+    if (!isValid) {
+      messageApi.warning("Tên chuyên ngành không được để trống!");
+      return updateState({ loadingButton: false });
+    }
+
+    const data = { id: selectedMajor.id, majorName: selectedMajor.majorName };
+    const res = isEditing
+      ? await managerApi.updateMajor(data)
+      : await managerApi.createMajor({ majorName: selectedMajor.majorName });
+
+    if (res && res.status === 0) {
+      updateState({ loadingButton: false, loading: true });
+      refetch();
+      messageApi.success(res.message);
+    } else {
+      updateState({ loadingButton: false });
+      messageApi.error(res.message);
+    }
+
+    setOpen(false);
+  };
+
+  const handleRefresh = () => {
+    updateState({ refreshButton: true });
+    refetch();
+    setTimeout(() => {
+      messageApi.success("Làm mới dữ liệu thành công!");
+    }, 1000);
+  };
 
   const columns = [
     {
@@ -49,12 +141,12 @@ const MajorManagement = () => {
     },
     {
       title: "Ngày tạo",
-      dataIndex: "createdAt",
+      render: (record) => formatDate(record.createdAt),
       key: "createdAt",
     },
     {
       title: "Ngày cập nhật",
-      dataIndex: "updatedAt",
+      render: (record) => formatDate(record.updatedAt),
       key: "updatedAt",
     },
     {
@@ -70,60 +162,26 @@ const MajorManagement = () => {
             Sửa
             <Edit sx={{ marginLeft: "5px" }} />
           </IconButton>
-          <IconButton
-            color="error"
-            onClick={() => handleDelete(record.id)}
-            size="small"
+          <Popconfirm
+            title="Xóa chuyên ngành"
+            description="Bạn có chắc muốn xóa chuyên ngành này?"
+            onConfirm={(e) => handleDelete(record)}
+            okText="Đồng ý"
+            cancelText="Không"
           >
-            Xóa
-            <Delete sx={{ marginLeft: "5px" }} />
-          </IconButton>
+            <IconButton color="error" size="small">
+              Xóa
+              <Delete sx={{ marginLeft: "5px" }} />
+            </IconButton>
+          </Popconfirm>
         </Box>
       ),
     },
   ];
-
-  const handleAdd = () => {
-    setSelectedMajor({ majorName: "" });
-    setIsEditing(false);
-    setOpen(true);
-  };
-
-  const handleEdit = (major) => {
-    setSelectedMajor(major);
-    setIsEditing(true);
-    setOpen(true);
-  };
-
-  const handleDelete = (id) => {
-    console.log(`Xóa chuyên ngành có id: ${id}`);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedMajor({ majorName: "" });
-  };
-
-  const handleSave = () => {
-    if (isEditing) {
-      console.log("Lưu thông tin chuyên ngành:", selectedMajor);
-    } else {
-      console.log("Thêm chuyên ngành mới:", selectedMajor);
-    }
-    setOpen(false);
-  };
-
-  const handleRefresh = () => {
-    console.log("Làm mới dữ liệu");
-    // Logic to refresh the data can be added here.
-  };
-
   return (
     <Box sx={{ padding: "20px" }}>
-      <Typography
-        variant="h4"
-        sx={{ textAlign: "center", marginBottom: "24px", fontWeight: "bold" }}
-      >
+      {contextHolder}
+      <Typography variant="h4" sx={{ textAlign: "center", fontWeight: "bold" }}>
         Quản lý chuyên ngành
       </Typography>
       <Box display="flex" justifyContent="flex-end" gap={2} marginBottom="16px">
@@ -138,18 +196,40 @@ const MajorManagement = () => {
         <Button
           variant="contained"
           color="primary"
-          startIcon={<Refresh />}
+          startIcon={
+            state.refreshButton ? <CircularProgress size={20} /> : <Refresh />
+          }
           onClick={handleRefresh}
+          disabled={state.refreshButton}
         >
           Làm mới
         </Button>
       </Box>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={majorData ? majorData.data : state.majors}
         rowKey="id"
         pagination={{ pageSize: 5 }}
         style={{ marginBottom: "20px" }}
+        loading={state.loading}
+        locale={{
+          emptyText: (
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              width={"100%"}
+              height={"auto"}
+            >
+              {isFetching ? (
+                <EmptyData />
+              ) : state.majors.length === 0 ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : null}
+            </Box>
+          ),
+        }}
       />
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
@@ -164,16 +244,27 @@ const MajorManagement = () => {
             fullWidth
             value={selectedMajor?.majorName || ""}
             onChange={(e) =>
-              setSelectedMajor({ ...selectedMajor, majorName: e.target.value })
+              setSelectedMajor({
+                ...selectedMajor,
+                majorName: e.target.value,
+              })
             }
             sx={{ marginBottom: "16px" }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleClose} color="error">
             Hủy
           </Button>
-          <Button onClick={handleSave} color="primary" variant="contained">
+          <Button
+            onClick={handleSave}
+            color="primary"
+            variant="contained"
+            endIcon={
+              state.loadingButton ? <CircularProgress size={20} /> : <Check />
+            }
+            disabled={state.loadingButton}
+          >
             {isEditing ? "Lưu" : "Thêm"}
           </Button>
         </DialogActions>

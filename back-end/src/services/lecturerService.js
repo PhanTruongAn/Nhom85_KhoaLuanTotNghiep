@@ -7,48 +7,73 @@ const { Lecturer, Role, Topic, TermLecturer, Term } = require("../models");
 
 //Tạo tài khoản giảng viên
 const createLecturerAccount = async (data) => {
-  if (!data.fullName) {
-    return {
-      status: 1,
-      message: "Tên đầy đủ không được trống!",
-    };
-  }
-  if (!data.username) {
-    return {
-      status: 1,
-      message: "Mã giảng viên không được trống!",
-    };
-  }
-  const existLecturer = await Lecturer.findOne({
-    where: {
-      username: data.username,
-    },
-  });
-  if (existLecturer) {
-    return {
-      status: -1,
-      message: "Tài khoản giảng viên đã tồn tại!",
-    };
-  } else {
-    const defaultPassword = "123";
-    const hashPass = hashPassword(defaultPassword);
-    const lecturer = await Lecturer.create({
-      ...data,
-      password: hashPass,
-      roleId: data?.roleId || 2,
-    });
-    if (lecturer) {
+  try {
+    if (!data.fullName) {
       return {
-        status: 0,
-        message: "Tạo tài khoản giảng viên thành công!",
-      };
-    } else {
-      return {
-        status: -1,
-        message: "Tạo tài khoản giảng viên thất bại!",
-        data,
+        status: 1,
+        message: "Tên đầy đủ không hợp lệ!",
       };
     }
+    if (!data.username) {
+      return {
+        status: 1,
+        message: "Mã giảng viên không hợp lệ!",
+      };
+    }
+    if (!data.termId) {
+      return {
+        status: 1,
+        message: "Mã học kì không hợp lệ!",
+      };
+    }
+    const existLecturer = await Lecturer.findOne({
+      where: {
+        username: data.username,
+      },
+    });
+
+    let lecturer;
+
+    if (existLecturer) {
+      lecturer = existLecturer;
+    } else {
+      const defaultPassword = "123";
+      const hashPass = hashPassword(defaultPassword);
+      lecturer = await Lecturer.create({
+        ...data,
+        password: hashPass,
+        roleId: data?.roleId || 2,
+      });
+    }
+
+    const existTermLecturer = await TermLecturer.findOne({
+      where: {
+        lecturerId: lecturer.id,
+        termId: data.termId,
+      },
+    });
+
+    if (existTermLecturer) {
+      return {
+        status: -1,
+        message: "Giảng viên đã có trong học kì này!",
+      };
+    } else {
+      await TermLecturer.create({
+        lecturerId: lecturer.id,
+        termId: data.termId,
+      });
+      return {
+        status: 0,
+        message: "Thêm tài khoản giảng viên thành công",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: `${error.message}!`,
+    };
   }
 };
 // Tạo nhiều tài khoản giảng viên
@@ -80,7 +105,17 @@ const createBulkAccountLecturer = async (data) => {
       };
     }
     const _data = _.cloneDeep(persists);
+    const termId = _data[0]?.termId;
+
+    if (!termId) {
+      return {
+        status: 1,
+        message: "Không tìm thấy thông tin học kì!",
+        data: null,
+      };
+    }
     const dataPersist = [];
+
     Object.entries(_data).map(([key, value], index) => {
       dataPersist.push({
         fullName: value.fullName,
@@ -90,30 +125,57 @@ const createBulkAccountLecturer = async (data) => {
       });
     });
 
-    // console.log("Check persist: ", dataPersist);
     const results = await Lecturer.bulkCreate(dataPersist);
-    if (persists) {
-      return {
-        status: 0,
-        message: `Tạo mới thành công ${persists.length} tài khoản giảng viên!`,
-      };
+    if (results && results.length === dataPersist.length) {
+      const termLecturer = results.map((lecturer) => ({
+        termId: termId,
+        lecturerId: lecturer.id,
+      }));
+
+      const termLecturers = await TermLecturer.bulkCreate(termLecturer);
+
+      // Kiểm tra kết quả TermStudent
+      if (termLecturers && termLecturers.length === termLecturer.length) {
+        return {
+          status: 0,
+          message: `Tạo mới thành công ${persists.length} tài khoản giảng viên!`,
+        };
+      } else {
+        return {
+          status: -1,
+          message: `Tạo mới tài khoản giảng viên thất bại!`,
+        };
+      }
     }
   } catch (error) {
     console.log(error);
     return {
-      status: 1,
-      message: "Lỗi chức năng!",
+      status: -1,
+      message: `Lỗi: ${error.message}!`,
       data: null,
     };
   }
 };
 // Lấy danh sách giảng viên
-const getLecturerList = async () => {
+const getLecturerList = async (term) => {
   const list = await Lecturer.findAll({
     attributes: ["id", "username", "fullName", "gender", "email", "phone"],
-    include: {
-      model: Role,
-    },
+    include: [
+      {
+        model: Role,
+        attributes: ["id", "name", "description"],
+      },
+      {
+        model: Term,
+        as: "terms",
+        through: {
+          attributes: [],
+        },
+        where: {
+          id: term,
+        },
+      },
+    ],
   });
   if (list && list.length > 0) {
     return {
@@ -129,15 +191,27 @@ const getLecturerList = async () => {
   };
 };
 // Lấy danh sách phân trang của giảng viên
-const getPaginationLecturer = async (page, limit) => {
+const getPaginationLecturer = async (page, limit, term) => {
   try {
     const offset = (page - 1) * limit;
     const { count, rows } = await Lecturer.findAndCountAll({
       attributes: ["id", "username", "fullName", "gender", "email", "phone"],
-      include: {
-        model: Role,
-        attributes: ["id", "name", "description"],
-      },
+      include: [
+        {
+          model: Role,
+          attributes: ["id", "name", "description"],
+        },
+        {
+          model: Term,
+          as: "terms",
+          through: {
+            attributes: [],
+          },
+          where: {
+            id: term,
+          },
+        },
+      ],
       offset: offset,
       limit: limit,
     });
@@ -161,10 +235,19 @@ const getPaginationLecturer = async (page, limit) => {
   }
 };
 const deleteLecturer = async (data) => {
+  if (!data && !data.id && !data.termId) {
+    return {
+      status: -1,
+      message: "Id giảng viên hoặc Id học kì không hợp lệ!",
+    };
+  }
   const res = await Lecturer.destroy({
     where: { id: data.id },
   });
-  if (res) {
+  const res2 = await TermLecturer.destroy({
+    where: { lecturerId: data.id, termId: data.termId },
+  });
+  if (res && res2) {
     return {
       status: 0,
       message: "Xóa thành công!",
@@ -213,12 +296,21 @@ const updateLecturer = async (data) => {
 };
 const deleteManyLecturer = async (data) => {
   try {
+    if (!data && !data.lecturerId && !data.termId) {
+      return {
+        status: -1,
+        message: "Id giảng viên hoặc Id học kì không hợp lệ!",
+      };
+    }
     const result = Lecturer.destroy({
       where: {
-        id: data,
+        id: data.lecturerId,
       },
     });
-    if (result) {
+    const result2 = await TermLecturer.destroy({
+      where: { lecturerId: data.lecturerId, termId: data.termId },
+    });
+    if (result && result2) {
       return {
         status: 0,
         message: "Xóa thành công!",

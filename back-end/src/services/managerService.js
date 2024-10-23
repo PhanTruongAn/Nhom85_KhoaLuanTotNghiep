@@ -10,6 +10,7 @@ const {
   RolePermission,
   Topic,
   Term,
+  Major,
 } = require("../models");
 
 const paginationPermission = async (page, limit) => {
@@ -567,7 +568,112 @@ const updateTerm = async (newData) => {
     };
   }
 };
+const createMajor = async (data) => {
+  try {
+    const { majorName } = data;
+    if (!majorName) {
+      return {
+        status: -1,
+        message: "Tên chuyên ngành không hợp lệ hoặc trống!",
+      };
+    }
+    let result = await Major.create({ majorName });
+    if (result) {
+      return {
+        status: 0,
+        message: "Tạo mới chuyên nghành thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Tạo mới chuyên nghành thất bại!",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error);
+    return {
+      status: -1,
+      message: `Lỗi ${error.message}!`,
+    };
+  }
+};
+const getMajors = async () => {
+  let majors = await Major.findAll();
+  if (majors && !isEmpty(majors)) {
+    return {
+      status: 0,
+      message: "Lấy danh sách chuyên ngành thành công!",
+      data: majors,
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Không tìm thấy danh sách chuyên ngành!",
+      data: [],
+    };
+  }
+};
+const deleteMajor = async (data) => {
+  try {
+    const { id } = data;
+    if (!id) {
+      return {
+        status: -1,
+        message: "Không tìm thấy id cần xóa",
+      };
+    }
+    let isDelete = await Major.destroy({ where: { id: id } });
+    if (isDelete) {
+      return {
+        status: 0,
+        message: "Đã xóa chuyên ngành!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Xóa thất bại!",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: `Lỗi: ${error.message}`,
+    };
+  }
+};
+const updateMajor = async (data) => {
+  try {
+    if (!data) {
+      return { status: -1, message: "Dữ liệu cập nhật không hợp lệ!" };
+    }
+    let update = await Major.update(data, {
+      where: {
+        id: data.id,
+      },
+    });
+    if (update[0] > 0) {
+      return {
+        status: 0,
+        message: "Cập nhật chuyên ngành thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Cập nhật chuyên ngành thất bại!",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: `Lỗi: ${error.message}`,
+    };
+  }
+};
 module.exports = {
+  updateMajor,
+  deleteMajor,
   paginationPermission,
   getAllPermission,
   createPermission,
@@ -583,4 +689,6 @@ module.exports = {
   createNewTerm,
   getTerms,
   updateTerm,
+  createMajor,
+  getMajors,
 };

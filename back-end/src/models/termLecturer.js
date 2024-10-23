@@ -3,7 +3,15 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class TermLecturer extends Model {
     static associate(models) {
-      // define association here
+      TermLecturer.belongsTo(models.Lecturer, {
+        foreignKey: "lecturerId",
+        onDelete: "CASCADE",
+      });
+
+      TermLecturer.belongsTo(models.Term, {
+        foreignKey: "termId",
+        onDelete: "CASCADE",
+      });
     }
   }
   TermLecturer.init(

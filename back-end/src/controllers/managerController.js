@@ -198,7 +198,67 @@ const handleUpdateTerm = async (req, res) => {
     });
   }
 };
+const handleCreateMajor = async (req, res) => {
+  try {
+    const data = await service.createMajor(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
+const handleGetMajors = async (req, res) => {
+  try {
+    const data = await service.getMajors();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
+const handleDeleteMajor = async (req, res) => {
+  try {
+    const data = await service.deleteMajor(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
+const handleUpdateMajor = async (req, res) => {
+  try {
+    const data = await service.updateMajor(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
 module.exports = {
+  handleDeleteMajor,
+  handleUpdateMajor,
+  handleCreateMajor,
+  handleGetMajors,
   handleGetAllPermission,
   handleCreatePermission,
   handleUpdatePermission,

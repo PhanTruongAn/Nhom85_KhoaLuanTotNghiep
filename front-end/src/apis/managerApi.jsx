@@ -45,5 +45,17 @@ const managerApi = {
   updateTerm: (data) => {
     return axiosClient.put(baseUrl + "/update-term", data);
   },
+  createMajor: (data) => {
+    return axiosClient.post(`${baseUrl}/create-major`, data);
+  },
+  getMajors: () => {
+    return axiosClient.get(baseUrl + "/majors");
+  },
+  deleteMajor: (data) => {
+    return axiosClient.delete(baseUrl + "/delete-major", { data });
+  },
+  updateMajor: (data) => {
+    return axiosClient.put(baseUrl + "/update-major", data);
+  },
 };
 export default managerApi;
