@@ -6,12 +6,13 @@ import {
   TextField,
   CircularProgress,
   Typography,
+  Card,
 } from "@mui/material";
-import "./ChangePassword.scss";
+
 import { useSelector } from "react-redux";
 import lecturerApi from "../../apis/lecturerApi";
 import studentApi from "../../apis/studentApi";
-import { Card } from "../../components/Card/Card";
+import "./ChangePassword.scss";
 
 function ChangePassword() {
   const data = useSelector((state) => state.userInit.user);
@@ -66,21 +67,22 @@ function ChangePassword() {
   };
 
   return (
-    <div
+    <Box
       style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         height: "100%",
         width: "100%",
+        padding: "10px",
       }}
     >
       {contextHolder}
       <Card
         variant="elevation"
         sx={{
-          width: "40%",
-          padding: "20px",
+          width: { xs: "100%", sm: "80%", md: "30%" },
+          padding: { xs: "20px", sm: "20px", md: "20px" },
           borderRadius: "12px",
         }}
       >
@@ -153,7 +155,7 @@ function ChangePassword() {
           </Button>
         </Box>
       </Card>
-    </div>
+    </Box>
   );
 }
 

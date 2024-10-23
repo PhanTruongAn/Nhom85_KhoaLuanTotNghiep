@@ -40,10 +40,7 @@ function StudentHome() {
     }
     return res.data;
   };
-  const { isLoading, isError, data, error } = CustomHooks.useQuery(
-    ["my-group"],
-    getMyGroup
-  );
+  const { isFetching } = CustomHooks.useQuery(["my-group"], getMyGroup);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -70,18 +67,19 @@ function StudentHome() {
   return (
     <Box
       sx={{
-        height: "100%",
+        height: "auto",
         display: "flex",
         flexDirection: "column",
         borderRadius: "8px",
         alignItems: "center",
+        overflow: "auto",
+        flexWrap: "wrap",
+        overflowX: "hidden",
+        padding: "10px",
       }}
     >
       {contextHolder}
-      <Box
-        className="row col-12"
-        sx={{ margin: "10px 10px 10px", alignSelf: "center" }}
-      >
+      <Box className="row col-12" sx={{ alignSelf: "center" }}>
         <Box className="col-12 col-md-6" sx={{ marginBottom: "10px" }}>
           <Card
             sx={{
