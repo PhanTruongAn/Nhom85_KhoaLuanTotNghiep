@@ -183,7 +183,7 @@ const DashBoardManager = () => {
     });
     dispatch(setCurrentTerm(selectedTerm));
   };
-  console.log("Check current Term: ", currentTerm);
+
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       <ThemeProvider theme={themes ? themeDark : themeLight}>
@@ -290,6 +290,7 @@ const DashBoardManager = () => {
                       marginTop: "10px",
                       height: "490px", // Adjust height to fill the remaining space
                       overflowY: "auto",
+                      textAlign: "left",
                     }}
                   />
                 </Box>

@@ -59,6 +59,11 @@ const ListGroupStudent = () => {
             loadingData: false,
           });
         } else {
+          updateState({
+            refreshButton: false,
+            dataSource: [],
+            loadingData: false,
+          });
           messageApi.error(res.message);
         }
       },
@@ -285,7 +290,7 @@ const ListGroupStudent = () => {
         bordered
         columns={columns}
         dataSource={
-          groupsData ? groupsData.data.groupStudent : state.dataSource
+          groupsData ? groupsData.data?.groupStudent : state.dataSource
         }
         rowKey="id"
         loading={state.loadingData}
@@ -293,7 +298,7 @@ const ListGroupStudent = () => {
           showSizeChanger: true,
           pageSizeOptions: ["5", "10", "20"],
           onShowSizeChange: (current, size) => handlePageSizeChange(size),
-          total: groupsData ? groupsData.data.totalRows : state.totalRows,
+          total: groupsData ? groupsData.data?.totalRows : state.totalRows,
           current: state.currentPage,
           pageSize: state.pageSize,
           onChange: onChangePage,

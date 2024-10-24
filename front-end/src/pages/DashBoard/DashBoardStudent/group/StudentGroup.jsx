@@ -32,7 +32,7 @@ const StudentGroup = () => {
     return res.data;
   };
 
-  const { isSuccess } = CustomHooks.useQuery(["my-group"], getMyGroup);
+  const { isSuccess, refetch } = CustomHooks.useQuery(["my-group"], getMyGroup);
 
   const handleLeaveGroup = async () => {
     setLoading(true);

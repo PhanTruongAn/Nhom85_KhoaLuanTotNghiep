@@ -29,36 +29,23 @@ const getItems = (isManager) => {
       icon: <HomeOutlined />,
       label: "Trang chủ",
       children: [
-        { key: "statistical", icon: <AreaChartOutlined />, label: "Thống kê" },
+        ...(isManager
+          ? [
+              {
+                key: "statistical",
+                icon: <AreaChartOutlined />,
+                label: "Thống kê",
+              },
+            ]
+          : []),
         {
           key: "information",
           icon: <UserOutlined />,
-          label: "Thống tin cá nhân",
+          label: "Thông tin cá nhân",
         },
       ],
     },
-    {
-      key: "term",
-      icon: <BarChartOutlined />,
-      label: "Học kì",
-      children: [
-        {
-          key: "create-term",
-          icon: <PlusOutlined />,
-          label: "Tạo học kì",
-        },
-        {
-          key: "list-term",
-          icon: <OrderedListOutlined />,
-          label: "Danh sách",
-        },
-        {
-          key: "manage-major",
-          icon: <OrderedListOutlined />,
-          label: "Chuyên ngành",
-        },
-      ],
-    },
+
     {
       key: "manager-topic",
       icon: <TopicOutlinedIcon />,
@@ -100,6 +87,28 @@ const getItems = (isManager) => {
 
     ...(isManager
       ? [
+          {
+            key: "term",
+            icon: <BarChartOutlined />,
+            label: "Học kì",
+            children: [
+              {
+                key: "create-term",
+                icon: <PlusOutlined />,
+                label: "Tạo học kì",
+              },
+              {
+                key: "list-term",
+                icon: <OrderedListOutlined />,
+                label: "Danh sách",
+              },
+              {
+                key: "manage-major",
+                icon: <OrderedListOutlined />,
+                label: "Chuyên ngành",
+              },
+            ],
+          },
           {
             key: "student",
             icon: <PeopleAltOutlinedIcon />,
@@ -152,20 +161,20 @@ const getItems = (isManager) => {
               },
             ],
           },
-          {
-            key: "point",
-            icon: <TableOutlined />,
-            label: "Chấm điểm",
-            children: [
-              {
-                key: "point-list-group",
-                icon: <OrderedListOutlined />,
-                label: "Danh sách ",
-              },
-            ],
-          },
         ]
       : []),
+    {
+      key: "point",
+      icon: <TableOutlined />,
+      label: "Chấm điểm",
+      children: [
+        {
+          key: "point-list-group",
+          icon: <OrderedListOutlined />,
+          label: "Danh sách ",
+        },
+      ],
+    },
     {
       key: "notification",
       icon: <NotificationOutlined />,

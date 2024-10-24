@@ -297,11 +297,10 @@ const updateStudent = async (data) => {
   const res = await Student.update(updateData, {
     where: { id: data.id },
   });
-  if (res) {
+  if (res[0] > 0) {
     return {
       status: 0,
       message: "Cập nhật thành công!",
-      data: res,
     };
   } else {
     return {
@@ -679,7 +678,7 @@ const transferTeamLeader = async (data) => {
       },
     }
   );
-  if (leader && member) {
+  if (leader && member[0] > 0) {
     return {
       status: 0,
       message: "Chuyển quyền nhóm trưởng thành công!",
