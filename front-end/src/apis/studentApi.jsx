@@ -74,5 +74,8 @@ const studentApi = {
   getTerm: (id) => {
     return axiosClient.get(baseUrl + `/term?student=${id}`);
   },
+  getMajors: () => {
+    return axiosClient.get(baseUrl + "/majors");
+  },
 };
 export default studentApi;

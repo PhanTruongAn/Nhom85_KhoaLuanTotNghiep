@@ -8,7 +8,7 @@ import Avatar from "../../../../components/Avatar/Avatar";
 import CustomHooks from "../../../../utils/hooks";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
-import { setGroup, setUser } from "../../../../redux/userSlice";
+import { setGroup, setUser, setMajors } from "../../../../redux/userSlice";
 import studentApi from "../../../../apis/studentApi";
 
 const { Option } = Select;
@@ -17,6 +17,7 @@ function StudentHome() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
   const group = useSelector((state) => state.userInit.group);
+  const majors = useSelector((state) => state.userInit.majors);
   const [messageApi, contextHolder] = message.useMessage();
   const [formData, setFormData] = useState({
     id: user.id,
@@ -40,8 +41,30 @@ function StudentHome() {
     }
     return res.data;
   };
-  const { isFetching } = CustomHooks.useQuery(["my-group"], getMyGroup);
 
+  const getMajors = async () => {
+    const res = await studentApi.getMajors();
+    if (res && res.status === 0) {
+      dispatch(setMajors(res.data));
+    } else {
+      messageApi.error(res.message);
+    }
+    return res;
+  };
+  const { isFetching: fetchingGroup } = CustomHooks.useQuery(
+    ["my-group"],
+    getMyGroup,
+    {
+      enabled: isEmpty(group),
+    }
+  );
+  const { isFetching: fetchingMajors } = CustomHooks.useQuery(
+    ["majors"],
+    getMajors,
+    {
+      enabled: isEmpty(majors),
+    }
+  );
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -63,7 +86,7 @@ function StudentHome() {
       setLoading(false);
     }
   };
-  console.log("Check user: ", user);
+
   return (
     <Box
       sx={{
@@ -176,7 +199,7 @@ function StudentHome() {
                       <i>
                         {" "}
                         {!isEmpty(group)
-                          ? `Nhóm ${group.name}`
+                          ? `Nhóm ${group.groupName}`
                           : "Chưa có nhóm"}
                       </i>
                     </b>
@@ -307,16 +330,17 @@ function StudentHome() {
               </label>
               <Select
                 name="majorName"
-                value={formData.majorName}
+                value={formData.majorId}
                 onChange={(value) =>
-                  setFormData({ ...formData, typeTraining: value })
+                  setFormData({ ...formData, majorId: value })
                 }
                 style={{ width: "100%" }}
               >
-                <Option value="Kỹ Thuật Phần Mềm">Kỹ Thuật Phần Mềm</Option>
-                <Option value="Khoa Học Máy Tính">Khoa Học Máy Tính</Option>
-                <Option value="Khoa Học Dữ Liệu">Khoa Học Dữ Liệu</Option>
-                <Option value="Hệ Thống Thông Tin">Hệ Thống Thông Tin</Option>
+                {majors.map((major) => (
+                  <Option key={major.id} value={major.id}>
+                    {major.majorName}
+                  </Option>
+                ))}
               </Select>
             </Box>
           </Box>

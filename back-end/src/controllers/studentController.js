@@ -216,6 +216,14 @@ const handleGetNotes = async (req, res) => {
     console.log(error);
   }
 };
+const handleGetMajors = async (req, res) => {
+  try {
+    const data = await studentService.getMajors();
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports = {
   handleCreateStudentAccount,
@@ -240,4 +248,5 @@ module.exports = {
   handleSearchTopicWithNameOrLecturer,
   handleGetTerm,
   handleGetNotes,
+  handleGetMajors,
 };

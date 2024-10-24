@@ -19,7 +19,7 @@ const handleGetDataFromToken = async (req, res) => {
   if (req.user) {
     const { username, role } = req.user;
     const data = await userService.findAccount(username);
-    const { password, RoleId, ...rest } = data.toJSON();
+    const { password, RoleId, MajorId, ...rest } = data.toJSON();
     const _user = { ...rest, role };
     return res.status(200).json({
       status: 0,

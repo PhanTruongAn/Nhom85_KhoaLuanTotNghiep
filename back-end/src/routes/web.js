@@ -81,6 +81,7 @@ const initWebRoutes = (app) => {
   );
   router.get("/student/term", studentController.handleGetTerm);
   router.get("/student/notes", studentController.handleGetNotes);
+  router.get("/student/majors", studentController.handleGetMajors);
 
   //Lecturer route
   router.post(

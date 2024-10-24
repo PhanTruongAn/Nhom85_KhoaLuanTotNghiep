@@ -14,7 +14,7 @@ const {
   TermStudent,
   Term,
   Note,
-  NoteRole,
+  Major,
 } = require("../models");
 
 // Tạo tài khoản sinh viên
@@ -289,19 +289,10 @@ const updateStudent = async (data) => {
     email: data.email,
     phone: data.phone,
     gender: data.gender,
+    className: data?.className || null,
+    typeTraining: data?.typeTraining || null,
+    majorId: data?.majorId || null,
   };
-
-  if (data.className) {
-    updateData.className = data.className;
-  }
-
-  if (data.majorName) {
-    updateData.majorName = data.majorName;
-  }
-
-  if (data.typeTraining) {
-    updateData.typeTraining = data.typeTraining;
-  }
 
   const res = await Student.update(updateData, {
     where: { id: data.id },
@@ -1111,7 +1102,24 @@ const getNotes = async (termId, roleId) => {
     };
   }
 };
-
+const getMajors = async () => {
+  let majors = await Major.findAll(
+    { attributes: { exclude: ["createdAt", "updatedAt"] } },
+    { raw: true }
+  );
+  if (majors && !isEmpty(majors)) {
+    return {
+      status: 0,
+      message: "Lấy danh chuyên ngành thành công!",
+      data: majors,
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Lấy danh chuyên ngành thất bại!",
+    };
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -1136,4 +1144,5 @@ module.exports = {
   searchTopicWithNameOrLecturer,
   getTerm,
   getNotes,
+  getMajors,
 };
