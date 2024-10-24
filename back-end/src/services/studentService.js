@@ -13,6 +13,8 @@ const {
   Lecturer,
   TermStudent,
   Term,
+  Note,
+  NoteRole,
 } = require("../models");
 
 // Tạo tài khoản sinh viên
@@ -1059,6 +1061,57 @@ const getTerm = async (studentId) => {
     };
   }
 };
+const getNotes = async (termId, roleId) => {
+  // Kiểm tra dữ liệu đầu vào
+  if (!termId || !roleId) {
+    return {
+      status: -1,
+      message: "Thiếu dữ liệu học kỳ hoặc vai trò!",
+    };
+  }
+
+  try {
+    const notes = await Note.findAll({
+      where: {
+        termId: termId,
+      },
+      include: {
+        attributes: [],
+        model: Role,
+        as: "roles",
+        through: {
+          attributes: [],
+        },
+        where: {
+          id: roleId,
+        },
+      },
+    });
+
+    if (notes && notes.length > 0) {
+      return {
+        status: 0,
+        message: "Lấy danh sách thông báo thành công!",
+        data: notes,
+      };
+    } else {
+      return {
+        status: 1,
+        message: "Không tìm thấy thông báo nào!",
+      };
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách thông báo:", error);
+    return {
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error.message || "Có lỗi xảy ra",
+      },
+    };
+  }
+};
+
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -1082,4 +1135,5 @@ module.exports = {
   leaveTopic,
   searchTopicWithNameOrLecturer,
   getTerm,
+  getNotes,
 };

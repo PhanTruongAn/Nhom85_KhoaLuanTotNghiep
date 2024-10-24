@@ -207,6 +207,15 @@ const handleGetTerm = async (req, res) => {
     console.log(error);
   }
 };
+const handleGetNotes = async (req, res) => {
+  try {
+    const { term, role } = req.query;
+    const data = await studentService.getNotes(term, role);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports = {
   handleCreateStudentAccount,
@@ -230,4 +239,5 @@ module.exports = {
   handleLeaveTopic,
   handleSearchTopicWithNameOrLecturer,
   handleGetTerm,
+  handleGetNotes,
 };

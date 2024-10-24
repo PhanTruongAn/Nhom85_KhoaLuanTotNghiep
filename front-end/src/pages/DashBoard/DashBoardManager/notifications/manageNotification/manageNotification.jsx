@@ -13,7 +13,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { Table, Space, Input, message } from "antd"; // Import Input từ Ant Design
+import { Table, Space, Input, message, Popconfirm } from "antd"; // Import Input từ Ant Design
 import {
   EditOutlined,
   DeleteOutlined,
@@ -23,7 +23,8 @@ import managerApi from "../../../../../apis/managerApi";
 import CustomHooks from "../../../../../utils/hooks";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
-
+import CustomButton from "../../../../../components/Button/CustomButton";
+import EmptyData from "../../../../../components/emptydata/EmptyData";
 const { Search } = Input;
 
 function ManageNotification() {
@@ -34,14 +35,19 @@ function ManageNotification() {
   const [currentNotification, setCurrentNotification] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [loadingReload, setLoadingReload] = useState(false);
   const handleGetNotes = async () => {
     const term = currentTerm.id;
     let res = await managerApi.getNotes(term);
+    console.log("Check notes: ", res);
     return res;
   };
 
-  const { data: notesData } = CustomHooks.useQuery(["notes"], handleGetNotes, {
+  const {
+    data: notesData,
+    refetch,
+    isFetching,
+  } = CustomHooks.useQuery(["notes", currentTerm], handleGetNotes, {
     enabled: !isEmpty(currentTerm),
     onSuccess: (res) => {
       if (res && res.status === 0) {
@@ -57,8 +63,14 @@ function ManageNotification() {
       messageApi.error(`${error}!`);
     },
   });
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
+  const handleDelete = async (id) => {
+    let res = await managerApi.deleteNote(id);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      refetch();
+    } else {
+      messageApi.error(res.message);
+    }
   };
 
   const handleUpdateClick = (record) => {
@@ -81,13 +93,20 @@ function ManageNotification() {
     setCurrentNotification((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const filteredData = data.filter(
-  //   (item) => item.title.toLowerCase().includes(searchKeyword.toLowerCase()) // Lọc dữ liệu dựa trên từ khóa tìm kiếm
-  // );
-
+  const handleReload = () => {
+    setLoading(true);
+    setLoadingReload(true);
+    refetch();
+    setTimeout(() => {
+      messageApi.success("Làm mới dữ liệu thành công!");
+      setLoadingReload(false);
+      setLoading(false);
+    }, 1000);
+  };
   const columns = [
-    { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Tiêu đề", dataIndex: "title", key: "title", width: "800px" },
+    { title: "ID", dataIndex: "id", key: "id", width: "10%" },
+    { title: "Tiêu đề", dataIndex: "title", key: "title" },
+    { title: "Nội dung", dataIndex: "content", key: "content", ellipsis: true },
     {
       title: "Hành động",
       key: "actions",
@@ -104,21 +123,28 @@ function ManageNotification() {
             }}
             endIcon={<EditOutlined />}
           >
-            Update
+            Chỉnh sửa
           </Button>
-          <Button
-            onClick={() => handleDelete(record.id)}
-            variant="contained"
-            color="error"
-            size="small"
-            sx={{
-              marginLeft: "10px",
-              textTransform: "none",
-            }}
-            endIcon={<DeleteOutlined />}
+          <Popconfirm
+            title="Xóa thông báo"
+            description="Bạn có chắc muốn xóa thông báo này?"
+            onConfirm={(e) => handleDelete(record.id)}
+            okText="Đồng ý"
+            cancelText="Không"
           >
-            Xóa
-          </Button>
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              sx={{
+                marginLeft: "10px",
+                textTransform: "none",
+              }}
+              endIcon={<DeleteOutlined />}
+            >
+              Xóa
+            </Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -143,22 +169,56 @@ function ManageNotification() {
           />
         </Box>
       </Box>
-
-      <Typography
-        variant="h5"
-        component="h2"
-        sx={{ fontWeight: "bold", textAlign: "center", mb: 2 }}
-      >
-        Danh sách thông báo
-      </Typography>
+      <CustomButton
+        text="Làm mới dữ liệu"
+        loading={loadingReload}
+        onClick={handleReload}
+        type="refresh"
+        sx={{ float: "right", marginBottom: "20px" }}
+      />
 
       <Table
         style={{ marginTop: "20px" }}
-        dataSource={data}
+        dataSource={notesData ? notesData.data : data}
         columns={columns}
         rowKey="id"
         bordered
-        pagination={{}}
+        pagination={{ responsive: true }}
+        loading={loading}
+        locale={{
+          emptyText:
+            data.length === 0 ? (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                width={"100%"}
+                height={"auto"}
+              >
+                {isFetching ? (
+                  <EmptyData />
+                ) : notesData && isEmpty(notesData.data) ? (
+                  <EmptyData text="Không có dữ liệu!" />
+                ) : null}
+              </Box>
+            ) : (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                width={"100%"}
+                height={"auto"}
+              >
+                {isFetching ? (
+                  <EmptyData />
+                ) : notesData && isEmpty(notesData.data) ? (
+                  <EmptyData text="Không có dữ liệu!" />
+                ) : null}
+              </Box>
+            ),
+        }}
       />
 
       <Dialog

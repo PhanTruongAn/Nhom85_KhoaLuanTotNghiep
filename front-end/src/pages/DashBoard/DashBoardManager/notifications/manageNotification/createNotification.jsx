@@ -47,6 +47,7 @@ function CreateNotification() {
       sx={{
         display: "flex",
         justifyContent: "center",
+        height: "100%",
         p: 3,
         bgcolor: "background.default",
       }}

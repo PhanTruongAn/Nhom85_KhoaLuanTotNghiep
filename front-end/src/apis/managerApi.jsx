@@ -63,5 +63,11 @@ const managerApi = {
   getNotes: (term) => {
     return axiosClient.get(baseUrl + `/notes?term=${term}`);
   },
+  deleteNote: (id) => {
+    return axiosClient.delete(baseUrl + `/delete-note?id=${id}`);
+  },
+  updateNote: (data) => {
+    return axiosClient.put(baseUrl + "/update-major", data);
+  },
 };
 export default managerApi;

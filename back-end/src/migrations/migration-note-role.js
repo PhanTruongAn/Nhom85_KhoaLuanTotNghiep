@@ -1,25 +1,18 @@
-"use strict";
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Notes", {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable("NoteRoles", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-
-      title: {
-        type: Sequelize.STRING,
-      },
-      content: {
-        type: Sequelize.TEXT,
-      },
-      termId: {
+      noteId: {
         type: Sequelize.INTEGER,
       },
-
+      roleId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -30,7 +23,8 @@ module.exports = {
       },
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Notes");
+
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("NoteRoles");
   },
 };

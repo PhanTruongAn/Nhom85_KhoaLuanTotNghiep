@@ -274,6 +274,36 @@ const handleGetNotes = async (req, res) => {
     const data = await service.getNotes(term);
     return res.status(200).json(data);
   } catch (error) {
+    console.log("Lỗi backend: ", error);
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
+const handleDeleteNote = async (req, res) => {
+  try {
+    let { id } = req.query;
+    const data = await service.deleteNote(id);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
+const handleUpdateNote = async (req, res) => {
+  try {
+    const data = await service.updateNote(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
     return res.status(500).json({
       status: -1,
       message: "Lỗi hệ thống!",
@@ -304,4 +334,6 @@ module.exports = {
   handleUpdateTerm,
   handleCreateNote,
   handleGetNotes,
+  handleDeleteNote,
+  handleUpdateNote,
 };

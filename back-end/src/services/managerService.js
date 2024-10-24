@@ -12,6 +12,8 @@ const {
   Term,
   Major,
   Note,
+  Role,
+  NoteRole,
 } = require("../models");
 
 const paginationPermission = async (page, limit) => {
@@ -693,38 +695,43 @@ const createNote = async (data) => {
         message: "Không tìm thấy đối tượng cần gửi thông báo!",
       };
     }
-    let dataToSave = [];
 
-    // Nếu recipient là "all", gửi cho cả student và lecturer
+    // Tạo Note mới
+    const newNote = await Note.create({
+      title,
+      content,
+      termId,
+    });
+
+    if (!newNote) {
+      return {
+        status: -1,
+        message: "Tạo thông báo thất bại!",
+      };
+    }
+
+    // Lưu các vai trò liên quan vào Note
+    let roleIds = [];
     if (recipient === "all") {
-      dataToSave = [
-        { termId, title, content, roleId: 1 }, // Gửi cho student (roleId = 1)
-        { termId, title, content, roleId: 2 }, // Gửi cho lecturer (roleId = 2)
-      ];
+      roleIds = [1, 2]; // Cả student (roleId = 1) và lecturer (roleId = 2)
     } else if (recipient === "student") {
-      // Nếu recipient là "student", chỉ gửi cho student (roleId = 1)
-      dataToSave = [{ termId, title, content, roleId: 1 }];
+      roleIds = [1]; // Chỉ student
     } else if (recipient === "lecturer") {
-      // Nếu recipient là "lecturer", chỉ gửi cho lecturer (roleId = 2)
-      dataToSave = [{ termId, title, content, roleId: 2 }];
+      roleIds = [2]; // Chỉ lecturer
     } else {
       return {
         status: -1,
         message: "Đối tượng nhận thông báo không hợp lệ!",
       };
     }
-    let result = await Note.bulkCreate(dataToSave);
-    if (result) {
-      return {
-        status: 0,
-        message: "Tạo và gửi thông báo thành công!",
-      };
-    } else {
-      return {
-        status: -1,
-        message: "Tạo và gửi thông báo thất bại!",
-      };
-    }
+
+    // Thêm các role vào Note
+    await newNote.addRoles(roleIds);
+
+    return {
+      status: 0,
+      message: "Tạo và gửi thông báo thành công!",
+    };
   } catch (error) {
     console.log("Lỗi: ", error.message);
     return {
@@ -741,12 +748,21 @@ const getNotes = async (term) => {
       message: "Không tìm thấy dữ liệu học kì!",
     };
   }
-  let notes = await Note.findAll({
+
+  const notes = await Note.findAll({
     attributes: { exclude: ["createdAt", "updatedAt"] },
     where: {
       termId: term,
     },
+    include: [
+      {
+        model: Role,
+        attributes: [], // Bao gồm các vai trò liên quan
+        through: { attributes: [] }, // Loại bỏ các thuộc tính trung gian
+      },
+    ],
   });
+
   if (notes && notes.length > 0) {
     return {
       status: 0,
@@ -760,6 +776,95 @@ const getNotes = async (term) => {
     };
   }
 };
+
+const deleteNote = async (id) => {
+  if (!id) {
+    return {
+      status: -1,
+      message: "Không tìm thấy id cần xóa!",
+    };
+  }
+
+  // Xóa các bản ghi trong NoteRole trước khi xóa Note
+  await NoteRole.destroy({
+    where: {
+      noteId: id,
+    },
+  });
+
+  // Sau đó xóa Note
+  const isDelete = await Note.destroy({
+    where: {
+      id: id,
+    },
+  });
+
+  if (isDelete) {
+    return {
+      status: 0,
+      message: "Xóa thành công!",
+    };
+  } else {
+    return {
+      status: -1,
+      message: "Xóa thất bại!",
+    };
+  }
+};
+
+const updateNote = async (data) => {
+  try {
+    if (!data || !data.id) {
+      return {
+        status: -1,
+        message: "Không tìm thấy thông tin cập nhật!",
+      };
+    }
+
+    const note = await Note.findByPk(data.id);
+    if (!note) {
+      return {
+        status: -1,
+        message: "Không tìm thấy thông báo để cập nhật!",
+      };
+    }
+
+    // Cập nhật các trường thông báo
+    await note.update({
+      title: data.title,
+      content: data.content,
+      termId: data.termId,
+    });
+
+    // Cập nhật vai trò nếu có (optional)
+    if (data.recipient) {
+      let roleIds = [];
+      if (data.recipient === "all") {
+        roleIds = [1, 2];
+      } else if (data.recipient === "student") {
+        roleIds = [1];
+      } else if (data.recipient === "lecturer") {
+        roleIds = [2];
+      }
+
+      if (roleIds.length > 0) {
+        await note.setRoles(roleIds); // Cập nhật các role liên quan
+      }
+    }
+
+    return {
+      status: 0,
+      message: "Cập nhật thành công!",
+    };
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: `Lỗi: ${error.message}`,
+    };
+  }
+};
+
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -782,4 +887,6 @@ module.exports = {
   getMajors,
   createNote,
   getNotes,
+  deleteNote,
+  updateNote,
 };

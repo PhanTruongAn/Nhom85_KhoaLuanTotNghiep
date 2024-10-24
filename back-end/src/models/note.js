@@ -3,8 +3,11 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Note extends Model {
     static associate(models) {
-      Note.belongsTo(models.Role, {
-        foreignKey: "roleId",
+      Note.belongsToMany(models.Role, {
+        through: "NoteRole",
+        foreignKey: "noteId",
+        as: "roles",
+        onDelete: "CASCADE",
       });
       Note.belongsTo(models.Term, {
         foreignKey: "termId",
@@ -16,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       content: DataTypes.TEXT,
       termId: DataTypes.INTEGER,
-      roleId: DataTypes.INTEGER,
     },
     {
       sequelize,

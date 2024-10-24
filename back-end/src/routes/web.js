@@ -80,6 +80,8 @@ const initWebRoutes = (app) => {
     studentController.handleSearchTopicWithNameOrLecturer
   );
   router.get("/student/term", studentController.handleGetTerm);
+  router.get("/student/notes", studentController.handleGetNotes);
+
   //Lecturer route
   router.post(
     "/lecturer/create-lecturer",
@@ -159,6 +161,8 @@ const initWebRoutes = (app) => {
   router.get("/manager/majors", managerController.handleGetMajors);
   router.post("/manager/create-note", managerController.handleCreateNote);
   router.get("/manager/notes", managerController.handleGetNotes);
+  router.delete("/manager/delete-note", managerController.handleDeleteNote);
+  router.put("/manager/update-note", managerController.handleUpdateNote);
   return app.use("/", router);
 };
 

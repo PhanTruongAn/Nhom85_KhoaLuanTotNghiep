@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       });
       Role.hasMany(models.Student);
       Role.hasMany(models.Lecturer);
-      Role.hasMany(models.Note);
+      Role.belongsToMany(models.Note, {
+        through: "NoteRole",
+        foreignKey: "roleId",
+        as: "notes",
+      });
     }
   }
   Role.init(
