@@ -224,8 +224,9 @@ function ManageNotification() {
       <Dialog
         open={isUpdateOpen}
         onClose={() => setIsUpdateOpen(false)}
-        maxWidth="md"
+        maxWidth="lg"
         fullWidth
+        PaperProps={{ style: { height: "700px" } }}
       >
         <DialogTitle sx={{ fontWeight: "bold", color: "#1976d2" }}>
           Cập nhật thông báo

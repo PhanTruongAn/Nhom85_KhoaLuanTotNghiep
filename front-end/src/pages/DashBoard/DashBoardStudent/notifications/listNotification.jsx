@@ -139,8 +139,8 @@ function ListNotification() {
         open={!!selectedNotification}
         onClose={handleCloseModal}
         fullWidth
-        maxWidth="md"
-        PaperProps={{ style: { padding: "20px", height: "500px" } }}
+        maxWidth="lg"
+        PaperProps={{ style: { padding: "20px", height: "700px" } }}
       >
         <DialogTitle>{selectedNotification?.title}</DialogTitle>
         <DialogContent>

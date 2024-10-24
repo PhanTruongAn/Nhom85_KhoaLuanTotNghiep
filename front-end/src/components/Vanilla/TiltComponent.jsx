@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import VanillaTilt from "vanilla-tilt";
 import "./style.scss";
 import Box from "@mui/material/Box";
-
+import backgroundtitle from "../../images/backgroundtitle.jpg";
 const TiltComponent = (props) => {
   const leftTiltRef = useRef(null);
   const rightTiltRef = useRef(null);
@@ -48,7 +48,10 @@ const TiltComponent = (props) => {
   }, []);
 
   return (
-    <div className="tilt-wrapper">
+    <Box
+      className="tilt-wrapper"
+      sx={{ backgroundImage: `url(${backgroundtitle})`, padding: "20px" }}
+    >
       {/* Left Tilt */}
       <Box
         ref={leftTiltRef}
@@ -63,15 +66,15 @@ const TiltComponent = (props) => {
           }),
         ]}
       >
-        <div className="left-content">
-          <div className="title">
+        <Box className="left-content">
+          <Box className="title">
             <b>Giới thiệu về hệ thống</b>
-          </div>
-          <div className="content">
+          </Box>
+          <Box className="content">
             Hệ thống quản lý khóa luận giúp sinh viên và giảng viên theo dõi và
             quản lý dễ dàng.
-          </div>
-        </div>
+          </Box>
+        </Box>
         <img src={props.srcLeft} alt="Left Tilt" className="image-left" />
       </Box>
 
@@ -89,18 +92,18 @@ const TiltComponent = (props) => {
           }),
         ]}
       >
-        <div className="left-content">
-          <div className="content">
-            <div className="title">
+        <Box className="left-content">
+          <Box className="content">
+            <Box className="title">
               <b>Mục tiêu</b>
-            </div>
+            </Box>
             <ul>
               <li>Giao diện thân thiện, dễ sử dụng</li>
               <li>Bảo mật an toàn dữ liệu</li>
               <li>Nâng cao chất lượng khóa luận</li>
             </ul>
-          </div>
-        </div>
+          </Box>
+        </Box>
         <img src={props.srcRight} alt="Right Tilt" className="image-right" />
       </Box>
 
@@ -118,21 +121,21 @@ const TiltComponent = (props) => {
           }),
         ]}
       >
-        <div className="bottom-content">
-          <div className="title">
+        <Box className="bottom-content">
+          <Box className="title">
             <b>Đội ngũ phát triển</b>
-          </div>
-          <div className="content">
+          </Box>
+          <Box className="content">
             <b>Giáo viên hướng dẫn:</b> <br />
             Cô Đặng Thị Thu Hà <br />
             <b>Người phát triển phần mềm:</b> <br />
             Phan Trường An <br />
             Điểu Phan Quang Dũng
-          </div>
-        </div>
+          </Box>
+        </Box>
         <img src={props.srcBottom} alt="Bottom Tilt" className="image-bottom" />
       </Box>
-    </div>
+    </Box>
   );
 };
 

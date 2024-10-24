@@ -74,73 +74,79 @@ function ListNotification() {
   };
 
   return (
-    <Box
-      className="notification-container"
-      ref={containerRef}
-      onScroll={handleScroll}
-      sx={{
-        borderRadius: "8px",
-        padding: "16px",
-        width: "700px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        maxHeight: "400px",
-        overflowY: "auto",
-        cursor: "pointer",
-      }}
-    >
-      <Box display="flex" justifyContent="space-between" marginBottom="16px">
-        <Box component="h2" fontSize="20px" fontWeight="bold">
-          Thông báo mới
+    <Box>
+      <Box
+        className="notification-container"
+        ref={containerRef}
+        onScroll={handleScroll}
+        sx={{
+          borderRadius: "8px",
+          padding: "16px",
+          width: "700px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+          maxHeight: "400px",
+          overflowY: "auto",
+          cursor: "pointer",
+        }}
+      >
+        <Box display="flex" justifyContent="space-between" marginBottom="16px">
+          <Box component="h2" fontSize="20px" fontWeight="bold">
+            Thông báo mới
+          </Box>
+          <Box component="span" fontSize="14px">
+            {sortedNotifications.length} Thông báo
+          </Box>
         </Box>
-        <Box component="span" fontSize="14px">
-          {sortedNotifications.length} Thông báo
-        </Box>
+        {sortedNotifications.slice(0, visibleCount).map((notification) => (
+          <Box
+            className="notification-item"
+            key={notification.id}
+            onClick={() => handleNotificationClick(notification)}
+            sx={{
+              borderRadius: "4px",
+              padding: "12px",
+              marginBottom: "10px",
+              boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+              transition: "background-color 0.3s ease-in-out",
+              "&:hover": {
+                backgroundColor: "#e6f7ff",
+                color: "black",
+              },
+            }}
+          >
+            <Box component="div" fontSize="12px">
+              {new Date(notification.createAt).toLocaleString("vi-VN")}
+            </Box>
+            <Box
+              component="div"
+              fontSize="14px"
+              fontWeight="bold"
+              margin="4px 0"
+            >
+              Tiêu đề: {notification.title} (Trọng số: {notification.weight})
+            </Box>
+            <Box component="div" fontSize="12px" textAlign="right">
+              <i>Đã xem</i>
+            </Box>
+          </Box>
+        ))}
+        {visibleCount < sortedNotifications.length && (
+          <Button
+            onClick={() => setVisibleCount(visibleCount + 3)}
+            style={{ marginTop: "10px" }}
+          >
+            Xem thêm
+          </Button>
+        )}
       </Box>
-
-      {sortedNotifications.slice(0, visibleCount).map((notification) => (
-        <Box
-          className="notification-item"
-          key={notification.id}
-          onClick={() => handleNotificationClick(notification)}
-          sx={{
-            borderRadius: "4px",
-            padding: "12px",
-            marginBottom: "10px",
-            boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
-            transition: "background-color 0.3s ease-in-out",
-            "&:hover": {
-              backgroundColor: "#e6f7ff",
-              color: "black",
-            },
-          }}
-        >
-          <Box component="div" fontSize="12px">
-            {new Date(notification.createAt).toLocaleString("vi-VN")}
-          </Box>
-          <Box component="div" fontSize="14px" fontWeight="bold" margin="4px 0">
-            Tiêu đề: {notification.title} (Trọng số: {notification.weight})
-          </Box>
-          <Box component="div" fontSize="12px" textAlign="right">
-            <i>Đã xem</i>
-          </Box>
-        </Box>
-      ))}
-
-      {visibleCount < sortedNotifications.length && (
-        <Button
-          onClick={() => setVisibleCount(visibleCount + 3)}
-          style={{ marginTop: "10px" }}
-        >
-          Xem thêm
-        </Button>
-      )}
-
       <Dialog
         open={!!selectedNotification}
         onClose={handleCloseModal}
         fullWidth
-        maxWidth="md"
-        PaperProps={{ style: { padding: "20px", height: "500px" } }}
+        maxWidth="lg"
+        PaperProps={{
+          style: { padding: "20px", height: "700px" }, // Use maxHeight for flexibility
+        }}
       >
         {selectedNotification && (
           <NotificationDetail notification={selectedNotification} />
