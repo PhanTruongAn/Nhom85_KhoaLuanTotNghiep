@@ -15,6 +15,7 @@ import {
   theme,
   ConfigProvider,
   Modal,
+  message,
 } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
 import getItems from "./items.jsx";
@@ -35,11 +36,13 @@ import managerApi from "../../../apis/managerApi.jsx";
 import { setCurrentTerm, setTerms } from "../../../redux/userSlice.jsx";
 import { isEmpty } from "lodash";
 import { getCurrentTerm } from "../../../utils/getCurrentTerm.jsx";
+import lecturerApi from "../../../apis/lecturerApi.jsx";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardManager = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [messageApi, contextHolderMessage] = message.useMessage();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [notifications, setNotifications] = useState(5);
   const [selectedOption, setSelectedOption] = useState(1);
@@ -53,8 +56,27 @@ const DashBoardManager = () => {
     return storedTheme === "true";
   });
 
-  const getTerms = async () => {
+  const getManagerTerms = async () => {
     const res = await managerApi.getTerms();
+    if (res && res.status === 0) {
+      dispatch(setTerms(res.data));
+    } else if (res.status === 1) {
+      messageApi.info(res.message);
+    } else {
+      messageApi.error(res.message);
+    }
+    return res;
+  };
+  const getLecturerTerm = async () => {
+    let id = user.id;
+    const res = await lecturerApi.getTerm(id);
+    if (res && res.status === 0) {
+      dispatch(setCurrentTerm(res.data));
+    } else if (res.status === 1) {
+      messageApi.info(res.message);
+    } else {
+      messageApi.error(res.message);
+    }
     return res;
   };
   const {
@@ -63,19 +85,17 @@ const DashBoardManager = () => {
     refetch,
   } = CustomHooks.useQuery(
     ["terms"],
-    getTerms,
+    () => {
+      if (isManager) {
+        return getManagerTerms();
+      } else {
+        return getLecturerTerm();
+      }
+    },
 
     {
-      enabled: isEmpty(terms),
-      onSuccess: (res) => {
-        if (res && res.status === 0) {
-          dispatch(setTerms(res.data));
-        } else if (res.status === 1) {
-          messageApi.info(res.message);
-        } else {
-          messageApi.error(res.message);
-        }
-      },
+      enabled: isEmpty(terms) || isEmpty(currentTerm),
+      onSuccess: (res) => {},
       onError: (error) => {
         messageApi.error(`${error}!`);
       },
@@ -163,6 +183,7 @@ const DashBoardManager = () => {
     });
     dispatch(setCurrentTerm(selectedTerm));
   };
+  console.log("Check current Term: ", currentTerm);
   return (
     <ConfigProvider theme={themes ? darkTheme : lightTheme}>
       <ThemeProvider theme={themes ? themeDark : themeLight}>
@@ -173,7 +194,7 @@ const DashBoardManager = () => {
           style={{ minHeight: "100vh" }}
         >
           {contextHolder}
-
+          {contextHolderMessage}
           {!collapsed && (
             <Box
               sx={{
@@ -232,17 +253,25 @@ const DashBoardManager = () => {
                         color: themes ? "#fff" : "#000",
                       },
                     }}
+                    disabled={!isManager} // Disable Select nếu không phải là manager
                   >
-                    {terms && terms.length > 0 ? (
-                      terms.map((term, index) => (
-                        <MenuItem key={index} value={term.id}>
-                          {term.name}
-                        </MenuItem>
-                      ))
+                    {isManager ? (
+                      terms && terms.length > 0 ? (
+                        terms.map((term, index) => (
+                          <MenuItem key={index} value={term.id}>
+                            {term.name}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="">No terms available</MenuItem>
+                      )
                     ) : (
-                      <MenuItem value="">No terms available</MenuItem>
+                      <MenuItem value={currentTerm?.id}>
+                        {currentTerm?.name}
+                      </MenuItem>
                     )}
                   </Select>
+
                   <MenuAnt
                     selectedKeys={[
                       window.location.pathname.split("/dashboard/")[1] ||

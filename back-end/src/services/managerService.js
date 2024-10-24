@@ -757,6 +757,7 @@ const getNotes = async (term) => {
     include: [
       {
         model: Role,
+        as: "roles",
         attributes: [], // Bao gồm các vai trò liên quan
         through: { attributes: [] }, // Loại bỏ các thuộc tính trung gian
       },

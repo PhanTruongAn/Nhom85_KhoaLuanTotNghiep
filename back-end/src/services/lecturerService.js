@@ -456,41 +456,56 @@ const createTopics = async (data) => {
 
 // }
 
-const getTerm = async (id) => {
+const getTerm = async (lecturerId) => {
   try {
-    if (!id) {
+    if (!lecturerId) {
       return {
         status: -1,
-        message: "Id người dùng không hợp lệ",
+        message: "Không tìm thấy id sinh viên",
       };
     }
-    const terms = await Term.findAll({
+    let terms = await Term.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
       include: {
         model: Lecturer,
-        as: "lecturers", // Alias đã đặt trong associate
-        where: { id: id },
-        attributes: [], // Không lấy thuộc tính của Lecturer, chỉ lấy thông tin từ Term
-        through: { attributes: [] }, // Bỏ qua bảng trung gian TermLecturer
+        as: "lecturers",
+        attributes: [],
+        through: { attributes: [] },
+        where: {
+          id: lecturerId,
+        },
       },
-      attributes: ["id", "name", "startDate", "endDate"],
     });
-    if (terms && terms.length > 0) {
+
+    let currentDate = new Date();
+    let currentTerm = terms.find((term) => {
+      const startDate = new Date(term.startDate);
+      const endDate = new Date(term.endDate);
+      return currentDate >= startDate && currentDate <= endDate;
+    });
+    console.log("Check", currentTerm);
+    if (currentTerm) {
       return {
         status: 0,
-        message: "Lấy danh sách term thành công!",
-        data: terms,
+        message: "Lấy thông tin học kì thành công!",
+        data: currentTerm,
       };
     } else {
       return {
         status: -1,
-        message: "Không tìm thấy dữ liệu!",
-        data: [],
+        message: "Không tìm thấy thông tin học kì hiện tại!",
+        data: null,
       };
     }
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    return {
+      status: -1,
+      message: `Lỗi ${error.message}!`,
+    };
   }
 };
+
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
