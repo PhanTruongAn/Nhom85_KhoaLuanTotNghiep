@@ -1,18 +1,42 @@
-import React from "react";
-import { Box, Typography, Container, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Container } from "@mui/material";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import image1 from "../../images/anhdong/Welcome.lottie"; // Đường dẫn ảnh động của bạn
+import image1 from "../../images/anhdong/Welcome.lottie";
 import background from "../../images/background.jpg";
+import backgrounddark from "../../images/backgrounddark.jpg";
+import StartNow from "../../images/anhdong/startnow.lottie";
 
 const HomePage = () => {
+  const [themes, setThemes] = useState(
+    localStorage.getItem("themeDark") === "true"
+  );
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const storedTheme = localStorage.getItem("themeDark");
+      const themeValue = storedTheme === "true";
+      if (themeValue !== themes) {
+        setThemes(themeValue);
+      }
+    };
+
+    // Kiểm tra giá trị themeDark trong localStorage mỗi 100ms
+    const intervalId = setInterval(checkTheme, 100);
+
+    // Cleanup interval khi component unmount
+    return () => clearInterval(intervalId);
+  }, [themes]); // Chạy khi themes thay đổi
+
   return (
     <Box
       sx={{
         mt: 4,
-        backgroundColor: "#f4f6f9",
         minHeight: "100vh",
         py: 8,
-        backgroundImage: `url(${background})`,
+        backgroundImage: themes
+          ? `url(${backgrounddark})`
+          : `url(${background})`,
+        backgroundSize: "cover",
       }}
     >
       <Container sx={{ marginTop: "100px" }}>
@@ -21,59 +45,48 @@ const HomePage = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            flexDirection: { xs: "column", md: "row" }, // Dọc trên mobile, ngang trên desktop
+            flexDirection: { xs: "column", md: "row" },
             gap: 4,
             padding: "20px",
           }}
         >
-          {/* Phần trái: Tiêu đề chính và lời chào */}
           <Box
             sx={{
               flex: 1,
               textAlign: { xs: "center", md: "left" },
-              padding: { xs: "10px", md: "0px 20px" }, // Thêm padding
+              padding: { xs: "10px", md: "0px 20px" },
             }}
           >
-            <Typography
-              variant="h3"
-              sx={{ color: "#2c3e50", fontWeight: "bold", mb: 2 }}
-            >
+            <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2 }}>
               Chào mừng bạn đến với Hệ thống Đăng ký Luận văn
             </Typography>
-            <Typography
-              variant="body1"
-              sx={{ color: "#7f8c8d", fontSize: "1.2rem", mb: 4 }}
-            >
+            <Typography variant="body1" sx={{ fontSize: "1.2rem", mb: 4 }}>
               Hãy dễ dàng đăng ký đề tài luận văn, theo dõi tiến trình của bạn,
               và nhận mọi thông tin cần thiết.
             </Typography>
 
-            {/* Nút CTA */}
-            <Box>
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                sx={{ fontSize: "1rem", px: 4 }}
-              >
-                Bắt đầu ngay
-              </Button>
-            </Box>
+            <DotLottieReact
+              src={StartNow}
+              loop
+              autoplay
+              style={{ width: "100%", height: "100%", marginTop: "-80px" }}
+              onClick={() => {
+                window.location.replace("/login");
+              }}
+            />
           </Box>
 
-          {/* Phần phải: Hoạt ảnh chào mừng */}
           <Box
-            className="swiper-container"
             sx={{
-              flex: 1.2, // Tăng flex để phần hoạt ảnh chiếm nhiều không gian hơn
+              flex: 1.2,
               textAlign: "center",
-              display: { xs: "none", md: "block" },
+              display: { xs: "block", md: "block" },
             }}
           >
             <DotLottieReact
               style={{
                 width: "100%",
-                maxWidth: "650px", // Tăng kích thước maxWidth để hoạt ảnh lớn hơn
+                maxWidth: "650px",
                 margin: "0 auto",
               }}
               src={image1}
