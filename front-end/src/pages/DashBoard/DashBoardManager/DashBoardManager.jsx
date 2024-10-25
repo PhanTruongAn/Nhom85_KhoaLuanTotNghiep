@@ -172,7 +172,9 @@ const DashBoardManager = () => {
 
   const className = themes ? "btn-logOut dark-theme" : "btn-logOut light-theme";
   const changeTheme = () => {
-    setThemes(!themes);
+    const newTheme = !themes;
+    setThemes(newTheme);
+    localStorage.setItem("themeDark", newTheme);
   };
 
   let onSelectedTerm = (event) => {
