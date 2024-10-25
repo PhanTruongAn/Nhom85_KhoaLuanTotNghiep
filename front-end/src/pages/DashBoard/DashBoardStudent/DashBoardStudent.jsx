@@ -11,7 +11,7 @@ import "./DashBoardStudent.scss";
 import {
   Button,
   Layout,
-  Menu as MenuAtnd,
+  Menu as MenuAnt,
   ConfigProvider,
   Modal,
   Drawer,
@@ -31,8 +31,7 @@ import darkTheme from "../../../styles/themes/ant/darkTheme.jsx";
 import logoDark from "../../../images/Logo-White.png";
 import logoLight from "../../../images/logo-iuh.png";
 import ListNotification from "./notifications/listNotification.jsx";
-import { getCurrentTerm } from "../../../utils/getCurrentTerm.jsx";
-import { setCurrentTerm, setTerms } from "../../../redux/userSlice.jsx";
+import { setCurrentTerm, setNotes } from "../../../redux/userSlice.jsx";
 import { isEmpty } from "lodash";
 import CustomHooks from "../../../utils/hooks.jsx";
 import studentApi from "../../../apis/studentApi.jsx";
@@ -43,6 +42,7 @@ const DashBoardStudent = () => {
   const dispatch = useDispatch();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const user = useSelector((state) => state.userInit.user);
+  const notes = useSelector((state) => state.userInit.notes);
   const [themes, setThemes] = useState(() => {
     const storedTheme = localStorage.getItem("themeDark");
     return storedTheme === "true";
@@ -51,9 +51,9 @@ const DashBoardStudent = () => {
   const [modal, contextHolder] = Modal.useModal();
   const [collapsed, setCollapsed] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [notifications, setNotifications] = useState(5);
   const [openKeys, setOpenKeys] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+
   // Mở Drawer (Sider dưới dạng modal)
   const openDrawer = () => {
     setDrawerVisible(true);
@@ -64,6 +64,26 @@ const DashBoardStudent = () => {
     return res;
   };
 
+  const getNotes = async () => {
+    let termId = currentTerm?.id;
+    let roleId = user?.role?.id;
+    let res = await studentApi.getNotes(termId, roleId);
+    return res;
+  };
+
+  const { data: noteData } = CustomHooks.useQuery(["notes"], getNotes, {
+    enabled: user.role && !isEmpty(currentTerm) && isEmpty(notes),
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        dispatch(setNotes(res.data));
+      } else {
+        messageApi.error(res.message);
+      }
+    },
+    onError: (error) => {
+      messageApi.error(`${error}!`);
+    },
+  });
   const { data: termData } = CustomHooks.useQuery(["term"], getTerm, {
     enabled: isEmpty(currentTerm),
     onSuccess: (res) => {
@@ -203,7 +223,7 @@ const DashBoardStudent = () => {
                 </Box>
               </Box>
             )}
-            <MenuAtnd
+            <MenuAnt
               selectedKeys={
                 window.location.pathname.split("/dashboard/")[1] ||
                 window.location.pathname
@@ -234,7 +254,7 @@ const DashBoardStudent = () => {
             bodyStyle={{ padding: 0 }}
           >
             <Box className="drawer-body">
-              <MenuAtnd
+              <MenuAnt
                 selectedKeys={
                   window.location.pathname.split("/dashboard/")[1] ||
                   window.location.pathname
@@ -293,19 +313,24 @@ const DashBoardStudent = () => {
                     themes ? "dark-theme" : "light-theme"
                   }`}
                   size="large"
-                  icon={themes ? <SunOutlined /> : <MoonOutlined />}
+                  icon={
+                    themes ? (
+                      <SunOutlined className="theme-icon" />
+                    ) : (
+                      <MoonOutlined className="theme-icon" />
+                    )
+                  }
                   onClick={changeTheme}
                   style={{ marginRight: "10px", marginTop: "-3px" }}
                 />
                 {/* Popover MUI thay cho Dropdown */}
                 <Button
-                  className="bell-icon"
                   size="large"
-                  icon={<BellOutlined />}
+                  icon={<BellOutlined className="bell-icon" />}
                   onClick={handlePopoverOpen}
                 >
-                  {notifications > 0 && (
-                    <span className="notification-badge">{notifications}</span>
+                  {!isEmpty(notes) && notes.length > 0 && (
+                    <span className="notification-badge">{notes.length}</span>
                   )}
                 </Button>
 

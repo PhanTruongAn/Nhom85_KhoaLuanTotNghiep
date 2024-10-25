@@ -1,3 +1,23 @@
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(2px); // Thay đổi một chút để tạo cảm giác mượt mà hơn
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
 .student-container {
   display: flex;
   flex-direction: row;
@@ -7,6 +27,20 @@
   .header-content {
     .option {
       margin-right: 20px;
+      .bell-icon {
+        transition: transform 0.2s ease-in-out; // Thêm hiệu ứng chuyển tiếp
+
+        &:hover {
+          animation: shake 0.5s; // Phóng to khi hover
+        }
+      }
+      .theme-icon {
+        transition: transform 0.2s ease-in-out; // Thêm hiệu ứng chuyển tiếp
+
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
     }
     .collapsed-button {
       margin-left: 10px;

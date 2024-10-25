@@ -1,49 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Box, Button, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import NotificationDetail from "./notificationDetail"; // Import NotificationDetail
-
-const notifications = [
-  {
-    id: 1,
-    title: "Thông báo 1",
-    content: "Đây là nội dung của thông báo 1.",
-    createAt: "2024-08-13T03:15:00Z",
-    weight: 1,
-  },
-  {
-    id: 2,
-    title: "Thông báo 2",
-    content: "Đây là nội dung của thông báo 2.",
-    createAt: "2024-08-14T10:20:00Z",
-    weight: 2,
-  },
-  {
-    id: 3,
-    title: "Thông báo 3",
-    content: "Đây là nội dung của thông báo 3.",
-    createAt: "2024-08-15T12:30:00Z",
-    weight: 3,
-  },
-  {
-    id: 4,
-    title: "Thông báo 4",
-    content: "Đây là nội dung của thông báo 4.",
-    createAt: "2024-08-16T14:45:00Z",
-    weight: 4,
-  },
-  {
-    id: 5,
-    title: "Thông báo 5",
-    content: "Phát biểu tại Lễ Khai giảng...",
-    createAt: "2024-08-17T16:50:00Z",
-    weight: 5,
-  },
-];
-
+import { useSelector, useDispatch } from "react-redux";
+import _ from "lodash";
 function ListNotification() {
   const [visibleCount, setVisibleCount] = useState(3);
   const [sortedNotifications, setSortedNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const notes = useSelector((state) => state.userInit.notes);
+  const notifications = _.cloneDeep(notes);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -78,15 +43,20 @@ function ListNotification() {
       className="notification-container"
       ref={containerRef}
       onScroll={handleScroll}
-      sx={{
-        borderRadius: "8px",
-        padding: "16px",
-        width: "700px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        maxHeight: "400px",
-        overflowY: "auto",
-        cursor: "pointer",
-      }}
+      sx={[
+        (theme) => ({
+          borderRadius: "8px",
+          padding: "16px",
+          width: "700px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+          maxHeight: "400px",
+          overflowY: "auto",
+          cursor: "pointer",
+          ...theme.applyStyles("dark", {
+            backgroundColor: "#1E1E1E",
+          }),
+        }),
+      ]}
     >
       <Box display="flex" justifyContent="space-between" marginBottom="16px">
         <Box component="h2" fontSize="20px" fontWeight="bold">
@@ -102,26 +72,34 @@ function ListNotification() {
           className="notification-item"
           key={notification.id}
           onClick={() => handleNotificationClick(notification)}
-          sx={{
-            borderRadius: "4px",
-            padding: "12px",
-            marginBottom: "10px",
-            boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
-            transition: "background-color 0.3s ease-in-out",
-            "&:hover": {
-              backgroundColor: "#e6f7ff",
-              color: "black",
-            },
-          }}
+          sx={[
+            (theme) => ({
+              borderRadius: "4px",
+              padding: "12px",
+              marginBottom: "10px",
+              boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+              transition: "background-color 0.3s ease-in-out",
+              "&:hover": {
+                backgroundColor: "#e6f7ff",
+                color: "black",
+              },
+              ...theme.applyStyles("dark", {
+                backgroundColor: "#2E2E2E",
+              }),
+            }),
+          ]}
         >
           <Box component="div" fontSize="12px">
-            {new Date(notification.createAt).toLocaleString("vi-VN")}
+            {new Date(notification.createdAt).toLocaleString("vi-VN", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </Box>
           <Box component="div" fontSize="14px" fontWeight="bold" margin="4px 0">
             Tiêu đề: {notification.title} (Trọng số: {notification.weight})
-          </Box>
-          <Box component="div" fontSize="12px" textAlign="right">
-            <i>Đã xem</i>
           </Box>
         </Box>
       ))}
@@ -142,7 +120,7 @@ function ListNotification() {
         maxWidth="lg"
         PaperProps={{ style: { padding: "20px", height: "700px" } }}
       >
-        <DialogTitle>{selectedNotification?.title}</DialogTitle>
+        {/* <DialogTitle>{selectedNotification?.title}</DialogTitle> */}
         <DialogContent>
           {selectedNotification && (
             <NotificationDetail notification={selectedNotification} />
