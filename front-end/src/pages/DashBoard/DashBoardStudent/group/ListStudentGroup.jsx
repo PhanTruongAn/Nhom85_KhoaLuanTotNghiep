@@ -22,13 +22,18 @@ import CustomHooks from "../../../../utils/hooks";
 
 function ListStudentGroup() {
   const dispatch = useDispatch();
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const user = useSelector((state) => state.userInit.user);
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingIcon, setLoadingIcon] = useState(false);
   const containerRef = useRef(null);
-
+  const currentDate = new Date();
+  // Kiểm tra hạn đăng ký nhóm
+  const isWithinChooseGroupPeriod =
+    currentDate >= new Date(currentTerm?.startChooseGroupDate) &&
+    currentDate <= new Date(currentTerm?.endChooseGroupDate);
   // Hàm lấy danh sách nhóm
   const fetchGroups = async ({ pageParam = 1 }) => {
     const res = await studentApi.getAllGroup(pageParam, 12);
@@ -45,6 +50,7 @@ function ListStudentGroup() {
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     CustomHooks.useInfiniteQuery(["groups"], fetchGroups, {
+      enabled: isWithinChooseGroupPeriod,
       getNextPageParam: (lastPage) => lastPage.nextPage,
     });
   const handleScroll = () => {

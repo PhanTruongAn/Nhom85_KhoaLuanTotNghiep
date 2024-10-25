@@ -77,7 +77,6 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
     if (res && res.status === 0) {
       setLoading(false);
       messageApi.success(res.message);
-      onOk();
     } else {
       setLoading(false);
       messageApi.error(res.message);
