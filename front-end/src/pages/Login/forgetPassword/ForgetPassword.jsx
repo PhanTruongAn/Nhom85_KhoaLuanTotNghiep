@@ -51,7 +51,18 @@ function ForgetPassword() {
     }
   };
   return (
-    <SignInContainer direction="column" justifyContent="space-between">
+    <SignInContainer
+      direction="column"
+      justifyContent="space-between"
+      sx={{
+        "@media (max-height: 600px)": {
+          marginTop: "200px",
+        },
+        "@media (max-width: 600px)": {
+          marginTop: "200px",
+        },
+      }}
+    >
       {contextHolder}
       <Card
         variant="outlined"

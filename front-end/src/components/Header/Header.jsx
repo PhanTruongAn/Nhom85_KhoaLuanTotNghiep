@@ -51,9 +51,9 @@ const Header = (props) => {
           flexDirection: { xs: "column", sm: "row" },
         }}
       >
-        <div className="logo">
+        <Box className="logo">
           <img src={logoIUH} alt="Logo" style={{ width: "100px" }} />
-          <div className="content">
+          <Box className="content">
             <Box
               sx={[
                 (theme) => ({
@@ -80,94 +80,64 @@ const Header = (props) => {
             >
               <b className="title-2">KHÓA LUẬN TỐT NGHIỆP</b>
             </Box>
-          </div>
-        </div>
-
+          </Box>
+        </Box>
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            flexDirection: { xs: "column", sm: "row" },
+            flexDirection: { xs: "column", sm: "row" }, // Xếp theo cột trên màn hình nhỏ và theo hàng trên màn hình lớn
             width: { xs: "100%", sm: "auto" },
+            justifyContent: { xs: "center", sm: "space-between" }, // Căn giữa trên màn hình nhỏ
+            padding: { xs: "10px", sm: "0px" }, // Tăng padding trên màn hình nhỏ để thoáng hơn
           }}
         >
           <Tabs
             value={value}
             onChange={handleChange}
+            variant="scrollable" // Thêm scrollable để thanh Tab có thể cuộn
+            scrollButtons="auto" // Hiện nút cuộn tự động nếu không đủ không gian
             sx={{
-              padding: "10px",
               width: { xs: "100%", sm: "auto" },
+              display: "flex",
+              justifyContent: { xs: "center", sm: "flex-start" },
               textAlign: { xs: "center", sm: "left" },
-              alignSelf: "center",
+              padding: "10px 0",
             }}
           >
-            <Tab
-              value="/home"
-              label="TRANG CHỦ"
-              component="label"
-              disableRipple
-            />
-            <Tab
-              value="/notification"
-              label="THÔNG BÁO"
-              component="label"
-              disableRipple
-            />
-            <Tab
-              value="/information"
-              label="SỰ KIỆN - TIN TỨC"
-              component="label"
-              disableRipple
-            />
+            <Tab value="/home" label="TRANG CHỦ" disableRipple />
+            <Tab value="/notification" label="THÔNG BÁO" disableRipple />
+            <Tab value="/information" label="SỰ KIỆN - TIN TỨC" disableRipple />
             <Tab
               value="/login"
               label="ĐĂNG NHẬP"
-              component="label"
               disableRipple
-              sx={[
-                (theme) => ({
-                  marginRight: { xs: "0px", sm: "10px" },
-                  "&:hover": {
-                    color: "primary.light",
-                    backgroundColor: "transparent",
-                  },
-                  ...theme.applyStyles("dark", {
-                    color: "#fff",
-                  }),
-                }),
-              ]}
+              sx={{
+                marginRight: { xs: "0px", sm: "10px" },
+                "&:hover": {
+                  color: "primary.light",
+                  backgroundColor: "transparent",
+                },
+              }}
             />
-            {/* Conditionally render the Tab */}
-            {false && ( // Keep this false to hide the Forget Password tab
-              <Tab
-                value="/forget-password"
-                label="QUÊN MẬT KHẨU"
-                component="label"
-                disableRipple
-              />
-            )}
           </Tabs>
 
           <Box
             sx={{
-              alignSelf: "center",
+              alignSelf: { xs: "center", sm: "center" }, // Đảm bảo IconButton nằm ở giữa trên màn hình nhỏ
+              marginTop: { xs: "10px", sm: "0px" }, // Thêm khoảng cách giữa các thành phần trên màn hình nhỏ
             }}
           >
             <IconButton
-              sx={[
-                (theme) => ({
-                  color: "#fff",
-                  marginRight: { xs: "10px", sm: "20px" },
-                  backgroundColor: themeDark.palette.primary.dark,
-                  "&:hover": {
-                    boxShadow: themeDark.shadows[3],
-                    backgroundColor: themeDark.palette.primary.main,
-                  },
-                  ...theme.applyStyles("dark", {
-                    backgroundColor: themeDark.palette.primary.light,
-                  }),
-                }),
-              ]}
+              sx={{
+                color: "#fff",
+                marginRight: { xs: "10px", sm: "20px" },
+                backgroundColor: themeDark.palette.primary.dark,
+                "&:hover": {
+                  boxShadow: themeDark.shadows[3],
+                  backgroundColor: themeDark.palette.primary.main,
+                },
+              }}
               variant="text"
               component="label"
               onClick={props.changeTheme}
