@@ -33,6 +33,8 @@ import ManageNotification from "../pages/DashBoard/DashBoardManager/notification
 import ListTerm from "../pages/DashBoard/DashBoardManager/term/listTerm";
 import CreateTerm from "../pages/DashBoard/DashBoardManager/term/createTerm";
 import Statistical from "../pages/DashBoard/DashBoardManager/home/statistical";
+import Event from "../pages/Event_Notification/eventHomePage";
+import NotificationHomePage from "../pages/Event_Notification/notificationHomePage";
 import ManageMajor from "../pages/DashBoard/DashBoardManager/term/major/manageMajor";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
@@ -56,6 +58,8 @@ const AppRoute = () => {
         <Route path="/" element={<HomePage />}>
           <Route index path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
+          <Route path="information" element={<Event />} />
+          <Route path="notification" element={<NotificationHomePage />} />
           <Route path="forget-password" element={<ForgetPassword />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
