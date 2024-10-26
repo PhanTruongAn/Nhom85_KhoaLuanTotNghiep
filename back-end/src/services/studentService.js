@@ -726,7 +726,7 @@ const getInfoMyTopic = async (topic) => {
     };
   }
 };
-const studentGetAllTopics = async (page, limit) => {
+const studentGetAllTopics = async (page, limit, term) => {
   try {
     const offset = (page - 1) * limit;
     const { count, rows } = await Topic.findAndCountAll({
@@ -742,6 +742,9 @@ const studentGetAllTopics = async (page, limit) => {
           "groupCount",
         ],
       ],
+      where: {
+        termId: term,
+      },
       offset: offset,
       limit: limit,
       include: {

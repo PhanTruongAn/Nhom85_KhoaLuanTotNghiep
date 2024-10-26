@@ -33,6 +33,9 @@ module.exports = {
       lecturerId: {
         type: Sequelize.INTEGER,
       },
+      termId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

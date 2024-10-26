@@ -68,8 +68,10 @@ const studentApi = {
       `${baseUrl}/get-all-group?page=${page}&limit=${limit}`
     );
   },
-  getAllTopics: (page, limit) => {
-    return axiosClient.get(`${baseUrl}/topics?page=${page}&limit=${limit}`);
+  getAllTopics: (page, limit, term) => {
+    return axiosClient.get(
+      `${baseUrl}/topics?term=${term}&page=${page}&limit=${limit}`
+    );
   },
   getTerm: (id) => {
     return axiosClient.get(baseUrl + `/term?student=${id}`);

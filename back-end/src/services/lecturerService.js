@@ -423,6 +423,7 @@ const createTopics = async (data) => {
       const dataPersist = [];
       Object.entries(_data).map(([key, value], index) => {
         dataPersist.push({
+          termId: value.termId,
           lecturerId: value.lecturerId,
           title: value.title,
           description: value.description,

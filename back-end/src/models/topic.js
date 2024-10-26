@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "lecturerId",
         as: "lecturer",
       });
+      Topic.belongsTo(models.Term, {
+        foreignKey: "termId",
+        as: "term",
+      });
     }
   }
   Topic.init(
@@ -21,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       status: DataTypes.STRING,
       quantityGroup: DataTypes.INTEGER,
       lecturerId: DataTypes.INTEGER,
+      termId: DataTypes.INTEGER,
     },
     {
       sequelize,

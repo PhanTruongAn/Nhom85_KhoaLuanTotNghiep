@@ -27,6 +27,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 function ListTopic() {
   const group = useSelector((state) => state.userInit.group);
   const user = useSelector((state) => state.userInit.user);
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const dispatch = useDispatch();
   const [state, setState] = useState({
     currentPage: 1,
@@ -37,6 +38,7 @@ function ListTopic() {
     currentRecord: {},
     isModalLoading: false,
     isModalVisible: false,
+    term: currentTerm?.id || null,
   });
   const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,16 +53,22 @@ function ListTopic() {
     isLoading,
     isFetching,
     isSuccess,
+    refetch,
   } = CustomHooks.useQuery(
     ["topics", state.currentPage, state.pageSize, debouncedSearchTerm],
     () => {
       if (debouncedSearchTerm) {
         return handleFindTopic();
       } else {
-        return studentApi.getAllTopics(state.currentPage, state.pageSize);
+        return studentApi.getAllTopics(
+          state.currentPage,
+          state.pageSize,
+          state.term
+        );
       }
     },
     {
+      enabled: !isEmpty(currentTerm),
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({
@@ -122,6 +130,7 @@ function ListTopic() {
       messageApi.success(res.message);
       dispatch(setGroup({ ...group, topicId: selectedTopicId }));
       setIsConfirmModalOpen(false);
+      refetch();
     } else {
       messageApi.error(res.message);
     }

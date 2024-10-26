@@ -14,6 +14,7 @@ const { Option } = Select;
 
 const ManagerTopic = () => {
   const user = useSelector((state) => state.userInit.user);
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [jsonData, setJsonData] = useState({});
   const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
@@ -42,6 +43,7 @@ const ManagerTopic = () => {
         standardOutput: value["Yêu cầu đầu ra"],
         quantityGroup: value["Số lượng nhóm"],
         lecturerId: user.id,
+        termId: currentTerm.id,
       });
     });
     return dataSave;

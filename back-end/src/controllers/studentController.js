@@ -153,9 +153,9 @@ const handleGetInfoMyTopic = async (req, res) => {
   }
 };
 const handleStudentGetAllTopics = async (req, res) => {
-  const { page, limit } = req.query;
-  if (page && limit) {
-    const data = await studentService.studentGetAllTopics(+page, +limit);
+  const { page, limit, term } = req.query;
+  if (page && limit && term) {
+    const data = await studentService.studentGetAllTopics(+page, +limit, term);
     return res.status(200).json(data);
   } else {
     return res.status(400).json({

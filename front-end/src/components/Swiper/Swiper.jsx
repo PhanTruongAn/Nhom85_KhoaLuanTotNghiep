@@ -69,7 +69,12 @@ const HomePage = () => {
               src={StartNow}
               loop
               autoplay
-              style={{ width: "100%", height: "100%", marginTop: "-80px" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                marginTop: "-80px",
+                cursor: "pointer",
+              }}
               onClick={() => {
                 window.location.replace("/login");
               }}
