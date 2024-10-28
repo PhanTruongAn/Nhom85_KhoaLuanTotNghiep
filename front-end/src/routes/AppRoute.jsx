@@ -26,7 +26,7 @@ import StudentGroup from "../pages/DashBoard/DashBoardStudent/group/StudentGroup
 import MyPoint from "../pages/DashBoard/DashBoardStudent/point/MyPoint";
 import Criteria from "../pages/DashBoard/DashBoardStudent/criteria/Criteria";
 import PageNotFound from "../pages/PageNotFound/PageNotFound";
-import ListTopicManager from "../pages/DashBoard/DashBoardManager/topic/listTopicManager";
+import PersonalTopics from "../pages/DashBoard/DashBoardManager/topic/personalTopics";
 import ListGroupTopicLecturer from "../pages/DashBoard/DashBoardManager/point/listGroupTopicLecturer";
 import CreateNotification from "../pages/DashBoard/DashBoardManager/notifications/manageNotification/createNotification";
 import ManageNotification from "../pages/DashBoard/DashBoardManager/notifications/manageNotification/manageNotification";
@@ -36,6 +36,7 @@ import Statistical from "../pages/DashBoard/DashBoardManager/home/statistical";
 import Event from "../pages/Event_Notification/eventHomePage";
 import NotificationHomePage from "../pages/Event_Notification/notificationHomePage";
 import ManageMajor from "../pages/DashBoard/DashBoardManager/term/major/manageMajor";
+import ManagerTopics from "../pages/DashBoard/DashBoardManager/topic/managerTopics";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -159,8 +160,8 @@ const AppRoute = () => {
             element={<PrivateRoute component={<Criteria />} />}
           />
           <Route
-            path="manage-list-topic"
-            element={<PrivateRoute component={<ListTopicManager />} />}
+            path="personal-list-topic"
+            element={<PrivateRoute component={<PersonalTopics />} />}
           />
           <Route
             path="point-list-group"
@@ -193,6 +194,10 @@ const AppRoute = () => {
           <Route
             path="manage-major"
             element={<PrivateRoute component={<ManageMajor />} />}
+          />
+          <Route
+            path="manage-list-topic"
+            element={<PrivateRoute component={<ManagerTopics />} />}
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>
