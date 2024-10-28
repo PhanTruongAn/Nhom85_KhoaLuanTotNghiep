@@ -103,6 +103,7 @@ function ManageNotification() {
       setLoading(false);
     }, 1000);
   };
+
   const columns = [
     { title: "ID", dataIndex: "id", key: "id", width: "10%" },
     { title: "Tiêu đề", dataIndex: "title", key: "title" },
@@ -233,10 +234,8 @@ function ManageNotification() {
         </DialogTitle>
         <DialogContent
           sx={{
-            width: "60vw",
-            maxWidth: "800px",
-            height: "50vh",
-            maxHeight: "500px",
+            width: "100%",
+            height: "80%",
           }}
         >
           <Box
@@ -266,10 +265,10 @@ function ManageNotification() {
               label="Chi tiết"
               variant="outlined"
               name="details"
-              value={currentNotification?.details || ""}
+              value={currentNotification?.content || ""}
               onChange={handleChange}
               multiline
-              rows={4}
+              rows={12}
               required
               sx={{
                 "& .MuiOutlinedInput-root": {

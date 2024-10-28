@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import VanillaTilt from "vanilla-tilt";
 import "./style.scss";
 import Box from "@mui/material/Box";
-import backgroundtitle from "../../images/backgroundtitle.jpg";
+
 const TiltComponent = (props) => {
   const leftTiltRef = useRef(null);
   const rightTiltRef = useRef(null);
@@ -50,7 +50,9 @@ const TiltComponent = (props) => {
   return (
     <Box
       className="tilt-wrapper"
-      sx={{ backgroundImage: `url(${backgroundtitle})`, padding: "20px" }}
+      sx={{
+        padding: "20px",
+      }}
     >
       {/* Left Tilt */}
       <Box
