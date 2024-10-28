@@ -13,7 +13,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { message } from "antd";
 import CustomButton from "../../../../components/Button/CustomButton";
-
+import { formatContent } from "../../../../utils/formatContent";
 const ProjectDetails = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
@@ -200,18 +200,19 @@ const ProjectDetails = () => {
                     {/* Set minHeight to prevent layout shift */}
                     <Typography>
                       <strong>Mô tả:</strong>{" "}
-                      {displayedTopic.description || "N/A"}
+                      {formatContent(displayedTopic.description) || "N/A"}
                     </Typography>
                     <Typography>
-                      <strong>Mục tiêu:</strong> {displayedTopic.goals || "N/A"}
+                      <strong>Mục tiêu:</strong>{" "}
+                      {formatContent(displayedTopic.goals) || "N/A"}
                     </Typography>
                     <Typography>
                       <strong>Yêu cầu:</strong>{" "}
-                      {displayedTopic.requirement || "N/A"}
+                      {formatContent(displayedTopic.requirement) || "N/A"}
                     </Typography>
                     <Typography>
                       <strong>Chuẩn đầu ra:</strong>{" "}
-                      {displayedTopic.standardOutput || "N/A"}
+                      {formatContent(displayedTopic.standardOutput) || "N/A"}
                     </Typography>
                   </AccordionDetails>
                 </Accordion>

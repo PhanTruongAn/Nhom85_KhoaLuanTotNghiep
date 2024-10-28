@@ -1,15 +1,8 @@
 import React from "react";
 import { Card, Typography, Divider } from "@mui/material";
-
+import { formatContent } from "../../../../utils/formatContent";
 const NotificationDetail = ({ notification }) => {
   // Hàm để chuyển đổi nội dung thành cấu trúc văn bản
-  const formatContent = (content) => {
-    return content.split("\n").map((line, index) => (
-      <Typography key={index} paragraph>
-        {line}
-      </Typography>
-    ));
-  };
 
   return (
     <Card

@@ -25,13 +25,7 @@ import lecturerApi from "../../../../apis/lecturerApi";
 import CustomHooks from "../../../../utils/hooks";
 import { useSelector, useDispatch } from "react-redux";
 import { isEmpty } from "lodash";
-const formatContent = (content) => {
-  return content.split("\n").map((line, index) => (
-    <Typography key={index} paragraph>
-      {line}
-    </Typography>
-  ));
-};
+import { formatContent } from "../../../../utils/formatContent";
 function SearchBar({ searchTerm, setSearchTerm, searchBy, setSearchBy }) {
   return (
     <Grid

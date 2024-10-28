@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setGroup } from "../../../../redux/userSlice";
 import ConfirmModal from "../../../../components/Modal/confirmModal";
 import { useDebounce } from "@uidotdev/usehooks";
+import { formatContent } from "../../../../utils/formatContent";
 function ListTopic() {
   const group = useSelector((state) => state.userInit.group);
   const user = useSelector((state) => state.userInit.user);
@@ -106,8 +107,6 @@ function ListTopic() {
         "Mô tả": data.description,
         "Mục tiêu": data.goals,
         "Yêu cầu": data.requirement,
-        "Chuẩn đầu ra": data.standardOutput,
-        "Trạng thái": data.status,
         "Số lượng nhóm": data.quantityGroup,
         "Giảng viên": data.lecturer.fullName,
         Email: data.lecturer.email,
@@ -311,15 +310,22 @@ function ListTopic() {
         loading={state.isModalLoading}
       >
         {state.currentRecord && (
-          <Box>
+          <Box
+            maxWidth="lg"
+            sx={{ overflowY: "auto", height: "70vh", fontSize: "16px" }}
+          >
             {Object.keys(state.currentRecord).map((key) => (
               <Box key={key} sx={{ marginBottom: "10px" }}>
-                <strong>{key}:</strong> {state.currentRecord[key]}
+                <strong>{key}:</strong>
+                {["Mô tả", "Mục tiêu", "Yêu cầu"].includes(key)
+                  ? formatContent(state.currentRecord[key])
+                  : state.currentRecord[key]}
               </Box>
             ))}
           </Box>
         )}
       </Modal>
+
       <ConfirmModal
         open={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}

@@ -16,14 +16,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Table } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-
-const formatContent = (content) => {
-  return content.split("\n").map((line, index) => (
-    <Typography key={index} paragraph>
-      {line}
-    </Typography>
-  ));
-};
+import { formatContent } from "../../../../utils/formatContent";
 
 function SearchBar({ searchTerm, setSearchTerm }) {
   return (
