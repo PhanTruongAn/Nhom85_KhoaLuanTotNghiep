@@ -18,44 +18,20 @@ import {
 } from "@mui/material";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import SearchIcon from "@mui/icons-material/Search";
-import { Table } from "antd";
+import { message, Table } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-
-// Giữ nguyên danh sách đề tài mẫu
-const initialTopics = [
-  {
-    id: 1,
-    title:
-      "XÂY DỰNG WEBSITE ĐĂNG KÝ ĐỀ TÀI VÀ GIÁM SÁT THỰC HIỆN KHÓA LUẬN TỐT NGHIỆP CHO SINH VIÊN KHOA CNTT-IUH",
-    description:
-      "Mô tả đề tài: Đây là một đề tài liên quan đến việc xây dựng website đăng ký đề tài và giám sát thực hiện khóa luận tốt nghiệp cho sinh viên Khoa CNTT-IUH.",
-    goals:
-      "Mục tiêu: Phát triển một hệ thống website giúp sinh viên đăng ký đề tài và giám sát tiến độ thực hiện khóa luận.",
-    requirement:
-      "Yêu cầu đầu vào: Sinh viên cần có kiến thức cơ bản về lập trình web và hệ quản trị cơ sở dữ liệu.",
-    standardOutput:
-      "Yêu cầu đầu ra: Website hoạt động ổn định, dễ sử dụng và có thể quản lý được các đề tài đăng ký cũng như giám sát tiến độ.",
-    quantityGroup: 2,
-    lecturer: "Giảng viên A",
-  },
-  {
-    id: 2,
-    title:
-      "XÂY DỰNG HỆ THỐNG QUẢN LÝ THƯ VIỆN ĐIỆN TỬ CHO SINH VIÊN KHOA CNTT-IUH",
-    description:
-      "Mô tả đề tài: Đề tài nghiên cứu và phát triển hệ thống quản lý thư viện điện tử, cung cấp tài liệu cho sinh viên và giảng viên.",
-    goals:
-      "Mục tiêu: Xây dựng một hệ thống dễ dàng tìm kiếm và quản lý tài liệu, sách báo cho sinh viên Khoa CNTT-IUH.",
-    requirement:
-      "Yêu cầu đầu vào: Kiến thức về lập trình web, thiết kế cơ sở dữ liệu và giao diện người dùng.",
-    standardOutput:
-      "Yêu cầu đầu ra: Hệ thống hoạt động hiệu quả, có giao diện thân thiện, dễ dàng tra cứu tài liệu.",
-    quantityGroup: 3,
-    lecturer: "Giảng viên B",
-  },
-];
-
+import lecturerApi from "../../../../apis/lecturerApi";
+import CustomHooks from "../../../../utils/hooks";
+import { useSelector, useDispatch } from "react-redux";
+import { isEmpty } from "lodash";
+const formatContent = (content) => {
+  return content.split("\n").map((line, index) => (
+    <Typography key={index} paragraph>
+      {line}
+    </Typography>
+  ));
+};
 function SearchBar({ searchTerm, setSearchTerm, searchBy, setSearchBy }) {
   return (
     <Grid
@@ -63,20 +39,7 @@ function SearchBar({ searchTerm, setSearchTerm, searchBy, setSearchBy }) {
       spacing={2}
       sx={{ paddingTop: "10px", paddingLeft: "10px" }}
     >
-      <Grid item xs={12} sm={2}>
-        <FormControl fullWidth variant="outlined" size="small">
-          <InputLabel>Tìm theo</InputLabel>
-          <Select
-            value={searchBy}
-            onChange={(e) => setSearchBy(e.target.value)}
-            label="Tìm theo"
-          >
-            <MenuItem value="title">Tên đề tài</MenuItem>
-            <MenuItem value="lecturer">Giảng viên</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={12} sm={4}>
         <TextField
           fullWidth
           size="small"
@@ -84,7 +47,7 @@ function SearchBar({ searchTerm, setSearchTerm, searchBy, setSearchBy }) {
           placeholder="Tìm kiếm..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
+          property={{
             startAdornment: (
               <InputAdornment position="start">
                 <SearchIcon />
@@ -98,13 +61,43 @@ function SearchBar({ searchTerm, setSearchTerm, searchBy, setSearchBy }) {
 }
 
 function ListTopicManager() {
-  const [topics] = useState(initialTopics);
+  const user = useSelector((state) => state.userInit.user);
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const [topics, setTopics] = useState([]);
+  const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchBy, setSearchBy] = useState("title");
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [openDetailModal, setOpenDetailModal] = useState(false);
+
+  //Get Personal Topic
+  const getPersonalTopic = async () => {
+    let id = user.id;
+    let termId = currentTerm.id;
+    let res = await lecturerApi.getPersonalTopic(termId, id);
+    return res;
+  };
+
+  const { data, refetch, isFetching } = CustomHooks.useQuery(
+    ["personal-topics"],
+    getPersonalTopic,
+    {
+      enabled: !isEmpty(currentTerm),
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          messageApi.success(res.message);
+          setTopics(res.data);
+        } else {
+          messageApi.error(res.message);
+        }
+      },
+      onError: (err) => {
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
+    }
+  );
 
   const filteredTopics = useMemo(() => {
     return topics.filter((topic) =>
@@ -170,6 +163,7 @@ function ListTopicManager() {
 
   return (
     <Box>
+      {contextHolder}
       <Typography
         fontWeight="bold"
         sx={{
@@ -216,8 +210,8 @@ function ListTopicManager() {
       <Dialog
         open={openDetailModal}
         onClose={handleCloseModal}
-        maxWidth="md"
-        fullWidth
+        maxWidth="lg"
+        sx={{ overflow: "auto" }}
       >
         <DialogTitle variant="h4">Chi tiết đề tài</DialogTitle>
         <DialogContent sx={{ padding: "20px" }}>
@@ -230,17 +224,19 @@ function ListTopicManager() {
                 <b>Giảng viên:</b> {selectedTopic.lecturer}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Mô tả:</b> {selectedTopic.description}
+                <b>Mô tả:</b> {formatContent(selectedTopic.description)}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
                 <b>Mục tiêu:</b> {selectedTopic.goals}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Yêu cầu đầu vào:</b> {selectedTopic.requirement}
+                <b>Yêu cầu đầu vào:</b>{" "}
+                {formatContent(selectedTopic.requirement)}
               </Typography>
 
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Yêu cầu đầu ra:</b> {selectedTopic.standardOutput}
+                <b>Yêu cầu đầu ra:</b>{" "}
+                {formatContent(selectedTopic.standardOutput)}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
                 <b>Số lượng nhóm:</b> {selectedTopic.quantityGroup}

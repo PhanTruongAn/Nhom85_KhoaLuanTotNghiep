@@ -56,10 +56,6 @@ function ListStudent() {
     },
 
     {
-      keepPreviousData: true,
-      cacheTime: 1000 * 60 * 10, // Dữ liệu sẽ được cache trong 10 phút
-      refetchOnWindowFocus: false, // Không fetch lại khi quay lại tab
-      staleTime: 1000,
       onSuccess: (res) => {
         if (res && res.status === 0) {
           setDataSource(res.data.students);

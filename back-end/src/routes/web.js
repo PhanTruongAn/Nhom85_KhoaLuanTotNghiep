@@ -111,6 +111,7 @@ const initWebRoutes = (app) => {
   router.put("/lecturer/change-password", userController.handleChangePassword);
   router.post("/lecturer/create-topic", lecturerController.handleCreateTopics);
   router.get("/lecturer/term", lecturerController.handleGetTerm);
+  router.get("/lecturer/my-topics", lecturerController.handleGetPersonalTopics);
   //Manager Route
   router.get(
     "/manager/get-all-permission",

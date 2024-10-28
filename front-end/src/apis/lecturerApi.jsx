@@ -42,5 +42,8 @@ const lecturerApi = {
   createTopics: (data) => {
     return axiosClient.post(baseUrl + "/create-topic", data);
   },
+  getPersonalTopic: (term, id) => {
+    return axiosClient.get(baseUrl + `/my-topics?term=${term}&id=${id}`);
+  },
 };
 export default lecturerApi;

@@ -148,7 +148,7 @@ function ListStudentGroup() {
           ))
         ) : (
           <Box
-            marginTop="50px"
+            marginTop="70px"
             // alignSelf="center"
             display="flex"
             flexDirection="column"
@@ -160,6 +160,8 @@ function ListStudentGroup() {
           >
             {isFetching ? (
               <EmptyData />
+            ) : !isWithinChooseGroupPeriod ? (
+              <OverDate text="Đã hết hạn đăng ký nhóm!" />
             ) : isEmpty(groups) ? (
               <EmptyData text="Không có dữ liệu để hiển thị!" />
             ) : (

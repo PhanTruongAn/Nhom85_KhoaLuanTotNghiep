@@ -121,6 +121,20 @@ const handleGetTerm = async (req, res) => {
     });
   }
 };
+const handleGetPersonalTopics = async (req, res) => {
+  try {
+    let { term, id } = req.query;
+    let data = await lecturerService.getPersonalTopics(term, id);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: 1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+
 module.exports = {
   handleCreateLecturerAccount,
   handleBulkCreateLecturer,
@@ -132,4 +146,5 @@ module.exports = {
   handleFindLecturersByUserNameOrFullName,
   handleCreateTopics,
   handleGetTerm,
+  handleGetPersonalTopics,
 };

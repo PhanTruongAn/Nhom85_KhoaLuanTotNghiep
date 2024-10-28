@@ -484,7 +484,7 @@ const getTerm = async (lecturerId) => {
       const endDate = new Date(term.endDate);
       return currentDate >= startDate && currentDate <= endDate;
     });
-    console.log("Check", currentTerm);
+
     if (currentTerm) {
       return {
         status: 0,
@@ -507,6 +507,50 @@ const getTerm = async (lecturerId) => {
   }
 };
 
+const getPersonalTopics = async (term, id) => {
+  if (!term) {
+    return {
+      status: -1,
+      message: "Không có thông tin của học kì!",
+    };
+  }
+  if (!id) {
+    return {
+      status: -1,
+      message: "Không có thông tin của giảng viên!",
+    };
+  }
+
+  try {
+    let topics = await Topic.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt", "LecturerId"] },
+      where: {
+        termId: term,
+        lecturerId: id,
+      },
+    });
+
+    if (topics && topics.length > 0) {
+      return {
+        status: 0,
+        message: "Lấy danh sách đề tài cá nhân thành công!",
+        data: topics,
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Không tìm thấy danh sách đề tài cá nhân!",
+      };
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách topics:", error);
+    return {
+      status: -1,
+      message: "Đã xảy ra lỗi khi lấy thông tin!",
+      error: error.message,
+    };
+  }
+};
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -518,5 +562,6 @@ module.exports = {
   findLecturersByUserNameOrFullName,
   findLecturersByName,
   createTopics,
+  getPersonalTopics,
   getTerm,
 };
