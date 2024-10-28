@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography, Container } from "@mui/material";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import image1 from "../../images/anhdong/Welcome.lottie";
-import background from "../../images/background.jpg";
-import backgrounddark from "../../images/backgrounddark.jpg";
 import StartNow from "../../images/anhdong/startnow.lottie";
 
 const HomePage = () => {
@@ -33,9 +31,7 @@ const HomePage = () => {
         mt: 4,
         minHeight: "100vh",
         py: 8,
-        backgroundImage: themes
-          ? `url(${backgrounddark})`
-          : `url(${background})`,
+
         backgroundSize: "cover",
       }}
     >
