@@ -25,8 +25,9 @@ import CustomHooks from "../../../../utils/hooks";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useSelector } from "react-redux";
+import SearchComponent from "../../../../components/SearchComponent/search";
 const { Option } = Select;
-const { Search } = Input;
+
 function ListLecturer() {
   const navigate = useNavigate();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
@@ -273,22 +274,14 @@ function ListLecturer() {
   return (
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
-      <Box
-        className="col-4"
-        sx={{
-          float: "left",
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" }, // Thay đổi hướng flex
-          alignItems: "flex-start", // Căn chỉnh các phần tử
-        }}
-      >
-        <Search
+      <SearchComponent placeholder="Tìm theo mã giảng viên hoặc tên đầy đủ"></SearchComponent>
+      {/* <Search
           placeholder="Tìm theo mã giảng viên hoặc tên đầy đủ"
           onChange={(e) => setSearchValue(e.target.value)}
           enterButton
           loading={state.searchLoading}
-        />
-      </Box>
+        /> */}
+
       <Box sx={{ float: "right" }}>
         <Space>
           <Button

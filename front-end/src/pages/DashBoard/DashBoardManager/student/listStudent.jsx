@@ -19,8 +19,8 @@ import CustomHooks from "../../../../utils/hooks";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useSelector } from "react-redux";
+import SearchComponent from "../../../../components/SearchComponent/search";
 const { Option } = Select;
-const { Search } = Input;
 
 function ListStudent() {
   const navigate = useNavigate();
@@ -253,21 +253,15 @@ function ListStudent() {
   return (
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
-      <Box
-        className="col-4"
-        sx={{
-          float: "left",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <Search
+
+      <SearchComponent placeholder="Tìm theo mã sinh viên hoặc họ tên sinh viên" />
+      {/* <Search
           placeholder="Tìm theo mã sinh viên hoặc họ tên sinh viên"
           onChange={(e) => setSearchValue(e.target.value)}
           enterButton
           loading={state.searchLoading}
-        />
-      </Box>
+        /> */}
+
       <Box sx={{ float: "right" }}>
         <Space>
           <Button

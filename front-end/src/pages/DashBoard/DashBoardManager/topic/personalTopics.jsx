@@ -26,6 +26,7 @@ import CustomHooks from "../../../../utils/hooks";
 import { useSelector, useDispatch } from "react-redux";
 import { isEmpty } from "lodash";
 import { formatContent } from "../../../../utils/formatContent";
+import SearchComponent from "../../../../components/SearchComponent/search";
 function SearchBar({ searchTerm, setSearchTerm, searchBy, setSearchBy }) {
   return (
     <Grid
@@ -175,12 +176,13 @@ function PersonalTopics() {
         Danh sách đề tài
       </Typography>
 
-      <SearchBar
+      <SearchComponent placeholder={"Tìm kiếm..."} />
+      {/* <SearchBar
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         searchBy={searchBy}
         setSearchBy={setSearchBy}
-      />
+      /> */}
 
       <Table
         style={{ padding: "10px" }}

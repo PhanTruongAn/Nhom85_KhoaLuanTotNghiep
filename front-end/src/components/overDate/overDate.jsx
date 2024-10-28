@@ -1,9 +1,17 @@
 import React from "react";
 import emptyDataImage from "../../images/anhdong/overdue.gif";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Box, Typography } from "@mui/material";
 
-function overDate({ text, isFetching }) {
+function overDate({ text, overDate }) {
+  console.log("OverDate: ", overDate);
+
+  // Format the overDate to dd/MM/yyyy
+  const formattedDate = new Date(overDate).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   return (
     <Box
       display="flex"
@@ -19,7 +27,25 @@ function overDate({ text, isFetching }) {
         sx={{ width: "100%", height: "300px", objectFit: "cover" }}
       />
       <Typography variant="h6" sx={{ marginTop: "16px" }}>
-        {text ? text : "Đang tải dữ liệu..."}
+        {text ? (
+          <>
+            {text}{" "}
+            <Typography
+              component="span"
+              sx={{
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+                color: "red",
+                padding: "2px 6px",
+                borderRadius: "4px",
+              }}
+            >
+              ({formattedDate})
+            </Typography>
+          </>
+        ) : (
+          "Đang tải dữ liệu..."
+        )}
       </Typography>
     </Box>
   );

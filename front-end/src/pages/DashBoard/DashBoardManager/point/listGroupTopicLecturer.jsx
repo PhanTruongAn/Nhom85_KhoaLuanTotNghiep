@@ -10,7 +10,7 @@ import {
 import { Table, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import PointTopicStudent from "./pointTopicStudent";
-
+import SearchComponent from "../../../../components/SearchComponent/search";
 const initialData = [
   {
     key: "1",
@@ -96,7 +96,8 @@ function ListGroupTopicLecturer() {
       </Typography>
 
       <Box display="flex" alignItems="center" gap={2} marginBottom={3}>
-        <Select
+        <SearchComponent placeholder={"Tìm kiếm..."} />
+        {/* <Select
           value={searchType}
           onChange={handleSearchTypeChange}
           variant="outlined"
@@ -117,7 +118,7 @@ function ListGroupTopicLecturer() {
             />
           }
           style={{ width: "500px", height: "30px" }}
-        />
+        /> */}
       </Box>
 
       <Table

@@ -25,7 +25,7 @@ import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 import CustomButton from "../../../../../components/Button/CustomButton";
 import EmptyData from "../../../../../components/emptydata/EmptyData";
-const { Search } = Input;
+import SearchComponent from "../../../../../components/SearchComponent/search";
 
 function ManageNotification() {
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
@@ -161,13 +161,12 @@ function ManageNotification() {
           mb: 2,
         }}
       >
-        <Box sx={{ width: "35%" }}>
-          <Search
+        <SearchComponent placeholder={"Tìm theo tiêu đề thông báo"} />
+        {/* <Search
             placeholder="Tìm theo tiêu đề thông báo"
             enterButton
             onChange={(e) => setSearchKeyword(e.target.value)}
-          />
-        </Box>
+          /> */}
       </Box>
       <CustomButton
         text="Làm mới dữ liệu"

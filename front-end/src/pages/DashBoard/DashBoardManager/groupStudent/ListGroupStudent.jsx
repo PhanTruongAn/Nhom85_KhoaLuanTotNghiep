@@ -13,7 +13,7 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import CustomHooks from "../../../../utils/hooks";
 import { formatDate } from "../../../../utils/formatDate";
-const { Search } = Input;
+import SearchComponent from "../../../../components/SearchComponent/search";
 const { Option } = Select;
 import { InfoCircleOutlined } from "@ant-design/icons";
 import managerApi from "../../../../apis/managerApi";
@@ -218,20 +218,13 @@ const ListGroupStudent = () => {
           marginBottom: "16px",
         }}
       >
-        <Box
-          className="col-4"
-          sx={{
-            float: "left",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Search
+        <SearchComponent placeholder="Tìm theo tên nhóm hoặc tên đề tài" />
+        {/* <Search
             placeholder="Tìm theo tên nhóm hoặc tên đề tài"
             enterButton
             loading={state.searchLoading}
-          />
-        </Box>
+          /> */}
+
         <Space>
           <Button
             variant="contained"
