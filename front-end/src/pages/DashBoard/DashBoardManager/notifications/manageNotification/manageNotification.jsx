@@ -39,7 +39,6 @@ function ManageNotification() {
   const handleGetNotes = async () => {
     const term = currentTerm.id;
     let res = await managerApi.getNotes(term);
-    console.log("Check notes: ", res);
     return res;
   };
 
