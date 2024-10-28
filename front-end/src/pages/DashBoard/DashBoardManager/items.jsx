@@ -57,10 +57,19 @@ const getItems = (isManager) => {
           label: "Thêm đề tài",
         },
         {
-          key: "manage-list-topic",
+          key: "personal-list-topic",
           icon: <OrderedListOutlined />,
-          label: "Danh sách",
+          label: "Đề tài của tôi",
         },
+        ...(isManager
+          ? [
+              {
+                key: "manage-list-topic",
+                icon: <OrderedListOutlined />,
+                label: "Danh sách đề tài",
+              },
+            ]
+          : []),
       ],
     },
     {

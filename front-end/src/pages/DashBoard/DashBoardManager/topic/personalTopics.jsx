@@ -60,7 +60,7 @@ function SearchBar({ searchTerm, setSearchTerm, searchBy, setSearchBy }) {
   );
 }
 
-function ListTopicManager() {
+function PersonalTopics() {
   const user = useSelector((state) => state.userInit.user);
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [topics, setTopics] = useState([]);
@@ -121,15 +121,20 @@ function ListTopicManager() {
 
   const columns = [
     {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
       title: "Tên đề tài",
       dataIndex: "title",
       key: "title",
       width: 600,
     },
     {
-      title: "Giảng viên",
-      dataIndex: "lecturer",
-      key: "lecturer",
+      title: "Số lượng nhóm",
+      dataIndex: "quantityGroup",
+      key: "quantityGroup",
     },
     {
       title: "Hành động",
@@ -221,7 +226,7 @@ function ListTopicManager() {
                 <b>Tên đề tài:</b> {selectedTopic.title}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Giảng viên:</b> {selectedTopic.lecturer}
+                <b>Số lượng nhóm:</b> {selectedTopic.quantityGroup}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
                 <b>Mô tả:</b> {formatContent(selectedTopic.description)}
@@ -233,13 +238,9 @@ function ListTopicManager() {
                 <b>Yêu cầu đầu vào:</b>{" "}
                 {formatContent(selectedTopic.requirement)}
               </Typography>
-
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
                 <b>Yêu cầu đầu ra:</b>{" "}
                 {formatContent(selectedTopic.standardOutput)}
-              </Typography>
-              <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Số lượng nhóm:</b> {selectedTopic.quantityGroup}
               </Typography>
             </Box>
           ) : (
@@ -256,4 +257,4 @@ function ListTopicManager() {
   );
 }
 
-export default ListTopicManager;
+export default PersonalTopics;
