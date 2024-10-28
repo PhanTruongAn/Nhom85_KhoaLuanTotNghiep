@@ -112,10 +112,8 @@ function Statistical() {
       {/* Image Banner */}
       <Box
         sx={{
-          backgroundImage: `url(${Image1})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: 240,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -124,11 +122,11 @@ function Statistical() {
         }}
       >
         <Typography
-          variant="h3"
+          variant="h4"
           sx={{
             color: "#fff",
             backgroundColor: "rgba(0, 0, 0, 0.5)",
-            padding: 2,
+            padding: 1,
             borderRadius: 2,
             fontWeight: "bold",
           }}
