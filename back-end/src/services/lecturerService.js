@@ -539,7 +539,7 @@ const getPersonalTopics = async (term, id) => {
     } else {
       return {
         status: -1,
-        message: "Không tìm thấy danh sách đề tài cá nhân!",
+        message: "Danh sách đề tài cá nhân trống!",
       };
     }
   } catch (error) {
@@ -548,6 +548,38 @@ const getPersonalTopics = async (term, id) => {
       status: -1,
       message: "Đã xảy ra lỗi khi lấy thông tin!",
       error: error.message,
+    };
+  }
+};
+const deleteTopic = async (data) => {
+  if (!data.id) {
+    return {
+      status: -1,
+      message: "Mã đề tài không hợp lệ!",
+    };
+  }
+  try {
+    let result = await Topic.destroy({
+      where: {
+        id: data.id,
+      },
+    });
+    if (result > 0) {
+      return {
+        status: 0,
+        message: "Xóa thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Xóa thất bại do không tìm thấy bản ghi nào!",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: `Lỗi: ${error.message}`,
     };
   }
 };
@@ -564,4 +596,5 @@ module.exports = {
   createTopics,
   getPersonalTopics,
   getTerm,
+  deleteTopic,
 };

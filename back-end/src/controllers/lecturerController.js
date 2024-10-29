@@ -134,6 +134,18 @@ const handleGetPersonalTopics = async (req, res) => {
     });
   }
 };
+const handleDeleteTopic = async (req, res) => {
+  try {
+    let data = await lecturerService.deleteTopic(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: 1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 
 module.exports = {
   handleCreateLecturerAccount,
@@ -147,4 +159,5 @@ module.exports = {
   handleCreateTopics,
   handleGetTerm,
   handleGetPersonalTopics,
+  handleDeleteTopic,
 };

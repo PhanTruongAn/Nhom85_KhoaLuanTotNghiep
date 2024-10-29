@@ -14,6 +14,7 @@ const {
   Note,
   Role,
   NoteRole,
+  Lecturer,
 } = require("../models");
 
 const paginationPermission = async (page, limit) => {
@@ -865,7 +866,43 @@ const updateNote = async (data) => {
     };
   }
 };
-
+const getAllLecturerTopics = async (page, limit, term) => {
+  try {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Topic.findAndCountAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "lecturerId", "LecturerId"],
+      },
+      include: {
+        model: Lecturer,
+        as: "lecturer",
+        attributes: ["id", "fullName", "email", "phone"],
+      },
+      where: {
+        termId: term,
+      },
+      offset: offset,
+      limit: limit,
+    });
+    const totalPages = Math.ceil(count / limit);
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: {
+        totalRows: count,
+        totalPages: totalPages,
+        topics: rows,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lấy danh sách thất bại!",
+      data: null,
+    };
+  }
+};
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -890,4 +927,5 @@ module.exports = {
   getNotes,
   deleteNote,
   updateNote,
+  getAllLecturerTopics,
 };

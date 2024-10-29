@@ -45,5 +45,8 @@ const lecturerApi = {
   getPersonalTopic: (term, id) => {
     return axiosClient.get(baseUrl + `/my-topics?term=${term}&id=${id}`);
   },
+  deleteTopicById: (data) => {
+    return axiosClient.delete(baseUrl + "/delete-topic", { data });
+  },
 };
 export default lecturerApi;

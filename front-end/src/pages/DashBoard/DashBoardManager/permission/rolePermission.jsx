@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { SearchOutlined } from "@ant-design/icons";
 import { Box, Typography } from "@mui/material";
-import { Select, Space, Table, Tag, message } from "antd";
+import { Select, Table, Tag, message, Input } from "antd";
 import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
-import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomButton from "../../../../components/Button/CustomButton";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import { isEmpty } from "lodash";
@@ -198,12 +198,17 @@ function RolePermission() {
           />
         </Box>
         <Box className="col-3" sx={{ flexGrow: 1 }}>
-          <SearchComponent
-            placeholder={"Tìm theo mô tả"}
-            onChange={onInputChange}
-            loading={state.searchLoading}
-            onSearch={onInputChange}
-            value={state.searchValue}
+          <Input
+            placeholder="Tìm theo mô tả"
+            value={state.searchValue} // Gán giá trị từ state
+            onChange={onInputChange} // Gọi hàm khi người dùng nhập dữ liệu
+            suffix={
+              <SearchOutlined
+                style={{
+                  color: "rgba(0,0,0,.45)",
+                }}
+              />
+            }
           />
         </Box>
       </Box>

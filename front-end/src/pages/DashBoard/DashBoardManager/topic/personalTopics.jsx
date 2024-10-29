@@ -1,15 +1,7 @@
 import React, { useState, useMemo } from "react";
 import {
-  Paper,
   Button,
   Typography,
-  TextField,
-  Grid,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  InputAdornment,
   Box,
   Dialog,
   DialogActions,
@@ -17,8 +9,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import SearchIcon from "@mui/icons-material/Search";
-import { message, Table } from "antd";
+import { message, Table, Popconfirm } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import lecturerApi from "../../../../apis/lecturerApi";
@@ -27,34 +18,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { isEmpty } from "lodash";
 import { formatContent } from "../../../../utils/formatContent";
 import SearchComponent from "../../../../components/SearchComponent/search";
-function SearchBar({ searchTerm, setSearchTerm, searchBy, setSearchBy }) {
-  return (
-    <Grid
-      container
-      spacing={2}
-      sx={{ paddingTop: "10px", paddingLeft: "10px" }}
-    >
-      <Grid item xs={12} sm={4}>
-        <TextField
-          fullWidth
-          size="small"
-          variant="outlined"
-          placeholder="Tìm kiếm..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          property={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Grid>
-    </Grid>
-  );
-}
-
+import CustomButton from "../../../../components/Button/CustomButton";
 function PersonalTopics() {
   const user = useSelector((state) => state.userInit.user);
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
@@ -66,7 +30,8 @@ function PersonalTopics() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [openDetailModal, setOpenDetailModal] = useState(false);
-
+  const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   //Get Personal Topic
   const getPersonalTopic = async () => {
     let id = user.id;
@@ -76,31 +41,37 @@ function PersonalTopics() {
   };
 
   const { data, refetch, isFetching } = CustomHooks.useQuery(
-    ["personal-topics"],
+    ["personal-topics", currentTerm],
     getPersonalTopic,
     {
       enabled: !isEmpty(currentTerm),
       onSuccess: (res) => {
         if (res && res.status === 0) {
-          messageApi.success(res.message);
+          if (isEmpty(data)) {
+            messageApi.success(res.message);
+          }
           setTopics(res.data);
+          setRefresh(false);
         } else {
+          setTopics([]);
           messageApi.error(res.message);
+          setRefresh(false);
         }
       },
       onError: (err) => {
+        setTopics([]);
         messageApi.error("Lỗi khi lấy dữ liệu!");
+        setRefresh(false);
       },
     }
   );
 
   const filteredTopics = useMemo(() => {
-    return topics.filter((topic) =>
-      searchBy === "title"
-        ? topic.title.toLowerCase().includes(searchTerm.toLowerCase())
-        : topic.lecturer.toLowerCase().includes(searchTerm.toLowerCase())
+    const sourceData = data && data.data ? data.data : topics;
+    return sourceData.filter((topic) =>
+      topic.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, searchBy, topics]);
+  }, [searchTerm, topics]);
 
   const totalRows = filteredTopics.length;
 
@@ -114,11 +85,31 @@ function PersonalTopics() {
     setSelectedTopic(null);
   };
 
+  const handleRefresh = () => {
+    setRefresh(true);
+    refetch();
+    setTimeout(() => {
+      messageApi.success("Làm mới dữ liệu thành công!");
+    }, 1000);
+  };
+  const handleDelete = async (id) => {
+    const dataDelete = {
+      id: id,
+    };
+    let res = await lecturerApi.deleteTopicById(dataDelete);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      refetch();
+    } else {
+      messageApi.error(res.message);
+    }
+  };
   const columns = [
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: "Tên đề tài",
@@ -130,6 +121,7 @@ function PersonalTopics() {
       title: "Số lượng nhóm",
       dataIndex: "quantityGroup",
       key: "quantityGroup",
+      sorter: (a, b) => a.quantityGroup - b.quantityGroup,
     },
     {
       title: "Hành động",
@@ -148,14 +140,22 @@ function PersonalTopics() {
           <Button variant="contained" endIcon={<EditOutlined />} size="small">
             Sửa
           </Button>
-          <Button
-            variant="contained"
-            endIcon={<DeleteOutlined />}
-            size="small"
-            color="error"
+          <Popconfirm
+            title="Xóa đề tài"
+            description="Bạn có chắc muốn xóa đề tài này?"
+            onConfirm={(e) => handleDelete(record.id)}
+            okText="Đồng ý"
+            cancelText="Không"
           >
-            Xóa
-          </Button>
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              endIcon={<DeleteOutlined />}
+            >
+              Xóa
+            </Button>
+          </Popconfirm>
         </div>
       ),
     },
@@ -173,23 +173,37 @@ function PersonalTopics() {
           marginTop: "10px",
         }}
       >
-        Danh sách đề tài
+        Danh sách đề tài của tôi
       </Typography>
 
-      <SearchComponent placeholder={"Tìm kiếm..."} />
-      {/* <SearchBar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        searchBy={searchBy}
-        setSearchBy={setSearchBy}
-      /> */}
+      <Box sx={{ position: "relative", padding: "10px" }}>
+        <SearchComponent
+          placeholder="Tìm theo tên đề tài"
+          onChange={(term) => setSearchTerm(term)}
+        />
+        <CustomButton
+          onClick={handleRefresh}
+          loading={refresh}
+          text="Làm mới dữ liệu"
+          type="refresh"
+          sx={{
+            position: "absolute",
+            right: "10px",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        />
+      </Box>
 
       <Table
         style={{ padding: "10px" }}
         columns={columns}
         dataSource={filteredTopics}
+        loading={isFetching}
         rowKey={(record) => record.id}
         pagination={{
+          showSizeChanger: true,
+          pageSizeOptions: ["5", "10", "20"],
           current: page,
           pageSize: rowsPerPage,
           total: totalRows,
@@ -199,12 +213,17 @@ function PersonalTopics() {
           },
         }}
         locale={{
-          emptyText:
-            filteredTopics.length === 0 ? (
-              <Box display="flex" justifyContent="center" alignItems="center">
+          emptyText: (
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {isFetching ? (
                 <EmptyData />
-              </Box>
-            ) : null,
+              ) : filteredTopics ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : (
+                <EmptyData />
+              )}
+            </Box>
+          ),
         }}
       />
 

@@ -21,7 +21,6 @@ import AddModal from "./addModal";
 import UpdateModal from "./updateModal";
 import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
-import SearchComponent from "../../../../components/SearchComponent/search";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -253,7 +252,7 @@ function ListPermission() {
         }}
       >
         <Box
-          className="row col-8"
+          className="row col-6"
           sx={{ display: "flex", alignItems: "center" }}
         >
           <Box className="col-3">
@@ -270,12 +269,18 @@ function ListPermission() {
             />
           </Box>
 
-          <Box className="col-5" sx={{ flexGrow: 1 }}>
-            <SearchComponent
-              placeholder={"Tìm theo mô tả"}
-              onChange={onInputChange}
-              loading={state.searchLoading}
-              value={state.searchValue}
+          <Box className="col-3" sx={{ flexGrow: 1 }}>
+            <Input
+              placeholder="Tìm theo mô tả"
+              value={searchValue} // Gán giá trị từ state
+              onChange={onInputChange} // Gọi hàm khi người dùng nhập dữ liệu
+              suffix={
+                <SearchOutlined
+                  style={{
+                    color: "rgba(0,0,0,.45)",
+                  }}
+                />
+              }
             />
           </Box>
         </Box>

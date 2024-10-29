@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-
 import { Grid, TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { CloseCircleFilled } from "@ant-design/icons";
 
-function SearchComponent({ onChange, loading, onSearch, value, placeholder }) {
+function SearchComponent({ onChange, placeholder }) {
   const [searchTerm, setSearchTerm] = useState("");
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    onChange(value);
+  };
+
   return (
     <Grid
       container
@@ -15,13 +20,8 @@ function SearchComponent({ onChange, loading, onSearch, value, placeholder }) {
       <Grid item xs={12} sm={4}>
         <TextField
           placeholder={placeholder}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              onSearch();
-            }
-          }}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          value={value}
+          value={searchTerm}
+          onChange={handleInputChange}
           fullWidth
           size="small"
           variant="outlined"
@@ -35,15 +35,6 @@ function SearchComponent({ onChange, loading, onSearch, value, placeholder }) {
         />
       </Grid>
     </Grid>
-    // <Search
-    //   placeholder={placeholder}
-    //   onSearch={onSearch}
-    //   onChange={onChange}
-    //   enterButton
-    //   loading={loading}
-    //   style={{ width: "100%" }}
-    //   value={value}
-    // />
   );
 }
 

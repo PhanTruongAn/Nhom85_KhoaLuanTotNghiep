@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Button,
   Typography,
@@ -13,82 +13,62 @@ import {
 } from "@mui/material";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import SearchIcon from "@mui/icons-material/Search";
-import { Table } from "antd";
+import { Space, Table, message, Popconfirm } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import { formatContent } from "../../../../utils/formatContent";
-
-function SearchBar({ searchTerm, setSearchTerm }) {
-  return (
-    <Grid
-      container
-      spacing={2}
-      sx={{ paddingTop: "10px", paddingLeft: "10px" }}
-    >
-      <Grid item xs={12} sm={4}>
-        <TextField
-          fullWidth
-          size="small"
-          variant="outlined"
-          placeholder="Tìm kiếm..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Grid>
-    </Grid>
-  );
-}
-
+import CustomButton from "../../../../components/Button/CustomButton";
+import CustomHooks from "../../../../utils/hooks";
+import SearchComponent from "../../../../components/SearchComponent/search";
+import { useSelector } from "react-redux";
+import managerApi from "../../../../apis/managerApi";
+import lecturerApi from "../../../../apis/lecturerApi";
+import { isEmpty } from "lodash";
 function ManagerTopics() {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [pageSize, setPageSize] = useState(5);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [openDetailModal, setOpenDetailModal] = useState(false);
-
-  // Sample data for demonstration
-  const topics = [
-    {
-      id: 1,
-      title: "Chương trình hỗ trợ đào tạo sinh viên trường đại học ",
-      quantityGroup: 3,
-      description:
-        "Trải nghiệm qui trình  trong việc phát triển phần mềm: + Tìm hiểu requirement từ khách hàng  + Design SRS, ADD, DDD + Coding trên hệ thống Java hoặc .NET + Thực hiện testing  + Deploy hệ thống",
-      goals:
-        "Trải nghiệm qui trình  trong việc phát triển phần mềm:+ Tìm hiểu requirement từ khách hàng + Design SRS, ADD, DDD+ Coding hệ thống với Java hoặc React Native+ Thực hiện testing + Deploy hệ thống (cloud computing)",
-      requirement:
-        "Yêu cầu cứng: Đã hoàn thành môn Công nghệ mới trong SE ở mức khá giỏi Đam mê nghiên cứu công nghệ, lập trình Mobil - Có kiến thức cơ bản về Java, Swift hoặc React Native - Có tinh thần học hỏi và mong muốn làm sản phẩm theo quy trình công nghiệp: tuân thủ tiêu chuẩn khi viết mã nguồn, Có hoạt động đảm bảo chất lượng mã nguồn",
-      standardOutput:
-        "A.Sinh viên tham gia đề tài1) Nắm vững kiến thức, kỹ năng lập trình Java2) Có kiến thức, kỹ năng triển khai dự án phần mềm đầy đủ qui trình từ Requirement => Design => Coding => Unit Testing3) Có năng lực đầy đủ về Lập kế hoạch, theo dõi tiến độ, phân tích các vấn đề phát sinh trong quá trình thực hiện dự án.B.Sản phẩm1) Có tài liệu mô tả Yêu cầu dự án.2) Có tài liệu mô tả Thiết kế kiến trúc của dự án.3) Có tài liệu mô tả Thiết kế chi tiết cho chức năng chính của dự án.4) Có mã nguồn được lưu vết (tracking) định kỳ trên hệ thống quản lý phiên bản (version control) như Subversion hoặc Git; Mã nguồn trình bày rõ ràng, dễ hiểu theo tiêu chuẩn đã được thống nhất.5) Có tài liệu mô tả tình huống test và kết quả test cho chức năng chính của dự án.6) Có tài liệu mô tả cách biên dịch, đóng gói và hướng dẫn nâng cấp mã nguồn cho dự án.",
-      lecturer: "Nguyễn Thếng Phúc",
+  const [topics, setTopics] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [totalRows, setTotalRows] = useState();
+  const [totalPages, setTotalPages] = useState();
+  const [refresh, setRefresh] = useState(false);
+  //Get All Topics Of Lecturer
+  const {
+    isFetching,
+    data: topicsData,
+    refetch,
+  } = CustomHooks.useQuery(
+    ["lecturer-topics", currentTerm?.id, page, pageSize],
+    () => {
+      return managerApi.getLecturerTopics(currentTerm?.id, page, pageSize);
     },
     {
-      id: 2,
-      title: "Đề tài 2",
-      quantityGroup: 5,
-      description: "Mô tả đề tài 2",
-      goals: "Mục tiêu đề tài 2",
-      requirement: "Yêu cầu đầu vào đề tài 2",
-      standardOutput: "Yêu cầu đầu ra đề tài 2",
-      lecturer: "Nguyễn Thếng Phúc",
-    },
-    // Add more sample data if needed
-  ];
-
-  const filteredTopics = useMemo(() => {
-    return topics.filter((topic) =>
-      topic.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm, topics]);
-
-  const totalRows = filteredTopics.length;
+      enabled: !isEmpty(currentTerm),
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          setTopics(res.data.topics);
+          setTotalRows(res.data.totalRows);
+          setTotalPages(res.data.totalPages);
+          setLoading(false);
+        } else if (res.status === -1 || res.status === 403) {
+          setLoading(false);
+          setDataSource([]);
+          messageApi.error(res.message);
+        }
+        setRefresh(false);
+      },
+      onError: (err) => {
+        setLoading(false);
+        setRefresh(false);
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
+    }
+  );
 
   const handleViewDetails = (topic) => {
     setSelectedTopic(topic);
@@ -99,62 +79,94 @@ function ManagerTopics() {
     setOpenDetailModal(false);
     setSelectedTopic(null);
   };
-
+  const handleDelete = async (id) => {
+    const dataDelete = {
+      id: id,
+    };
+    let res = await lecturerApi.deleteTopicById(dataDelete);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      if (topics.length === 1 && totalPages !== 1) {
+        setPage(page - 1);
+      }
+      refetch();
+    } else {
+      messageApi.error(res.message);
+    }
+  };
   const columns = [
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
+      width: "5%",
     },
     {
       title: "Tên đề tài",
       dataIndex: "title",
       key: "title",
-      width: 400,
+      ellipsis: true,
+      width: "30%",
     },
     {
       title: "Giảng viên",
-      dataIndex: "lecturer",
       key: "lecturer",
-      width: 200,
+      render: (record) => record.lecturer.fullName,
+      width: "20%",
     },
     {
       title: "Số lượng nhóm",
       dataIndex: "quantityGroup",
       key: "quantityGroup",
+      width: "15%",
     },
     {
       title: "Hành động",
       key: "action",
       render: (text, record) => (
-        <div style={{ display: "flex", gap: "8px" }}>
-          <Button
-            onClick={() => handleViewDetails(record)}
-            variant="outlined"
-            size="small"
-            sx={{ textTransform: "none" }}
-            endIcon={<InfoCircleOutlined />}
-          >
-            Xem chi tiết
-          </Button>
-          <Button variant="contained" endIcon={<EditOutlined />} size="small">
-            Sửa
-          </Button>
-          <Button
-            variant="contained"
-            endIcon={<DeleteOutlined />}
-            size="small"
-            color="error"
-          >
-            Xóa
-          </Button>
-        </div>
+        <>
+          <Space>
+            {" "}
+            <Button
+              onClick={() => handleViewDetails(record)}
+              variant="outlined"
+              size="small"
+              sx={{ textTransform: "none" }}
+              endIcon={<InfoCircleOutlined />}
+            >
+              Xem chi tiết
+            </Button>
+            <Popconfirm
+              title="Xóa đề tài"
+              description="Bạn có chắc muốn xóa đề tài này?"
+              onConfirm={(e) => handleDelete(record.id)}
+              okText="Đồng ý"
+              cancelText="Không"
+            >
+              <Button
+                variant="contained"
+                color="error"
+                size="small"
+                endIcon={<DeleteOutlined />}
+              >
+                Xóa
+              </Button>
+            </Popconfirm>
+          </Space>
+        </>
       ),
     },
   ];
-
+  const handleRefresh = () => {
+    setRefresh(true);
+    refetch();
+    setTimeout(() => {
+      messageApi.success("Làm mới dữ liệu thành công!");
+    }, 1000);
+  };
   return (
     <Box>
+      {contextHolder}
       <Typography
         fontWeight="bold"
         sx={{
@@ -167,29 +179,60 @@ function ManagerTopics() {
         Danh sách đề tài
       </Typography>
 
-      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <Box sx={{ position: "relative", padding: "10px" }}>
+        <SearchComponent
+          placeholder="Tìm theo tên giảng viên"
+          onChange={(term) => setSearchTerm(term)}
+        />
+        <CustomButton
+          onClick={handleRefresh}
+          loading={refresh}
+          text="Làm mới dữ liệu"
+          type="refresh"
+          sx={{
+            position: "absolute",
+            right: "10px",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        />
+      </Box>
 
       <Table
         style={{ padding: "10px" }}
         columns={columns}
-        dataSource={filteredTopics}
+        dataSource={
+          topicsData && topicsData.data ? topicsData.data.topics : topics
+        }
+        // loading={isFetching && !topicsData?.data}
+        loading={isFetching}
         rowKey={(record) => record.id}
         pagination={{
+          showSizeChanger: true,
+          pageSizeOptions: ["5", "10", "20"],
           current: page,
-          pageSize: rowsPerPage,
-          total: totalRows,
+          pageSize: pageSize,
+          total:
+            topicsData && topicsData.data
+              ? topicsData.data.totalRows
+              : totalRows,
           onChange: (page, pageSize) => {
             setPage(page);
-            setRowsPerPage(pageSize);
+            setPageSize(pageSize);
           },
         }}
         locale={{
-          emptyText:
-            filteredTopics.length === 0 ? (
-              <Box display="flex" justifyContent="center" alignItems="center">
+          emptyText: (
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {isFetching ? (
                 <EmptyData />
-              </Box>
-            ) : null,
+              ) : isEmpty(topics) ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : (
+                <EmptyData />
+              )}
+            </Box>
+          ),
         }}
       />
 
@@ -210,13 +253,13 @@ function ManagerTopics() {
                 <b>Số lượng nhóm:</b> {selectedTopic.quantityGroup}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Giảng viên:</b> {selectedTopic.lecturer}
+                <b>Giảng viên:</b> {selectedTopic.lecturer.fullName}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
                 <b>Mô tả:</b> {formatContent(selectedTopic.description)}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Mục tiêu:</b> {selectedTopic.goals}
+                <b>Mục tiêu:</b> {formatContent(selectedTopic.goals)}
               </Typography>
               <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
                 <b>Yêu cầu đầu vào:</b>{" "}

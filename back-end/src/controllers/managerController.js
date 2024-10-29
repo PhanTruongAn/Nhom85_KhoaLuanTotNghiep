@@ -313,6 +313,42 @@ const handleUpdateNote = async (req, res) => {
     });
   }
 };
+const handleGetAllLecturerTopics = async (req, res) => {
+  try {
+    const { limit, page, term } = req.query;
+
+    if (!limit || !page || !term) {
+      return res.status(400).json({
+        status: -1,
+        message: "Thiếu thông tin cần thiết (limit, page, term).",
+      });
+    }
+
+    const limitNumber = parseInt(limit, 10);
+    const pageNumber = parseInt(page, 10);
+
+    if (isNaN(limitNumber) || isNaN(pageNumber)) {
+      return res.status(400).json({
+        status: -1,
+        message: "Limit và Page phải là số.",
+      });
+    }
+
+    const data = await service.getAllLecturerTopics(
+      pageNumber,
+      limitNumber,
+      term
+    );
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: { error: error.message },
+    });
+  }
+};
+
 module.exports = {
   handleDeleteMajor,
   handleUpdateMajor,
@@ -336,4 +372,5 @@ module.exports = {
   handleGetNotes,
   handleDeleteNote,
   handleUpdateNote,
+  handleGetAllLecturerTopics,
 };

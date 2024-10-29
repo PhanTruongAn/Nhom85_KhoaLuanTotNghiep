@@ -69,5 +69,10 @@ const managerApi = {
   updateNote: (data) => {
     return axiosClient.put(baseUrl + "/update-major", data);
   },
+  getLecturerTopics: (term, page, limit) => {
+    return axiosClient.get(
+      baseUrl + `/lecturer-topics?term=${term}&page=${page}&limit=${limit}`
+    );
+  },
 };
 export default managerApi;
