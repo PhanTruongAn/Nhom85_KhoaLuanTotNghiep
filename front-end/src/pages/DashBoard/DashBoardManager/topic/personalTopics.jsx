@@ -7,6 +7,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  TextField,
 } from "@mui/material";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { message, Table, Popconfirm } from "antd";
@@ -19,19 +20,30 @@ import { isEmpty } from "lodash";
 import { formatContent } from "../../../../utils/formatContent";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomButton from "../../../../components/Button/CustomButton";
+
 function PersonalTopics() {
   const user = useSelector((state) => state.userInit.user);
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [topics, setTopics] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchBy, setSearchBy] = useState("title");
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [editTopic, setEditTopic] = useState({
+    id: "",
+    title: "",
+    quantityGroup: "",
+    description: "",
+    goals: "",
+    requirement: "",
+    standardOutput: "",
+  });
+
   //Get Personal Topic
   const getPersonalTopic = async () => {
     let id = user.id;
@@ -80,9 +92,27 @@ function PersonalTopics() {
     setOpenDetailModal(true);
   };
 
+  const handleEdit = (topic) => {
+    setEditTopic(topic);
+    setOpenEditModal(true);
+  };
+
   const handleCloseModal = () => {
     setOpenDetailModal(false);
     setSelectedTopic(null);
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+    setEditTopic({
+      id: "",
+      title: "",
+      quantityGroup: "",
+      description: "",
+      goals: "",
+      requirement: "",
+      standardOutput: "",
+    });
   };
 
   const handleRefresh = () => {
@@ -92,6 +122,7 @@ function PersonalTopics() {
       messageApi.success("Làm mới dữ liệu thành công!");
     }, 1000);
   };
+
   const handleDelete = async (id) => {
     const dataDelete = {
       id: id,
@@ -104,6 +135,9 @@ function PersonalTopics() {
       messageApi.error(res.message);
     }
   };
+
+  const handleSaveEdit = async () => {};
+
   const columns = [
     {
       title: "ID",
@@ -137,7 +171,12 @@ function PersonalTopics() {
           >
             Xem chi tiết
           </Button>
-          <Button variant="contained" endIcon={<EditOutlined />} size="small">
+          <Button
+            onClick={() => handleEdit(record)}
+            variant="contained"
+            endIcon={<EditOutlined />}
+            size="small"
+          >
             Sửa
           </Button>
           <Popconfirm
@@ -265,6 +304,103 @@ function PersonalTopics() {
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">
             Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openEditModal}
+        onClose={handleCloseEditModal}
+        fullWidth
+        maxWidth="lg"
+        sx={{ overflow: "auto" }}
+      >
+        <DialogTitle variant="h4">Chỉnh sửa đề tài</DialogTitle>
+        <DialogContent sx={{ padding: "20px" }}>
+          <Box
+            component="form"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              padding: "20px",
+            }}
+          >
+            <TextField
+              label="Tên đề tài"
+              value={editTopic.title}
+              onChange={(e) =>
+                setEditTopic({ ...editTopic, title: e.target.value })
+              }
+              fullWidth
+            />
+            <TextField
+              label="Số lượng nhóm"
+              type="number"
+              value={editTopic.quantityGroup}
+              onChange={(e) =>
+                setEditTopic({ ...editTopic, quantityGroup: e.target.value })
+              }
+              fullWidth
+            />
+            <TextField
+              label="Mô tả"
+              value={editTopic.description}
+              onChange={(e) =>
+                setEditTopic({ ...editTopic, description: e.target.value })
+              }
+              multiline
+              rows={4}
+              fullWidth
+            />
+            <TextField
+              label="Mục tiêu"
+              value={editTopic.goals}
+              onChange={(e) =>
+                setEditTopic({ ...editTopic, goals: e.target.value })
+              }
+              multiline
+              rows={4}
+              fullWidth
+            />
+            <TextField
+              label="Yêu cầu đầu vào"
+              value={editTopic.requirement}
+              onChange={(e) =>
+                setEditTopic({ ...editTopic, requirement: e.target.value })
+              }
+              multiline
+              rows={4}
+              fullWidth
+            />
+            <TextField
+              label="Yêu cầu đầu ra"
+              value={editTopic.standardOutput}
+              onChange={(e) =>
+                setEditTopic({ ...editTopic, standardOutput: e.target.value })
+              }
+              multiline
+              rows={4}
+              fullWidth
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ padding: "16px" }}>
+          <Button
+            onClick={handleCloseEditModal}
+            variant="outlined"
+            color="error"
+            sx={{ textTransform: "none", marginRight: "8px" }}
+          >
+            Hủy
+          </Button>
+          <Button
+            onClick={handleSaveEdit}
+            variant="contained"
+            color="primary"
+            sx={{ textTransform: "none" }}
+          >
+            Lưu
           </Button>
         </DialogActions>
       </Dialog>
