@@ -148,8 +148,6 @@ function ListStudentGroup() {
           ))
         ) : (
           <Box
-            marginTop="70px"
-            // alignSelf="center"
             display="flex"
             flexDirection="column"
             alignItems="center"

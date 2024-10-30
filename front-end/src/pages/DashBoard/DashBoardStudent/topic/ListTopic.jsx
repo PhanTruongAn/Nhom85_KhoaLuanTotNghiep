@@ -40,7 +40,6 @@ function ListTopic() {
     currentRecord: {},
     isModalLoading: false,
     isModalVisible: false,
-    term: currentTerm?.id || null,
   });
   const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,12 +70,12 @@ function ListTopic() {
         return studentApi.getAllTopics(
           state.currentPage,
           state.pageSize,
-          state.term
+          currentTerm?.id
         );
       }
     },
     {
-      enabled: !isEmpty(currentTerm) || isWithinChooseTopicPeriod,
+      enabled: !isEmpty(currentTerm) && isWithinChooseTopicPeriod,
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({
