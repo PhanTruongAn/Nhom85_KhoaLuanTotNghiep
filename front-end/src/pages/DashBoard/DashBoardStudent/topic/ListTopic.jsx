@@ -49,6 +49,12 @@ function ListTopic() {
   const [loadingConfirm, setLoadingConfirm] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [pages, setPages] = useState([1]);
+
+  const currentDate = new Date();
+  // Kiểm tra hạn đăng ký nhóm
+  const isWithinChooseTopicPeriod =
+    currentDate >= new Date(currentTerm?.startChooseTopicDate) &&
+    currentDate <= new Date(currentTerm?.endChooseTopicDate);
   const {
     data: topicsData,
     isLoading,
@@ -69,7 +75,7 @@ function ListTopic() {
       }
     },
     {
-      enabled: !isEmpty(currentTerm),
+      enabled: !isEmpty(currentTerm) || isWithinChooseTopicPeriod,
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({

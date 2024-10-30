@@ -2,15 +2,21 @@ import React from "react";
 import emptyDataImage from "../../images/anhdong/overdue.gif";
 import { Box, Typography } from "@mui/material";
 
-function overDate({ text, overDate }) {
-  console.log("OverDate: ", overDate);
-
-  // Format the overDate to dd/MM/yyyy
-  const formattedDate = new Date(overDate).toLocaleDateString("vi-VN", {
+// Helper function to format date and time
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("vi-VN", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false, // Use 24-hour format
   });
+};
+
+function OverDate({ text, startDate, endDate }) {
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
 
   return (
     <Box
@@ -24,12 +30,13 @@ function overDate({ text, overDate }) {
         component="img"
         src={emptyDataImage}
         alt="Loading animation"
-        sx={{ width: "100%", height: "300px", objectFit: "cover" }}
+        sx={{ width: "300px", height: "300px", objectFit: "cover" }}
       />
       <Typography variant="h6" sx={{ marginTop: "16px" }}>
         {text ? (
           <>
             {text}
+            <br />
             <Typography
               component="span"
               sx={{
@@ -40,7 +47,7 @@ function overDate({ text, overDate }) {
                 borderRadius: "4px",
               }}
             >
-              ({formattedDate})
+              {`Thời gian đăng ký: ${formattedStartDate} - ${formattedEndDate}`}
             </Typography>
           </>
         ) : (
@@ -51,4 +58,4 @@ function overDate({ text, overDate }) {
   );
 }
 
-export default overDate;
+export default OverDate;

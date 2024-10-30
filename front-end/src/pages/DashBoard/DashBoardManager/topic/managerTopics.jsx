@@ -24,6 +24,7 @@ import { useSelector } from "react-redux";
 import managerApi from "../../../../apis/managerApi";
 import lecturerApi from "../../../../apis/lecturerApi";
 import { isEmpty } from "lodash";
+import { useDebounce } from "@uidotdev/usehooks";
 function ManagerTopics() {
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
@@ -37,16 +38,22 @@ function ManagerTopics() {
   const [totalRows, setTotalRows] = useState();
   const [totalPages, setTotalPages] = useState();
   const [refresh, setRefresh] = useState(false);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   //Get All Topics Of Lecturer
   const {
     isFetching,
     data: topicsData,
     refetch,
   } = CustomHooks.useQuery(
-    ["lecturer-topics", currentTerm?.id, page, pageSize],
+    ["lecturer-topics", currentTerm?.id, page, pageSize, debouncedSearchTerm],
     () => {
-      return managerApi.getLecturerTopics(currentTerm?.id, page, pageSize);
+      if (debouncedSearchTerm) {
+        return handleFindTopics();
+      } else {
+        return managerApi.getLecturerTopics(currentTerm?.id, page, pageSize);
+      }
     },
+
     {
       enabled: !isEmpty(currentTerm),
       onSuccess: (res) => {
@@ -57,7 +64,7 @@ function ManagerTopics() {
           setLoading(false);
         } else if (res.status === -1 || res.status === 403) {
           setLoading(false);
-          setDataSource([]);
+          setTopics([]);
           messageApi.error(res.message);
         }
         setRefresh(false);
@@ -69,7 +76,12 @@ function ManagerTopics() {
       },
     }
   );
-
+  //Find Topics
+  const handleFindTopics = async () => {
+    const res = await managerApi.findTopics(currentTerm?.id, searchTerm);
+    setTotalRows(res?.data.length || 0);
+    return res;
+  };
   const handleViewDetails = (topic) => {
     setSelectedTopic(topic);
     setOpenDetailModal(true);
@@ -94,6 +106,7 @@ function ManagerTopics() {
       messageApi.error(res.message);
     }
   };
+
   const columns = [
     {
       title: "ID",

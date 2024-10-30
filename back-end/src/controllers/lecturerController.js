@@ -77,9 +77,10 @@ const handleFindLecturersByName = async (req, res) => {
 };
 const handleFindLecturersByUserNameOrFullName = async (req, res) => {
   try {
-    const { search } = req.query;
-    if (search) {
+    const { term, search } = req.query;
+    if (search && term) {
       const data = await lecturerService.findLecturersByUserNameOrFullName(
+        term,
         search
       );
       return res.status(200).json(data);
@@ -146,7 +147,18 @@ const handleDeleteTopic = async (req, res) => {
     });
   }
 };
-
+const handleUpdateTopic = async (req, res) => {
+  try {
+    let data = await lecturerService.updateTopic(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: 1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 module.exports = {
   handleCreateLecturerAccount,
   handleBulkCreateLecturer,
@@ -160,4 +172,5 @@ module.exports = {
   handleGetTerm,
   handleGetPersonalTopics,
   handleDeleteTopic,
+  handleUpdateTopic,
 };

@@ -903,6 +903,64 @@ const getAllLecturerTopics = async (page, limit, term) => {
     };
   }
 };
+
+const findTopicByTitleOrLecturerName = async (term, search) => {
+  try {
+    const results = await Topic.findAll({
+      include: [
+        {
+          model: Term,
+          as: "term",
+          where: {
+            id: term,
+          },
+        },
+        {
+          model: Lecturer,
+          as: "lecturer",
+        },
+      ],
+      where: {
+        [Op.or]: [
+          {
+            title: {
+              [Op.like]: `%${search}%`,
+            },
+          },
+          {
+            "$lecturer.fullName$": {
+              [Op.like]: `%${search}%`,
+            },
+          },
+        ],
+      },
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "lecturerId", "LecturerId"],
+      },
+    });
+
+    if (!isEmpty(results)) {
+      return {
+        status: 0,
+        message: "Tìm kiếm thành công!",
+        data: { topics: results },
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Không tìm thấy dữ liệu!",
+        data: { topics: null },
+      };
+    }
+  } catch (error) {
+    return {
+      status: -1,
+      message: "Đã xảy ra lỗi khi tìm kiếm dữ liệu.",
+      data: { topics: null },
+    };
+  }
+};
+
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -928,4 +986,5 @@ module.exports = {
   deleteNote,
   updateNote,
   getAllLecturerTopics,
+  findTopicByTitleOrLecturerName,
 };

@@ -12,11 +12,7 @@ function SearchComponent({ onChange, placeholder }) {
   };
 
   return (
-    <Grid
-      container
-      spacing={2}
-      sx={{ paddingTop: "10px", paddingLeft: "10px" }}
-    >
+    <Grid container spacing={2} sx={{ paddingLeft: "10px" }}>
       <Grid item xs={12} sm={4}>
         <TextField
           placeholder={placeholder}

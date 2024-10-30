@@ -155,10 +155,7 @@ function ManageNotification() {
       {contextHolder}
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 2,
+          position: "relative",
         }}
       >
         <SearchComponent placeholder={"Tìm theo tiêu đề thông báo"} />
@@ -167,15 +164,30 @@ function ManageNotification() {
             enterButton
             onChange={(e) => setSearchKeyword(e.target.value)}
           /> */}
+        <CustomButton
+          text="Làm mới dữ liệu"
+          loading={loadingReload}
+          onClick={handleReload}
+          type="refresh"
+          sx={{
+            position: "absolute",
+            right: "10px",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        />
       </Box>
-      <CustomButton
-        text="Làm mới dữ liệu"
-        loading={loadingReload}
-        onClick={handleReload}
-        type="refresh"
-        sx={{ float: "right", marginBottom: "20px" }}
-      />
-
+      <Typography
+        // fontWeight="bold"
+        variant="h4"
+        sx={{
+          justifyContent: "center",
+          textAlign: "center",
+          marginTop: "10px",
+        }}
+      >
+        Danh sách thông báo
+      </Typography>
       <Table
         style={{ marginTop: "20px" }}
         dataSource={notesData ? notesData.data : data}

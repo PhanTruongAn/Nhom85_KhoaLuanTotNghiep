@@ -310,7 +310,7 @@ const ListTerm = () => {
         sx={{ float: "right" }}
       />
 
-      <Box sx={{ marginTop: "70px" }}>
+      <Box sx={{ marginTop: "50px" }}>
         <Typography
           variant="h4"
           sx={{ textAlign: "center", marginBottom: "10px" }}

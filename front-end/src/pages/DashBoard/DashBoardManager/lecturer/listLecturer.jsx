@@ -52,7 +52,7 @@ function ListLecturer() {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
   const { data, isLoading, isFetching, refetch } = CustomHooks.useQuery(
-    ["lecturers", currentPage, limitUser, debouncedSearchTerm, currentTerm.id],
+    ["lecturers", currentPage, limitUser, debouncedSearchTerm, currentTerm?.id],
     () => {
       if (debouncedSearchTerm) {
         return handleFindLecturer();
@@ -84,7 +84,8 @@ function ListLecturer() {
     }
   );
   const handleFindLecturer = async () => {
-    const res = await lecturerApi.findLecturer(searchValue);
+    const res = await lecturerApi.findLecturer(currentTerm?.id, searchValue);
+    setTotalRows(res?.data.length || 0);
     return res;
   };
   useEffect(() => {
@@ -274,35 +275,40 @@ function ListLecturer() {
   return (
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
-      <SearchComponent placeholder="Tìm theo mã giảng viên hoặc tên đầy đủ"></SearchComponent>
-      {/* <Search
+      <Box sx={{ position: "relative" }}>
+        <SearchComponent
           placeholder="Tìm theo mã giảng viên hoặc tên đầy đủ"
-          onChange={(e) => setSearchValue(e.target.value)}
-          enterButton
-          loading={state.searchLoading}
-        /> */}
+          onChange={(value) => setSearchValue(value)}
+        ></SearchComponent>
 
-      <Box sx={{ float: "right" }}>
-        <Space>
-          <Button
-            variant="contained"
-            startIcon={<PlusOutlined />}
-            onClick={handleOpenModal}
-          >
-            Thêm mới giảng viên
-          </Button>
-          <CustomButton
-            onClick={handlerReload}
-            loading={loading}
-            text="Làm mới"
-            type="refresh"
-          />
-        </Space>
+        <Box
+          sx={{
+            position: "absolute",
+            right: "10px",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        >
+          <Space>
+            <Button
+              variant="contained"
+              startIcon={<PlusOutlined />}
+              onClick={handleOpenModal}
+            >
+              Thêm mới giảng viên
+            </Button>
+            <CustomButton
+              onClick={handlerReload}
+              loading={loading}
+              text="Làm mới"
+              type="refresh"
+            />
+          </Space>
+        </Box>
       </Box>
       <Box
         sx={{
           textAlign: "center",
-          marginTop: "50px",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -325,6 +331,7 @@ function ListLecturer() {
           sx={{
             flex: 1, // Để tiêu đề chiếm không gian còn lại
             textAlign: "center", // Căn giữa
+            marginTop: "-5px",
           }}
           variant="h4"
           component="h2"

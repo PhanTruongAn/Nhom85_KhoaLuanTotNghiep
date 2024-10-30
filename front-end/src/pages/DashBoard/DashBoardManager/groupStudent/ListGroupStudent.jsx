@@ -210,36 +210,38 @@ const ListGroupStudent = () => {
   return (
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "16px",
-        }}
-      >
+      <Box sx={{ position: "relative" }}>
         <SearchComponent placeholder="Tìm theo tên nhóm hoặc tên đề tài" />
         {/* <Search
             placeholder="Tìm theo tên nhóm hoặc tên đề tài"
             enterButton
             loading={state.searchLoading}
           /> */}
-
-        <Space>
-          <Button
-            variant="contained"
-            startIcon={<PlusOutlined />}
-            onClick={handleOpenCreateModal}
-          >
-            Thêm mới
-          </Button>
-          <CustomButton
-            onClick={onRefreshData}
-            text={"Làm mới"}
-            type="refresh"
-            loading={state.refreshButton}
-          />
-        </Space>
+        <Box
+          sx={{
+            position: "absolute",
+            right: "10px",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        >
+          {" "}
+          <Space>
+            <Button
+              variant="contained"
+              startIcon={<PlusOutlined />}
+              onClick={handleOpenCreateModal}
+            >
+              Thêm mới
+            </Button>
+            <CustomButton
+              onClick={onRefreshData}
+              text={"Làm mới"}
+              type="refresh"
+              loading={state.refreshButton}
+            />
+          </Space>
+        </Box>
       </Box>
       <Box
         sx={{
@@ -266,6 +268,7 @@ const ListGroupStudent = () => {
           sx={{
             flex: 1, // Để tiêu đề chiếm không gian còn lại
             textAlign: "center", // Căn giữa
+            marginTop: "-5px",
           }}
           variant="h4"
           component="h2"
