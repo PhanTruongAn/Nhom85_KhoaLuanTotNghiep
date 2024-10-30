@@ -113,6 +113,7 @@ const initWebRoutes = (app) => {
   router.get("/lecturer/term", lecturerController.handleGetTerm);
   router.get("/lecturer/my-topics", lecturerController.handleGetPersonalTopics);
   router.delete("/lecturer/delete-topic", lecturerController.handleDeleteTopic);
+  router.put("/lecturer/update-topic", lecturerController.handleUpdateTopic);
   //Manager Route
   router.get(
     "/manager/get-all-permission",
@@ -169,6 +170,10 @@ const initWebRoutes = (app) => {
   router.get(
     "/manager/lecturer-topics",
     managerController.handleGetAllLecturerTopics
+  );
+  router.get(
+    "/manager/find-topics",
+    managerController.handleFindTopicByTitleOrLecturerName
   );
   return app.use("/", router);
 };

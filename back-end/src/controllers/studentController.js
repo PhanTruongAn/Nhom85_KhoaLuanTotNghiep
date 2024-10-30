@@ -71,9 +71,10 @@ const handleFindStudentsByName = async (req, res) => {
 };
 const handleFindStudentsByUserNameOrFullName = async (req, res) => {
   try {
-    const { search } = req.query;
-    if (search) {
+    const { term, search } = req.query;
+    if (search && term) {
       const data = await studentService.findStudentsByUserNameOrFullName(
+        term,
         search
       );
       return res.status(200).json(data);

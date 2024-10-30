@@ -348,7 +348,26 @@ const handleGetAllLecturerTopics = async (req, res) => {
     });
   }
 };
-
+const handleFindTopicByTitleOrLecturerName = async (req, res) => {
+  try {
+    const { term, search } = req.query;
+    if (search && term) {
+      const data = await service.findTopicByTitleOrLecturerName(term, search);
+      return res.status(200).json(data);
+    } else {
+      return res.status(400).json({
+        status: -1,
+        message: "Dữ liệu truyền vào không hợp lệ!",
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+    });
+  }
+};
 module.exports = {
   handleDeleteMajor,
   handleUpdateMajor,
@@ -373,4 +392,5 @@ module.exports = {
   handleDeleteNote,
   handleUpdateNote,
   handleGetAllLecturerTopics,
+  handleFindTopicByTitleOrLecturerName,
 };

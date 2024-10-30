@@ -46,7 +46,7 @@ function ListStudent() {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
   const { data, isSuccess, isFetching, refetch } = CustomHooks.useQuery(
-    ["students", currentPage, debouncedSearchTerm, limitUser, currentTerm.id],
+    ["students", currentPage, debouncedSearchTerm, limitUser, currentTerm?.id],
     () => {
       if (debouncedSearchTerm) {
         return handleFindStudent();
@@ -81,7 +81,11 @@ function ListStudent() {
     setCurrentPage(pageNumber);
   };
   const handleFindStudent = async () => {
-    const res = await studentApi.findByUserNameOrFullName(searchValue);
+    const res = await studentApi.findByUserNameOrFullName(
+      currentTerm?.id,
+      searchValue
+    );
+    setTotalRows(res?.data.length || 0);
     return res;
   };
   const handleCloseModal = () => {
@@ -254,36 +258,41 @@ function ListStudent() {
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
 
-      <SearchComponent placeholder="Tìm theo mã sinh viên hoặc họ tên sinh viên" />
-      {/* <Search
+      <Box sx={{ position: "relative" }}>
+        <SearchComponent
           placeholder="Tìm theo mã sinh viên hoặc họ tên sinh viên"
-          onChange={(e) => setSearchValue(e.target.value)}
-          enterButton
-          loading={state.searchLoading}
-        /> */}
+          onChange={(value) => setSearchValue(value)}
+        />
 
-      <Box sx={{ float: "right" }}>
-        <Space>
-          <Button
-            variant="contained"
-            startIcon={<PlusOutlined />}
-            onClick={handleOpenModal}
-          >
-            Thêm mới sinh viên
-          </Button>
-          <CustomButton
-            onClick={handlerReload}
-            loading={loading}
-            text="Làm mới"
-            type="refresh"
-          />
-        </Space>
+        <Box
+          sx={{
+            position: "absolute",
+            right: "10px",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        >
+          <Space>
+            <Button
+              variant="contained"
+              startIcon={<PlusOutlined />}
+              onClick={handleOpenModal}
+            >
+              Thêm mới sinh viên
+            </Button>
+            <CustomButton
+              onClick={handlerReload}
+              loading={loading}
+              text="Làm mới"
+              type="refresh"
+            />
+          </Space>
+        </Box>
       </Box>
 
       <Box
         sx={{
           textAlign: "center",
-          marginTop: "50px",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -306,6 +315,7 @@ function ListStudent() {
           sx={{
             flex: 1, // Để tiêu đề chiếm không gian còn lại
             textAlign: "center", // Căn giữa
+            marginTop: "-5px",
           }}
           variant="h4"
           component="h2"

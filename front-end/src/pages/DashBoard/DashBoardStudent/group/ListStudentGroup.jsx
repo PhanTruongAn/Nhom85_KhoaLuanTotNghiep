@@ -163,7 +163,8 @@ function ListStudentGroup() {
             ) : !isWithinChooseGroupPeriod ? (
               <OverDate
                 text="Đã hết hạn đăng ký nhóm!"
-                overDate={currentTerm.endChooseGroupDate}
+                startDate={currentTerm.startChooseGroupDate}
+                endDate={currentTerm.endChooseGroupDate}
               />
             ) : isEmpty(groups) ? (
               <EmptyData text="Không có dữ liệu để hiển thị!" />

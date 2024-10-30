@@ -179,12 +179,17 @@ const MajorManagement = () => {
     },
   ];
   return (
-    <Box sx={{ padding: "20px" }}>
+    <Box>
       {contextHolder}
-      <Typography variant="h4" sx={{ textAlign: "center", fontWeight: "bold" }}>
+      {/* <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "bold" }}>
         Quản lý chuyên ngành
-      </Typography>
-      <Box display="flex" justifyContent="flex-end" gap={2} marginBottom="16px">
+      </Typography> */}
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        gap={2}
+        margin="10px 10px 16px"
+      >
         <Button
           variant="contained"
           color="primary"

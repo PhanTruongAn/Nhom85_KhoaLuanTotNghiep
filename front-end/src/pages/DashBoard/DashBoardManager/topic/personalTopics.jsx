@@ -136,7 +136,15 @@ function PersonalTopics() {
     }
   };
 
-  const handleSaveEdit = async () => {};
+  const handleSaveEdit = async () => {
+    const res = await lecturerApi.updateTopicById(editTopic);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      refetch();
+    } else {
+      messageApi.error(res.message);
+    }
+  };
 
   const columns = [
     {

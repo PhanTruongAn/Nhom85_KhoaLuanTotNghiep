@@ -74,5 +74,10 @@ const managerApi = {
       baseUrl + `/lecturer-topics?term=${term}&page=${page}&limit=${limit}`
     );
   },
+  findTopics: (term, search) => {
+    return axiosClient.get(
+      `${baseUrl}/find-topics?term=${term}&search=${search}`
+    );
+  },
 };
 export default managerApi;

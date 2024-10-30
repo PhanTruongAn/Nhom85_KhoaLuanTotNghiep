@@ -48,8 +48,10 @@ const studentApi = {
   deleteMany: (data) => {
     return axiosClient.delete(baseUrl + "/delete-many", { data });
   },
-  findByUserNameOrFullName: (search) => {
-    return axiosClient.get(`${baseUrl}/find-student?search=${search}`);
+  findByUserNameOrFullName: (term, search) => {
+    return axiosClient.get(
+      `${baseUrl}/find-student?term=${term}&search=${search}`
+    );
   },
   findByName: (page, limit, input) => {
     return axiosClient.get(

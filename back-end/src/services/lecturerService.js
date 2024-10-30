@@ -331,8 +331,18 @@ const deleteManyLecturer = async (data) => {
     };
   }
 };
-const findLecturersByUserNameOrFullName = async (search) => {
+const findLecturersByUserNameOrFullName = async (term, search) => {
   const results = await Lecturer.findAll({
+    include: {
+      model: Term,
+      through: {
+        attributes: [],
+      },
+      as: "terms",
+      where: {
+        id: term,
+      },
+    },
     where: {
       [Op.or]: [
         {
@@ -583,6 +593,38 @@ const deleteTopic = async (data) => {
     };
   }
 };
+const updateTopic = async (data) => {
+  if (!data) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin cập nhật!",
+    };
+  }
+  try {
+    let update = await Topic.update(data, {
+      where: {
+        id: data.id,
+      },
+    });
+    if (update[0] > 0) {
+      return {
+        status: 0,
+        message: "Cập nhật đề tài thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Cập nhật đề tài thất bại!",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: `Lỗi: ${error.message}`,
+    };
+  }
+};
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -597,4 +639,5 @@ module.exports = {
   getPersonalTopics,
   getTerm,
   deleteTopic,
+  updateTopic,
 };

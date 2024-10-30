@@ -348,8 +348,18 @@ const deleteManyStudent = async (data) => {
   }
 };
 
-const findStudentsByUserNameOrFullName = async (search) => {
+const findStudentsByUserNameOrFullName = async (term, search) => {
   const results = await Student.findAll({
+    include: {
+      model: Term,
+      through: {
+        attributes: [],
+      },
+      as: "terms",
+      where: {
+        id: term,
+      },
+    },
     where: {
       [Op.or]: [
         {

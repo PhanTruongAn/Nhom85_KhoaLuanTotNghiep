@@ -24,8 +24,10 @@ const lecturerApi = {
   deleteMany: (data) => {
     return axiosClient.delete(baseUrl + "/delete-many", { data });
   },
-  findLecturer: (search) => {
-    return axiosClient.get(`${baseUrl}/find-lecturer?search=${search}`);
+  findLecturer: (term, search) => {
+    return axiosClient.get(
+      `${baseUrl}/find-lecturer?term=${term}&search=${search}`
+    );
   },
   findByName: (page, limit, input) => {
     return axiosClient.get(
@@ -47,6 +49,9 @@ const lecturerApi = {
   },
   deleteTopicById: (data) => {
     return axiosClient.delete(baseUrl + "/delete-topic", { data });
+  },
+  updateTopicById: (data) => {
+    return axiosClient.put(baseUrl + "/update-topic", data);
   },
 };
 export default lecturerApi;

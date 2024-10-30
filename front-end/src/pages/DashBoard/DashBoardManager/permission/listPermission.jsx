@@ -240,7 +240,7 @@ function ListPermission() {
     },
   ];
   return (
-    <Box sx={{ padding: "20px" }}>
+    <Box sx={{ padding: "10px" }}>
       {contextHolder}
       <Box
         className="row col-12"

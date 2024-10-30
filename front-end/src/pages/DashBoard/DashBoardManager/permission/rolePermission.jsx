@@ -177,14 +177,8 @@ function RolePermission() {
   return (
     <Box>
       {contextHolder}
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        sx={{ mb: 2, padding: "10px", textAlign: "center" }}
-      >
-        Gán quyền hạn
-      </Typography>
-      <Box className="row col-6" sx={{ padding: "10px" }}>
+
+      <Box className="row col-6" sx={{ padding: "20px" }}>
         <Box className="col-3">
           <Select
             style={{ width: "100%" }}
@@ -197,6 +191,7 @@ function RolePermission() {
             onChange={handleRoleChange} // Gọi hàm khi thay đổi
           />
         </Box>
+
         <Box className="col-3" sx={{ flexGrow: 1 }}>
           <Input
             placeholder="Tìm theo mô tả"
@@ -212,6 +207,13 @@ function RolePermission() {
           />
         </Box>
       </Box>
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        sx={{ textAlign: "center", marginBottom: "20px" }}
+      >
+        Gán quyền hạn
+      </Typography>
       <Table
         rowSelection={rowSelection}
         columns={columns}
@@ -255,6 +257,7 @@ function RolePermission() {
         text="Gán quyền"
         loading={state.loadingSuccess}
         type="success"
+        sx={{ marginLeft: "10px" }}
       />
     </Box>
   );
