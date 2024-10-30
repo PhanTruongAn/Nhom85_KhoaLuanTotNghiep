@@ -29,7 +29,7 @@ function overDate({ text, overDate }) {
       <Typography variant="h6" sx={{ marginTop: "16px" }}>
         {text ? (
           <>
-            {text}{" "}
+            {text}
             <Typography
               component="span"
               sx={{
