@@ -20,40 +20,51 @@ function OverDate({ text, startDate, endDate }) {
 
   return (
     <Box
+      marginTop="70px"
+      // alignSelf="center"
       display="flex"
       flexDirection="column"
       alignItems="center"
+      textAlign={"center"}
       justifyContent="center"
-      style={{ height: "100%" }}
+      width={"100%"}
+      height={"auto"}
     >
       <Box
-        component="img"
-        src={emptyDataImage}
-        alt="Loading animation"
-        sx={{ width: "300px", height: "300px", objectFit: "cover" }}
-      />
-      <Typography variant="h6" sx={{ marginTop: "16px" }}>
-        {text ? (
-          <>
-            {text}
-            <br />
-            <Typography
-              component="span"
-              sx={{
-                fontWeight: "bold",
-                fontSize: "1.2rem",
-                color: "red",
-                padding: "2px 6px",
-                borderRadius: "4px",
-              }}
-            >
-              {`Thời gian đăng ký: ${formattedStartDate} - ${formattedEndDate}`}
-            </Typography>
-          </>
-        ) : (
-          "Đang tải dữ liệu..."
-        )}
-      </Typography>
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        style={{ height: "100%" }}
+      >
+        <Box
+          component="img"
+          src={emptyDataImage}
+          alt="Loading animation"
+          sx={{ width: "300px", height: "300px", objectFit: "cover" }}
+        />
+        <Typography variant="h6" sx={{ marginTop: "16px" }}>
+          {text ? (
+            <>
+              {text}
+              <br />
+              <Typography
+                component="span"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "1.2rem",
+                  color: "red",
+                  borderRadius: "4px",
+                }}
+              >
+                {`Thời gian đăng ký: ${formattedStartDate} - ${formattedEndDate}`}
+              </Typography>
+            </>
+          ) : (
+            "Đang tải dữ liệu..."
+          )}
+        </Typography>
+      </Box>
     </Box>
   );
 }

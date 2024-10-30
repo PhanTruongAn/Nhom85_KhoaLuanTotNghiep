@@ -25,6 +25,7 @@ import { setGroup } from "../../../../redux/userSlice";
 import ConfirmModal from "../../../../components/Modal/confirmModal";
 import { useDebounce } from "@uidotdev/usehooks";
 import { formatContent } from "../../../../utils/formatContent";
+import OverDate from "../../../../components/overDate/overDate";
 function ListTopic() {
   const group = useSelector((state) => state.userInit.group);
   const user = useSelector((state) => state.userInit.user);
@@ -224,122 +225,132 @@ function ListTopic() {
   };
   return (
     <Box>
-      {contextHolder}
-      <Grid
-        container
-        spacing={2}
-        sx={{ paddingTop: "10px", paddingLeft: { xs: "5px", sm: "10px" } }} // Responsive padding
-      >
-        <Grid item xs={12} sm={2} md={2}>
-          <FormControl fullWidth variant="outlined" size="small">
-            <InputLabel>Tìm theo</InputLabel>
-            <Select
-              value={searchBy}
-              onChange={handleSearchByChange}
-              label="Tìm theo"
-            >
-              <MenuItem value="title">Tên đề tài</MenuItem>
-              <MenuItem value="lecturer">Giảng viên</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={3} md={3}>
-          <TextField
-            fullWidth
-            size="small"
-            variant="outlined"
-            placeholder="Tìm theo tên đề tài hoặc giảng viên"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
+      {contextHolder}{" "}
+      {!isWithinChooseTopicPeriod ? (
+        <OverDate
+          text="Đã hết hạn đăng ký đề tài!"
+          startDate={currentTerm.startChooseTopicDate}
+          endDate={currentTerm.endChooseTopicDate}
+        />
+      ) : (
+        <>
+          <Grid
+            container
+            spacing={2}
+            sx={{ paddingTop: "10px", paddingLeft: { xs: "5px", sm: "10px" } }} // Responsive padding
+          >
+            <Grid item xs={12} sm={2} md={2}>
+              <FormControl fullWidth variant="outlined" size="small">
+                <InputLabel>Tìm theo</InputLabel>
+                <Select
+                  value={searchBy}
+                  onChange={handleSearchByChange}
+                  label="Tìm theo"
+                >
+                  <MenuItem value="title">Tên đề tài</MenuItem>
+                  <MenuItem value="lecturer">Giảng viên</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={3} md={3}>
+              <TextField
+                fullWidth
+                size="small"
+                variant="outlined"
+                placeholder="Tìm theo tên đề tài hoặc giảng viên"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+          </Grid>
+          <Typography
+            fontWeight="bold"
+            sx={{
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              fontSize: { xs: "18px", sm: "20px" }, // Responsive font size
+            }}
+          >
+            Danh sách đề tài
+          </Typography>
+
+          <Table
+            columns={columns}
+            dataSource={topicsData ? topicsData.data?.topics : state.topics}
+            rowKey="id"
+            pagination={{
+              showSizeChanger: true,
+              pageSizeOptions: ["5", "10", "20"],
+              onShowSizeChange: (current, size) => handlePageSizeChange(size),
+              current: state.currentPage,
+              pageSize: state.pageSize,
+              total: isSuccess ? topicsData.data?.totalRows : state.totalRows,
+              onChange: onPageChange,
+              responsive: true,
+            }}
+            scroll={{ x: 500 }}
+            loading={state.loadingData}
+            locale={{
+              emptyText: (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {isFetching ? (
+                    <EmptyData />
+                  ) : isEmpty(state.topics) ? (
+                    <EmptyData text="Không có dữ liệu!" />
+                  ) : null}
+                </Box>
               ),
             }}
           />
-        </Grid>
-      </Grid>
-      <Typography
-        fontWeight="bold"
-        sx={{
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-          fontSize: { xs: "18px", sm: "20px" }, // Responsive font size
-        }}
-      >
-        Danh sách đề tài
-      </Typography>
-
-      <Table
-        columns={columns}
-        dataSource={topicsData ? topicsData.data?.topics : state.topics}
-        rowKey="id"
-        pagination={{
-          showSizeChanger: true,
-          pageSizeOptions: ["5", "10", "20"],
-          onShowSizeChange: (current, size) => handlePageSizeChange(size),
-          current: state.currentPage,
-          pageSize: state.pageSize,
-          total: isSuccess ? topicsData.data?.totalRows : state.totalRows,
-          onChange: onPageChange,
-          responsive: true,
-        }}
-        scroll={{ x: 500 }}
-        loading={state.loadingData}
-        locale={{
-          emptyText: (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {isFetching ? (
-                <EmptyData />
-              ) : isEmpty(state.topics) ? (
-                <EmptyData text="Không có dữ liệu!" />
-              ) : null}
-            </Box>
-          ),
-        }}
-      />
-      <Modal
-        title="Chi tiết đề tài"
-        open={state.isModalVisible}
-        onCancel={onCloseModal}
-        footer={null}
-        width="80%"
-        loading={state.isModalLoading}
-      >
-        {state.currentRecord && (
-          <Box
-            maxWidth="lg"
-            sx={{ overflowY: "auto", height: "70vh", fontSize: "16px" }}
+          <Modal
+            title="Chi tiết đề tài"
+            open={state.isModalVisible}
+            onCancel={onCloseModal}
+            footer={null}
+            width="80%"
+            loading={state.isModalLoading}
           >
-            {Object.keys(state.currentRecord).map((key) => (
-              <Box key={key} sx={{ marginBottom: "10px" }}>
-                <strong>{key}:</strong>
-                {["Mô tả", "Mục tiêu", "Yêu cầu"].includes(key)
-                  ? formatContent(state.currentRecord[key])
-                  : state.currentRecord[key]}
+            {state.currentRecord && (
+              <Box
+                maxWidth="lg"
+                sx={{ overflowY: "auto", height: "70vh", fontSize: "16px" }}
+              >
+                {Object.keys(state.currentRecord).map((key) => (
+                  <Box key={key} sx={{ marginBottom: "10px" }}>
+                    <strong>{key}:</strong>
+                    {["Mô tả", "Mục tiêu", "Yêu cầu"].includes(key)
+                      ? formatContent(state.currentRecord[key])
+                      : state.currentRecord[key]}
+                  </Box>
+                ))}
               </Box>
-            ))}
-          </Box>
-        )}
-      </Modal>
+            )}
+          </Modal>
 
-      <ConfirmModal
-        open={isConfirmModalOpen}
-        onClose={() => setIsConfirmModalOpen(false)}
-        icon={<TopicIcon />}
-        onConfirm={handleConfirmJoin}
-        description="Bạn có chắc chắn muốn đăng ký đề tài này không?"
-        loading={loadingConfirm}
-      />
+          <ConfirmModal
+            open={isConfirmModalOpen}
+            onClose={() => setIsConfirmModalOpen(false)}
+            icon={<TopicIcon />}
+            onConfirm={handleConfirmJoin}
+            description="Bạn có chắc chắn muốn đăng ký đề tài này không?"
+            loading={loadingConfirm}
+          />
+        </>
+      )}
     </Box>
   );
 }
