@@ -11,13 +11,14 @@ import {
   IconButton,
   CircularProgress,
 } from "@mui/material";
-import { Table, message, Popconfirm } from "antd";
+import { Table, message, Popconfirm, Space } from "antd";
 import { Add, Edit, Delete, Refresh, Check } from "@mui/icons-material";
 import CustomHooks from "../../../../../utils/hooks";
 import managerApi from "../../../../../apis/managerApi";
 import { isEmpty } from "lodash";
 import { formatDate } from "../../../../../utils/formatDate";
 import EmptyData from "../../../../../components/emptydata/EmptyData";
+import SearchComponent from "../../../../../components/SearchComponent/search";
 const MajorManagement = () => {
   const [state, setState] = useState({
     loading: false,
@@ -28,6 +29,7 @@ const MajorManagement = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedMajor, setSelectedMajor] = useState({
     id: null,
     majorName: "",
@@ -127,7 +129,14 @@ const MajorManagement = () => {
       messageApi.success("Làm mới dữ liệu thành công!");
     }, 1000);
   };
+  //tìm kiếm
+  const handleSearch = (value) => {
+    setSearchKeyword(value.toLowerCase());
+  };
 
+  const filteredMajors = state.majors.filter((major) =>
+    major.majorName.toLowerCase().includes(searchKeyword)
+  );
   const columns = [
     {
       title: "ID",
@@ -179,43 +188,63 @@ const MajorManagement = () => {
     },
   ];
   return (
-    <Box>
+    <Box sx={{ padding: "20px" }}>
       {contextHolder}
       {/* <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "bold" }}>
         Quản lý chuyên ngành
       </Typography> */}
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        gap={2}
-        margin="10px 10px 16px"
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Add />}
-          onClick={handleAdd}
+      <Box sx={{ position: "relative" }}>
+        <SearchComponent
+          placeholder="Tìm kiếm theo tên chuyên ngành"
+          onChange={handleSearch}
+        />
+        {/* <Search
+            placeholder="Tìm theo tên nhóm hoặc tên đề tài"
+            enterButton
+            loading={state.searchLoading}
+          /> */}
+        <Box
+          sx={{
+            position: "absolute",
+            right: "10px",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
         >
-          Thêm chuyên ngành
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={
-            state.refreshButton ? <CircularProgress size={20} /> : <Refresh />
-          }
-          onClick={handleRefresh}
-          disabled={state.refreshButton}
-        >
-          Làm mới
-        </Button>
+          <Space>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<Add />}
+              onClick={handleAdd}
+            >
+              Thêm chuyên ngành
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={
+                state.refreshButton ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Refresh />
+                )
+              }
+              onClick={handleRefresh}
+              disabled={state.refreshButton}
+            >
+              Làm mới
+            </Button>
+          </Space>
+        </Box>
       </Box>
+
       <Table
         columns={columns}
-        dataSource={majorData ? majorData.data : state.majors}
+        dataSource={filteredMajors}
         rowKey="id"
         pagination={{ pageSize: 5 }}
-        style={{ marginBottom: "20px" }}
+        style={{ marginBottom: "20px", marginTop: "20px" }}
         loading={state.loading}
         locale={{
           emptyText: (

@@ -11,7 +11,11 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  UsergroupAddOutlined,
+} from "@ant-design/icons";
 import SearchIcon from "@mui/icons-material/Search";
 import { Space, Table, message, Popconfirm } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -38,7 +42,11 @@ function ManagerTopics() {
   const [totalRows, setTotalRows] = useState();
   const [totalPages, setTotalPages] = useState();
   const [refresh, setRefresh] = useState(false);
+  const [openAssignGroupDialog, setOpenAssignGroupDialog] = useState(false); // State for the dialog
+  const [selectedGroupTopic, setSelectedGroupTopic] = useState(null); // State for the selected topic for group assignment
+  const [groupName, setGroupName] = useState(""); // State for the group name
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   //Get All Topics Of Lecturer
   const {
     isFetching,
@@ -139,7 +147,6 @@ function ManagerTopics() {
       render: (text, record) => (
         <>
           <Space>
-            {" "}
             <Button
               onClick={() => handleViewDetails(record)}
               variant="outlined"
@@ -149,6 +156,16 @@ function ManagerTopics() {
             >
               Xem chi tiết
             </Button>
+            <Button
+              onClick={() => handleAssignGroup(record)}
+              variant="contained"
+              color="primary"
+              size="small"
+              endIcon={<UsergroupAddOutlined />}
+            >
+              Gán nhóm
+            </Button>
+
             <Popconfirm
               title="Xóa đề tài"
               description="Bạn có chắc muốn xóa đề tài này?"
@@ -176,6 +193,24 @@ function ManagerTopics() {
     setTimeout(() => {
       messageApi.success("Làm mới dữ liệu thành công!");
     }, 1000);
+  };
+  //Gán nhóm
+  const handleAssignGroup = (topic) => {
+    setSelectedGroupTopic(topic);
+    setOpenAssignGroupDialog(true);
+  };
+
+  const handleGroupNameChange = (event) => {
+    setGroupName(event.target.value);
+  };
+
+  const handleAssignGroupClose = () => {
+    setOpenAssignGroupDialog(false);
+    setGroupName("");
+  };
+
+  const handleAssignGroupSubmit = () => {
+    // Logic to assign group to the topic (API call or state update)
   };
   return (
     <Box>
@@ -290,6 +325,32 @@ function ManagerTopics() {
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">
             Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openAssignGroupDialog}
+        onClose={handleAssignGroupClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Gán nhóm</DialogTitle>
+        <DialogContent>
+          <Box display="flex" flexDirection="column" gap={2} padding={1}>
+            <TextField
+              label="Tên nhóm"
+              value={groupName}
+              onChange={handleGroupNameChange}
+              fullWidth
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAssignGroupClose} color="error">
+            Hủy
+          </Button>
+          <Button onClick={handleAssignGroupSubmit} color="primary">
+            Lưu
           </Button>
         </DialogActions>
       </Dialog>

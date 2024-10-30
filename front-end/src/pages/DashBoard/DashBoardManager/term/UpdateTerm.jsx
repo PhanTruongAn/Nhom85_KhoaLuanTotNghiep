@@ -125,7 +125,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
                   <Form.Item label={field.label} name={field.name}>
                     <DatePicker
                       showTime
-                      format="YYYY-MM-DD HH:mm:ss"
+                      format="YYYY-MM-DD HH:mm"
                       style={{ width: "100%" }}
                       getPopupContainer={(trigger) => trigger.parentNode}
                     />

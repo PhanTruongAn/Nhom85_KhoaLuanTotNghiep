@@ -102,6 +102,10 @@ function ManageNotification() {
       setLoading(false);
     }, 1000);
   };
+  //tìm kiếm
+  const handleSearch = (value) => {
+    setSearchKeyword(value.toLowerCase());
+  };
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id", width: "10%" },
@@ -158,12 +162,11 @@ function ManageNotification() {
           position: "relative",
         }}
       >
-        <SearchComponent placeholder={"Tìm theo tiêu đề thông báo"} />
-        {/* <Search
-            placeholder="Tìm theo tiêu đề thông báo"
-            enterButton
-            onChange={(e) => setSearchKeyword(e.target.value)}
-          /> */}
+        <SearchComponent
+          placeholder={"Tìm theo tiêu đề thông báo"}
+          onChange={handleSearch}
+        />
+
         <CustomButton
           text="Làm mới dữ liệu"
           loading={loadingReload}
@@ -190,7 +193,15 @@ function ManageNotification() {
       </Typography>
       <Table
         style={{ marginTop: "20px" }}
-        dataSource={notesData ? notesData.data : data}
+        dataSource={
+          notesData
+            ? notesData.data.filter((item) =>
+                item.title.toLowerCase().includes(searchKeyword)
+              )
+            : data.filter((item) =>
+                item.title.toLowerCase().includes(searchKeyword)
+              )
+        }
         columns={columns}
         rowKey="id"
         bordered

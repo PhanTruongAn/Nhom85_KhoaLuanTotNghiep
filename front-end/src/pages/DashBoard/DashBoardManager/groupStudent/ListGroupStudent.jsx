@@ -225,7 +225,6 @@ const ListGroupStudent = () => {
             transform: "translateY(-50%)",
           }}
         >
-          {" "}
           <Space>
             <Button
               variant="contained"
