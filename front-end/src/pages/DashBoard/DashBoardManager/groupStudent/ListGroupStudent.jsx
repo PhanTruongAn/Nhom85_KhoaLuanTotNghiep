@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Table, Space, message, Input, Select, Popconfirm } from "antd";
 import { Box, Button, Typography } from "@mui/material";
 import {
@@ -12,7 +12,6 @@ import UpdateGroupModal from "./UpdateGroupModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import CustomHooks from "../../../../utils/hooks";
-import { formatDate } from "../../../../utils/formatDate";
 import SearchComponent from "../../../../components/SearchComponent/search";
 const { Option } = Select;
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -41,7 +40,7 @@ const ListGroupStudent = () => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
 
-  // useQuery to fetch data
+  // Get Groups Student Data
   const {
     data: groupsData,
     isFetching,
@@ -124,6 +123,9 @@ const ListGroupStudent = () => {
   const onRefreshData = () => {
     updateState({ refreshButton: true });
     refetch();
+    setTimeout(() => {
+      messageApi.success("Làm mới dữ liệu thành công!");
+    }, 1000);
   };
   const onChangePage = (pageNumber) => {
     if (!pages.includes(pageNumber)) {
@@ -132,7 +134,22 @@ const ListGroupStudent = () => {
     }
     updateState({ currentPage: pageNumber });
   };
+  const filteredGroups = useMemo(() => {
+    const sourceData =
+      groupsData && groupsData.data
+        ? groupsData.data.groupStudent
+        : state.dataSource;
+    return sourceData.filter((group) => {
+      const groupNameMatch = group.groupName
+        .toLowerCase()
+        .includes(searchValue.toLowerCase());
+      const topicTitleMatch = group.topic?.title
+        .toLowerCase()
+        .includes(searchValue.toLowerCase()); // Kiểm tra tên đề tài
 
+      return groupNameMatch || topicTitleMatch; // Trả về true nếu tìm thấy theo tên nhóm hoặc tên đề tài
+    });
+  }, [searchValue, state.dataSource]);
   const columns = [
     {
       title: "ID",
@@ -211,12 +228,11 @@ const ListGroupStudent = () => {
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
       <Box sx={{ position: "relative" }}>
-        <SearchComponent placeholder="Tìm theo tên nhóm hoặc tên đề tài" />
-        {/* <Search
-            placeholder="Tìm theo tên nhóm hoặc tên đề tài"
-            enterButton
-            loading={state.searchLoading}
-          /> */}
+        <SearchComponent
+          placeholder="Tìm theo tên nhóm hoặc tên đề tài"
+          onChange={(group) => setSearchValue(group)}
+        />
+
         <Box
           sx={{
             position: "absolute",
@@ -284,16 +300,18 @@ const ListGroupStudent = () => {
         }}
         bordered
         columns={columns}
-        dataSource={
-          groupsData ? groupsData.data?.groupStudent : state.dataSource
-        }
+        dataSource={filteredGroups}
         rowKey="id"
         loading={state.loadingData}
         pagination={{
           showSizeChanger: true,
           pageSizeOptions: ["5", "10", "20"],
           onShowSizeChange: (current, size) => handlePageSizeChange(size),
-          total: groupsData ? groupsData.data?.totalRows : state.totalRows,
+          total: searchValue
+            ? filteredGroups.length
+            : groupsData
+            ? groupsData.data?.totalRows
+            : state.totalRows, // Cập nhật giá trị total
           current: state.currentPage,
           pageSize: state.pageSize,
           onChange: onChangePage,

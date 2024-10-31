@@ -326,6 +326,7 @@ const paginationGroupsStudent = async (page, limit) => {
             "gender",
             "username",
           ],
+          required: true,
         },
         {
           model: Topic,

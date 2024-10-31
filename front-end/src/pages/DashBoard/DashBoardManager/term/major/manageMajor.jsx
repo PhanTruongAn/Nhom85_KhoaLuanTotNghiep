@@ -188,7 +188,7 @@ const MajorManagement = () => {
     },
   ];
   return (
-    <Box sx={{ padding: "20px" }}>
+    <Box sx={{ padding: "10px" }}>
       {contextHolder}
       {/* <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "bold" }}>
         Quản lý chuyên ngành
@@ -198,11 +198,6 @@ const MajorManagement = () => {
           placeholder="Tìm kiếm theo tên chuyên ngành"
           onChange={handleSearch}
         />
-        {/* <Search
-            placeholder="Tìm theo tên nhóm hoặc tên đề tài"
-            enterButton
-            loading={state.searchLoading}
-          /> */}
         <Box
           sx={{
             position: "absolute",

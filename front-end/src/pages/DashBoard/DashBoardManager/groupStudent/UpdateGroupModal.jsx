@@ -121,11 +121,9 @@ const UpdateGroupModal = ({
               </Typography>
               <Box sx={{ textAlign: "left", mt: 2 }}>
                 <Button
-                  variant="contained"
                   color="error"
                   size="small"
                   onClick={() => handleDeleteStudent(student.id)}
-                  endIcon={<DeleteOutlined />}
                 >
                   Xóa khỏi nhóm
                 </Button>

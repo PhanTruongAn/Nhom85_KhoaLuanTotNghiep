@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       discussionPoint: DataTypes.INTEGER,
       progressPoint: DataTypes.INTEGER,
       reportingPoint: DataTypes.INTEGER,
+      averagePoint: DataTypes.INTEGER,
       comment: DataTypes.STRING,
       groupId: DataTypes.STRING,
     },

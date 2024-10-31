@@ -18,6 +18,9 @@ module.exports = {
       reportingPoint: {
         type: Sequelize.INTEGER,
       },
+      averagePoint: {
+        type: Sequelize.INTEGER,
+      },
       comment: {
         type: Sequelize.STRING,
       },

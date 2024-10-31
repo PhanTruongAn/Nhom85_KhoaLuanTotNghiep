@@ -159,6 +159,27 @@ const handleUpdateTopic = async (req, res) => {
     });
   }
 };
+const handleGetNotes = async (req, res) => {
+  try {
+    const { term, role } = req.query;
+    const data = await lecturerService.getNotes(term, role);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+const handlePointGroup = async (req, res) => {
+  try {
+    let data = await lecturerService.pointGroup(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: 1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 module.exports = {
   handleCreateLecturerAccount,
   handleBulkCreateLecturer,
@@ -173,4 +194,6 @@ module.exports = {
   handleGetPersonalTopics,
   handleDeleteTopic,
   handleUpdateTopic,
+  handleGetNotes,
+  handlePointGroup,
 };

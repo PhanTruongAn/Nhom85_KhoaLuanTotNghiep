@@ -33,7 +33,11 @@ import logoLight from "../../../images/logo-iuh.png";
 import ListNotification from "./notifications/listNotification.jsx";
 import CustomHooks from "../../../utils/hooks.jsx";
 import managerApi from "../../../apis/managerApi.jsx";
-import { setCurrentTerm, setTerms } from "../../../redux/userSlice.jsx";
+import {
+  setCurrentTerm,
+  setTerms,
+  setNotes,
+} from "../../../redux/userSlice.jsx";
 import { isEmpty } from "lodash";
 import { getCurrentTerm } from "../../../utils/getCurrentTerm.jsx";
 import lecturerApi from "../../../apis/lecturerApi.jsx";
@@ -44,7 +48,7 @@ const DashBoardManager = () => {
   const navigate = useNavigate();
   const [messageApi, contextHolderMessage] = message.useMessage();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
-  const [notifications, setNotifications] = useState(5);
+  const notes = useSelector((state) => state.userInit.notes);
   const [selectedOption, setSelectedOption] = useState(1);
   const terms = useSelector((state) => state.userInit.terms);
   const user = useSelector((state) => state.userInit.user);
@@ -79,6 +83,27 @@ const DashBoardManager = () => {
     }
     return res;
   };
+
+  const getNotes = async () => {
+    let termId = currentTerm?.id;
+    let roleId = user?.role?.id;
+    let res = await lecturerApi.getNotes(termId, roleId);
+    return res;
+  };
+
+  const { data: noteData } = CustomHooks.useQuery(["notes"], getNotes, {
+    enabled: user.role && !isEmpty(currentTerm) && isEmpty(notes),
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        dispatch(setNotes(res.data));
+      } else {
+        messageApi.error(res.message);
+      }
+    },
+    onError: (error) => {
+      messageApi.error(`${error}!`);
+    },
+  });
   const {
     data: termsData,
     isFetching,
@@ -339,8 +364,8 @@ const DashBoardManager = () => {
                   onClick={handlePopoverOpen}
                   style={{ marginRight: "10px", marginTop: "10px" }}
                 >
-                  {notifications > 0 && (
-                    <span className="notification-badge">{notifications}</span>
+                  {!isEmpty(notes) && notes.length > 0 && (
+                    <span className="notification-badge">{notes.length}</span>
                   )}
                 </Button>
 

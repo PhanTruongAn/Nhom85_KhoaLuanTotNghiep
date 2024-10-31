@@ -12,14 +12,14 @@ function CustomButton({ onClick, loading, text, type, sx, disabled }) {
     <Button
       sx={sx ? sx : {}}
       variant="contained"
-      color={isSuccess ? "info" : isError ? "error" : "primary"}
+      color={isSuccess ? "success" : isError ? "error" : "primary"}
       // size="small"
       onClick={onClick}
       startIcon={
         loading ? (
           <CircularProgress
             size={20}
-            color={isSuccess ? "info" : isError ? "error" : "primary"}
+            color={isSuccess ? "success" : isError ? "error" : "primary"}
           />
         ) : isSuccess ? (
           <CheckIcon />

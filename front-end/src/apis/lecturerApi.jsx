@@ -53,5 +53,11 @@ const lecturerApi = {
   updateTopicById: (data) => {
     return axiosClient.put(baseUrl + "/update-topic", data);
   },
+  getNotes: (termId, roleId) => {
+    return axiosClient.get(`${baseUrl}/notes?term=${termId}&role=${roleId}`);
+  },
+  evaluations: (data) => {
+    return axiosClient.post(baseUrl + "/evaluations", data);
+  },
 };
 export default lecturerApi;

@@ -217,7 +217,15 @@ const getPaginationStudent = async (page, limit, term) => {
   try {
     const offset = (page - 1) * limit;
     const { count, rows } = await Student.findAndCountAll({
-      attributes: ["id", "username", "fullName", "gender", "email", "phone"],
+      attributes: [
+        "id",
+        "username",
+        "fullName",
+        "gender",
+        "email",
+        "phone",
+        "groupId",
+      ],
       include: [
         {
           model: Role,
@@ -229,6 +237,7 @@ const getPaginationStudent = async (page, limit, term) => {
             attributes: [],
           },
           as: "terms",
+          attributes: ["id", "name"],
           where: {
             id: term,
           },

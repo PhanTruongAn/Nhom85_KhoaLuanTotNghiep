@@ -52,13 +52,16 @@ function ManageNotification() {
       if (res && res.status === 0) {
         setData(res.data);
       } else if (res.status === 1) {
+        setData([]);
         messageApi.info(res.message);
       } else {
+        setData([]);
         messageApi.error(res.message);
       }
       setLoading(false);
     },
     onError: (error) => {
+      setData([]);
       messageApi.error(`${error}!`);
     },
   });
@@ -106,6 +109,11 @@ function ManageNotification() {
   const handleSearch = (value) => {
     setSearchKeyword(value.toLowerCase());
   };
+  // Lọc tìm kiếm
+  const sourceData = notesData && notesData.data ? notesData.data : data;
+  const filteredData = sourceData.filter((item) =>
+    item.apiPath.startsWith(`/${selectedRole.toLowerCase()}`)
+  );
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id", width: "10%" },
@@ -193,15 +201,7 @@ function ManageNotification() {
       </Typography>
       <Table
         style={{ marginTop: "20px" }}
-        dataSource={
-          notesData
-            ? notesData.data.filter((item) =>
-                item.title.toLowerCase().includes(searchKeyword)
-              )
-            : data.filter((item) =>
-                item.title.toLowerCase().includes(searchKeyword)
-              )
-        }
+        dataSource={filteredData}
         columns={columns}
         rowKey="id"
         bordered

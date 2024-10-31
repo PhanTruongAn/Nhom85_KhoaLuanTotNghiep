@@ -3,7 +3,15 @@ import { hashPassword } from "../services/userService";
 import _, { isEmpty } from "lodash";
 const { Op, literal } = require("sequelize");
 //Models Database
-const { Lecturer, Role, Topic, TermLecturer, Term } = require("../models");
+const {
+  Lecturer,
+  Role,
+  Topic,
+  TermLecturer,
+  Term,
+  Note,
+  Evaluation,
+} = require("../models");
 
 //Tạo tài khoản giảng viên
 const createLecturerAccount = async (data) => {
@@ -207,6 +215,7 @@ const getPaginationLecturer = async (page, limit, term) => {
           through: {
             attributes: [],
           },
+          attributes: ["id", "name"],
           where: {
             id: term,
           },
@@ -636,6 +645,128 @@ const updateTopic = async (data) => {
     };
   }
 };
+const getNotes = async (termId, roleId) => {
+  // Kiểm tra dữ liệu đầu vào
+  if (!termId || !roleId) {
+    return {
+      status: -1,
+      message: "Thiếu dữ liệu học kỳ hoặc vai trò!",
+    };
+  }
+
+  try {
+    const notes = await Note.findAll({
+      where: {
+        termId: termId,
+      },
+      include: {
+        attributes: [],
+        model: Role,
+        as: "roles",
+        through: {
+          attributes: [],
+        },
+        where: {
+          id: roleId,
+        },
+      },
+    });
+
+    if (notes && notes.length > 0) {
+      return {
+        status: 0,
+        message: "Lấy danh sách thông báo thành công!",
+        data: notes,
+      };
+    } else {
+      return {
+        status: 1,
+        message: "Không tìm thấy thông báo nào!",
+      };
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách thông báo:", error);
+    return {
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error.message,
+      },
+    };
+  }
+};
+
+const pointGroup = async (data) => {
+  const {
+    discussionPoint,
+    progressPoint,
+    reportingPoint,
+    comment,
+    averagePoint,
+    groupId,
+  } = data;
+  if (!discussionPoint) {
+    return {
+      status: -1,
+      message: "Điểm thảo luận trống hoặc không hợp lệ!.",
+    };
+  }
+
+  if (!progressPoint) {
+    return {
+      status: -1,
+      message: "Điểm tiến độ trống hoặc không hợp lệ!.",
+    };
+  }
+
+  if (!reportingPoint) {
+    return {
+      status: -1,
+      message: "Điểm báo cáo trống hoặc không hợp lệ!.",
+    };
+  }
+  if (!averagePoint) {
+    return {
+      status: -1,
+      message: "Điểm trung bình trống hoặc không hợp lệ!.",
+    };
+  }
+
+  if (!groupId) {
+    return {
+      status: -1,
+      message: "Mã nhóm không được để trống.",
+    };
+  }
+
+  try {
+    const evaluationData = {
+      discussionPoint,
+      progressPoint,
+      reportingPoint,
+      averagePoint,
+      groupId,
+      // Chỉ thêm comment nếu nó tồn tại
+      ...(comment && { comment }),
+    };
+    const result = await Evaluation.create(evaluationData);
+
+    if (result) {
+      return {
+        status: 0,
+        message: "Chấm điểm thành công.",
+        data: result,
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: `Lỗi: ${error.message}`,
+    };
+  }
+};
+
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -651,4 +782,6 @@ module.exports = {
   getTerm,
   deleteTopic,
   updateTopic,
+  getNotes,
+  pointGroup,
 };

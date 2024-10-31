@@ -181,6 +181,7 @@ function ListStudent() {
       title: "ID",
       dataIndex: "id",
       key: "id",
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: "Mã số sinh viên",
@@ -196,6 +197,12 @@ function ListStudent() {
       title: "Giới tính",
       dataIndex: "gender",
       key: "gender",
+    },
+    {
+      title: "Nhóm", // Thay đổi tiêu đề cột
+      key: "group",
+      render: (record) => (record.groupId ? "Đã có nhóm" : "Chưa có nhóm"),
+      sorter: (a, b) => a.groupId - b.groupId,
     },
     {
       title: "Email",
