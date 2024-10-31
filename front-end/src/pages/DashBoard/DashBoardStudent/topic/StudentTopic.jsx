@@ -16,12 +16,17 @@ import CustomButton from "../../../../components/Button/CustomButton";
 import { formatContent } from "../../../../utils/formatContent";
 const ProjectDetails = () => {
   const dispatch = useDispatch();
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const user = useSelector((state) => state.userInit.user);
   const group = useSelector((state) => state.userInit.group);
   const topic = useSelector((state) => state.userInit.topic);
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
 
+  // Kiểm tra hạn đăng ký đề tài
+  const currentDate = new Date();
+  const isWithinChooseTopicPeriod =
+    currentDate > new Date(currentTerm?.endChooseTopicDate);
   // Fetch group data
   const {
     data: groupData,
@@ -47,7 +52,7 @@ const ProjectDetails = () => {
       },
     }
   );
-  console.log("Check topic: ", topic);
+
   // Fetch topic data
   const {
     data: topicData,
@@ -76,7 +81,7 @@ const ProjectDetails = () => {
       },
     }
   );
-  console.log("Dữ liệu nhóm: ", group, isEmpty(group));
+
   const displayedTopic = topic || {};
 
   const handleCancelTopic = async () => {
@@ -239,6 +244,7 @@ const ProjectDetails = () => {
                       type="error"
                       loading={loading}
                       fullWidth // Make the button full width
+                      disabled={isWithinChooseTopicPeriod}
                     />
                   </AccordionSummary>
                 </Accordion>

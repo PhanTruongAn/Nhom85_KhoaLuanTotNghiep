@@ -101,6 +101,9 @@ const ListTerm = () => {
   const handleRefreshData = () => {
     setLoading(true);
     refetch();
+    setTimeout(() => {
+      messageApi.success("Làm mới dữ liệu thành công!");
+    }, 1000);
   };
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();

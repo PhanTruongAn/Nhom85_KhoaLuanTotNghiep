@@ -1,7 +1,7 @@
 import db from "../models/index";
 import { hashPassword } from "../services/userService";
 import _, { isEmpty } from "lodash";
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 //Models Database
 const { Lecturer, Role, Topic, TermLecturer, Term } = require("../models");
 
@@ -533,7 +533,18 @@ const getPersonalTopics = async (term, id) => {
 
   try {
     let topics = await Topic.findAll({
-      attributes: { exclude: ["createdAt", "updatedAt", "LecturerId"] },
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "LecturerId"],
+        include: [
+          [
+            literal(
+              `(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)`
+            ),
+            "groupCount",
+          ],
+        ],
+      },
+
       where: {
         termId: term,
         lecturerId: id,

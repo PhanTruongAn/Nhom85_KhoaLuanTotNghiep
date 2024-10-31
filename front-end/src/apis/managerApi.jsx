@@ -79,5 +79,8 @@ const managerApi = {
       `${baseUrl}/find-topics?term=${term}&search=${search}`
     );
   },
+  assignTopicToGroup: (data) => {
+    return axiosClient.put(baseUrl + "/assign-topic", data);
+  },
 };
 export default managerApi;

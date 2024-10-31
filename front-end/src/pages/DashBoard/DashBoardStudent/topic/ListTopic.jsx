@@ -51,10 +51,14 @@ function ListTopic() {
   const [pages, setPages] = useState([1]);
 
   const currentDate = new Date();
-  // Kiểm tra hạn đăng ký nhóm
+  // Kiểm tra hạn đăng ký đề tài
   const isWithinChooseTopicPeriod =
-    currentDate >= new Date(currentTerm?.startChooseTopicDate) &&
-    currentDate <= new Date(currentTerm?.endChooseTopicDate);
+    currentDate >= new Date(currentTerm?.endChooseTopicDate);
+  // Kiểm tra hạn công bố đề tài
+  const isWithinPublicTopicPeriod =
+    currentDate >= new Date(currentTerm?.startPublicTopicDate) &&
+    currentDate <= new Date(currentTerm?.endPublicTopicDate);
+
   const {
     data: topicsData,
     isLoading,
@@ -75,7 +79,7 @@ function ListTopic() {
       }
     },
     {
-      enabled: !isEmpty(currentTerm) && isWithinChooseTopicPeriod,
+      enabled: !isEmpty(currentTerm) && !isWithinChooseTopicPeriod,
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({
@@ -207,6 +211,7 @@ function ListTopic() {
             variant="contained"
             size="small"
             onClick={(e) => handleRegisterClick(record.id)}
+            disabled={isWithinPublicTopicPeriod}
           >
             Đăng ký
           </Button>
@@ -225,7 +230,7 @@ function ListTopic() {
   return (
     <Box>
       {contextHolder}{" "}
-      {!isWithinChooseTopicPeriod ? (
+      {isWithinChooseTopicPeriod ? (
         <OverDate
           text="Đã hết hạn đăng ký đề tài!"
           startDate={currentTerm.startChooseTopicDate}

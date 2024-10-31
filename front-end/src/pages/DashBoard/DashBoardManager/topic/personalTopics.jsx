@@ -161,9 +161,10 @@ function PersonalTopics() {
     },
     {
       title: "Số lượng nhóm",
-      dataIndex: "quantityGroup",
+      // dataIndex: "quantityGroup",
       key: "quantityGroup",
-      sorter: (a, b) => a.quantityGroup - b.quantityGroup,
+      render: (record) => `${record.groupCount}/${record.quantityGroup}`,
+      sorter: (a, b) => a.groupCount - b.groupCount,
     },
     {
       title: "Hành động",
@@ -184,6 +185,16 @@ function PersonalTopics() {
             variant="contained"
             endIcon={<EditOutlined />}
             size="small"
+            sx={[
+              (theme) => ({
+                ...theme.applyStyles("light", {
+                  backgroundColor: "#FF993A",
+                }),
+                ...theme.applyStyles("dark", {
+                  backgroundColor: "#1DA57A",
+                }),
+              }),
+            ]}
           >
             Sửa
           </Button>

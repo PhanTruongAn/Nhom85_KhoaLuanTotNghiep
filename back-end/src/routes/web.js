@@ -175,6 +175,11 @@ const initWebRoutes = (app) => {
     "/manager/find-topics",
     managerController.handleFindTopicByTitleOrLecturerName
   );
+  router.put(
+    "/manager/assign-topic",
+    managerController.handleAssignTopicToGroup
+  );
+
   return app.use("/", router);
 };
 

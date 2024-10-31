@@ -3,8 +3,8 @@ import { hashPassword } from "../services/userService";
 import _, { isEmpty, update } from "lodash";
 import { sequelize } from "../models";
 import { raw } from "express";
-const { Op } = require("sequelize");
-const { literal } = require("sequelize");
+const { Op, literal } = require("sequelize");
+
 const {
   Student,
   Group,

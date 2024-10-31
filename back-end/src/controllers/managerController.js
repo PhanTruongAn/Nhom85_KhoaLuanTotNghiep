@@ -368,6 +368,20 @@ const handleFindTopicByTitleOrLecturerName = async (req, res) => {
     });
   }
 };
+const handleAssignTopicToGroup = async (req, res) => {
+  try {
+    const data = await service.assignTopicToGroup(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      status: -1,
+      message: "Lỗi hệ thống!",
+      data: {
+        error: error,
+      },
+    });
+  }
+};
 module.exports = {
   handleDeleteMajor,
   handleUpdateMajor,
@@ -393,4 +407,5 @@ module.exports = {
   handleUpdateNote,
   handleGetAllLecturerTopics,
   handleFindTopicByTitleOrLecturerName,
+  handleAssignTopicToGroup,
 };

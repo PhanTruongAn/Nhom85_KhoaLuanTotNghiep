@@ -3,8 +3,6 @@ import {
   Button,
   Typography,
   TextField,
-  Grid,
-  InputAdornment,
   Box,
   Dialog,
   DialogActions,
@@ -162,6 +160,16 @@ function ManagerTopics() {
               color="primary"
               size="small"
               endIcon={<UsergroupAddOutlined />}
+              sx={[
+                (theme) => ({
+                  ...theme.applyStyles("light", {
+                    backgroundColor: "#FF993A",
+                  }),
+                  ...theme.applyStyles("dark", {
+                    backgroundColor: "#1DA57A",
+                  }),
+                }),
+              ]}
             >
               Gán nhóm
             </Button>
@@ -209,8 +217,18 @@ function ManagerTopics() {
     setGroupName("");
   };
 
-  const handleAssignGroupSubmit = () => {
-    // Logic to assign group to the topic (API call or state update)
+  const handleAssignGroupSubmit = async () => {
+    let dataToSave = {
+      groupName: groupName,
+      topicId: selectedGroupTopic.id,
+    };
+    const res = await managerApi.assignTopicToGroup(dataToSave);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      handleAssignGroupClose();
+    } else {
+      messageApi.error(res.message);
+    }
   };
   return (
     <Box>

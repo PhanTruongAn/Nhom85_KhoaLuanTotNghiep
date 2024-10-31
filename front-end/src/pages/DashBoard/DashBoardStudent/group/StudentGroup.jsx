@@ -15,6 +15,7 @@ import CustomButton from "../../../../components/Button/CustomButton";
 
 const StudentGroup = () => {
   const dispatch = useDispatch();
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const user = useSelector((state) => state.userInit.user);
   const group = useSelector((state) => state.userInit.group);
   const [messageApi, contextHolder] = message.useMessage();
@@ -22,6 +23,10 @@ const StudentGroup = () => {
   const [loadingTransferLeader, setLoadingTransferLeader] = useState({});
   const [loadingRemoveMember, setLoadingRemoveMember] = useState({});
 
+  // Kiểm tra hạn đăng ký nhóm
+  const currentDate = new Date();
+  const isWithinChooseGroupPeriod =
+    currentDate > new Date(currentTerm?.endChooseGroupDate);
   const getMyGroup = async () => {
     const res = await studentApi.getMyGroup(user.groupId);
     if (res && res.status === 0) {
@@ -157,12 +162,14 @@ const StudentGroup = () => {
                             text="Chọn làm nhóm trưởng"
                             onClick={() => handleTransferLeader(item.id)}
                             loading={loadingTransferLeader[item.id] || false}
+                            disabled={isWithinChooseGroupPeriod}
                           />
                           <CustomButton
                             type="error"
                             text="Xóa khỏi nhóm"
                             onClick={() => handleRemoveMemberFromGroup(item.id)}
                             loading={loadingRemoveMember[item.id] || false}
+                            disabled={isWithinChooseGroupPeriod}
                           />
                         </Space>
                       </Col>
@@ -178,7 +185,7 @@ const StudentGroup = () => {
             <Col>
               <Button
                 variant="contained"
-                disabled={loading}
+                disabled={loading || isWithinChooseGroupPeriod}
                 onClick={handleLeaveGroup}
                 startIcon={
                   loading ? (

@@ -953,6 +953,7 @@ const findTopicByTitleOrLecturerName = async (term, search) => {
       };
     }
   } catch (error) {
+    console.log("Lỗi: ", error.message);
     return {
       status: -1,
       message: "Đã xảy ra lỗi khi tìm kiếm dữ liệu.",
@@ -960,7 +961,74 @@ const findTopicByTitleOrLecturerName = async (term, search) => {
     };
   }
 };
+const assignTopicToGroup = async (data) => {
+  const { groupName, topicId } = data;
+  if (!groupName || !topicId) {
+    return {
+      status: -1,
+      message: "Không tìm thấy tên nhóm hoặc đề tài!",
+    };
+  }
+  try {
+    let group = await Group.findOne({
+      where: {
+        groupName: groupName,
+      },
+      raw: true,
+    });
+    let topic = await Topic.findOne({
+      where: {
+        id: topicId,
+      },
+      raw: true,
+    });
 
+    if (!group) {
+      return {
+        status: -1,
+        message: "Tên nhóm sai hoặc không tồn tại!",
+      };
+    }
+    if (!topic) {
+      return {
+        status: -1,
+        message: "Đề tài không tồn tại!",
+      };
+    }
+    let numOfGroup = await Group.findAll({
+      where: {
+        topicId: topic.id,
+      },
+    });
+    if (numOfGroup && numOfGroup.length === topic.quantityGroup) {
+      return {
+        status: -1,
+        message: "Đề tài này đã đủ số lượng nhóm!",
+      };
+    }
+    let update = await Group.update(
+      { topicId: topicId },
+      { where: { id: group.id } }
+    );
+    if (update[0] > 0) {
+      return {
+        status: 0,
+        message: `Gán đề tài thành công cho nhóm ${group.groupName}!`,
+      };
+    } else {
+      return {
+        status: -1,
+        message: `Gán đề tài thất bại!`,
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -987,4 +1055,5 @@ module.exports = {
   updateNote,
   getAllLecturerTopics,
   findTopicByTitleOrLecturerName,
+  assignTopicToGroup,
 };
