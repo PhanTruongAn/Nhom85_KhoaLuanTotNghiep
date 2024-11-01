@@ -15,6 +15,7 @@ const {
   Term,
   Note,
   Major,
+  Evaluation,
 } = require("../models");
 
 // Tạo tài khoản sinh viên
@@ -1141,6 +1142,50 @@ const getMajors = async () => {
     };
   }
 };
+
+const getEvaluation = async (groupId, termId) => {
+  if (!groupId) {
+    return {
+      status: -1,
+      message: "Thông tin nhóm không tồn tại!",
+    };
+  }
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Thông tin học kì không tồn tại!",
+    };
+  }
+
+  try {
+    let result = await Evaluation.findOne({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      where: {
+        groupId: groupId,
+        termId: termId,
+      },
+      raw: true,
+    });
+    if (result) {
+      return {
+        status: 0,
+        message: "Lấy thông tin điểm số thành công!",
+        data: result,
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Không tìm thấy thông tin điểm số!",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: `Lỗi chức năng!`,
+    };
+  }
+};
 module.exports = {
   createStudentAccount,
   createBulkAccount,
@@ -1166,4 +1211,5 @@ module.exports = {
   getTerm,
   getNotes,
   getMajors,
+  getEvaluation,
 };

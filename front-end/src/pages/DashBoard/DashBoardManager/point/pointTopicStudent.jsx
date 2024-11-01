@@ -11,7 +11,9 @@ import {
 import { message } from "antd";
 import lecturerApi from "../../../../apis/lecturerApi";
 import CustomButton from "../../../../components/Button/CustomButton";
+import { useSelector } from "react-redux";
 function PointTopicStudent({ selectedGroup, onClose }) {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [students, setStudents] = useState(selectedGroup?.students || []);
   const [messageApi, contextHolder] = message.useMessage();
   const [discussionPoint, setDiscussionPoint] = useState("");
@@ -47,12 +49,11 @@ function PointTopicStudent({ selectedGroup, onClose }) {
       comment,
       averagePoint,
       groupId: selectedGroup?.id,
+      termId: currentTerm.id,
     };
     const res = await lecturerApi.evaluations(dataToSave);
     if (res && res.status === 0) {
       messageApi.success(res.message);
-
-      onClose();
       setLoading(false);
     } else {
       setLoading(false);
@@ -125,7 +126,7 @@ function PointTopicStudent({ selectedGroup, onClose }) {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Điểm vấn đáp"
+              label="Điểm phản biện"
               type="number"
               fullWidth
               variant="outlined"
@@ -135,7 +136,7 @@ function PointTopicStudent({ selectedGroup, onClose }) {
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Điểm tiến độ"
+              label="Điểm quá trình"
               type="number"
               fullWidth
               variant="outlined"

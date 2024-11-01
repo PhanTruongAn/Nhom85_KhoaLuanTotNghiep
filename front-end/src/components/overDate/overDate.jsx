@@ -1,5 +1,5 @@
 import React from "react";
-import emptyDataImage from "../../images/anhdong/overdue.gif";
+import emptyDataImage from "../../images/anhdong/overdate.gif";
 import { Box, Typography } from "@mui/material";
 
 // Helper function to format date and time
@@ -41,7 +41,11 @@ function OverDate({ text, startDate, endDate }) {
           component="img"
           src={emptyDataImage}
           alt="Loading animation"
-          sx={{ width: "300px", height: "300px", objectFit: "cover" }}
+          sx={{
+            width: "300px",
+            height: "300px",
+            objectFit: "cover",
+          }}
         />
         <Typography variant="h6" sx={{ marginTop: "16px" }}>
           {text ? (

@@ -1,45 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { Table } from "antd";
+import { Table, message } from "antd";
 import { TableOutlined } from "@ant-design/icons";
-
+import EmptyData from "../../../../components/emptydata/EmptyData";
+import { useSelector } from "react-redux";
+import CustomHooks from "../../../../utils/hooks";
+import studentApi from "../../../../apis/studentApi";
+import { isEmpty } from "lodash";
 const columns = [
   {
-    title: "Điểm Hướng dẫn",
-    dataIndex: "guidanceScore",
-    key: "guidanceScore",
+    title: "Điểm Quá Trình",
+    dataIndex: "progressPoint",
+    key: "progressPoint",
   },
   {
     title: "Điểm Phản biện",
-    dataIndex: "reviewScore",
-    key: "reviewScore",
+    dataIndex: "discussionPoint",
+    key: "discussionPoint",
   },
   {
     title: "Điểm Báo cáo",
-    dataIndex: "reportScore",
-    key: "reportScore",
+    dataIndex: "reportingPoint",
+    key: "reportingPoint",
   },
   {
     title: "Điểm Trung bình",
-    dataIndex: "averageScore",
-    key: "averageScore",
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    guidanceScore: "Chưa có điểm",
-    reviewScore: "Chưa có điểm",
-    reportScore: "Chưa có điểm",
-    averageScore: "Chưa có điểm",
+    dataIndex: "averagePoint",
+    key: "averagePoint",
   },
 ];
 
 function MyPoint() {
+  const group = useSelector((state) => state.userInit.group);
+  const user = useSelector((state) => state.userInit.user);
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const [data, setData] = useState([]);
+  const [messageApi, contextHolder] = message.useMessage();
+  const getMyPoint = async () => {
+    let term = currentTerm.id;
+    let myGroup = user.groupId;
+    const res = await studentApi.getEvaluation(term, myGroup);
+    return res;
+  };
+  const { isFetching, data: evaluationData } = CustomHooks.useQuery(
+    ["my-point"],
+    getMyPoint,
+    {
+      enabled: !isEmpty(currentTerm),
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          setData([res.data]);
+        } else {
+          messageApi.info(res.message);
+        }
+      },
+      onError: (error) => {
+        messageApi.error("Lỗi khi lấy thông tin điểm số!");
+      },
+    }
+  );
+
   return (
     <Box
-      padding={3}
+      padding={1}
       sx={{
         width: "100%",
         height: "auto", // Change height to auto for responsiveness
@@ -47,6 +70,7 @@ function MyPoint() {
         overflow: "hidden", // Prevents overflow
       }}
     >
+      {contextHolder}
       <Box
         display="flex"
         alignItems="center"
@@ -56,7 +80,7 @@ function MyPoint() {
         <TableOutlined
           style={{ fontSize: "34px", marginRight: "8px", color: "#1976d2" }}
         />
-        <Typography variant="h4" color="#1976d2">
+        <Typography variant="h5" color="#1976d2">
           Bảng Điểm Của Tôi
         </Typography>
       </Box>
@@ -72,13 +96,14 @@ function MyPoint() {
         }}
       >
         <Typography variant="body1">
-          <strong>Họ tên:</strong> Điều Phan Quang Dũng
+          <strong>Họ tên:</strong>
+          {user.fullName}
         </Typography>
         <Typography variant="body1">
-          <strong>MSSV:</strong> 20093921
+          <strong>MSSV:</strong> {user.username}
         </Typography>
         <Typography variant="body1">
-          <strong>Giới tính:</strong> Nam
+          <strong>Giới tính:</strong> {user?.gender || ""}
         </Typography>
         <Typography variant="body1">
           <strong>Chuyên ngành:</strong> Kỹ thuật phần mềm
@@ -87,11 +112,25 @@ function MyPoint() {
 
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={evaluationData ? [evaluationData.data] : data}
         pagination={false}
-        rowKey="key"
+        rowKey="id"
         locale={{
-          emptyText: "Chưa có dữ liệu",
+          emptyText: (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {isFetching ? (
+                <EmptyData />
+              ) : isEmpty(data) ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : null}
+            </Box>
+          ),
         }}
         style={{
           marginTop: "16px",

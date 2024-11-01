@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Student.belongsTo(models.Major, {
         foreignKey: "majorId",
+        as: "major",
       });
       Student.belongsTo(models.Role, {
         foreignKey: "roleId",

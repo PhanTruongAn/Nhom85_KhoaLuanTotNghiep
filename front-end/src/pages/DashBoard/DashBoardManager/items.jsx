@@ -170,6 +170,23 @@ const getItems = (isManager) => {
               },
             ],
           },
+          {
+            key: "notification",
+            icon: <NotificationOutlined />,
+            label: "Thông báo",
+            children: [
+              {
+                key: "create-notification",
+                icon: <PlusOutlined />,
+                label: "Tạo thông báo",
+              },
+              {
+                key: "manage-notification",
+                icon: <OrderedListOutlined />,
+                label: "Danh sách ",
+              },
+            ],
+          },
         ]
       : []),
     {
@@ -184,23 +201,7 @@ const getItems = (isManager) => {
         },
       ],
     },
-    {
-      key: "notification",
-      icon: <NotificationOutlined />,
-      label: "Thông báo",
-      children: [
-        {
-          key: "create-notification",
-          icon: <PlusOutlined />,
-          label: "Tạo thông báo",
-        },
-        {
-          key: "manage-notification",
-          icon: <OrderedListOutlined />,
-          label: "Danh sách ",
-        },
-      ],
-    },
+
     {
       key: "setting",
       icon: <SettingOutlined />,

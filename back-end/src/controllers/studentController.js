@@ -7,6 +7,10 @@ const handleCreateStudentAccount = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 
@@ -16,6 +20,10 @@ const handleBulkCreate = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 
@@ -38,6 +46,10 @@ const handleDeleteStudent = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 
@@ -47,6 +59,10 @@ const handleUpdateStudent = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleDeleteManyStudent = async (req, res) => {
@@ -55,6 +71,10 @@ const handleDeleteManyStudent = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleFindStudentsByName = async (req, res) => {
@@ -109,6 +129,10 @@ const handleJoinGroup = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleGetInfoMyGroup = async (req, res) => {
@@ -118,6 +142,10 @@ const handleGetInfoMyGroup = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleGStudentLeaveGroup = async (req, res) => {
@@ -126,6 +154,10 @@ const handleGStudentLeaveGroup = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleRemoveMemberFromGroup = async (req, res) => {
@@ -134,6 +166,10 @@ const handleRemoveMemberFromGroup = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleTransferTeamLeader = async (req, res) => {
@@ -142,6 +178,10 @@ const handleTransferTeamLeader = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleGetInfoMyTopic = async (req, res) => {
@@ -151,6 +191,10 @@ const handleGetInfoMyTopic = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleStudentGetAllTopics = async (req, res) => {
@@ -172,6 +216,10 @@ const handleGetDetailsTopic = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleJoinTopic = async (req, res) => {
@@ -180,6 +228,10 @@ const handleJoinTopic = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleLeaveTopic = async (req, res) => {
@@ -188,6 +240,10 @@ const handleLeaveTopic = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleSearchTopicWithNameOrLecturer = async (req, res) => {
@@ -197,6 +253,10 @@ const handleSearchTopicWithNameOrLecturer = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleGetTerm = async (req, res) => {
@@ -206,6 +266,10 @@ const handleGetTerm = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleGetNotes = async (req, res) => {
@@ -215,6 +279,10 @@ const handleGetNotes = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleGetMajors = async (req, res) => {
@@ -223,9 +291,26 @@ const handleGetMajors = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 
+const handleGetEvaluation = async (req, res) => {
+  try {
+    const { term, group } = req.query;
+    const data = await studentService.getEvaluation(term, group);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 module.exports = {
   handleCreateStudentAccount,
   handleBulkCreate,
@@ -250,4 +335,5 @@ module.exports = {
   handleGetTerm,
   handleGetNotes,
   handleGetMajors,
+  handleGetEvaluation,
 };

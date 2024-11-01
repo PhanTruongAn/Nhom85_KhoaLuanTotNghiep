@@ -19,7 +19,7 @@ const handleGetDataFromToken = async (req, res) => {
   if (req.user) {
     const { username, role } = req.user;
     const data = await userService.findAccount(username);
-    const { password, RoleId, ...rest } = data.toJSON();
+    const { password, ...rest } = data.toJSON();
     const _user = { ...rest, role };
     return res.status(200).json({
       status: 0,
@@ -29,10 +29,10 @@ const handleGetDataFromToken = async (req, res) => {
       },
     });
   } else {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lấy thông tin người dùng thất bại!",
-      data: null,
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -45,7 +45,7 @@ const handleLogOut = (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
+    return res.status(400).json({
       status: -1,
       message: "Lỗi từ server!",
     });
@@ -57,7 +57,10 @@ const handleChangePassword = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
-    return res.status(400).json(data);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleFindAccount = async (req, res) => {
@@ -66,7 +69,10 @@ const handleFindAccount = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
-    return res.status(400).json(data);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleSendEmail = async (req, res) => {
@@ -75,7 +81,10 @@ const handleSendEmail = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
-    return res.status(400).json(data);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 

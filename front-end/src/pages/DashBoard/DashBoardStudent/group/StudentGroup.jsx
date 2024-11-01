@@ -37,7 +37,13 @@ const StudentGroup = () => {
     return res.data;
   };
 
-  const { isSuccess, refetch } = CustomHooks.useQuery(["my-group"], getMyGroup);
+  const { isSuccess, refetch } = CustomHooks.useQuery(
+    ["my-group", group],
+    getMyGroup,
+    {
+      enabled: isEmpty(group),
+    }
+  );
 
   const handleLeaveGroup = async () => {
     setLoading(true);

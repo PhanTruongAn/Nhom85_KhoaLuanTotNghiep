@@ -7,6 +7,10 @@ const handleCreateLecturerAccount = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 
@@ -16,6 +20,10 @@ const handleBulkCreateLecturer = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 
@@ -41,6 +49,10 @@ const handleDeleteLecturer = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleUpdateLecturer = async (req, res) => {
@@ -49,6 +61,10 @@ const handleUpdateLecturer = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleDeleteManyLecturer = async (req, res) => {
@@ -57,6 +73,10 @@ const handleDeleteManyLecturer = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handleFindLecturersByName = async (req, res) => {
@@ -70,7 +90,7 @@ const handleFindLecturersByName = async (req, res) => {
     return res.status(200).json(data);
   } else {
     return res.status(400).json({
-      status: 1,
+      status: -1,
       message: "Dữ liệu truyền vào không hợp lệ!",
     });
   }
@@ -104,7 +124,7 @@ const handleCreateTopics = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({
-      status: 1,
+      status: -1,
       message: "Lỗi từ server!",
     });
   }
@@ -117,7 +137,7 @@ const handleGetTerm = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({
-      status: 1,
+      status: -1,
       message: "Lỗi từ server!",
     });
   }
@@ -130,7 +150,7 @@ const handleGetPersonalTopics = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({
-      status: 1,
+      status: -1,
       message: "Lỗi từ server!",
     });
   }
@@ -142,7 +162,7 @@ const handleDeleteTopic = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({
-      status: 1,
+      status: -1,
       message: "Lỗi từ server!",
     });
   }
@@ -154,7 +174,7 @@ const handleUpdateTopic = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({
-      status: 1,
+      status: -1,
       message: "Lỗi từ server!",
     });
   }
@@ -175,7 +195,7 @@ const handlePointGroup = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({
-      status: 1,
+      status: -1,
       message: "Lỗi từ server!",
     });
   }

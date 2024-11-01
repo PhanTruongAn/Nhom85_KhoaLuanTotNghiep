@@ -15,12 +15,10 @@ const handleCreatePermission = async (req, res) => {
     const data = await service.createPermission(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -29,12 +27,10 @@ const handleUpdatePermission = async (req, res) => {
     const data = await service.updatePermission(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -43,12 +39,10 @@ const handleDeletePermission = async (req, res) => {
     const data = await service.deletePermission(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -69,7 +63,7 @@ const handleFindByDescription = async (req, res) => {
     console.log(error);
     return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -79,10 +73,9 @@ const handleGetRolePermissions = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: null,
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -91,12 +84,10 @@ const handleAssignPermissions = async (req, res) => {
     const data = await service.assignPermissionsToRole(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -105,12 +96,10 @@ const handleCreateGroupsStudent = async (req, res) => {
     const data = await service.createGroupsStudent(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -121,10 +110,10 @@ const handleGetAllGroupsStudent = async (req, res) => {
     const data = await service.paginationGroupsStudent(+page, +limit);
     return res.status(200).json(data);
   } else {
+    console.log(error);
     return res.status(400).json({
       status: -1,
-      message: "Lỗi chức năng!",
-      data: null,
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -133,12 +122,10 @@ const handleCountStudent = async (req, res) => {
     const data = await service.countStudent();
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -147,12 +134,10 @@ const handleDeleteGroupStudent = async (req, res) => {
     const data = await service.deleteGroupStudent(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -161,12 +146,10 @@ const handleCreateNewTerm = async (req, res) => {
     const data = await service.createNewTerm(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -175,12 +158,10 @@ const handleGetTerms = async (req, res) => {
     const data = await service.getTerms();
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -189,12 +170,10 @@ const handleUpdateTerm = async (req, res) => {
     const data = await service.updateTerm(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -203,12 +182,10 @@ const handleCreateMajor = async (req, res) => {
     const data = await service.createMajor(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -217,12 +194,10 @@ const handleGetMajors = async (req, res) => {
     const data = await service.getMajors();
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -231,12 +206,10 @@ const handleDeleteMajor = async (req, res) => {
     const data = await service.deleteMajor(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -245,12 +218,10 @@ const handleUpdateMajor = async (req, res) => {
     const data = await service.updateMajor(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -259,12 +230,10 @@ const handleCreateNote = async (req, res) => {
     const data = await service.createNote(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -274,13 +243,10 @@ const handleGetNotes = async (req, res) => {
     const data = await service.getNotes(term);
     return res.status(200).json(data);
   } catch (error) {
-    console.log("Lỗi backend: ", error);
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -290,12 +256,10 @@ const handleDeleteNote = async (req, res) => {
     const data = await service.deleteNote(id);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -304,12 +268,10 @@ const handleUpdateNote = async (req, res) => {
     const data = await service.updateNote(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -341,10 +303,10 @@ const handleGetAllLecturerTopics = async (req, res) => {
     );
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: { error: error.message },
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -361,10 +323,10 @@ const handleFindTopicByTitleOrLecturerName = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
+      message: "Lỗi từ server!",
     });
   }
 };
@@ -373,12 +335,10 @@ const handleAssignTopicToGroup = async (req, res) => {
     const data = await service.assignTopicToGroup(req.body);
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({
+    console.log(error);
+    return res.status(400).json({
       status: -1,
-      message: "Lỗi hệ thống!",
-      data: {
-        error: error,
-      },
+      message: "Lỗi từ server!",
     });
   }
 };

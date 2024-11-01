@@ -23,12 +23,12 @@ function StudentHome() {
     id: user.id,
     username: user.username || "undefined",
     fullName: user.fullName || "undefined",
-    phone: user.phone || "undefined",
-    email: user.email || "undefined",
+    phone: user?.phone || "undefined",
+    email: user?.email || "undefined",
     gender: user.gender || "undefined",
-    majorId: user.majorId || "undefined",
-    className: user.className || "undefined",
-    typeTraining: user.typeTraining || "undefined",
+    majorId: user?.major?.id || "undefined",
+    className: user?.className || "undefined",
+    typeTraining: user?.typeTraining || "undefined",
   });
   const [loading, setLoading] = useState(false);
 

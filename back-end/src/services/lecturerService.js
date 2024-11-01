@@ -704,41 +704,47 @@ const pointGroup = async (data) => {
     comment,
     averagePoint,
     groupId,
+    termId,
   } = data;
   if (!discussionPoint) {
     return {
       status: -1,
-      message: "Điểm thảo luận trống hoặc không hợp lệ!.",
+      message: "Điểm thảo luận trống hoặc không hợp lệ!",
     };
   }
 
   if (!progressPoint) {
     return {
       status: -1,
-      message: "Điểm tiến độ trống hoặc không hợp lệ!.",
+      message: "Điểm tiến độ trống hoặc không hợp lệ!",
     };
   }
 
   if (!reportingPoint) {
     return {
       status: -1,
-      message: "Điểm báo cáo trống hoặc không hợp lệ!.",
+      message: "Điểm báo cáo trống hoặc không hợp lệ!",
     };
   }
   if (!averagePoint) {
     return {
       status: -1,
-      message: "Điểm trung bình trống hoặc không hợp lệ!.",
+      message: "Điểm trung bình trống hoặc không hợp lệ!",
     };
   }
 
   if (!groupId) {
     return {
       status: -1,
-      message: "Mã nhóm không được để trống.",
+      message: "Mã nhóm trống hoặc không hợp lệ!",
     };
   }
-
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Mã học kì trống hoặc không hợp lệ!",
+    };
+  }
   try {
     const evaluationData = {
       discussionPoint,
@@ -746,6 +752,7 @@ const pointGroup = async (data) => {
       reportingPoint,
       averagePoint,
       groupId,
+      termId,
       // Chỉ thêm comment nếu nó tồn tại
       ...(comment && { comment }),
     };

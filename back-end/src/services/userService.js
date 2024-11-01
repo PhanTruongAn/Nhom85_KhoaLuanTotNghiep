@@ -11,8 +11,7 @@ import templateHtml from "../utils/templateHtml";
 let salt = bcrypt.genSaltSync(10);
 
 //Models Database
-const Student = db.Student;
-const Lecturer = db.Lecturer;
+const { Student, Lecturer, Major } = require("../models");
 // Hash Password
 const hashPassword = (password) => {
   let hashPassword = bcrypt.hashSync(password, salt);
@@ -25,7 +24,14 @@ const findAccount = async (username) => {
     where: {
       username: username,
     },
-    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: {
+      model: Major,
+      as: "major",
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    },
+    attributes: {
+      exclude: ["createdAt", "updatedAt", "majorId", "MajorId", "RoleId"],
+    },
   });
   if (student) {
     return student;
@@ -34,7 +40,7 @@ const findAccount = async (username) => {
     where: {
       username: username,
     },
-    attributes: { exclude: ["createdAt", "updatedAt"] },
+    attributes: { exclude: ["createdAt", "updatedAt", "RoleId"] },
   });
   if (lecturer) {
     return lecturer;

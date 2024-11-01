@@ -7,7 +7,7 @@ const { Option } = Select;
 
 const criteriaData = [
   {
-    title: "Tiêu chí Đánh giá",
+    title: "Tiêu chí Đánh giá quá trình",
     criteria: [
       {
         id: 1,
@@ -92,7 +92,7 @@ const criteriaData = [
     ],
   },
   {
-    title: "Tiêu chí Đánh giá Báo cáo",
+    title: "Tiêu chí Đánh giá báo cáo",
     criteria: [
       {
         id: 1,

@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "groupId",
         as: "group",
       });
+      Evaluation.belongsTo(models.Term, {
+        foreignKey: "termId",
+        as: "term",
+      });
     }
   }
   Evaluation.init(
@@ -17,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       averagePoint: DataTypes.INTEGER,
       comment: DataTypes.STRING,
       groupId: DataTypes.STRING,
+      termId: DataTypes.STRING,
     },
     {
       sequelize,
