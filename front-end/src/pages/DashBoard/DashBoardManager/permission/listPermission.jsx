@@ -79,7 +79,7 @@ function ListPermission() {
     return response;
   };
   // useQuery to fetch data
-  const { data, isSuccess, refetch } = CustomHooks.useQuery(
+  const { data, isFetching, refetch } = CustomHooks.useQuery(
     ["data", debouncedSearchTerm],
     () => {
       if (debouncedSearchTerm) {
@@ -324,19 +324,14 @@ function ListPermission() {
         }}
         loading={state.loadingData}
         locale={{
-          emptyText: isEmpty(state.dataSource) ? (
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              width={"100%"}
-              height={"auto"}
-            >
-              <EmptyData />
+          emptyText: (
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {isFetching ? (
+                <EmptyData />
+              ) : state.dataSource ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : null}
             </Box>
-          ) : (
-            <EmptyData text="Không có dữ liệu!" />
           ),
         }}
       />

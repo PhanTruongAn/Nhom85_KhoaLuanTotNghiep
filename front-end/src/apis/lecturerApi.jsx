@@ -59,5 +59,10 @@ const lecturerApi = {
   evaluations: (data) => {
     return axiosClient.post(baseUrl + "/evaluations", data);
   },
+  getMyGroupStudent: (termId, lecturerId) => {
+    return axiosClient.get(
+      `${baseUrl}/my-groups-student?term=${termId}&lecturer=${lecturerId}`
+    );
+  },
 };
 export default lecturerApi;

@@ -4,6 +4,7 @@ import _, { isEmpty } from "lodash";
 const { Op, literal } = require("sequelize");
 //Models Database
 const {
+  Student,
   Lecturer,
   Role,
   Topic,
@@ -11,6 +12,7 @@ const {
   Term,
   Note,
   Evaluation,
+  Group,
 } = require("../models");
 
 //Tạo tài khoản giảng viên
@@ -782,6 +784,74 @@ const pointGroup = async (data) => {
   }
 };
 
+const getGroupTopic = async (lecturerId, termId) => {
+  // Kiểm tra xem lecturerId có hợp lệ hay không
+  if (!lecturerId) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin giảng viên!",
+    };
+  }
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin học kì!",
+    };
+  }
+  try {
+    // Thực hiện truy vấn để lấy danh sách nhóm theo lecturerId và termId
+    const groups = await Group.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt", "TopicId", "topicId"] },
+      include: [
+        {
+          model: Topic,
+          as: "topic", // Đảm bảo alias trong association trùng với tên bạn đã đặt
+          where: {
+            lecturerId: lecturerId,
+            termId: termId,
+          },
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "LecturerId"],
+          },
+        },
+        {
+          model: Student,
+          as: "students", // Đảm bảo alias trong association trùng với tên bạn đã đặt
+          attributes: [
+            "id",
+            "username",
+            "fullName",
+            "gender",
+            "email",
+            "phone",
+          ],
+        },
+      ],
+    });
+
+    // Nếu không tìm thấy nhóm nào
+    if (groups.length === 0) {
+      return {
+        status: -1,
+        message: "Không tìm thấy nhóm nào cho giảng viên và học kỳ này!",
+        data: [],
+      };
+    }
+
+    // Trả về danh sách nhóm tìm thấy
+    return {
+      status: 0,
+      message: "Lấy danh sách nhóm thành công!",
+      data: groups,
+    };
+  } catch (error) {
+    console.log("Lỗi:", error.message);
+    return {
+      status: -1,
+      message: "Đã xảy ra lỗi trong quá trình lấy dữ liệu!",
+    };
+  }
+};
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -799,4 +869,5 @@ module.exports = {
   updateTopic,
   getNotes,
   pointGroup,
+  getGroupTopic,
 };

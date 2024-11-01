@@ -84,17 +84,18 @@ const getItems = (isManager) => {
                 icon: <UsergroupAddOutlined />,
                 label: "Tạo nhóm",
               },
+              {
+                key: "list-group-student",
+                icon: <OrderedListOutlined />,
+                label: "Danh sách nhóm",
+              },
             ]
           : []),
-        {
-          key: "list-group-student",
-          icon: <OrderedListOutlined />,
-          label: "Danh sách ",
-        },
+
         {
           key: "list-group-student-lecturer",
           icon: <OrderedListOutlined />,
-          label: "Danh sách nhóm",
+          label: "Nhóm của tôi",
         },
       ],
     },

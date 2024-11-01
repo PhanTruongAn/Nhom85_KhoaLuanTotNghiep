@@ -235,10 +235,12 @@ function ListLecturer() {
             onClick={(e) => showUpdateModal(record)}
             sx={[
               (theme) => ({
-                marginLeft: "10px",
                 textTransform: "none",
+                ...theme.applyStyles("light", {
+                  backgroundColor: "#FF993A",
+                }),
                 ...theme.applyStyles("dark", {
-                  background: "#1DA57A",
+                  backgroundColor: "#1DA57A",
                 }),
               }),
             ]}

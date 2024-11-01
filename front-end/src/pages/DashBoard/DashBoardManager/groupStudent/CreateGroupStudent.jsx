@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button, Box, TextField, Typography } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import AddIcon from "@mui/icons-material/Add";
-import CreateGroupModal from "./CreateGroupModal"; // Nhập modal bạn đã tạo
 import managerApi from "../../../../apis/managerApi";
 import { message, Space } from "antd";
 import CustomButton from "../../../../components/Button/CustomButton";
@@ -11,7 +10,7 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import { isEmpty } from "lodash";
 const CreateGroupStudent = () => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [openModal, setOpenModal] = useState(false);
+
   const [state, setState] = useState({
     memberGroup: 2,
     estimateGroupStudent: 0,
@@ -75,13 +74,6 @@ const CreateGroupStudent = () => {
     }
   };
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
   const onChange = (e) => {
     const memberGroup = e.target.value;
     updateState({ memberGroup });
@@ -217,19 +209,10 @@ const CreateGroupStudent = () => {
                 text={"Tạo danh sách"}
                 type="success"
               />
-              <Button
-                variant="contained"
-                onClick={handleOpenModal}
-                startIcon={<AddIcon />}
-                // sx={{ padding: "10px" }}
-              >
-                Thêm một nhóm mới
-              </Button>
             </Space>
           </Box>
         </Card>
       )}
-      <CreateGroupModal isOpen={openModal} onClose={handleCloseModal} />
     </Box>
   );
 };

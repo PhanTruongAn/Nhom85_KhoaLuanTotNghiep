@@ -15,7 +15,7 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import lecturerApi from "../../../../apis/lecturerApi";
 import CustomHooks from "../../../../utils/hooks";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 import { formatContent } from "../../../../utils/formatContent";
 import SearchComponent from "../../../../components/SearchComponent/search";

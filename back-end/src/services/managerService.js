@@ -310,7 +310,6 @@ const paginationGroupsStudent = async (page, limit) => {
     }
     const offset = (page - 1) * limit;
     const { count, rows } = await Group.findAndCountAll({
-      distinct: true,
       attributes: ["id", "groupName", "numOfMembers"],
       offset: offset,
       limit: limit,
@@ -327,7 +326,6 @@ const paginationGroupsStudent = async (page, limit) => {
             "gender",
             "username",
           ],
-          required: true,
         },
         {
           model: Topic,

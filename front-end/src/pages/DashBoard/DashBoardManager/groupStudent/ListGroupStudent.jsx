@@ -7,7 +7,7 @@ import {
   PlusOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
-import CreateGroupModal from "./CreateGroupModal";
+
 import UpdateGroupModal from "./UpdateGroupModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
@@ -18,7 +18,6 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import managerApi from "../../../../apis/managerApi";
 const ListGroupStudent = () => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -76,14 +75,6 @@ const ListGroupStudent = () => {
       },
     }
   );
-
-  const handleOpenCreateModal = () => {
-    setOpenCreateModal(true);
-  };
-
-  const handleCloseCreateModal = () => {
-    setOpenCreateModal(false);
-  };
 
   const handleOpenUpdateModal = (group) => {
     setSelectedGroup(group);
@@ -160,6 +151,7 @@ const ListGroupStudent = () => {
       title: "Tên nhóm",
       dataIndex: "groupName",
       key: "groupName",
+      width: "100px",
       sorter: (a, b) => a.groupName.localeCompare(b.groupName),
     },
     {
@@ -171,7 +163,6 @@ const ListGroupStudent = () => {
     {
       title: "Số lượng thành viên",
       key: "createdAt",
-      width: "100px",
       render: (record) => record.students.length + "/" + record.numOfMembers,
     },
     {
@@ -184,6 +175,7 @@ const ListGroupStudent = () => {
             variant="outlined"
             size="small"
             endIcon={<InfoCircleOutlined />}
+            sx={{ textTransform: "none" }}
           >
             Xem chi tiết
           </Button>
@@ -192,7 +184,18 @@ const ListGroupStudent = () => {
             variant="contained"
             size="small"
             endIcon={<EditOutlined />}
-            sx={{ marginLeft: "10px" }}
+            sx={[
+              (theme) => ({
+                textTransform: "none",
+                marginLeft: "10px",
+                ...theme.applyStyles("light", {
+                  backgroundColor: "#FF993A",
+                }),
+                ...theme.applyStyles("dark", {
+                  backgroundColor: "#1DA57A",
+                }),
+              }),
+            ]}
           >
             Sửa
           </Button>
@@ -208,7 +211,7 @@ const ListGroupStudent = () => {
               color="error"
               size="small"
               endIcon={<DeleteOutlined />}
-              sx={{ marginLeft: "10px" }}
+              sx={{ marginLeft: "10px", textTransform: "none" }}
             >
               Xóa
             </Button>
@@ -243,21 +246,12 @@ const ListGroupStudent = () => {
             transform: "translateY(-50%)",
           }}
         >
-          <Space>
-            <Button
-              variant="contained"
-              startIcon={<PlusOutlined />}
-              onClick={handleOpenCreateModal}
-            >
-              Thêm mới
-            </Button>
-            <CustomButton
-              onClick={onRefreshData}
-              text={"Làm mới"}
-              type="refresh"
-              loading={state.refreshButton}
-            />
-          </Space>
+          <CustomButton
+            onClick={onRefreshData}
+            text={"Làm mới dữ liệu"}
+            type="refresh"
+            loading={state.refreshButton}
+          />
         </Box>
       </Box>
       <Box
@@ -285,9 +279,8 @@ const ListGroupStudent = () => {
           sx={{
             flex: 1, // Để tiêu đề chiếm không gian còn lại
             textAlign: "center", // Căn giữa
-            marginTop: "-5px",
           }}
-          variant="h4"
+          variant="h5"
           component="h2"
           gutterBottom
         >
@@ -320,30 +313,18 @@ const ListGroupStudent = () => {
           responsive: true,
         }}
         locale={{
-          emptyText:
-            state.dataSource.length === 0 ? (
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                width={"100%"}
-                height={"auto"}
-              >
-                {isFetching ? (
-                  <EmptyData />
-                ) : state.dataSource.length === 0 ? (
-                  <EmptyData text="Không có dữ liệu!" />
-                ) : null}
-              </Box>
-            ) : null,
+          emptyText: (
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {isFetching ? (
+                <EmptyData />
+              ) : filteredGroups ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : null}
+            </Box>
+          ),
         }}
       />
 
-      <CreateGroupModal
-        isOpen={openCreateModal}
-        onClose={handleCloseCreateModal}
-      />
       <UpdateGroupModal
         groupSelect={selectedGroup}
         isOpen={openUpdateModal}

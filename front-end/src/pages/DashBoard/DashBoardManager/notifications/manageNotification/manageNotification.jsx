@@ -135,11 +135,17 @@ function ManageNotification() {
             onClick={() => handleUpdateClick(record)}
             variant="contained"
             size="small"
-            sx={{
-              marginLeft: "10px",
-              textTransform: "none",
-              background: "#1DA57A",
-            }}
+            sx={[
+              (theme) => ({
+                textTransform: "none",
+                ...theme.applyStyles("light", {
+                  backgroundColor: "#FF993A",
+                }),
+                ...theme.applyStyles("dark", {
+                  backgroundColor: "#1DA57A",
+                }),
+              }),
+            ]}
             endIcon={<EditOutlined />}
           >
             Chỉnh sửa
@@ -215,38 +221,17 @@ function ManageNotification() {
         pagination={{ responsive: true }}
         loading={loading}
         locale={{
-          emptyText:
-            data.length === 0 ? (
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                width={"100%"}
-                height={"auto"}
-              >
-                {isFetching ? (
-                  <EmptyData />
-                ) : notesData && isEmpty(notesData.data) ? (
-                  <EmptyData text="Không có dữ liệu!" />
-                ) : null}
-              </Box>
-            ) : (
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                width={"100%"}
-                height={"auto"}
-              >
-                {isFetching ? (
-                  <EmptyData />
-                ) : notesData && isEmpty(notesData.data) ? (
-                  <EmptyData text="Không có dữ liệu!" />
-                ) : null}
-              </Box>
-            ),
+          emptyText: (
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {isFetching ? (
+                <EmptyData />
+              ) : filteredData ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : (
+                <EmptyData />
+              )}
+            </Box>
+          ),
         }}
       />
 

@@ -26,7 +26,7 @@ function StudentHome() {
     phone: user?.phone || "undefined",
     email: user?.email || "undefined",
     gender: user.gender || "undefined",
-    majorId: user?.major?.id || "undefined",
+    majorId: user?.majorId || "undefined",
     className: user?.className || "undefined",
     typeTraining: user?.typeTraining || "undefined",
   });

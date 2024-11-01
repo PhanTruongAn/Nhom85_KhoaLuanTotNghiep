@@ -117,6 +117,10 @@ const initWebRoutes = (app) => {
   router.delete("/lecturer/delete-topic", lecturerController.handleDeleteTopic);
   router.put("/lecturer/update-topic", lecturerController.handleUpdateTopic);
   router.post("/lecturer/evaluations", lecturerController.handlePointGroup);
+  router.get(
+    "/lecturer/my-groups-student",
+    lecturerController.handleGetGroupTopic
+  );
   //Manager Route
   router.get(
     "/manager/get-all-permission",

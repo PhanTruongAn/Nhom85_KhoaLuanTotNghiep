@@ -186,6 +186,10 @@ const handleGetNotes = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 const handlePointGroup = async (req, res) => {
@@ -198,6 +202,15 @@ const handlePointGroup = async (req, res) => {
       status: -1,
       message: "Lỗi từ server!",
     });
+  }
+};
+const handleGetGroupTopic = async (req, res) => {
+  try {
+    const { lecturer, term } = req.query;
+    const data = await lecturerService.getGroupTopic(lecturer, term);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
   }
 };
 module.exports = {
@@ -216,4 +229,5 @@ module.exports = {
   handleUpdateTopic,
   handleGetNotes,
   handlePointGroup,
+  handleGetGroupTopic,
 };

@@ -186,23 +186,17 @@ function ListGroupTopicLecturer() {
           boxShadow: "0px 3px 6px rgba(0,0,0,0.1)",
         }}
         locale={{
-          emptyText:
-            state.dataSource.length === 0 ? (
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                width={"100%"}
-                height={"auto"}
-              >
-                {isFetching ? (
-                  <EmptyData />
-                ) : state.dataSource.length === 0 ? (
-                  <EmptyData text="Không có dữ liệu!" />
-                ) : null}
-              </Box>
-            ) : null,
+          emptyText: (
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {isFetching ? (
+                <EmptyData />
+              ) : filteredGroups ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : (
+                <EmptyData />
+              )}
+            </Box>
+          ),
         }}
       />
 

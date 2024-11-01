@@ -243,17 +243,10 @@ const MajorManagement = () => {
         loading={state.loading}
         locale={{
           emptyText: (
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              width={"100%"}
-              height={"auto"}
-            >
+            <Box display="flex" justifyContent="center" alignItems="center">
               {isFetching ? (
                 <EmptyData />
-              ) : state.majors.length === 0 ? (
+              ) : filteredMajors ? (
                 <EmptyData text="Không có dữ liệu!" />
               ) : null}
             </Box>

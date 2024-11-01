@@ -24,13 +24,13 @@ const findAccount = async (username) => {
     where: {
       username: username,
     },
-    include: {
-      model: Major,
-      as: "major",
-      attributes: { exclude: ["createdAt", "updatedAt"] },
-    },
+    // include: {
+    //   model: Major,
+    //   as: "major",
+    //   attributes: { exclude: ["createdAt", "updatedAt"] },
+    // },
     attributes: {
-      exclude: ["createdAt", "updatedAt", "majorId", "MajorId", "RoleId"],
+      exclude: ["createdAt", "updatedAt", "MajorId", "RoleId"],
     },
   });
   if (student) {

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Table, Space } from "antd";
+import { Table, Space, message } from "antd";
 import { Box, Button, Typography } from "@mui/material";
 import {
   EditOutlined,
@@ -10,10 +10,16 @@ import {
 import SearchComponent from "../../../../components/SearchComponent/search";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
-import CreateGroupModal from "./CreateGroupModal";
 import UpdateGroupModal from "./UpdateGroupModal";
-
+import lecturerApi from "../../../../apis/lecturerApi";
+import CustomHooks from "../../../../utils/hooks";
+import { isEmpty } from "lodash";
+import { useSelector } from "react-redux";
 const ListGroupStudentLecturer = () => {
+  const user = useSelector((state) => state.userInit.user);
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const [data, setData] = useState([]);
+  const [messageApi, contextHolder] = message.useMessage();
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -21,57 +27,39 @@ const ListGroupStudentLecturer = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-
-  const data = {
-    totalRows: 5,
-    groupStudent: [
-      {
-        id: 1,
-        groupName: "001",
-        numOfMembers: 2,
-        students: [
-          {
-            id: 34,
-            fullName: "Điểu Phan Quang Dũng",
-            username: "20093921",
-            isLeader: true,
-          },
-          {
-            id: 35,
-            fullName: "Phan Trường An",
-            username: "20085191",
-            isLeader: false,
-          },
-        ],
-        topic: {
-          id: 2,
-          title: "Xây dựng các ứng dụng thông minh trên nền tảng Blockchain",
-        },
-      },
-      {
-        id: 2,
-        groupName: "002",
-        numOfMembers: 2,
-        students: [
-          { id: 36, fullName: "Lê Thị H", username: "SV008", isLeader: false },
-          {
-            id: 44,
-            fullName: "Nguyễn Văn A",
-            username: "SV001",
-            isLeader: true,
-          },
-        ],
-        topic: {
-          id: 1,
-          title: "Chương trình hỗ trợ đào tạo sinh viên trường đại học",
-        },
-      },
-      // Additional hardcoded data...
-    ],
+  const [loadingRefresh, setLoadingRefresh] = useState(false);
+  // Get Group Data
+  const getGroups = async () => {
+    let termId = currentTerm.id;
+    let lecturerId = user.id;
+    const res = await lecturerApi.getMyGroupStudent(termId, lecturerId);
+    return res;
   };
 
-  const handleOpenCreateModal = () => setOpenCreateModal(true);
-  const handleCloseCreateModal = () => setOpenCreateModal(false);
+  const {
+    isFetching,
+    data: groupData,
+    refetch,
+  } = CustomHooks.useQuery(["my-group-topic"], getGroups, {
+    enabled: !isEmpty(currentTerm),
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        setData(res.data);
+        if (isEmpty(groupData)) {
+          messageApi.success(res.message);
+        }
+      } else {
+        setData([]);
+        messageApi.error(res.message);
+      }
+    },
+    onError: (err) => {
+      setData([]);
+      messageApi.error("Lỗi khi lấy dữ liệu!");
+      // setRefresh(false);
+    },
+  });
+
   const handleOpenUpdateModal = (group) => {
     setSelectedGroup(group);
     setOpenUpdateModal(true);
@@ -80,7 +68,8 @@ const ListGroupStudentLecturer = () => {
   const onSearch = (value) => setSearchValue(value);
 
   const filteredGroups = useMemo(() => {
-    return data.groupStudent.filter((group) => {
+    const sourceData = groupData && groupData.data ? groupData.data : data;
+    return sourceData.filter((group) => {
       const groupNameMatch = group.groupName
         .toLowerCase()
         .includes(searchValue.toLowerCase());
@@ -89,7 +78,7 @@ const ListGroupStudentLecturer = () => {
         .includes(searchValue.toLowerCase());
       return groupNameMatch || topicTitleMatch;
     });
-  }, [searchValue, data.groupStudent]);
+  }, [searchValue, data]);
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
@@ -113,31 +102,40 @@ const ListGroupStudentLecturer = () => {
       title: "Hành động",
       key: "action",
       render: (_, record) => (
-        <Space>
-          <Button
-            onClick={() => handleOpenUpdateModal(record)}
-            size="small"
-            endIcon={<InfoCircleOutlined />}
-            variant="outlined"
-          >
-            Xem chi tiết
-          </Button>
-          <Button
-            onClick={() => handleOpenUpdateModal(record)}
-            size="small"
-            endIcon={<EditOutlined />}
-            variant="contained"
-            color="primary"
-          >
-            Sửa
-          </Button>
-        </Space>
+        <Button
+          onClick={() => handleOpenUpdateModal(record)}
+          size="small"
+          endIcon={<EditOutlined />}
+          variant="contained"
+          color="primary"
+          sx={[
+            (theme) => ({
+              textTransform: "none",
+              ...theme.applyStyles("light", {
+                backgroundColor: "#FF993A",
+              }),
+              ...theme.applyStyles("dark", {
+                backgroundColor: "#1DA57A",
+              }),
+            }),
+          ]}
+        >
+          Sửa
+        </Button>
       ),
     },
   ];
-
+  const onRefresh = () => {
+    setLoadingRefresh(true);
+    refetch();
+    setTimeout(() => {
+      setLoadingRefresh(false);
+      messageApi.success("Làm mới dữ liệu thành công!");
+    }, 1000);
+  };
   return (
     <Box sx={{ padding: "20px" }}>
+      {contextHolder}
       <Box sx={{ position: "relative" }}>
         <SearchComponent
           placeholder="Tìm theo tên nhóm hoặc tên đề tài"
@@ -151,17 +149,12 @@ const ListGroupStudentLecturer = () => {
             transform: "translateY(-50%)",
           }}
         >
-          <Space>
-            <Button
-              variant="contained"
-              onClick={handleOpenCreateModal}
-              startIcon={<PlusOutlined />}
-              size="medium"
-            >
-              Thêm mới
-            </Button>
-            <CustomButton text="Làm mới" type="refresh" />
-          </Space>
+          <CustomButton
+            text="Làm mới"
+            type="refresh"
+            onClick={onRefresh}
+            loading={loadingRefresh}
+          />
         </Box>
       </Box>
       <Typography variant="h4" sx={{ textAlign: "center", marginY: 2 }}>
@@ -181,16 +174,24 @@ const ListGroupStudentLecturer = () => {
           total: data.totalRows,
           onChange: (page) => setCurrentPage(page),
           showSizeChanger: true,
+          pageSizeOptions: ["5", "10", "20"],
           onShowSizeChange: (_, size) => setPageSize(size),
         }}
         locale={{
-          emptyText: <EmptyData text="Không có dữ liệu!" />,
+          emptyText: (
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {isFetching ? (
+                <EmptyData />
+              ) : filteredGroups ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : (
+                <EmptyData />
+              )}
+            </Box>
+          ),
         }}
       />
-      <CreateGroupModal
-        isOpen={openCreateModal}
-        onClose={handleCloseCreateModal}
-      />
+
       <UpdateGroupModal
         groupSelect={selectedGroup}
         isOpen={openUpdateModal}
