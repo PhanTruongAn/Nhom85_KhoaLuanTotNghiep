@@ -37,6 +37,7 @@ import Event from "../pages/Event_Notification/eventHomePage";
 import NotificationHomePage from "../pages/Event_Notification/notificationHomePage";
 import ManageMajor from "../pages/DashBoard/DashBoardManager/term/major/manageMajor";
 import ManagerTopics from "../pages/DashBoard/DashBoardManager/topic/managerTopics";
+import ListGroupStudentLecturer from "../pages/DashBoard/DashBoardManager/groupStudent/ListGroupStudentLecturer";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -198,6 +199,10 @@ const AppRoute = () => {
           <Route
             path="manage-list-topic"
             element={<PrivateRoute component={<ManagerTopics />} />}
+          />
+          <Route
+            path="list-group-student-lecturer"
+            element={<PrivateRoute component={<ListGroupStudentLecturer />} />}
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>

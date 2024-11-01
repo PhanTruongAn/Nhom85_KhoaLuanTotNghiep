@@ -91,6 +91,11 @@ const getItems = (isManager) => {
           icon: <OrderedListOutlined />,
           label: "Danh sách ",
         },
+        {
+          key: "list-group-student-lecturer",
+          icon: <OrderedListOutlined />,
+          label: "Danh sách nhóm",
+        },
       ],
     },
 
