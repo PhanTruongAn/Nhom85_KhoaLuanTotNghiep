@@ -49,7 +49,7 @@ function CreateNotification() {
         justifyContent: "center",
         height: "100%",
         p: 3,
-        bgcolor: "background.default",
+        // bgcolor: "background.default",
       }}
     >
       {contextHolder}

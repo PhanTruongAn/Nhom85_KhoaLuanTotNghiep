@@ -105,70 +105,74 @@ const createBulkAccount = async (data) => {
       data: null,
     };
   }
+
   try {
-    const testArr = data;
-    const currentAccount = await Student.findAll({
-      attributes: ["fullName", "username"],
+    // Lấy danh sách tài khoản hiện tại trong cơ sở dữ liệu
+    const currentAccounts = await Student.findAll({
+      attributes: ["id", "fullName", "username"],
       raw: true,
     });
 
-    const persists = data.filter(
-      ({ username: username1 }) =>
-        !currentAccount.some(
-          ({ username: username2 }) => username1 === username2
-        )
+    // Tạo danh sách tài khoản mới và kiểm tra tồn tại
+    const usernamesInDb = currentAccounts.map((account) => account.username);
+    const newAccounts = data.filter(
+      ({ username }) => !usernamesInDb.includes(username)
     );
-    if (persists.length === 0) {
-      return {
-        status: 0,
-        message: "Không có dữ liệu được tạo mới...",
-      };
-    }
-    const _data = _.cloneDeep(persists);
-    const termId = _data[0]?.termId;
+
+    // Lấy termId từ phần tử đầu tiên của data
+    const termId = data[0]?.termId;
 
     if (!termId) {
       return {
         status: 1,
-        message: "Không tìm thấy thông tin học kì!",
+        message: "Không tìm thấy thông tin học kỳ!",
         data: null,
       };
     }
-    const dataPersist = [];
 
-    Object.entries(_data).map(([key, value], index) => {
-      dataPersist.push({
-        fullName: value.fullName,
-        username: value.username,
-        password: hashPassword(value.password),
-        roleId: 1,
+    // Tạo danh sách các tài khoản sinh viên mới
+    const dataPersist = newAccounts.map((value) => ({
+      fullName: value.fullName,
+      username: value.username,
+      password: hashPassword(value.password),
+      roleId: 1,
+    }));
+
+    // Thêm tài khoản sinh viên mới vào cơ sở dữ liệu
+    await Student.bulkCreate(dataPersist);
+
+    const termStudents = [];
+
+    // Kiểm tra từng tài khoản sinh viên (bao gồm cả tài khoản đã tồn tại)
+    for (const account of currentAccounts) {
+      const existTermStudent = await TermStudent.findOne({
+        where: {
+          studentId: account.id,
+          termId: termId,
+        },
       });
-    });
 
-    // console.log("Check persist: ", dataPersist);
-    const results = await Student.bulkCreate(dataPersist);
-    if (results && results.length === dataPersist.length) {
-      const termStudent = results.map((student) => ({
-        termId: termId,
-        studentId: student.id,
-      }));
-
-      // Kiểm tra xem TermStudent có sẵn không
-
-      const termStudents = await TermStudent.bulkCreate(termStudent);
-
-      // Kiểm tra kết quả TermStudent
-      if (termStudents && termStudents.length === termStudent.length) {
-        return {
-          status: 0,
-          message: `Tạo mới thành công ${persists.length} tài khoản sinh viên!`,
-        };
-      } else {
-        return {
-          status: -1,
-          message: `Tạo mới tài khoản sinh viên thất bại!`,
-        };
+      // Nếu tài khoản chưa tồn tại trong TermStudent, thêm vào danh sách
+      if (!existTermStudent) {
+        termStudents.push({
+          studentId: account.id,
+          termId: termId,
+        });
       }
+    }
+
+    // Thực hiện bulkCreate cho TermStudent nếu có sinh viên mới
+    if (termStudents.length > 0) {
+      await TermStudent.bulkCreate(termStudents);
+      return {
+        status: 0,
+        message: `Thêm tài khoản vào học kỳ ${termId} thành công!`,
+      };
+    } else {
+      return {
+        status: 0,
+        message: `Không có tài khoản nào mới trong học kỳ ${termId}.`,
+      };
     }
   } catch (error) {
     console.log(error);
@@ -179,6 +183,7 @@ const createBulkAccount = async (data) => {
     };
   }
 };
+
 // Lấy danh sách sinh viên
 const getStudentList = async (term) => {
   const list = await Student.findAll({

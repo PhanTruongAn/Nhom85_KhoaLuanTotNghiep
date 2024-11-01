@@ -93,67 +93,74 @@ const createBulkAccountLecturer = async (data) => {
       data: null,
     };
   }
+
   try {
-    const testArr = data;
-    const currentAccount = await Lecturer.findAll({
-      attributes: ["fullName", "username"],
+    // Lấy danh sách giảng viên hiện tại trong cơ sở dữ liệu
+    const currentAccounts = await Lecturer.findAll({
+      attributes: ["id", "fullName", "username"],
       raw: true,
     });
 
-    const persists = data.filter(
-      ({ username: username1 }) =>
-        !currentAccount.some(
-          ({ username: username2 }) => username1 === username2
-        )
+    // Tạo danh sách giảng viên mới và kiểm tra tồn tại
+    const usernamesInDb = currentAccounts.map((account) => account.username);
+    const newLecturers = data.filter(
+      ({ username }) => !usernamesInDb.includes(username)
     );
-    if (persists.length === 0) {
-      return {
-        status: 0,
-        message: "Không có dữ liệu được tạo mới...",
-      };
-    }
-    const _data = _.cloneDeep(persists);
-    const termId = _data[0]?.termId;
+
+    // Lấy termId từ phần tử đầu tiên của data
+    const termId = data[0]?.termId;
 
     if (!termId) {
       return {
         status: 1,
-        message: "Không tìm thấy thông tin học kì!",
+        message: "Không tìm thấy thông tin học kỳ!",
         data: null,
       };
     }
-    const dataPersist = [];
 
-    Object.entries(_data).map(([key, value], index) => {
-      dataPersist.push({
-        fullName: value.fullName,
-        username: value.username,
-        password: hashPassword(value.password),
-        roleId: 2,
+    // Tạo danh sách các giảng viên mới
+    const dataPersist = newLecturers.map((value) => ({
+      fullName: value.fullName,
+      username: value.username,
+      password: hashPassword(value.password),
+      roleId: 2,
+    }));
+
+    // Thêm giảng viên mới vào cơ sở dữ liệu
+    await Lecturer.bulkCreate(dataPersist);
+
+    const termLecturers = [];
+
+    // Kiểm tra từng giảng viên (bao gồm cả giảng viên đã tồn tại)
+    for (const lecturer of currentAccounts) {
+      const existTermLecturer = await TermLecturer.findOne({
+        where: {
+          lecturerId: lecturer.id,
+          termId: termId,
+        },
       });
-    });
 
-    const results = await Lecturer.bulkCreate(dataPersist);
-    if (results && results.length === dataPersist.length) {
-      const termLecturer = results.map((lecturer) => ({
-        termId: termId,
-        lecturerId: lecturer.id,
-      }));
-
-      const termLecturers = await TermLecturer.bulkCreate(termLecturer);
-
-      // Kiểm tra kết quả TermStudent
-      if (termLecturers && termLecturers.length === termLecturer.length) {
-        return {
-          status: 0,
-          message: `Tạo mới thành công ${persists.length} tài khoản giảng viên!`,
-        };
-      } else {
-        return {
-          status: -1,
-          message: `Tạo mới tài khoản giảng viên thất bại!`,
-        };
+      // Nếu giảng viên chưa tồn tại trong TermLecturer, thêm vào danh sách
+      if (!existTermLecturer) {
+        termLecturers.push({
+          lecturerId: lecturer.id,
+          termId: termId,
+        });
       }
+    }
+
+    // Thực hiện bulkCreate cho TermLecturer nếu có giảng viên mới
+    if (termLecturers.length > 0) {
+      await TermLecturer.bulkCreate(termLecturers);
+      return {
+        status: 0,
+        message: `Thêm tài khoản vào học kỳ ${termId} thành công!`,
+      };
+    } else {
+      return {
+        status: 0,
+        message: `Không có tài khoản nào mới trong học kỳ ${termId}.`,
+      };
     }
   } catch (error) {
     console.log(error);
@@ -164,6 +171,7 @@ const createBulkAccountLecturer = async (data) => {
     };
   }
 };
+
 // Lấy danh sách giảng viên
 const getLecturerList = async (term) => {
   const list = await Lecturer.findAll({
