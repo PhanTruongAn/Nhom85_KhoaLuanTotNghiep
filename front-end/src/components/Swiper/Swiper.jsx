@@ -3,6 +3,7 @@ import { Box, Typography, Container } from "@mui/material";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import image1 from "../../images/anhdong/Welcome.lottie";
 import StartNow from "../../images/anhdong/startnow.lottie";
+import Marquee from "react-fast-marquee";
 
 const HomePage = () => {
   const [themes, setThemes] = useState(
@@ -18,12 +19,10 @@ const HomePage = () => {
       }
     };
 
-    // Kiểm tra giá trị themeDark trong localStorage mỗi 100ms
     const intervalId = setInterval(checkTheme, 100);
 
-    // Cleanup interval khi component unmount
     return () => clearInterval(intervalId);
-  }, [themes]); // Chạy khi themes thay đổi
+  }, [themes]);
 
   return (
     <Box
@@ -31,11 +30,19 @@ const HomePage = () => {
         mt: 4,
         minHeight: "100vh",
         py: 8,
-
         backgroundSize: "cover",
       }}
     >
-      <Container sx={{ marginTop: "100px" }}>
+      <Box py={2}>
+        <Marquee direction="right">
+          <Typography variant="h4">
+            Chào mừng đến với Hệ thống Đăng ký Luận văn!
+          </Typography>
+        </Marquee>
+      </Box>
+      <Container sx={{ marginTop: "80px" }}>
+        {/* Hiệu ứng chữ chạy từ trái sang phải */}
+
         <Box
           sx={{
             display: "flex",

@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react"; // Thêm useRef
 import { Button, Box, IconButton } from "@mui/material";
 import { Table, message, Tooltip, Select, Modal, Space } from "antd";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import DownloadFileIcon from "@mui/icons-material/FileDownloadOutlined";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
@@ -204,6 +205,7 @@ const ManagerTopic = () => {
                 startIcon={<UploadFileIcon />}
                 component="span"
                 variant="contained"
+                style={{ marginRight: "10px" }} // Thêm khoảng cách giữa các nút
               >
                 Tải file
                 <input
@@ -216,6 +218,18 @@ const ManagerTopic = () => {
                 />
               </Button>
             </label>
+            {/* topic */}
+            <Button
+              startIcon={<DownloadFileIcon />}
+              href="https://docs.google.com/spreadsheets/d/1xFIktGI025HPQM6kTaK3DCmhDaCzQDOZ/export?format=xlsx" // Chuyển link để tải trực tiếp
+              component="a"
+              variant="outlined"
+              target="_blank"
+              rel="noopener noreferrer"
+              color="success"
+            >
+              Tải File EXCEL MẪU
+            </Button>
           </Box>
         </Box>
         <Box

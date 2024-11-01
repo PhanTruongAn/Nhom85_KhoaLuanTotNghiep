@@ -10,6 +10,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CreateModal from "../../../../components/Dashboard/createModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
+import DownloadFileIcon from "@mui/icons-material/FileDownloadOutlined";
 import { isEmpty } from "lodash";
 import { useSelector } from "react-redux";
 const AccountLecturer = () => {
@@ -134,6 +135,7 @@ const AccountLecturer = () => {
                 startIcon={<UploadFileIcon />}
                 component="span"
                 variant="contained"
+                sx={{ marginRight: "10px" }}
               >
                 Tải file
                 <input
@@ -145,6 +147,17 @@ const AccountLecturer = () => {
                 />
               </Button>
             </label>
+            <Button
+              startIcon={<DownloadFileIcon />}
+              href="https://docs.google.com/spreadsheets/d/1-qYkfFpfkSUZ7Nww60FOKbmy42tDzFte/export?format=xlsx" // Chuyển link để tải trực tiếp
+              component="a"
+              variant="outlined"
+              target="_blank"
+              rel="noopener noreferrer"
+              color="success"
+            >
+              Tải File EXCEL MẪU
+            </Button>
           </Box>
         </Box>
         <Box
