@@ -165,11 +165,13 @@ const ListGroupStudent = () => {
     {
       title: "Tên Đề Tài", // Thay đổi tiêu đề cột
       key: "topicName",
+      width: "500px",
       render: (record) => record.topic?.title || "Chưa có đề tài",
     },
     {
       title: "Số lượng thành viên",
       key: "createdAt",
+      width: "100px",
       render: (record) => record.students.length + "/" + record.numOfMembers,
     },
     {

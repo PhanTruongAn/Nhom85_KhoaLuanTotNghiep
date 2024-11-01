@@ -13,7 +13,7 @@ function ListNotification() {
 
   useEffect(() => {
     const sorted = notifications.sort(
-      (a, b) => new Date(b?.createAt) - new Date(a?.createAt)
+      (a, b) => new Date(b?.createdAt) - new Date(a?.createdAt)
     );
     setSortedNotifications(sorted);
   }, []);
@@ -104,7 +104,7 @@ function ListNotification() {
               fontWeight="bold"
               margin="4px 0"
             >
-              Tiêu đề: {notification.title} (Trọng số: {notification.weight})
+              Tiêu đề: {notification.title}
             </Box>
           </Box>
         ))}

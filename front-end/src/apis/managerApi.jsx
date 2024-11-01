@@ -67,7 +67,7 @@ const managerApi = {
     return axiosClient.delete(baseUrl + `/delete-note?id=${id}`);
   },
   updateNote: (data) => {
-    return axiosClient.put(baseUrl + "/update-major", data);
+    return axiosClient.put(baseUrl + "/update-note", data);
   },
   getLecturerTopics: (term, page, limit) => {
     return axiosClient.get(

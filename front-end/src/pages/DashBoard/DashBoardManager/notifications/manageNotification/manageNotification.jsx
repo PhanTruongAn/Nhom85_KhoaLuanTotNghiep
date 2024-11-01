@@ -31,11 +31,13 @@ function ManageNotification() {
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [data, setData] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
+  const terms = useSelector((state) => state.userInit.terms);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [currentNotification, setCurrentNotification] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingReload, setLoadingReload] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
   const handleGetNotes = async () => {
     const term = currentTerm.id;
     let res = await managerApi.getNotes(term);
@@ -80,14 +82,19 @@ function ManageNotification() {
     setIsUpdateOpen(true);
   };
 
-  const handleUpdateSubmit = () => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === currentNotification.id ? currentNotification : item
-      )
-    );
-    setIsUpdateOpen(false);
-    setCurrentNotification(null);
+  const handleUpdateSubmit = async () => {
+    setUpdateLoading(true);
+    const res = await managerApi.updateNote(currentNotification);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      setIsUpdateOpen(false);
+      setCurrentNotification(null);
+      setUpdateLoading(false);
+      refetch();
+    } else {
+      setUpdateLoading(false);
+      messageApi.success(res.message);
+    }
   };
 
   const handleChange = (e) => {
@@ -285,7 +292,7 @@ function ManageNotification() {
             <TextField
               label="Chi tiết"
               variant="outlined"
-              name="details"
+              name="content"
               value={currentNotification?.content || ""}
               onChange={handleChange}
               multiline
@@ -298,46 +305,42 @@ function ManageNotification() {
               }}
             />
             <FormControl fullWidth>
-              <InputLabel id="recipient-label">Đối tượng</InputLabel>
+              <InputLabel id="term-label">Học kỳ</InputLabel>
               <Select
-                labelId="recipient-label"
-                name="recipient"
-                value={currentNotification?.recipient || "all"}
+                labelId="term-label"
+                name="termId"
+                value={currentNotification?.termId || ""}
                 onChange={handleChange}
-                label="Recipient"
+                label="Học kỳ"
                 sx={{ borderRadius: "8px" }}
               >
-                <MenuItem value="all">Tất cả</MenuItem>
-                <MenuItem value="students">Sinh viên</MenuItem>
-                <MenuItem value="lecturers">Giảng viên</MenuItem>
+                {terms.map((term) => (
+                  <MenuItem key={term.id} value={term.id}>
+                    {term.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>
         </DialogContent>
+
         <DialogActions>
           <Button
             onClick={() => setIsUpdateOpen(false)}
             variant="contained"
             color="error"
-            size="small"
             sx={{
               marginLeft: "10px",
-              textTransform: "none",
             }}
           >
             Hủy
           </Button>
-          <Button
+          <CustomButton
             onClick={handleUpdateSubmit}
-            variant="contained"
-            size="small"
-            sx={{
-              marginLeft: "10px",
-              textTransform: "none",
-            }}
-          >
-            Lưu
-          </Button>
+            text="Lưu"
+            type="success"
+            loading={updateLoading}
+          />
         </DialogActions>
       </Dialog>
     </Box>

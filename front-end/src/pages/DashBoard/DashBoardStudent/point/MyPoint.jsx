@@ -59,7 +59,7 @@ function MyPoint() {
       },
     }
   );
-
+  console.log("Check : ", data);
   return (
     <Box
       padding={1}
@@ -112,7 +112,9 @@ function MyPoint() {
 
       <Table
         columns={columns}
-        dataSource={evaluationData ? [evaluationData.data] : data}
+        dataSource={
+          evaluationData && evaluationData.data ? [evaluationData.data] : data
+        }
         pagination={false}
         rowKey="id"
         locale={{

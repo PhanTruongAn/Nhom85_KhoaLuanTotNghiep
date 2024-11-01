@@ -137,11 +137,15 @@ function PersonalTopics() {
   };
 
   const handleSaveEdit = async () => {
+    setLoading(true);
     const res = await lecturerApi.updateTopicById(editTopic);
     if (res && res.status === 0) {
       messageApi.success(res.message);
+      handleCloseEditModal();
+      setLoading(false);
       refetch();
     } else {
+      setLoading(false);
       messageApi.error(res.message);
     }
   };
@@ -409,18 +413,16 @@ function PersonalTopics() {
             onClick={handleCloseEditModal}
             variant="outlined"
             color="error"
-            sx={{ textTransform: "none", marginRight: "8px" }}
+            sx={{ marginRight: "8px" }}
           >
             Hủy
           </Button>
-          <Button
+          <CustomButton
+            loading={loading}
+            text="Lưu"
+            type="success"
             onClick={handleSaveEdit}
-            variant="contained"
-            color="primary"
-            sx={{ textTransform: "none" }}
-          >
-            Lưu
-          </Button>
+          />
         </DialogActions>
       </Dialog>
     </Box>

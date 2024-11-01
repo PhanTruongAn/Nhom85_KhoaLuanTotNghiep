@@ -343,7 +343,15 @@ const DashBoardManager = () => {
                 }
                 onClick={() => setCollapsed(!collapsed)}
               />
-              <Box className="student-container" sx={{ float: "right" }}>
+              <Box
+                className="student-container"
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  float: "right",
+                }}
+              >
                 <span style={{ marginRight: "10px" }}>
                   Chào mừng quay lại <strong>{user.fullName}</strong>
                 </span>
@@ -356,39 +364,44 @@ const DashBoardManager = () => {
                   onClick={changeTheme}
                   style={{ marginRight: "10px", marginTop: "10px" }}
                 />
-                {/* Popover MUI thay cho Dropdown */}
-                <Button
-                  className="bell-icon"
-                  size="large"
-                  icon={<BellOutlined />}
-                  onClick={handlePopoverOpen}
-                  style={{ marginRight: "10px", marginTop: "10px" }}
-                >
-                  {!isEmpty(notes) && notes.length > 0 && (
-                    <span className="notification-badge">{notes.length}</span>
-                  )}
-                </Button>
+                {/* Ẩn icon thông báo nếu là manager */}
+                {!isManager && (
+                  <Button
+                    className="bell-icon"
+                    size="large"
+                    icon={<BellOutlined />}
+                    onClick={handlePopoverOpen}
+                    style={{ marginRight: "10px", marginTop: "10px" }}
+                  >
+                    {!isEmpty(notes) && notes.length > 0 && (
+                      <span className="notification-badge">{notes.length}</span>
+                    )}
+                  </Button>
+                )}
 
                 {/* Hiển thị Popover */}
-                <Popover
-                  open={open}
-                  anchorEl={anchorEl}
-                  onClose={handlePopoverClose}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                >
-                  <Box sx={{ p: 2 }}>
-                    <ListNotification />
-                  </Box>
-                </Popover>
+                {!isManager && (
+                  <Popover
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handlePopoverClose}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "right",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                  >
+                    <Box sx={{ p: 2 }}>
+                      <ListNotification />
+                    </Box>
+                  </Popover>
+                )}
               </Box>
             </Header>
+
             <Content
               style={{
                 margin: "24px 16px",

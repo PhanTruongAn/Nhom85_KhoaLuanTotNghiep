@@ -76,6 +76,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
     let res = await managerApi.updateTerm(formattedValues);
     if (res && res.status === 0) {
       setLoading(false);
+      onOk();
       messageApi.success(res.message);
     } else {
       setLoading(false);

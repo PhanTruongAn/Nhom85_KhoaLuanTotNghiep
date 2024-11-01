@@ -88,13 +88,6 @@ const ListTerm = () => {
   };
 
   const handleEditModalOk = (values) => {
-    // setData(
-    //   data.map((term) =>
-    //     term.id === currentTerm.id ? { ...term, ...values } : term
-    //   )
-    // );
-    setIsEditModalVisible(false);
-    setCurrentTerm(null);
     refetch();
   };
 
