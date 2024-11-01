@@ -112,7 +112,7 @@ function ManageNotification() {
   // Lọc tìm kiếm
   const sourceData = notesData && notesData.data ? notesData.data : data;
   const filteredData = sourceData.filter((item) =>
-    item.apiPath.startsWith(`/${selectedRole.toLowerCase()}`)
+    item.title.toLowerCase().includes(searchKeyword)
   );
 
   const columns = [

@@ -45,6 +45,7 @@ function OverDate({ text, startDate, endDate }) {
             width: "300px",
             height: "300px",
             objectFit: "cover",
+            mixBlendMode: "multiply",
           }}
         />
         <Typography variant="h6" sx={{ marginTop: "16px" }}>
