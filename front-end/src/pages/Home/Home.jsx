@@ -8,7 +8,9 @@ import Footer from "../../components/Footer/Footer.jsx";
 import BackgroundContainer from "./theme/Container.jsx";
 import background from "../../images/background.jpg";
 import backgrounddark from "../../images/backgrounddark.jpg";
+import HomePageTest from "../../components/Swiper/HomePageTest.jsx";
 import { Box } from "@mui/material";
+
 const Home = () => {
   const [themes, setThemes] = useState(
     localStorage.getItem("themeDark") === "true"
@@ -30,25 +32,29 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, [themes]); // Chạy khi themes thay đổi
   return (
-    <BackgroundContainer
-      direction="column"
-      justifyContent="space-between"
-      sx={{
-        backgroundImage: themes
-          ? `url(${backgrounddark})`
-          : `url(${background})`,
-      }}
-    >
-      <SwiperSlide />
+    // <BackgroundContainer
+    //   direction="column"
+    //   justifyContent="space-between"
+    //   sx={{
+    //     backgroundImage: themes
+    //       ? `url(${backgrounddark})`
+    //       : `url(${background})`,
+    //   }}
+    // >
+    //   <SwiperSlide />
 
-      <TiltComponent
-        srcLeft={imageLeft}
-        srcRight={imageRight}
-        srcBottom={imageBottom}
-      />
+    //   <TiltComponent
+    //     srcLeft={imageLeft}
+    //     srcRight={imageRight}
+    //     srcBottom={imageBottom}
+    //   />
 
+    // <Footer />
+    // </BackgroundContainer>
+    <Box>
+      <HomePageTest />
       <Footer />
-    </BackgroundContainer>
+    </Box>
   );
 };
 
