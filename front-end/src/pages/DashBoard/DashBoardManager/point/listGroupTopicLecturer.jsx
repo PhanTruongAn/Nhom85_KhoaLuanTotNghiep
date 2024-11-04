@@ -6,6 +6,9 @@ import {
   MenuItem,
   Typography,
   Dialog,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
 } from "@mui/material";
 import { Table, Space, message } from "antd";
 import PointTopicStudent from "./pointTopicStudent";
@@ -14,6 +17,7 @@ import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
+
 function ListGroupTopicLecturer() {
   const [state, setState] = useState({
     searchLoading: false,
@@ -31,10 +35,12 @@ function ListGroupTopicLecturer() {
   const [filteredData, setFilteredData] = useState(state.dataSource);
   const [selectedGroup, setSelectedGroup] = useState(null); // State to hold the selected group
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
+  const [selectValue, setSelectValue] = useState("giangVienHuongDan"); // State for select value
 
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
+
   // Get Groups Student Data
   const {
     data: groupsData,
@@ -71,6 +77,7 @@ function ListGroupTopicLecturer() {
       },
     }
   );
+
   const filteredGroups = useMemo(() => {
     const sourceData =
       groupsData && groupsData.data
@@ -80,6 +87,7 @@ function ListGroupTopicLecturer() {
       group.groupName.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm, state.dataSource]);
+
   const columns = [
     {
       title: "Tên nhóm",
@@ -102,6 +110,14 @@ function ListGroupTopicLecturer() {
           variant="contained"
           color="primary"
           onClick={() => handleGrade(record)} // Call handleGrade on button click
+          sx={{
+            boxShadow: "0px 4px 8px rgba(0,0,0,0.2)",
+            transition: "transform 0.3s",
+            "&:hover": {
+              transform: "scale(1.05)",
+              boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
+            },
+          }}
         >
           Chấm điểm
         </Button>
@@ -118,6 +134,7 @@ function ListGroupTopicLecturer() {
     setOpenDialog(false);
     setSelectedGroup(null); // Reset selection
   };
+
   const onRefreshData = () => {
     updateState({ refreshButton: true });
     refetch();
@@ -125,10 +142,52 @@ function ListGroupTopicLecturer() {
       messageApi.success("Làm mới dữ liệu thành công!");
     }, 1000);
   };
+
   return (
-    <Box padding={2} sx={{ width: "100%", borderRadius: 2 }}>
+    <Box
+      padding={2}
+      sx={{
+        width: "100%",
+        borderRadius: 2,
+        boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+        backgroundColor: "#fff",
+      }}
+    >
       {contextHolder}
-      <Box sx={{ position: "relative" }}>
+      <Typography variant="h6" gutterBottom>
+        Hãy chọn loại giảng viên
+      </Typography>
+      <FormControl variant="outlined" sx={{ marginBottom: 2, width: "35%" }}>
+        <InputLabel id="select-label">Chọn loại giảng viên</InputLabel>
+        <Select
+          labelId="select-label"
+          value={selectValue}
+          onChange={(e) => setSelectValue(e.target.value)}
+          label="Chọn loại giảng viên"
+          input={<OutlinedInput label="Chọn loại giảng viên" />}
+          sx={{
+            borderRadius: "20px",
+            boxShadow: "0px 4px 8px rgba(0,0,0,0.2)",
+            "&:hover": {
+              boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
+            },
+          }}
+        >
+          <MenuItem value="giangVienHuongDan">Giảng viên hướng dẫn</MenuItem>
+          <MenuItem value="giangVienPhanBien">
+            Giảng viên phản biện và báo cáo
+          </MenuItem>
+        </Select>
+      </FormControl>
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          gap: 2,
+          alignItems: "center",
+          marginBottom: 2,
+        }}
+      >
         <SearchComponent
           placeholder="Tìm theo tên nhóm"
           onChange={(group) => setSearchTerm(group)}
@@ -206,6 +265,12 @@ function ListGroupTopicLecturer() {
         onClose={handleCloseDialog}
         maxWidth="md"
         fullWidth
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: "16px",
+            boxShadow: "0px 6px 18px rgba(0,0,0,0.2)",
+          },
+        }}
       >
         <PointTopicStudent
           selectedGroup={selectedGroup}

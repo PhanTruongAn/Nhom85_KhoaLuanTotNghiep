@@ -9,8 +9,12 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { message, Table, Popconfirm } from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  UsergroupAddOutlined,
+} from "@ant-design/icons";
+import { message, Table, Popconfirm, Space } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import lecturerApi from "../../../../apis/lecturerApi";
@@ -34,6 +38,9 @@ function PersonalTopics() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [openAssignGroupDialog, setOpenAssignGroupDialog] = useState(false); // State for the dialog
+  const [selectedGroupTopic, setSelectedGroupTopic] = useState(null); // State for the selected topic for group assignment
+  const [groupName, setGroupName] = useState(""); // State for the group name
   const [editTopic, setEditTopic] = useState({
     id: "",
     title: "",
@@ -150,23 +157,53 @@ function PersonalTopics() {
     }
   };
 
+  //Gán nhóm
+  const handleAssignGroupSubmit = async () => {
+    let dataToSave = {
+      groupName: groupName,
+      topicId: selectedGroupTopic.id,
+    };
+    const res = await managerApi.assignTopicToGroup(dataToSave);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      handleAssignGroupClose();
+    } else {
+      messageApi.error(res.message);
+    }
+  };
+  const handleAssignGroup = (topic) => {
+    setSelectedGroupTopic(topic);
+    setOpenAssignGroupDialog(true);
+  };
+
+  const handleGroupNameChange = (event) => {
+    setGroupName(event.target.value);
+  };
+
+  const handleAssignGroupClose = () => {
+    setOpenAssignGroupDialog(false);
+    setGroupName("");
+  };
   const columns = [
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
       sorter: (a, b) => a.id - b.id,
+      width: "5%",
     },
     {
       title: "Tên đề tài",
       dataIndex: "title",
       key: "title",
-      width: 600,
+      width: 500,
+      ellipsis: true,
     },
     {
       title: "Số lượng nhóm",
       // dataIndex: "quantityGroup",
       key: "quantityGroup",
+      width: "15%",
       render: (record) => `${record.groupCount}/${record.quantityGroup}`,
       sorter: (a, b) => a.groupCount - b.groupCount,
     },
@@ -174,7 +211,7 @@ function PersonalTopics() {
       title: "Hành động",
       key: "action",
       render: (text, record) => (
-        <div style={{ display: "flex", gap: "8px" }}>
+        <Space>
           <Button
             onClick={() => handleViewDetails(record)}
             variant="outlined"
@@ -183,6 +220,25 @@ function PersonalTopics() {
             endIcon={<InfoCircleOutlined />}
           >
             Xem chi tiết
+          </Button>
+          <Button
+            onClick={() => handleAssignGroup(record)}
+            variant="contained"
+            color="primary"
+            size="small"
+            endIcon={<UsergroupAddOutlined />}
+            sx={[
+              (theme) => ({
+                ...theme.applyStyles("light", {
+                  backgroundColor: "#FF993A",
+                }),
+                ...theme.applyStyles("dark", {
+                  backgroundColor: "#1DA57A",
+                }),
+              }),
+            ]}
+          >
+            Gán nhóm
           </Button>
           <Button
             onClick={() => handleEdit(record)}
@@ -218,7 +274,7 @@ function PersonalTopics() {
               Xóa
             </Button>
           </Popconfirm>
-        </div>
+        </Space>
       ),
     },
   ];
@@ -423,6 +479,32 @@ function PersonalTopics() {
             type="success"
             onClick={handleSaveEdit}
           />
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openAssignGroupDialog}
+        onClose={handleAssignGroupClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Gán nhóm</DialogTitle>
+        <DialogContent>
+          <Box display="flex" flexDirection="column" gap={2} padding={1}>
+            <TextField
+              label="Tên nhóm"
+              value={groupName}
+              onChange={handleGroupNameChange}
+              fullWidth
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAssignGroupClose} color="error">
+            Hủy
+          </Button>
+          <Button onClick={handleAssignGroupSubmit} color="primary">
+            Lưu
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
