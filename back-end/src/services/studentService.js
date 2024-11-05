@@ -105,6 +105,15 @@ const createBulkAccount = async (data) => {
       data: null,
     };
   }
+  // Lấy termId từ phần tử đầu tiên của data
+  const termId = data[0]?.termId;
+
+  if (!termId) {
+    return {
+      status: 1,
+      message: "Không tìm thấy thông tin học kỳ!",
+    };
+  }
 
   try {
     // Lấy danh sách tài khoản hiện tại trong cơ sở dữ liệu
@@ -118,17 +127,6 @@ const createBulkAccount = async (data) => {
     const newAccounts = data.filter(
       ({ username }) => !usernamesInDb.includes(username)
     );
-
-    // Lấy termId từ phần tử đầu tiên của data
-    const termId = data[0]?.termId;
-
-    if (!termId) {
-      return {
-        status: 1,
-        message: "Không tìm thấy thông tin học kỳ!",
-        data: null,
-      };
-    }
 
     // Tạo danh sách các tài khoản sinh viên mới
     const dataPersist = newAccounts.map((value) => ({

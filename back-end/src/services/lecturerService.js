@@ -599,6 +599,19 @@ const deleteTopic = async (data) => {
     };
   }
   try {
+    let isTopicAssign = await Group.findOne({
+      where: {
+        topicId: data.id,
+      },
+      raw: true,
+    });
+
+    if (isTopicAssign) {
+      return {
+        status: -1,
+        message: "Đề tài này đã có nhóm đăng ký!",
+      };
+    }
     let result = await Topic.destroy({
       where: {
         id: data.id,

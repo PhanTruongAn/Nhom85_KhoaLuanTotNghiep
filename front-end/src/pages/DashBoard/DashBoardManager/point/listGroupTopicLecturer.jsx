@@ -107,15 +107,21 @@ function ListGroupTopicLecturer() {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => handleGrade(record)} // Call handleGrade on button click
-          sx={{
+          onClick={() => handleGrade(record)}
+          sx={(theme) => ({
             boxShadow: "0px 4px 8px rgba(0,0,0,0.2)",
             transition: "transform 0.3s",
             "&:hover": {
               transform: "scale(1.05)",
               boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
             },
-          }}
+            ...theme.applyStyles("dark", {
+              "&:disabled": {
+                backgroundColor: "#A0A0A0",
+                color: "#888",
+              },
+            }),
+          })}
           disabled={!selectValue}
         >
           Chấm điểm
@@ -168,6 +174,7 @@ function ListGroupTopicLecturer() {
             labelId="select-label"
             label="Chọn nhóm giảng viên"
             onChange={(e) => setSelectValue(e.target.value)}
+            value={selectValue}
             sx={{
               width: "30%",
               boxShadow: "0px 4px 8px rgba(0,0,0,0.2)",

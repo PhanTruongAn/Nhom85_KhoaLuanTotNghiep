@@ -2,7 +2,7 @@ import db from "../models/index";
 import _, { isEmpty } from "lodash";
 import permissionValid from "../validates/permissionValidate";
 import { isFieldDate, isValidSemester } from "../validates/termValidate";
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const {
   Student,
   Permission,
@@ -310,7 +310,7 @@ const paginationGroupsStudent = async (page, limit) => {
     }
     const offset = (page - 1) * limit;
     const { count, rows } = await Group.findAndCountAll({
-      // distinct: true,
+      distinct: true,
       attributes: ["id", "groupName", "numOfMembers"],
       offset: offset,
       limit: limit,
