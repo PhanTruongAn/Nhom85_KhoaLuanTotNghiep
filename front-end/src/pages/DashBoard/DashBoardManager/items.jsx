@@ -73,6 +73,18 @@ const getItems = (isManager) => {
       ],
     },
     {
+      key: "classify-lecturer",
+      icon: <TopicOutlinedIcon />,
+      label: "Phân loại giảng viên",
+      children: [
+        {
+          key: "classify-type-lecturer",
+          icon: <FileExcelOutlined />,
+          label: "Gán loại giảng viên",
+        },
+      ],
+    },
+    {
       key: "groups-student",
       icon: <PeopleAltOutlinedIcon />,
       label: "Nhóm sinh viên",
