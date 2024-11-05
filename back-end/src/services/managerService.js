@@ -310,6 +310,7 @@ const paginationGroupsStudent = async (page, limit) => {
     }
     const offset = (page - 1) * limit;
     const { count, rows } = await Group.findAndCountAll({
+      // distinct: true,
       attributes: ["id", "groupName", "numOfMembers"],
       offset: offset,
       limit: limit,
@@ -326,6 +327,7 @@ const paginationGroupsStudent = async (page, limit) => {
             "gender",
             "username",
           ],
+          // required: true,
         },
         {
           model: Topic,
@@ -354,6 +356,67 @@ const paginationGroupsStudent = async (page, limit) => {
     };
   }
 };
+
+const findGroupByNameOrTopicTitle = async (searchValue) => {
+  if (!searchValue) {
+    return {
+      status: -1,
+      message: "Dữ liệu tìm kiếm không hợp lệ!",
+    };
+  }
+  try {
+    const groups = await Group.findAll({
+      attributes: ["id", "groupName", "numOfMembers"],
+      include: [
+        {
+          model: Student,
+          as: "students",
+          attributes: [
+            "id",
+            "fullName",
+            "email",
+            "phone",
+            "isLeader",
+            "gender",
+            "username",
+          ],
+        },
+        {
+          model: Topic,
+          as: "topic",
+          attributes: ["id", "title"],
+        },
+      ],
+      where: {
+        [Op.or]: [
+          { groupName: { [Op.like]: `%${searchValue}%` } }, // Case-insensitive search for groupName
+          { "$topic.title$": { [Op.like]: `%${searchValue}%` } }, // Case-insensitive search for topic title
+        ],
+      },
+    });
+
+    if (groups && groups.length > 0) {
+      return {
+        status: 0,
+        message: "Tìm kiếm thành công!",
+        data: groups,
+      };
+    } else {
+      return {
+        status: 1,
+        message: "Không tìm thấy dữ liệu phù hợp!",
+        data: [],
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
+
 //Lấy số lượng tổng sinh viên có trong database
 const countStudent = async () => {
   try {
@@ -1000,6 +1063,12 @@ const assignTopicToGroup = async (data) => {
         topicId: topic.id,
       },
     });
+    if (group.topicId) {
+      return {
+        status: -1,
+        message: "Nhóm này đã có đề tài!",
+      };
+    }
     if (numOfGroup && numOfGroup.length === topic.quantityGroup) {
       return {
         status: -1,
@@ -1056,4 +1125,5 @@ module.exports = {
   getAllLecturerTopics,
   findTopicByTitleOrLecturerName,
   assignTopicToGroup,
+  findGroupByNameOrTopicTitle,
 };

@@ -117,6 +117,19 @@ const handleGetAllGroupsStudent = async (req, res) => {
     });
   }
 };
+const handleFindGroupStudent = async (req, res) => {
+  const { search } = req.query;
+  try {
+    const data = await service.findGroupByNameOrTopicTitle(search);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 const handleCountStudent = async (req, res) => {
   try {
     const data = await service.countStudent();
@@ -368,4 +381,5 @@ module.exports = {
   handleGetAllLecturerTopics,
   handleFindTopicByTitleOrLecturerName,
   handleAssignTopicToGroup,
+  handleFindGroupStudent,
 };

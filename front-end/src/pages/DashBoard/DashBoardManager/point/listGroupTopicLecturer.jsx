@@ -31,11 +31,9 @@ function ListGroupTopicLecturer() {
   });
   const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchType, setSearchType] = useState("groupName");
-  const [filteredData, setFilteredData] = useState(state.dataSource);
   const [selectedGroup, setSelectedGroup] = useState(null); // State to hold the selected group
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
-  const [selectValue, setSelectValue] = useState("giangVienHuongDan"); // State for select value
+  const [selectValue, setSelectValue] = useState(""); // State for select value
 
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -118,6 +116,7 @@ function ListGroupTopicLecturer() {
               boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
             },
           }}
+          disabled={!selectValue}
         >
           Chấm điểm
         </Button>
@@ -149,56 +148,65 @@ function ListGroupTopicLecturer() {
       sx={{
         width: "100%",
         borderRadius: 2,
-        boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
-        backgroundColor: "#fff",
       }}
     >
       {contextHolder}
-      <Typography variant="h6" gutterBottom>
-        Hãy chọn loại giảng viên
-      </Typography>
-      <FormControl variant="outlined" sx={{ marginBottom: 2, width: "35%" }}>
-        <InputLabel id="select-label">Chọn loại giảng viên</InputLabel>
-        <Select
-          labelId="select-label"
-          value={selectValue}
-          onChange={(e) => setSelectValue(e.target.value)}
-          label="Chọn loại giảng viên"
-          input={<OutlinedInput label="Chọn loại giảng viên" />}
+      <FormControl
+        variant="outlined"
+        sx={{ marginBottom: 2, width: "100%" }}
+        size="small"
+      >
+        <Box
           sx={{
-            borderRadius: "20px",
-            boxShadow: "0px 4px 8px rgba(0,0,0,0.2)",
-            "&:hover": {
-              boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
-            },
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
           }}
         >
-          <MenuItem value="giangVienHuongDan">Giảng viên hướng dẫn</MenuItem>
-          <MenuItem value="giangVienPhanBien">
-            Giảng viên phản biện và báo cáo
-          </MenuItem>
-        </Select>
+          <InputLabel id="select-label">Chọn nhóm giảng viên</InputLabel>
+          <Select
+            labelId="select-label"
+            label="Chọn nhóm giảng viên"
+            onChange={(e) => setSelectValue(e.target.value)}
+            sx={{
+              width: "30%",
+              boxShadow: "0px 4px 8px rgba(0,0,0,0.2)",
+              "&:hover": {
+                boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
+              },
+            }}
+          >
+            <MenuItem value="">
+              <em>Không chọn</em>
+            </MenuItem>
+            <MenuItem value="gvHuongDan">Giảng viên hướng dẫn</MenuItem>
+            <MenuItem value="gvPhanBien">
+              Giảng viên phản biện và báo cáo
+            </MenuItem>
+          </Select>
+          <Box sx={{ width: "100%" }}>
+            <SearchComponent
+              placeholder="Tìm theo tên nhóm"
+              onChange={(group) => setSearchTerm(group)}
+            />
+          </Box>
+        </Box>
       </FormControl>
+
       <Box
         sx={{
           position: "relative",
           display: "flex",
           gap: 2,
           alignItems: "center",
-          marginBottom: 2,
         }}
       >
-        <SearchComponent
-          placeholder="Tìm theo tên nhóm"
-          onChange={(group) => setSearchTerm(group)}
-        />
-
         <Box
           sx={{
             position: "absolute",
             right: "10px",
-            top: "50%",
-            transform: "translateY(-50%)",
+
+            transform: "translateY(-100%)",
           }}
         >
           <CustomButton
@@ -209,17 +217,17 @@ function ListGroupTopicLecturer() {
           />
         </Box>
       </Box>
-      <Typography
+      {/* <Typography
         sx={{
           flex: 1, // Để tiêu đề chiếm không gian còn lại
           textAlign: "center", // Căn giữa
         }}
-        variant="h5"
+        variant="h6"
         component="h2"
         gutterBottom
       >
         Danh sách nhóm và đề tài
-      </Typography>
+      </Typography> */}
       <Table
         columns={columns}
         dataSource={filteredGroups}

@@ -24,7 +24,7 @@ import { isEmpty } from "lodash";
 import { formatContent } from "../../../../utils/formatContent";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomButton from "../../../../components/Button/CustomButton";
-
+import managerApi from "../../../../apis/managerApi";
 function PersonalTopics() {
   const user = useSelector((state) => state.userInit.user);
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
@@ -167,6 +167,7 @@ function PersonalTopics() {
     if (res && res.status === 0) {
       messageApi.success(res.message);
       handleAssignGroupClose();
+      refetch();
     } else {
       messageApi.error(res.message);
     }
@@ -329,6 +330,7 @@ function PersonalTopics() {
             setPage(page);
             setRowsPerPage(pageSize);
           },
+          responsive: true,
         }}
         locale={{
           emptyText: (

@@ -16,6 +16,8 @@ import SearchComponent from "../../../../components/SearchComponent/search";
 const { Option } = Select;
 import { InfoCircleOutlined } from "@ant-design/icons";
 import managerApi from "../../../../apis/managerApi";
+import { useDebounce } from "@uidotdev/usehooks";
+import { isEmpty } from "lodash";
 const ListGroupStudent = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -23,6 +25,7 @@ const ListGroupStudent = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [pages, setPages] = useState([1]);
+  const debouncedSearchTerm = useDebounce(searchValue, 500);
   const [state, setState] = useState({
     searchLoading: false,
     currentPage: 1,
@@ -45,15 +48,21 @@ const ListGroupStudent = () => {
     isFetching,
     refetch,
   } = CustomHooks.useQuery(
-    ["groupStudent", state.currentPage, state.pageSize],
-    () => managerApi.getGroupsStudent(state.currentPage, state.pageSize),
+    ["groupStudent", state.currentPage, state.pageSize, debouncedSearchTerm],
+    () => {
+      if (debouncedSearchTerm) {
+        return handleFindGroupStudent();
+      } else {
+        return managerApi.getGroupsStudent(state.currentPage, state.pageSize);
+      }
+    },
     {
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({
             refreshButton: false,
-            dataSource: res.data.groupStudent,
-            totalRows: res.data.totalRows,
+            dataSource: res.data?.groupStudent || res.data,
+            totalRows: res.data?.totalRows || res.data.length,
             loadingData: false,
           });
         } else {
@@ -75,7 +84,10 @@ const ListGroupStudent = () => {
       },
     }
   );
-
+  const handleFindGroupStudent = async () => {
+    const res = await managerApi.findGroupStudent(searchValue);
+    return res;
+  };
   const handleOpenUpdateModal = (group) => {
     setSelectedGroup(group);
     setOpenUpdateModal(true);
@@ -118,29 +130,7 @@ const ListGroupStudent = () => {
       messageApi.success("Làm mới dữ liệu thành công!");
     }, 1000);
   };
-  const onChangePage = (pageNumber) => {
-    if (!pages.includes(pageNumber)) {
-      pages.push(pageNumber);
-      updateState({ loadingData: true });
-    }
-    updateState({ currentPage: pageNumber });
-  };
-  const filteredGroups = useMemo(() => {
-    const sourceData =
-      groupsData && groupsData.data
-        ? groupsData.data.groupStudent
-        : state.dataSource;
-    return sourceData.filter((group) => {
-      const groupNameMatch = group.groupName
-        .toLowerCase()
-        .includes(searchValue.toLowerCase());
-      const topicTitleMatch = group.topic?.title
-        .toLowerCase()
-        .includes(searchValue.toLowerCase()); // Kiểm tra tên đề tài
 
-      return groupNameMatch || topicTitleMatch; // Trả về true nếu tìm thấy theo tên nhóm hoặc tên đề tài
-    });
-  }, [searchValue, state.dataSource]);
   const columns = [
     {
       title: "ID",
@@ -220,15 +210,6 @@ const ListGroupStudent = () => {
       ),
     },
   ];
-  const itemRender = (_, type, originalElement) => {
-    if (type === "prev") {
-      return <Button type="link">Previous</Button>;
-    }
-    if (type === "next") {
-      return <Button type="link">Next</Button>;
-    }
-    return originalElement;
-  };
   return (
     <Box sx={{ padding: "20px" }}>
       {contextHolder}
@@ -257,7 +238,6 @@ const ListGroupStudent = () => {
       <Box
         sx={{
           textAlign: "center",
-          marginTop: "10px",
           display: "flex",
           alignItems: "center",
         }}
@@ -295,21 +275,19 @@ const ListGroupStudent = () => {
         }}
         bordered
         columns={columns}
-        dataSource={filteredGroups}
+        dataSource={state.dataSource}
         rowKey="id"
-        loading={state.loadingData}
+        loading={isFetching}
         pagination={{
+          showQuickJumper: true,
           showSizeChanger: true,
           pageSizeOptions: ["5", "10", "20"],
-          onShowSizeChange: (current, size) => handlePageSizeChange(size),
-          total: searchValue
-            ? filteredGroups.length
-            : groupsData
-            ? groupsData.data?.totalRows
-            : state.totalRows, // Cập nhật giá trị total
+          total: state.totalRows, // Cập nhật giá trị total
           current: state.currentPage,
           pageSize: state.pageSize,
-          onChange: onChangePage,
+          onChange: (page, size) => {
+            updateState({ currentPage: page, pageSize: size });
+          },
           responsive: true,
         }}
         locale={{
@@ -317,7 +295,7 @@ const ListGroupStudent = () => {
             <Box display="flex" justifyContent="center" alignItems="center">
               {isFetching ? (
                 <EmptyData />
-              ) : filteredGroups ? (
+              ) : isEmpty(state.dataSource) ? (
                 <EmptyData text="Không có dữ liệu!" />
               ) : null}
             </Box>

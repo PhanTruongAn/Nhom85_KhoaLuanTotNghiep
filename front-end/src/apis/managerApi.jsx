@@ -79,6 +79,10 @@ const managerApi = {
       `${baseUrl}/find-topics?term=${term}&search=${search}`
     );
   },
+  findGroupStudent: (search) => {
+    return axiosClient.get(`${baseUrl}/find-group-student?search=${search}`);
+  },
+
   assignTopicToGroup: (data) => {
     return axiosClient.put(baseUrl + "/assign-topic", data);
   },

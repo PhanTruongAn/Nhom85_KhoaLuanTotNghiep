@@ -852,6 +852,7 @@ const getGroupTopic = async (lecturerId, termId) => {
     };
   }
 };
+
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,

@@ -119,15 +119,6 @@ const UpdateGroupModal = ({
               <Typography variant="body2" sx={{ fontSize: "16px" }}>
                 SĐT: {student.phone || "Không có"}
               </Typography>
-              <Box sx={{ textAlign: "left", mt: 2 }}>
-                <Button
-                  color="error"
-                  size="small"
-                  onClick={() => handleDeleteStudent(student.id)}
-                >
-                  Xóa khỏi nhóm
-                </Button>
-              </Box>
             </Card>
           ))}
         </Box>

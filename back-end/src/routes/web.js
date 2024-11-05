@@ -162,6 +162,10 @@ const initWebRoutes = (app) => {
     "/manager/get-groups-student",
     managerController.handleGetAllGroupsStudent
   );
+  router.get(
+    "/manager/find-group-student",
+    managerController.handleFindGroupStudent
+  );
   router.get("/manager/count-student", managerController.handleCountStudent);
   router.post("/manager/create-term", managerController.handleCreateNewTerm);
   router.get("/manager/terms", managerController.handleGetTerms);
