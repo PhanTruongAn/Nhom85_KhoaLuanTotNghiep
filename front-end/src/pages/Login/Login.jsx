@@ -99,10 +99,10 @@ export default function Login() {
       justifyContent="space-between"
       sx={{
         "@media (max-height: 600px)": {
-          marginTop: "200px",
+          marginTop: "97.6px",
         },
         "@media (max-width: 600px)": {
-          marginTop: "200px",
+          marginTop: "97.6px",
         },
       }}
     >

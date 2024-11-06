@@ -15,14 +15,24 @@ const { Option } = Select;
 
 const columns = [
   {
-    title: "Mã đề tài",
+    title: "ID",
     dataIndex: "topicId",
     key: "topicId",
   },
   {
-    title: "Tên đề tài",
+    title: "Tên nhóm",
     dataIndex: "title",
     key: "title",
+  },
+  {
+    title: "Tên dề tài",
+    dataIndex: "topicName",
+    key: "topicName",
+  },
+  {
+    title: "Giảng viên hướng dẫn",
+    dataIndex: "lecturerName",
+    key: "lecturerName",
   },
 ];
 
@@ -133,42 +143,23 @@ function ClassifyTypeLecturer() {
   return (
     <Box p={1}>
       {contextHolder}
+      <Select
+        style={{ width: "30%", marginBottom: "10px" }}
+        showSearch
+        placeholder="Chọn nhóm giảng viên "
+        filterOption={(input, option) =>
+          option.value.toLowerCase().includes(input.toLowerCase())
+        }
+      >
+        <Option></Option>
+      </Select>
       <Grid container spacing={2}>
         {/* Lecturer Guide Card */}
         <Grid item xs={12} md={6}>
           <Card sx={{ padding: "10px" }}>
-            <Typography variant="h6">Giảng viên hướng dẫn</Typography>
+            <Typography variant="h6">Giảng viên 1</Typography>
             <Box p={2}>
               <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Select
-                    style={{ width: "100%" }}
-                    showSearch
-                    placeholder="Chọn mã giảng viên"
-                    onChange={(value) => handleSelectChange(value, "guide")}
-                    filterOption={(input, option) =>
-                      option.value.toLowerCase().includes(input.toLowerCase())
-                    }
-                    value={selectedLecturerGuide?.lecturerId || null}
-                  >
-                    {lecturers.map((lecturer) => (
-                      <Option key={lecturer.key} value={lecturer.lecturerId}>
-                        {lecturer.lecturerId} - {lecturer.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Grid>
-                <Grid item xs={6}>
-                  <Search
-                    placeholder="Nhập mã giảng viên, sđt, email"
-                    enterButton={<SearchIcon />}
-                    loading={searchLoadingGuide}
-                    onSearch={(value) => handleSearch(value, "guide")}
-                    style={{ width: "100%" }}
-                    value={searchValueGuide}
-                    onChange={(e) => setSearchValueGuide(e.target.value)}
-                  />
-                </Grid>
                 {/* Lecturer Information */}
                 <Grid item xs={6}>
                   <TextField
@@ -210,38 +201,9 @@ function ClassifyTypeLecturer() {
         {/* Lecturer Report Card */}
         <Grid item xs={12} md={6}>
           <Card sx={{ padding: "10px" }}>
-            <Typography variant="h6">Giảng viên báo cáo</Typography>
+            <Typography variant="h6">Giảng viên 2</Typography>
             <Box p={2}>
               <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Select
-                    style={{ width: "100%" }}
-                    showSearch
-                    placeholder="Chọn mã giảng viên"
-                    onChange={(value) => handleSelectChange(value, "report")}
-                    filterOption={(input, option) =>
-                      option.value.toLowerCase().includes(input.toLowerCase())
-                    }
-                    value={selectedLecturerReport?.lecturerId || null}
-                  >
-                    {lecturers.map((lecturer) => (
-                      <Option key={lecturer.key} value={lecturer.lecturerId}>
-                        {lecturer.lecturerId} - {lecturer.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Grid>
-                <Grid item xs={6}>
-                  <Search
-                    placeholder="Nhập mã giảng viên, sđt, email"
-                    enterButton={<SearchIcon />}
-                    loading={searchLoadingReport}
-                    onSearch={(value) => handleSearch(value, "report")}
-                    style={{ width: "100%" }}
-                    value={searchValueReport}
-                    onChange={(e) => setSearchValueReport(e.target.value)}
-                  />
-                </Grid>
                 {/* Lecturer Information */}
                 <Grid item xs={6}>
                   <TextField

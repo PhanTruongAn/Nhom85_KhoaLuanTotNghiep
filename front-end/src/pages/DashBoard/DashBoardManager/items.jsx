@@ -78,9 +78,19 @@ const getItems = (isManager) => {
       label: "Phân công",
       children: [
         {
+          key: "create-lecturer-group",
+          icon: <FileExcelOutlined />,
+          label: "Tạo nhóm giảng viên",
+        },
+        {
           key: "classify-type-lecturer",
           icon: <FileExcelOutlined />,
           label: "Chấm phản biện",
+        },
+        {
+          key: "manage-group-lecturer",
+          icon: <FileExcelOutlined />,
+          label: "Quản lý nhóm ",
         },
       ],
     },

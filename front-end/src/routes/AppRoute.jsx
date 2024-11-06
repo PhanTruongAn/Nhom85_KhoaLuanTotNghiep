@@ -39,6 +39,8 @@ import ManageMajor from "../pages/DashBoard/DashBoardManager/term/major/manageMa
 import ManagerTopics from "../pages/DashBoard/DashBoardManager/topic/managerTopics";
 import ListGroupStudentLecturer from "../pages/DashBoard/DashBoardManager/groupStudent/ListGroupStudentLecturer";
 import ClassifyTypeLecturer from "../pages/DashBoard/DashBoardManager/classifyLecturer/ClassifyTypeLecturer";
+import CreateLecturerGroup from "../pages/DashBoard/DashBoardManager/classifyLecturer/CreateLecturerGroup";
+import ManageGroupLecturer from "../pages/DashBoard/DashBoardManager/classifyLecturer/ManageGroupLecturer";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 
@@ -208,6 +210,14 @@ const AppRoute = () => {
           <Route
             path="classify-type-lecturer"
             element={<PrivateRoute component={<ClassifyTypeLecturer />} />}
+          />
+          <Route
+            path="create-lecturer-group"
+            element={<PrivateRoute component={<CreateLecturerGroup />} />}
+          />
+          <Route
+            path="manage-group-lecturer"
+            element={<PrivateRoute component={<ManageGroupLecturer />} />}
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>
