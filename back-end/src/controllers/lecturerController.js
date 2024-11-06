@@ -28,10 +28,8 @@ const handleBulkCreateLecturer = async (req, res) => {
 };
 
 const handleLecturerGetAll = async (req, res) => {
-  if (req.query.page && req.query.limit && req.query.term) {
-    let limit = req.query.limit;
-    let page = req.query.page;
-    let term = req.query.term;
+  const { limit, page, term } = req.query;
+  if (limit && page && term) {
     const data = await lecturerService.getPaginationLecturer(
       +page,
       +limit,
@@ -39,8 +37,10 @@ const handleLecturerGetAll = async (req, res) => {
     );
     return res.status(200).json(data);
   } else {
-    let data = await lecturerService.getLecturerList();
-    return res.status(200).json(data);
+    return res.status(200).json({
+      status: -1,
+      message: "Thiếu dữ liệu phân trang hoặc học kì!",
+    });
   }
 };
 const handleDeleteLecturer = async (req, res) => {
@@ -211,6 +211,24 @@ const handleGetGroupTopic = async (req, res) => {
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+
+const handleReviewLecturers = async (req, res) => {
+  try {
+    const { term } = req.query;
+    const data = await lecturerService.getLecturerList(term);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
   }
 };
 module.exports = {
@@ -230,4 +248,5 @@ module.exports = {
   handleGetNotes,
   handlePointGroup,
   handleGetGroupTopic,
+  handleReviewLecturers,
 };

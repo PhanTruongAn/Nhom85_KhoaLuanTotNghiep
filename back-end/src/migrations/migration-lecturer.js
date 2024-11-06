@@ -34,6 +34,9 @@ module.exports = {
       degree: {
         type: Sequelize.STRING,
       },
+      groupLecturerId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

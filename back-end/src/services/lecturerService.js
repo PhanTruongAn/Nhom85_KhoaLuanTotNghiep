@@ -176,37 +176,52 @@ const createBulkAccountLecturer = async (data) => {
 
 // Lấy danh sách giảng viên
 const getLecturerList = async (term) => {
-  const list = await Lecturer.findAll({
-    attributes: ["id", "username", "fullName", "gender", "email", "phone"],
-    include: [
-      {
-        model: Role,
-        attributes: ["id", "name", "description"],
-      },
-      {
-        model: Term,
-        as: "terms",
-        through: {
-          attributes: [],
-        },
-        where: {
-          id: term,
-        },
-      },
-    ],
-  });
-  if (list && list.length > 0) {
+  if (!term) {
     return {
-      status: 0,
-      message: "Lấy danh sách thành công!",
-      data: list,
+      status: -1,
+      message: "Thiếu dữ liệu học kì!",
     };
   }
-  return {
-    status: -1,
-    message: "Lấy danh sách thất bại!",
-    data: list,
-  };
+  try {
+    const list = await Lecturer.findAll({
+      attributes: ["id", "username", "fullName", "gender", "email", "phone"],
+      include: [
+        {
+          model: Role,
+          attributes: ["id", "name", "description"],
+        },
+        {
+          model: Term,
+          as: "terms",
+          through: {
+            attributes: [],
+          },
+          where: {
+            id: term,
+          },
+        },
+      ],
+    });
+    if (list && list.length > 0) {
+      return {
+        status: 0,
+        message: "Lấy danh sách thành công!",
+        data: list,
+      };
+    }
+    return {
+      status: -1,
+      message: "Lấy danh sách thất bại!",
+      data: list,
+    };
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng",
+      data: null,
+    };
+  }
 };
 // Lấy danh sách phân trang của giảng viên
 const getPaginationLecturer = async (page, limit, term) => {

@@ -12,6 +12,7 @@ const initialState = {
   currentTerm: {},
   majors: [],
   notes: [],
+  lecturers: [],
 };
 22;
 
@@ -53,6 +54,9 @@ const userSlice = createSlice({
     setNotes: (state, action) => {
       state.notes = action.payload;
     },
+    setLecturers: (state, action) => {
+      state.lecturers = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -76,6 +80,7 @@ export const {
   setCurrentTerm,
   setMajors,
   setNotes,
+  setLecturers,
 } = userSlice.actions;
 export { fetchToken };
 export default userSlice.reducer;

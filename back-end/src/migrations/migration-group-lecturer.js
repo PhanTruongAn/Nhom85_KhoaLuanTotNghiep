@@ -2,26 +2,17 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Groups", {
+    await queryInterface.createTable("GroupLecturers", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      groupName: {
+      name: {
         type: Sequelize.STRING,
-      },
-      topicId: {
-        type: Sequelize.INTEGER,
       },
       numOfMembers: {
-        type: Sequelize.INTEGER,
-      },
-      status: {
-        type: Sequelize.STRING,
-      },
-      groupLecturerId: {
         type: Sequelize.INTEGER,
       },
       createdAt: {
@@ -35,6 +26,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Groups");
+    await queryInterface.dropTable("GroupLecturers");
   },
 };

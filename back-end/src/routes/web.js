@@ -191,6 +191,7 @@ const initWebRoutes = (app) => {
     managerController.handleAssignTopicToGroup
   );
 
+  handleReviewLecturers;
   return app.use("/", router);
 };
 

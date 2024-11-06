@@ -75,12 +75,12 @@ const getItems = (isManager) => {
     {
       key: "classify-lecturer",
       icon: <TopicOutlinedIcon />,
-      label: "Phân loại giảng viên",
+      label: "Phân công",
       children: [
         {
           key: "classify-type-lecturer",
           icon: <FileExcelOutlined />,
-          label: "Gán loại giảng viên",
+          label: "Chấm phản biện",
         },
       ],
     },

@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
         as: "terms",
       });
+      Lecturer.belongsTo(models.GroupLecturer, {
+        foreignKey: "groupLecturerId",
+        onDelete: "SET NULL",
+      });
     }
   }
   Lecturer.init(
@@ -30,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       gender: DataTypes.STRING,
       roleId: DataTypes.INTEGER,
       degree: DataTypes.STRING,
+      groupLecturerId: DataTypes.INTEGER,
     },
     {
       sequelize,
