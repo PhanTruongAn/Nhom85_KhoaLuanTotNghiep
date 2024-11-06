@@ -3,6 +3,7 @@ import { Box, Button, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import NotificationDetail from "./notificationDetail"; // Import NotificationDetail
 import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
+
 function ListNotification() {
   const [visibleCount, setVisibleCount] = useState(3);
   const [sortedNotifications, setSortedNotifications] = useState([]);
@@ -43,20 +44,21 @@ function ListNotification() {
       className="notification-container"
       ref={containerRef}
       onScroll={handleScroll}
-      sx={[
-        (theme) => ({
-          borderRadius: "8px",
-          padding: "16px",
-          width: "700px",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-          maxHeight: "400px",
-          overflowY: "auto",
-          cursor: "pointer",
-          ...theme.applyStyles("dark", {
-            backgroundColor: "#1E1E1E",
-          }),
-        }),
-      ]}
+      sx={{
+        borderRadius: "8px",
+        padding: "16px",
+        maxWidth: "700px", // For large screens
+        width: "100%", // For smaller screens
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        maxHeight: "400px",
+        overflowY: "auto",
+        cursor: "pointer",
+        margin: "0 auto", // Centers the container
+        "@media (max-width:600px)": {
+          padding: "10px", // Adjust padding for smaller screens
+          maxHeight: "350px", // Smaller height for mobile screens
+        },
+      }}
     >
       <Box display="flex" justifyContent="space-between" marginBottom="16px">
         <Box component="h2" fontSize="20px" fontWeight="bold">
@@ -72,22 +74,20 @@ function ListNotification() {
           className="notification-item"
           key={notification.id}
           onClick={() => handleNotificationClick(notification)}
-          sx={[
-            (theme) => ({
-              borderRadius: "4px",
-              padding: "12px",
-              marginBottom: "10px",
-              boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
-              transition: "background-color 0.3s ease-in-out",
-              "&:hover": {
-                backgroundColor: "#e6f7ff",
-                color: "black",
-              },
-              ...theme.applyStyles("dark", {
-                backgroundColor: "#2E2E2E",
-              }),
-            }),
-          ]}
+          sx={{
+            borderRadius: "4px",
+            padding: "12px",
+            marginBottom: "10px",
+            boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+            transition: "background-color 0.3s ease-in-out",
+            "&:hover": {
+              backgroundColor: "#e6f7ff",
+              color: "black",
+            },
+            "@media (max-width:600px)": {
+              padding: "8px", // Adjust padding for smaller screens
+            },
+          }}
         >
           <Box component="div" fontSize="12px">
             {new Date(notification.createdAt).toLocaleString("vi-VN", {
@@ -118,14 +118,15 @@ function ListNotification() {
         onClose={handleCloseModal}
         fullWidth
         maxWidth="lg"
-        PaperProps={{ style: { padding: "20px", height: "700px" } }}
+        PaperProps={{
+          style: {
+            height: "700px",
+          },
+        }}
       >
-        {/* <DialogTitle>{selectedNotification?.title}</DialogTitle> */}
-        <DialogContent>
-          {selectedNotification && (
-            <NotificationDetail notification={selectedNotification} />
-          )}
-        </DialogContent>
+        {selectedNotification && (
+          <NotificationDetail notification={selectedNotification} />
+        )}
       </Dialog>
     </Box>
   );

@@ -42,7 +42,7 @@ import { isEmpty } from "lodash";
 import { getCurrentTerm } from "../../../utils/getCurrentTerm.jsx";
 import lecturerApi from "../../../apis/lecturerApi.jsx";
 const { Header, Sider, Content } = Layout;
-
+import ChangeTheme from "../../../components/Header/ChangeTheme.jsx";
 const DashBoardManager = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -355,7 +355,7 @@ const DashBoardManager = () => {
                 <span style={{ marginRight: "10px" }}>
                   Chào mừng quay lại <strong>{user.fullName}</strong>
                 </span>
-                <Button
+                {/* <Button
                   className={`btn-logOut ${
                     themes ? "dark-theme" : "light-theme"
                   }`}
@@ -363,7 +363,14 @@ const DashBoardManager = () => {
                   icon={themes ? <SunOutlined /> : <MoonOutlined />}
                   onClick={changeTheme}
                   style={{ marginRight: "10px", marginTop: "10px" }}
-                />
+                /> */}
+                <Box sx={{ marginRight: "10px", marginTop: "10px" }}>
+                  <ChangeTheme
+                    theme={themes} // Pass the current theme value
+                    changeTheme={changeTheme} // Pass the theme toggle function
+                  />
+                </Box>
+
                 {/* Ẩn icon thông báo nếu là manager */}
                 {!isManager && (
                   <Button
