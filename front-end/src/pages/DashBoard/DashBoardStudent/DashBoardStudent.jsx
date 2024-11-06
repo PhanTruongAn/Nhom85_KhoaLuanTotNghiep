@@ -35,6 +35,7 @@ import { setCurrentTerm, setNotes } from "../../../redux/userSlice.jsx";
 import { isEmpty } from "lodash";
 import CustomHooks from "../../../utils/hooks.jsx";
 import studentApi from "../../../apis/studentApi.jsx";
+import ChangeTheme from "../../../components/Header/ChangeTheme.jsx";
 const { Header, Sider, Content } = Layout;
 
 const DashBoardStudent = () => {
@@ -307,23 +308,24 @@ const DashBoardStudent = () => {
                   }
                 }}
               />
-              <Box className="option" sx={{ float: "right" }}>
-                <Button
-                  className={`btn-logOut ${
-                    themes ? "dark-theme" : "light-theme"
-                  }`}
-                  size="large"
-                  icon={
-                    themes ? (
-                      <SunOutlined className="theme-icon" />
-                    ) : (
-                      <MoonOutlined className="theme-icon" />
-                    )
-                  }
-                  onClick={changeTheme}
-                  style={{ marginRight: "10px", marginTop: "-3px" }}
-                />
-                {/* Popover MUI thay cho Dropdown */}
+              <Box
+                className="option"
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  marginTop: "-50px",
+                }}
+              >
+                {/* ChangeTheme Component */}
+                <Box sx={{ marginRight: "10px" }}>
+                  <ChangeTheme
+                    theme={themes} // Pass the current theme value
+                    changeTheme={changeTheme} // Pass the theme toggle function
+                  />
+                </Box>
+
+                {/* Bell Icon Button */}
                 <Button
                   size="large"
                   icon={<BellOutlined className="bell-icon" />}
@@ -334,7 +336,7 @@ const DashBoardStudent = () => {
                   )}
                 </Button>
 
-                {/* Hiển thị Popover */}
+                {/* Popover for Notifications */}
                 <Popover
                   open={open}
                   anchorEl={anchorEl}

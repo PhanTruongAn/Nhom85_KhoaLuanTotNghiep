@@ -1,9 +1,8 @@
 import React from "react";
 import { Card, Typography, Divider } from "@mui/material";
 import { formatContent } from "../../../../utils/formatContent";
-const NotificationDetail = ({ notification }) => {
-  // Hàm để chuyển đổi nội dung thành cấu trúc văn bản
 
+const NotificationDetail = ({ notification }) => {
   return (
     <Card
       sx={{
@@ -13,12 +12,15 @@ const NotificationDetail = ({ notification }) => {
         width: "100%", // Full width of the modal
         height: "100%", // Full height of the modal
         overflowY: "auto", // Scroll if content overflows
+        "@media (max-width:600px)": {
+          padding: "15px", // Adjust padding for smaller screens
+        },
       }}
     >
       <Typography sx={{ textAlign: "center" }} variant="h4">
         {notification.title}
       </Typography>
-      <Divider />
+      <Divider sx={{ margin: "10px 0" }} />
       <div
         style={{
           marginTop: "20px",
@@ -28,11 +30,16 @@ const NotificationDetail = ({ notification }) => {
       >
         {formatContent(notification.content)}
       </div>
-      <Divider />
+      <Divider sx={{ margin: "10px 0" }} />
       <Typography
         variant="body2"
         color="text.secondary"
-        sx={{ fontSize: "14px" }}
+        sx={{
+          fontSize: "14px",
+          "@media (max-width:600px)": {
+            fontSize: "12px", // Adjust font size for smaller screens
+          },
+        }}
       >
         Ngày tạo:{" "}
         {new Date(notification.createdAt).toLocaleString("vi-VN", {

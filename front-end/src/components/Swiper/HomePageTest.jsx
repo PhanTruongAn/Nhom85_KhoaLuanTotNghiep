@@ -41,7 +41,7 @@ function HomePageTest() {
       sx={{
         position: "relative",
         width: "100%",
-        paddingTop: isSmallScreen ? "234px" : "96px",
+        paddingTop: isSmallScreen ? "97.6px" : "96px",
       }}
     >
       {/* Main Carousel Section */}

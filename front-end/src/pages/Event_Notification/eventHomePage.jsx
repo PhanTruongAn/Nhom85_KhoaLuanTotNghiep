@@ -3,16 +3,7 @@ import { Box } from "@mui/material";
 
 function Event() {
   return (
-    <Box
-      sx={{
-        "@media (max-height: 600px)": {
-          marginTop: "140px",
-        },
-        "@media (max-width: 600px)": {
-          marginTop: "140px",
-        },
-      }}
-    >
+    <Box>
       <iframe
         src="https://fit.iuh.edu.vn/news.html@102@Tin-tuc-Su-kien"
         title="Website IUH"
