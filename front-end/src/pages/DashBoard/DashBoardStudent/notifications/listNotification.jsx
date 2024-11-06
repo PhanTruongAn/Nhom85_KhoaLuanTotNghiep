@@ -44,21 +44,26 @@ function ListNotification() {
       className="notification-container"
       ref={containerRef}
       onScroll={handleScroll}
-      sx={{
-        borderRadius: "8px",
-        padding: "16px",
-        maxWidth: "700px", // For large screens
-        width: "100%", // For smaller screens
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        maxHeight: "400px",
-        overflowY: "auto",
-        cursor: "pointer",
-        margin: "0 auto", // Centers the container
-        "@media (max-width:600px)": {
-          padding: "10px", // Adjust padding for smaller screens
-          maxHeight: "350px", // Smaller height for mobile screens
-        },
-      }}
+      sx={[
+        (theme) => ({
+          borderRadius: "8px",
+          padding: "16px",
+          maxWidth: "700px", // For large screens
+          width: "100%", // For smaller screens
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+          maxHeight: "400px",
+          overflowY: "auto",
+          cursor: "pointer",
+          margin: "0 auto", // Centers the container
+          "@media (max-width:600px)": {
+            padding: "10px", // Adjust padding for smaller screens
+            maxHeight: "350px", // Smaller height for mobile screens
+          },
+          ...theme.applyStyles("dark", {
+            backgroundColor: "#1E1E1E",
+          }),
+        }),
+      ]}
     >
       <Box display="flex" justifyContent="space-between" marginBottom="16px">
         <Box component="h2" fontSize="20px" fontWeight="bold">
@@ -68,26 +73,30 @@ function ListNotification() {
           {sortedNotifications.length} Thông báo
         </Box>
       </Box>
-
       {sortedNotifications.slice(0, visibleCount).map((notification) => (
         <Box
           className="notification-item"
           key={notification.id}
           onClick={() => handleNotificationClick(notification)}
-          sx={{
-            borderRadius: "4px",
-            padding: "12px",
-            marginBottom: "10px",
-            boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
-            transition: "background-color 0.3s ease-in-out",
-            "&:hover": {
-              backgroundColor: "#e6f7ff",
-              color: "black",
-            },
-            "@media (max-width:600px)": {
-              padding: "8px", // Adjust padding for smaller screens
-            },
-          }}
+          sx={[
+            (theme) => ({
+              borderRadius: "4px",
+              padding: "12px",
+              marginBottom: "10px",
+              boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+              transition: "background-color 0.3s ease-in-out",
+              "&:hover": {
+                backgroundColor: "#e6f7ff",
+                color: "black",
+              },
+              "@media (max-width:600px)": {
+                padding: "8px", // Adjust padding for smaller screens
+              },
+              ...theme.applyStyles("dark", {
+                backgroundColor: "#2E2E2E",
+              }),
+            }),
+          ]}
         >
           <Box component="div" fontSize="12px">
             {new Date(notification.createdAt).toLocaleString("vi-VN", {
@@ -103,7 +112,6 @@ function ListNotification() {
           </Box>
         </Box>
       ))}
-
       {visibleCount < sortedNotifications.length && (
         <Button
           onClick={() => setVisibleCount(visibleCount + 3)}
@@ -112,7 +120,6 @@ function ListNotification() {
           Xem thêm
         </Button>
       )}
-
       <Dialog
         open={!!selectedNotification}
         onClose={handleCloseModal}
