@@ -53,6 +53,7 @@ const Home = () => {
     // </BackgroundContainer>
     <Box>
       <HomePageTest />
+      <TiltComponent />
       <Footer />
     </Box>
   );

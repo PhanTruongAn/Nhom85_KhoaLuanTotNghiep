@@ -1,4 +1,3 @@
-// Other imports remain unchanged
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -12,26 +11,48 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import image1 from "../../images/homepage/image1.jpg";
 import image2 from "../../images/homepage/image2.jpg";
 import image3 from "../../images/homepage/image3.jpg";
+import imagedark1 from "../../images/homepage/imagedark1.jpg";
+import imagedark2 from "../../images/homepage/imagedark2.jpg";
+import imagedark3 from "../../images/homepage/imagedark3.jpg";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import StartNow from "../../images/anhdong/startnow.lottie";
 import Marquee from "react-fast-marquee";
 import Welcome from "../../images/anhdong/Welcome.lottie";
 
 function HomePageTest() {
-  const images = [image1, image2, image3];
-  const [selectedImage, setSelectedImage] = useState(image1);
+  const [themes, setThemes] = useState(
+    localStorage.getItem("themeDark") === "true"
+  );
 
   useEffect(() => {
+    const checkTheme = () => {
+      const storedTheme = localStorage.getItem("themeDark");
+      const themeValue = storedTheme === "true";
+      if (themeValue !== themes) {
+        setThemes(themeValue);
+      }
+    };
+
+    const intervalId = setInterval(checkTheme, 100);
+
+    return () => clearInterval(intervalId);
+  }, [themes]);
+
+  // Define both light and dark image arrays
+  const images = [image1, image2, image3];
+  const imagesdark = [imagedark1, imagedark2, imagedark3];
+  const themeImages = themes ? imagesdark : images;
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Update `currentIndex` to cycle through `themeImages`
+  useEffect(() => {
     const interval = setInterval(() => {
-      setSelectedImage((prevImage) => {
-        const currentIndex = images.indexOf(prevImage);
-        const nextIndex = (currentIndex + 1) % images.length;
-        return images[nextIndex];
-      });
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % themeImages.length);
     }, 2000); // 2 seconds interval
 
     return () => clearInterval(interval);
-  }, [images]);
+  }, [themes, themeImages.length]);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -71,7 +92,7 @@ function HomePageTest() {
       >
         <Box
           sx={{
-            backgroundImage: `url(${selectedImage})`,
+            backgroundImage: `url(${themeImages[currentIndex]})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -89,7 +110,7 @@ function HomePageTest() {
             }}
           >
             <Marquee direction="right">
-              <Typography variant="h4" sx={{ color: "#fff" }}>
+              <Typography variant="h4">
                 Chào mừng đến với Hệ thống Đăng ký Luận văn!
               </Typography>
             </Marquee>
@@ -119,9 +140,15 @@ function HomePageTest() {
                 loop
                 autoplay
               />
-              <Typography variant="body1" sx={{ fontSize: "1.2rem", mb: 4 }}>
-                Hãy dễ dàng đăng ký đề tài luận văn, theo dõi tiến trình của
-                bạn, và nhận mọi thông tin cần thiết.
+              <Typography
+                variant="h5"
+                sx={{
+                  mb: 4,
+                  color: themes ? "#fff" : "#000",
+                }}
+              >
+                Dễ dàng đăng ký đề tài luận văn, theo dõi tiến trình của bạn, và
+                nhận mọi thông tin cần thiết.
               </Typography>
               <DotLottieReact
                 src={StartNow}
@@ -145,7 +172,7 @@ function HomePageTest() {
                 gap: "24px",
               }}
             >
-              {images.map((img, index) => (
+              {themeImages.map((img, index) => (
                 <Box
                   key={index}
                   sx={{
@@ -159,7 +186,7 @@ function HomePageTest() {
                     boxShadow:
                       "0px 10px 20px rgba(0, 0, 0, 0.3), 0px 6px 18px rgba(0, 0, 0, 0.15)",
                     cursor: "pointer",
-                    border: selectedImage === img ? "3px solid #fff" : "none",
+                    border: currentIndex === index ? "3px solid #fff" : "none",
                     transition: "transform 0.3s, box-shadow 0.3s",
                     perspective: "1000px",
                     transform: "rotateY(-10deg) translateZ(10px)",
@@ -169,12 +196,11 @@ function HomePageTest() {
                         "0px 12px 25px rgba(0, 0, 0, 0.4), 0px 8px 20px rgba(0, 0, 0, 0.2)",
                     },
                   }}
-                  onClick={() => setSelectedImage(img)}
+                  onClick={() => setCurrentIndex(index)}
                 />
               ))}
             </Box>
           </Box>
-
           {/* Information Section - now conditionally placed */}
           {!isSmallScreen && (
             <Box
