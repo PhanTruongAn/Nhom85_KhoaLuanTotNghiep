@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { Box, Card, TextField, Grid, Typography, Button } from "@mui/material";
+import { Box, TextField, Grid, Typography, Button } from "@mui/material";
 import { Table, Select, Input, Space, message } from "antd";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-
 import CustomHooks from "../../../../utils/hooks";
 import CustomButton from "../../../../components/Button/CustomButton";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-
+import { Card } from "../../../../components/Card/Card";
 const { Search } = Input;
 const { Option } = Select;
 
@@ -19,7 +18,7 @@ function CreateLecturerGroup() {
         {/* Lecturer Guide Card */}
         <Grid item xs={12} md={6}>
           <Card sx={{ padding: "10px" }}>
-            <Typography variant="h6">Giảng viên hướng dẫn</Typography>
+            <Typography variant="h6">Giảng viên phản biện 1</Typography>
             <Box p={2}>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
@@ -38,7 +37,7 @@ function CreateLecturerGroup() {
                   <Search
                     placeholder="Nhập mã giảng viên, sđt, email"
                     enterButton={<SearchIcon />}
-                    loading
+                    // loading
                     style={{ width: "100%" }}
                   />
                 </Grid>
@@ -83,7 +82,7 @@ function CreateLecturerGroup() {
         {/* Lecturer Report Card */}
         <Grid item xs={12} md={6}>
           <Card sx={{ padding: "10px" }}>
-            <Typography variant="h6">Giảng viên báo cáo</Typography>
+            <Typography variant="h6">Giảng viên phản biện 2</Typography>
             <Box p={2}>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
@@ -102,7 +101,7 @@ function CreateLecturerGroup() {
                   <Search
                     placeholder="Nhập mã giảng viên, sđt, email"
                     enterButton={<SearchIcon />}
-                    loading
+                    // loading
                     style={{ width: "100%" }}
                   />
                 </Grid>

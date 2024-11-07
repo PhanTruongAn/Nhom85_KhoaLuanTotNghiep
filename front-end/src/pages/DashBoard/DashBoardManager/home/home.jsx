@@ -73,7 +73,6 @@ function ManagerHome() {
           width: 600,
           marginBottom: "20px",
           borderRadius: "8px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}
       >
         <Box
@@ -128,7 +127,6 @@ function ManagerHome() {
           margin: "0 0 5px",
           width: "97%",
           borderRadius: "8px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}
       >
         <form style={{ padding: 10 }}>

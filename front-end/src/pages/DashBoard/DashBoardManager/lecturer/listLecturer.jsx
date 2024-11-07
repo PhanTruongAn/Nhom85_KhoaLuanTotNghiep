@@ -235,7 +235,6 @@ function ListLecturer() {
             onClick={(e) => showUpdateModal(record)}
             sx={[
               (theme) => ({
-                textTransform: "none",
                 ...theme.applyStyles("light", {
                   backgroundColor: "#FF993A",
                 }),
@@ -262,7 +261,6 @@ function ListLecturer() {
               size="small"
               sx={{
                 marginLeft: "10px",
-                textTransform: "none",
               }}
               endIcon={<DeleteOutlined />}
             >

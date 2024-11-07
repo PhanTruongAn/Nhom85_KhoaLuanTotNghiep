@@ -110,7 +110,6 @@ const ListGroupStudentLecturer = () => {
           color="primary"
           sx={[
             (theme) => ({
-              textTransform: "none",
               ...theme.applyStyles("light", {
                 backgroundColor: "#FF993A",
               }),

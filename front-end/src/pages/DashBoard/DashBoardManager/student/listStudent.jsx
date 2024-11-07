@@ -225,7 +225,6 @@ function ListStudent() {
             size="small"
             sx={[
               (theme) => ({
-                textTransform: "none",
                 ...theme.applyStyles("light", {
                   backgroundColor: "#FF993A",
                 }),
@@ -251,7 +250,6 @@ function ListStudent() {
               size="small"
               sx={{
                 marginLeft: "10px",
-                textTransform: "none",
               }}
               endIcon={<DeleteOutlined />}
             >

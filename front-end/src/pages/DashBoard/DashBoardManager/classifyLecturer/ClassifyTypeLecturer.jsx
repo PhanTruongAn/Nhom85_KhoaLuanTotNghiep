@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, Card, TextField, Grid, Typography, Button } from "@mui/material";
+import { Box, TextField, Grid, Typography, Button } from "@mui/material";
+import { Card } from "../../../../components/Card/Card";
 import { Table, Select, Input, Space, message } from "antd";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";

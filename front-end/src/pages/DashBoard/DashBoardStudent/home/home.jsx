@@ -229,7 +229,6 @@ function StudentHome() {
           width: "97%",
           marginTop: "10px",
           borderRadius: "8px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}
       >
         <form style={{ padding: 10 }} onSubmit={(e) => e.preventDefault()}>

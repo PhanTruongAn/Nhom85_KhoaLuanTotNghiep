@@ -165,7 +165,6 @@ const ListGroupStudent = () => {
             variant="outlined"
             size="small"
             endIcon={<InfoCircleOutlined />}
-            sx={{ textTransform: "none" }}
           >
             Xem chi tiết
           </Button>
@@ -176,7 +175,6 @@ const ListGroupStudent = () => {
             endIcon={<EditOutlined />}
             sx={[
               (theme) => ({
-                textTransform: "none",
                 marginLeft: "10px",
                 ...theme.applyStyles("light", {
                   backgroundColor: "#FF993A",
@@ -201,7 +199,7 @@ const ListGroupStudent = () => {
               color="error"
               size="small"
               endIcon={<DeleteOutlined />}
-              sx={{ marginLeft: "10px", textTransform: "none" }}
+              sx={{ marginLeft: "10px" }}
             >
               Xóa
             </Button>

@@ -135,17 +135,7 @@ function ManageNotification() {
             onClick={() => handleUpdateClick(record)}
             variant="contained"
             size="small"
-            sx={[
-              (theme) => ({
-                textTransform: "none",
-                ...theme.applyStyles("light", {
-                  backgroundColor: "#FF993A",
-                }),
-                ...theme.applyStyles("dark", {
-                  backgroundColor: "#1DA57A",
-                }),
-              }),
-            ]}
+            color="secondary"
             endIcon={<EditOutlined />}
           >
             Chỉnh sửa
@@ -163,7 +153,6 @@ function ManageNotification() {
               size="small"
               sx={{
                 marginLeft: "10px",
-                textTransform: "none",
               }}
               endIcon={<DeleteOutlined />}
             >

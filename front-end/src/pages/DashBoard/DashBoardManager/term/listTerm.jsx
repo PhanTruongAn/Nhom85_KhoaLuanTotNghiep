@@ -267,27 +267,19 @@ const ListTerm = () => {
             onClick={() => handleView(record)}
             variant="outlined"
             size="small"
-            sx={{ textTransform: "none" }}
             endIcon={<InfoCircleOutlined />}
           >
-            Xem chi tiết
+            Chi tiết
           </Button>
           <Button
             onClick={() => handleEdit(record)}
             variant="contained"
             size="small"
-            sx={[
-              (theme) => ({
-                marginLeft: "10px",
-                textTransform: "none",
-                ...theme.applyStyles("light", {
-                  background: "#ff993a",
-                }),
-              }),
-            ]}
+            color="secondary"
+            sx={{ marginLeft: "10px" }}
             endIcon={<EditOutlined />}
           >
-            Chỉnh sửa
+            Sửa
           </Button>
         </span>
       ),

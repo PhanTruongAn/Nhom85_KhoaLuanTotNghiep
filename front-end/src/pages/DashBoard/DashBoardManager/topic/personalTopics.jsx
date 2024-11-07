@@ -225,19 +225,19 @@ function PersonalTopics() {
           <Button
             onClick={() => handleAssignGroup(record)}
             variant="contained"
-            color="primary"
+            color="secondary"
             size="small"
             endIcon={<UsergroupAddOutlined />}
-            sx={[
-              (theme) => ({
-                ...theme.applyStyles("light", {
-                  backgroundColor: "#FF993A",
-                }),
-                ...theme.applyStyles("dark", {
-                  backgroundColor: "#1DA57A",
-                }),
-              }),
-            ]}
+            // sx={[
+            //   (theme) => ({
+            //     ...theme.applyStyles("light", {
+            //       backgroundColor: "#FF993A",
+            //     }),
+            //     ...theme.applyStyles("dark", {
+            //       backgroundColor: "#1DA57A",
+            //     }),
+            //   }),
+            // ]}
           >
             Gán nhóm
           </Button>

@@ -22,10 +22,7 @@ function SearchComponent({ onChange, placeholder }) {
           size="small"
           variant="outlined"
           sx={{
-            boxShadow: "0px 4px 8px rgba(0,0,0,0.2)",
-            "&:hover": {
-              boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
-            },
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
           }}
           InputProps={{
             startAdornment: (

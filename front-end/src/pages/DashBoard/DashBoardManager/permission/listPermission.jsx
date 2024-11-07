@@ -203,7 +203,7 @@ function ListPermission() {
             sx={[
               (theme) => ({
                 marginLeft: "10px",
-                textTransform: "none",
+
                 ...theme.applyStyles("dark", {
                   background: "#1DA57A",
                 }),
@@ -228,7 +228,6 @@ function ListPermission() {
               size="small"
               sx={{
                 marginLeft: "10px",
-                textTransform: "none",
               }}
               endIcon={<DeleteOutlined />}
             >
