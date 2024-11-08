@@ -1,19 +1,13 @@
-import React, { useState, useMemo } from "react";
-import { Table, Space, message, Input, Select, Popconfirm } from "antd";
+import { useState } from "react";
+import { Table, message, Popconfirm } from "antd";
 import { Box, Button, Typography } from "@mui/material";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  PlusOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import UpdateGroupModal from "./UpdateGroupModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import CustomHooks from "../../../../utils/hooks";
 import SearchComponent from "../../../../components/SearchComponent/search";
-const { Option } = Select;
 import { InfoCircleOutlined } from "@ant-design/icons";
 import managerApi from "../../../../apis/managerApi";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -24,7 +18,6 @@ const ListGroupStudent = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [pages, setPages] = useState([1]);
   const debouncedSearchTerm = useDebounce(searchValue, 500);
   const [state, setState] = useState({
     searchLoading: false,
@@ -43,11 +36,7 @@ const ListGroupStudent = () => {
   };
 
   // Get Groups Student Data
-  const {
-    data: groupsData,
-    isFetching,
-    refetch,
-  } = CustomHooks.useQuery(
+  const { isFetching, refetch } = CustomHooks.useQuery(
     ["groupStudent", state.currentPage, state.pageSize, debouncedSearchTerm],
     () => {
       if (debouncedSearchTerm) {
@@ -74,7 +63,7 @@ const ListGroupStudent = () => {
           messageApi.error(res.message);
         }
       },
-      onError: (err) => {
+      onError: () => {
         updateState({
           dataSource: [],
           loadingData: false,
@@ -107,20 +96,9 @@ const ListGroupStudent = () => {
       messageApi.error(res.message);
     }
   };
-  const handlePageSizeChange = (newPageSize) => {
-    updateState({
-      loadingData: true,
-      pageSize: newPageSize,
-      currentPage: 1,
-    });
-  };
+
   const handleDeleteMany = () => {
     message.success(`Deleted groups: ${selectedRowKeys.join(", ")}`);
-  };
-
-  const onSearch = (value) => {
-    setSearchValue(value);
-    // Thực hiện tìm kiếm nếu cần
   };
 
   const onRefreshData = () => {
@@ -190,7 +168,7 @@ const ListGroupStudent = () => {
           <Popconfirm
             title="Xóa nhóm"
             description="Bạn có chắc muốn xóa nhóm này?"
-            onConfirm={(e) => onPopConfirmDelete(record)}
+            onConfirm={() => onPopConfirmDelete(record)}
             okText="Đồng ý"
             cancelText="Không"
           >

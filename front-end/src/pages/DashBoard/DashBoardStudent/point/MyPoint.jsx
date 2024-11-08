@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Table, message } from "antd";
 import { TableOutlined } from "@ant-design/icons";
@@ -31,7 +31,7 @@ const columns = [
 ];
 
 function MyPoint() {
-  const group = useSelector((state) => state.userInit.group);
+  // const group = useSelector((state) => state.userInit.group);
   const user = useSelector((state) => state.userInit.user);
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [data, setData] = useState([]);
@@ -54,7 +54,7 @@ function MyPoint() {
           messageApi.info(res.message);
         }
       },
-      onError: (error) => {
+      onError: () => {
         messageApi.error("Lỗi khi lấy thông tin điểm số!");
       },
     }

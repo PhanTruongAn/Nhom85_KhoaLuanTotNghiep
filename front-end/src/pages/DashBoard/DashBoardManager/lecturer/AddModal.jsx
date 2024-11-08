@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { Col, Form, Input, Modal, Row, Select, message, Button } from "antd";
+import { useState } from "react";
+import { Col, Form, Input, Modal, Row, message, Button } from "antd";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import lecturerApi from "../../../../apis/lecturerApi";
+
 function AddModal({ onClose, isOpen, getData }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
@@ -9,8 +11,6 @@ function AddModal({ onClose, isOpen, getData }) {
   const user = {
     fullName: "",
     username: "",
-    // email: "",
-    // phone: "",
   };
 
   const [data, setData] = useState(user);
@@ -47,13 +47,13 @@ function AddModal({ onClose, isOpen, getData }) {
       <Modal
         title="Thêm tài khoản giảng viên"
         open={isOpen}
-        onCancel={(e) => handleCancel()}
+        onCancel={() => handleCancel()}
         footer={[
           <Button
             key="back"
             type="primary"
             danger
-            onClick={(e) => handleCancel()}
+            onClick={() => handleCancel()}
           >
             Hủy bỏ
           </Button>,
@@ -61,7 +61,7 @@ function AddModal({ onClose, isOpen, getData }) {
             key="submit"
             type="primary"
             loading={loading}
-            onClick={(e) => handlerSubmit()}
+            onClick={() => handlerSubmit()}
           >
             Xác nhận
           </Button>,
@@ -104,49 +104,15 @@ function AddModal({ onClose, isOpen, getData }) {
               </Form.Item>
             </Col>
           </Row>
-          {/* <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="phone"
-                label="Số điện thoại"
-                rules={[
-                  {
-                    required: true,
-                    message: "Hãy nhập số điện thoại của giảng viên!",
-                  },
-                ]}
-              >
-                <Input
-                  placeholder="Số điện thoại của giảng viên"
-                  onChange={(e) => handlerOnChange(e.target.value, "phone")}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="email"
-                label="Email"
-                rules={[
-                  {
-                    required: true,
-                    message: "Hãy nhập email của giảng viên!",
-                  },
-                ]}
-              >
-                <Input
-                  style={{
-                    width: "100%",
-                  }}
-                  placeholder="Địa chỉ email giảng viên"
-                  onChange={(e) => handlerOnChange(e.target.value, "email")}
-                />
-              </Form.Item>
-            </Col>
-          </Row> */}
         </Form>
       </Modal>
     </>
   );
 }
+AddModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  getData: PropTypes.func.isRequired,
+};
 
 export default AddModal;

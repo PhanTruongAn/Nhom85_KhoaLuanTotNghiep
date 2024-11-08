@@ -1,23 +1,9 @@
-import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Space,
-  message,
-  Pagination,
-  Popconfirm,
-  Select,
-  Input,
-} from "antd";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  ReloadOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { useState, useEffect } from "react";
+import { Table, Space, message, Popconfirm } from "antd";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Box, Typography, Button } from "@mui/material";
 import CreateModal from "../../../../components/Dashboard/createModal";
 import lecturerApi from "../../../../apis/lecturerApi";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UpdateModal from "../../../../components/Dashboard/updateModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
@@ -26,10 +12,8 @@ import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useSelector } from "react-redux";
 import SearchComponent from "../../../../components/SearchComponent/search";
-const { Option } = Select;
 
 function ListLecturer() {
-  const navigate = useNavigate();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -45,13 +29,8 @@ function ListLecturer() {
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [listRole, setListRole] = useState();
   const debouncedSearchTerm = useDebounce(searchValue, 500);
-  const [state, setState] = useState({
-    searchLoading: false,
-  });
-  const updateState = (newState) => {
-    setState((prevState) => ({ ...prevState, ...newState }));
-  };
-  const { data, isLoading, isFetching, refetch } = CustomHooks.useQuery(
+
+  const { data, isFetching, refetch } = CustomHooks.useQuery(
     ["lecturers", currentPage, limitUser, debouncedSearchTerm, currentTerm?.id],
     () => {
       if (debouncedSearchTerm) {
@@ -78,7 +57,7 @@ function ListLecturer() {
           messageApi.error(res.message);
         }
       },
-      onError: (err) => {
+      onError: () => {
         messageApi.error("Lỗi khi lấy dữ liệu!");
       },
     }
@@ -232,7 +211,7 @@ function ListLecturer() {
           <Button
             variant="contained"
             size="small"
-            onClick={(e) => showUpdateModal(record)}
+            onClick={() => showUpdateModal(record)}
             sx={[
               (theme) => ({
                 ...theme.applyStyles("light", {
@@ -250,7 +229,7 @@ function ListLecturer() {
           <Popconfirm
             title="Xóa sinh viên"
             description="Bạn có chắc muốn xóa sinh viên này?"
-            onConfirm={(e) => onPopConfirmDelete(record)}
+            onConfirm={() => onPopConfirmDelete(record)}
             okText="Đồng ý"
             cancelText="Không"
           >

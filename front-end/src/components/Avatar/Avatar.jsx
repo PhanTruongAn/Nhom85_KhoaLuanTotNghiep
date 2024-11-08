@@ -1,11 +1,10 @@
-import React from "react";
+import PropTypes from "prop-types";
 import femaleAvatar from "../../images/anhdong/avatar-femal.lottie";
 import maleAvatar from "../../images/anhdong/avatar-male.lottie";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 
 function Avatar({ gender }) {
-  const isFemale = gender === "Nữ";
   const isMale = gender === "Nam";
   return (
     <Box
@@ -24,5 +23,7 @@ function Avatar({ gender }) {
     </Box>
   );
 }
-
+Avatar.propTypes = {
+  gender: PropTypes.string.isRequired,
+};
 export default Avatar;

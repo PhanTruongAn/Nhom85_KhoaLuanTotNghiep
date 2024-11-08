@@ -1,19 +1,13 @@
-import React, { useEffect } from "react";
 import { Modal, Typography, Box, Button } from "@mui/material";
-import { DeleteOutlined } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
+import PropTypes from "prop-types";
 const UpdateGroupModal = ({
   groupSelect,
   isOpen,
   closeModal,
   onCancel,
-  handleDeleteStudent,
+  // handleDeleteStudent,
 }) => {
-  useEffect(() => {
-    if (groupSelect) {
-    }
-  }, [groupSelect]);
-
   return (
     <Modal
       open={isOpen}
@@ -135,5 +129,10 @@ const UpdateGroupModal = ({
     </Modal>
   );
 };
-
+UpdateGroupModal.propTypes = {
+  groupSelect: PropTypes.object.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+};
 export default UpdateGroupModal;

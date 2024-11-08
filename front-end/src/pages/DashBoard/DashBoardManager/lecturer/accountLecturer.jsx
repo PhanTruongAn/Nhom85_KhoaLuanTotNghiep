@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import _ from "lodash";
 import { Button, Box } from "@mui/material";
 import lecturerApi from "../../../../apis/lecturerApi";
-import { toast } from "react-toastify";
 import { Space, Table, message } from "antd";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AddIcon from "@mui/icons-material/Add";
@@ -23,7 +22,6 @@ const AccountLecturer = () => {
   const [listRole, setListRole] = useState();
   const [messageApi, contextHolder] = message.useMessage();
   const [jsonData, setJsonData] = useState([]);
-  const [fileInput, setFileInput] = useState(null);
   const [open, setOpen] = useState(false);
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -48,7 +46,7 @@ const AccountLecturer = () => {
   const persistDataToSave = () => {
     const data = _.cloneDeep(jsonData);
     const dataPersist = [];
-    Object.entries(data).map(([key, value]) => {
+    Object.entries(data).map(([value]) => {
       dataPersist.push({
         termId: currentTerm.id,
         fullName: value.FullName,

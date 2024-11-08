@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types";
 import {
   Stepper,
   Step,
@@ -159,7 +160,11 @@ function InputMSSV({ value, onChange, next }) {
     </Box>
   );
 }
-
+InputMSSV.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+};
 function InputEmail({ value, onChange, next, prev }) {
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
@@ -198,5 +203,11 @@ function InputEmail({ value, onChange, next, prev }) {
     </Box>
   );
 }
+InputEmail.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+  prev: PropTypes.func.isRequired,
+};
 
 export default ForgetPassword;

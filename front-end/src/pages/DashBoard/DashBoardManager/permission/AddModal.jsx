@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Col, Form, Input, Modal, Row, Select, message, Button } from "antd";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import managerApi from "../../../../apis/managerApi";
+
 function AddModal({ onClose, isOpen, refetch }) {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
@@ -9,13 +11,12 @@ function AddModal({ onClose, isOpen, refetch }) {
     apiPath: "",
     description: "",
     method: "",
-    // phone: "",
   };
   const [state, setState] = useState({
     data: permission,
     buttonLoading: false,
   });
-  // console.log(state.data);
+
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
@@ -25,11 +26,13 @@ function AddModal({ onClose, isOpen, refetch }) {
     _user[name] = value;
     updateState({ data: _user });
   };
+
   const handleCancel = () => {
     updateState({ data: permission });
     form.resetFields();
     onClose();
   };
+
   const handleSubmit = async () => {
     updateState({ buttonLoading: true });
     const res = await managerApi.create(state.data);
@@ -43,6 +46,7 @@ function AddModal({ onClose, isOpen, refetch }) {
       updateState({ buttonLoading: false });
     }
   };
+
   return (
     <>
       {contextHolder}
@@ -124,5 +128,11 @@ function AddModal({ onClose, isOpen, refetch }) {
     </>
   );
 }
+
+AddModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  refetch: PropTypes.func.isRequired,
+};
 
 export default AddModal;

@@ -1,7 +1,6 @@
-import React from "react";
 import { Card, Typography, Divider } from "@mui/material";
 import { formatContent } from "../../../../utils/formatContent";
-
+import PropTypes from "prop-types";
 const NotificationDetail = ({ notification }) => {
   return (
     <Card
@@ -53,5 +52,11 @@ const NotificationDetail = ({ notification }) => {
     </Card>
   );
 };
-
+NotificationDetail.propTypes = {
+  notification: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+  }).isRequired,
+};
 export default NotificationDetail;

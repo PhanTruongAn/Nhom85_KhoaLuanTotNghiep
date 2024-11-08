@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Select, Table, Card } from "antd";
+import { useState } from "react";
+import { Select, Table } from "antd";
 import { Typography, Box } from "@mui/material";
 import { AuditOutlined } from "@ant-design/icons";
 

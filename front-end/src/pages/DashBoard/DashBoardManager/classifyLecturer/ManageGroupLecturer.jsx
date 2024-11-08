@@ -1,12 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Table, Space, Popconfirm } from "antd";
 import { Box, Button, Typography } from "@mui/material";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-  InfoCircleOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 // Import the UpdateGroupModalLecturer component
 import UpdateGroupModalLecturer from "./UpdateGroupModalLecturer";
@@ -57,7 +52,7 @@ const ManageGroupLecturer = () => {
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [dataSource, setDataSource] = useState(mockData);
-
+  const [loading, setLoading] = useState(false);
   const handleOpenUpdateModal = (group, isEditing = false) => {
     setSelectedGroup({ ...group, isEditing });
     setOpenUpdateModal(true);
@@ -148,6 +143,7 @@ const ManageGroupLecturer = () => {
             onClick={() => console.log("Refreshing data...")}
             text="Refresh Data"
             type="refresh"
+            loading={loading}
           />
         </Box>
       </Box>

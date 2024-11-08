@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Form, Input, message, Modal, Row, Select, Button } from "antd";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import managerApi from "../../../../apis/managerApi";
+import PropTypes from "prop-types";
 const { Option } = Select;
 const UpdateModal = ({ objectSelect, isOpen, onClose, getData }) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -97,5 +98,10 @@ const UpdateModal = ({ objectSelect, isOpen, onClose, getData }) => {
     </>
   );
 };
-
+UpdateModal.propTypes = {
+  objectSelect: PropTypes.object,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  getData: PropTypes.func.isRequired,
+};
 export default UpdateModal;

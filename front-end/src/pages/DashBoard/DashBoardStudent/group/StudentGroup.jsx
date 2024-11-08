@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Row, Col, message, Space } from "antd";
 import { HomeOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
@@ -37,13 +37,9 @@ const StudentGroup = () => {
     return res.data;
   };
 
-  const { isSuccess, refetch } = CustomHooks.useQuery(
-    ["my-group", group],
-    getMyGroup,
-    {
-      enabled: isEmpty(group),
-    }
-  );
+  const { refetch } = CustomHooks.useQuery(["my-group", group], getMyGroup, {
+    enabled: isEmpty(group),
+  });
 
   const handleLeaveGroup = async () => {
     setLoading(true);

@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
-import VanillaTilt from "vanilla-tilt";
+import { useRef, useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import PropTypes from "prop-types"; // Import PropTypes
 import Icon1 from "../../images/homepage/imageManage.png";
 import Icon2 from "../../images/homepage/imageCoop.png";
 import Icon3 from "../../images/homepage/imageSearchInfor.png";
@@ -26,17 +26,18 @@ const TiltCard = ({ icon, title, description }) => {
     const intervalId = setInterval(checkTheme, 100);
     return () => clearInterval(intervalId);
   }, [themes]);
+
   const tiltRef = useRef(null);
 
-  useEffect(() => {
-    VanillaTilt.init(tiltRef.current, {
-      max: 15,
-      speed: 400,
-      glare: true,
-      "max-glare": 0.3,
-    });
-    return () => tiltRef.current.vanillaTilt.destroy();
-  }, []);
+  // useEffect(() => {
+  //   VanillaTilt.init(tiltRef.current, {
+  //     max: 15,
+  //     speed: 400,
+  //     glare: true,
+  //     "max-glare": 0.3,
+  //   });
+  //   return () => tiltRef.current.vanillaTilt.destroy();
+  // }, []);
 
   return (
     <Box
@@ -60,7 +61,7 @@ const TiltCard = ({ icon, title, description }) => {
         <img
           src={icon}
           alt={title}
-          style={{ width: "320px", height: "320px", objectFit: "contain" }} // Increased icon size 4 times
+          style={{ width: "320px", height: "320px", objectFit: "contain" }}
         />
       </Box>
       <Box sx={{ flex: "1 1 auto" }}>
@@ -71,6 +72,13 @@ const TiltCard = ({ icon, title, description }) => {
       </Box>
     </Box>
   );
+};
+
+// Define PropTypes for TiltCard
+TiltCard.propTypes = {
+  icon: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
 };
 
 const VerticalTiltComponent = () => {
@@ -90,6 +98,7 @@ const VerticalTiltComponent = () => {
     const intervalId = setInterval(checkTheme, 100);
     return () => clearInterval(intervalId);
   }, [themes]);
+
   return (
     <Box
       sx={{
@@ -106,7 +115,6 @@ const VerticalTiltComponent = () => {
           margin: "0 auto",
         }}
       >
-        {/* Card 1 - Left */}
         <Box
           sx={{
             display: "flex",
@@ -124,7 +132,6 @@ const VerticalTiltComponent = () => {
           </Box>
         </Box>
 
-        {/* Card 2 - Right */}
         <Box
           sx={{
             display: "flex",
@@ -142,7 +149,6 @@ const VerticalTiltComponent = () => {
           </Box>
         </Box>
 
-        {/* Card 3 - Left */}
         <Box
           sx={{
             display: "flex",

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Button, Box, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import { Box, TextField, Typography } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
-import AddIcon from "@mui/icons-material/Add";
 import managerApi from "../../../../apis/managerApi";
 import { message, Space } from "antd";
 import CustomButton from "../../../../components/Button/CustomButton";

@@ -1,11 +1,7 @@
-import React, { useState, useMemo } from "react";
-import { Table, Space, message } from "antd";
+import { useState, useMemo } from "react";
+import { Table, message } from "antd";
 import { Box, Button, Typography } from "@mui/material";
-import {
-  EditOutlined,
-  PlusOutlined,
-  InfoCircleOutlined,
-} from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 
 import SearchComponent from "../../../../components/SearchComponent/search";
 import EmptyData from "../../../../components/emptydata/EmptyData";
@@ -20,7 +16,6 @@ const ListGroupStudentLecturer = () => {
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [data, setData] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
-  const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -53,10 +48,9 @@ const ListGroupStudentLecturer = () => {
         messageApi.error(res.message);
       }
     },
-    onError: (err) => {
+    onError: () => {
       setData([]);
       messageApi.error("Lỗi khi lấy dữ liệu!");
-      // setRefresh(false);
     },
   });
 
@@ -78,7 +72,7 @@ const ListGroupStudentLecturer = () => {
         .includes(searchValue.toLowerCase());
       return groupNameMatch || topicTitleMatch;
     });
-  }, [searchValue, data]);
+  }, [searchValue, data, groupData]);
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },

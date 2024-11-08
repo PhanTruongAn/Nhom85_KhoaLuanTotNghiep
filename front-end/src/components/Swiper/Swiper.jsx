@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography, Container } from "@mui/material";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import image1 from "../../images/anhdong/Welcome.lottie";

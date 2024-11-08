@@ -1,7 +1,7 @@
-import React from "react";
-import { Modal, Typography, Box, Button, TextField } from "@mui/material";
+import { Modal, Typography, Box, Button } from "@mui/material";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
+import PropTypes from "prop-types";
 
 const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
   if (!lecturerSelect) return null;
@@ -93,6 +93,23 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
       </Card>
     </Modal>
   );
+};
+UpdateGroupModalLecturer.propTypes = {
+  lecturerSelect: PropTypes.shape({
+    groupName: PropTypes.string,
+    lecturers: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+          .isRequired,
+        fullName: PropTypes.string.isRequired,
+        email: PropTypes.string,
+        phone: PropTypes.string,
+      })
+    ),
+    isEditing: PropTypes.bool,
+  }),
+  isOpen: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };
 
 export default UpdateGroupModalLecturer;

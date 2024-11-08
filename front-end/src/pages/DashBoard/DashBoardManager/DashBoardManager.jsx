@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   MenuFoldOutlined,
   ExclamationCircleOutlined,
-  MoonOutlined,
-  SunOutlined,
   MenuUnfoldOutlined,
   BellOutlined,
 } from "@ant-design/icons";
@@ -41,7 +39,7 @@ import {
 import { isEmpty } from "lodash";
 import { getCurrentTerm } from "../../../utils/getCurrentTerm.jsx";
 import lecturerApi from "../../../apis/lecturerApi.jsx";
-const { Header, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 import ChangeTheme from "../../../components/Header/ChangeTheme.jsx";
 const DashBoardManager = () => {
   const dispatch = useDispatch();
@@ -91,7 +89,7 @@ const DashBoardManager = () => {
     return res;
   };
 
-  const { data: noteData } = CustomHooks.useQuery(["notes"], getNotes, {
+  CustomHooks.useQuery(["notes"], getNotes, {
     enabled: user.role && !isEmpty(currentTerm) && isEmpty(notes),
     onSuccess: (res) => {
       if (res && res.status === 0) {
@@ -104,11 +102,7 @@ const DashBoardManager = () => {
       messageApi.error(`${error}!`);
     },
   });
-  const {
-    data: termsData,
-    isFetching,
-    refetch,
-  } = CustomHooks.useQuery(
+  CustomHooks.useQuery(
     ["terms"],
     () => {
       if (isManager) {
@@ -120,7 +114,6 @@ const DashBoardManager = () => {
 
     {
       enabled: isEmpty(terms) || isEmpty(currentTerm),
-      onSuccess: (res) => {},
       onError: (error) => {
         messageApi.error(`${error}!`);
       },
@@ -175,7 +168,7 @@ const DashBoardManager = () => {
   };
 
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { borderRadiusLG },
   } = theme.useToken();
 
   const handlePath = ({ key }) => {
@@ -195,7 +188,6 @@ const DashBoardManager = () => {
     }
   };
 
-  const className = themes ? "btn-logOut dark-theme" : "btn-logOut light-theme";
   const changeTheme = () => {
     const newTheme = !themes;
     setThemes(newTheme);
@@ -355,15 +347,7 @@ const DashBoardManager = () => {
                 <span style={{ marginRight: "10px" }}>
                   Chào mừng quay lại <strong>{user.fullName}</strong>
                 </span>
-                {/* <Button
-                  className={`btn-logOut ${
-                    themes ? "dark-theme" : "light-theme"
-                  }`}
-                  size="large"
-                  icon={themes ? <SunOutlined /> : <MoonOutlined />}
-                  onClick={changeTheme}
-                  style={{ marginRight: "10px", marginTop: "10px" }}
-                /> */}
+
                 <Box sx={{ marginRight: "10px", marginTop: "10px" }}>
                   <ChangeTheme
                     theme={themes} // Pass the current theme value

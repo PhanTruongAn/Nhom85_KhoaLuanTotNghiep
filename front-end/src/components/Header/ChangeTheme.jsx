@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 import "./ChangeTheme.scss";
 import {
   LightMode as SunIcon,
@@ -18,5 +18,11 @@ function ChangeTheme({ theme, changeTheme }) {
     </Box>
   );
 }
+
+// Define prop types for ChangeTheme
+ChangeTheme.propTypes = {
+  theme: PropTypes.bool.isRequired,
+  changeTheme: PropTypes.func.isRequired,
+};
 
 export default ChangeTheme;

@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Col, Form, Input, Modal, Row, Select, message, Button } from "antd";
 import _ from "lodash";
 import studentApi from "../../apis/studentApi";
 import lecturerApi from "../../apis/lecturerApi";
 import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
-const { Option } = Select; // Thêm dòng này
+import PropTypes from "prop-types";
+
+const { Option } = Select;
+
 function CreateModal({
   onSubmit,
   onCancel,
@@ -23,16 +26,16 @@ function CreateModal({
     fullName: "",
     username: "",
     roleId: "",
-    // phone: "",
   };
 
   const [data, setData] = useState(user);
-  //   console.log(data);
+
   const handlerOnChange = (value, name) => {
     const _user = _.cloneDeep(data);
     _user[name] = name === "roleId" ? parseInt(value) : value;
     setData(_user);
   };
+
   const handlerSubmit = async () => {
     setLoading(true);
     let dataToSave = {
@@ -42,6 +45,7 @@ function CreateModal({
     const result = isStudent
       ? await studentApi.createSingleAccountStudent(dataToSave)
       : await lecturerApi.createSingleAccountLecturer(dataToSave);
+
     if (result && result.status === 0) {
       messageApi.success(result.message);
       setLoading(false);
@@ -63,27 +67,23 @@ function CreateModal({
     setData(user);
     onCancel();
   };
+
   return (
     <Box>
       {contextHolder}
       <Modal
         title="Thêm tài khoản sinh viên"
         open={isOpen}
-        onCancel={(e) => handleCancel()}
+        onCancel={handleCancel}
         footer={[
-          <Button
-            key="back"
-            type="primary"
-            danger
-            onClick={(e) => handleCancel()}
-          >
+          <Button key="back" type="primary" danger onClick={handleCancel}>
             Hủy bỏ
           </Button>,
           <Button
             key="submit"
             type="primary"
             loading={loading}
-            onClick={(e) => handlerSubmit()}
+            onClick={handlerSubmit}
           >
             Xác nhận
           </Button>,
@@ -135,14 +135,11 @@ function CreateModal({
                     onChange={(value) => handlerOnChange(value, "roleId")}
                   >
                     {listRole &&
-                      listRole.length > 0 &&
-                      listRole.map((item, index) => {
-                        return (
-                          <Option key={index} value={item.id}>
-                            {item.name}
-                          </Option>
-                        );
-                      })}
+                      listRole.map((item, index) => (
+                        <Option key={index} value={item.id}>
+                          {item.name}
+                        </Option>
+                      ))}
                   </Select>
                 </Form.Item>
               </Col>
@@ -153,5 +150,19 @@ function CreateModal({
     </Box>
   );
 }
+
+CreateModal.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  getData: PropTypes.func,
+  isStudent: PropTypes.bool,
+  listRole: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    })
+  ),
+};
 
 export default CreateModal;

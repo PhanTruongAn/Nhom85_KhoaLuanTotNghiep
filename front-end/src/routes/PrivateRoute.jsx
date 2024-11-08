@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 import { fetchToken } from "../redux/userSlice";
 import history from "../utils/history";
+/* eslint-disable */
 const PrivateRoute = (props) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const reduxData = useSelector((state) => state.userInit);
   // const checkAuth = async () => {
@@ -28,9 +28,8 @@ const PrivateRoute = (props) => {
   } else {
     return props.component;
   }
-  // else if (reduxData.isLoading === true) {
-  //   return <></>;
-  // }
 };
-
+PrivateRoute.propTypes = {
+  component: PropTypes.element.isRequired,
+};
 export default PrivateRoute;

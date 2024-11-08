@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Box, Typography } from "@mui/material";
 import { Select, Table, Tag, message, Input } from "antd";
@@ -35,24 +35,20 @@ function RolePermission() {
     return res;
   };
 
-  const { data, isSuccess, refetch } = CustomHooks.useQuery(
-    ["data1"],
-    fetchPermission,
-    {
-      onSuccess: (res) => {
-        if (res && res.status === 0) {
-          updateState({
-            dataSource: res.data, // Lưu toàn bộ dữ liệu
-            filteredData: res.data, // Khởi tạo filteredData giống với dataSource
-            loadingData: false,
-          });
-        } else {
-          updateState({ dataSource: [], loadingData: false });
-          messageApi.error(res.message);
-        }
-      },
-    }
-  );
+  CustomHooks.useQuery(["data1"], fetchPermission, {
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        updateState({
+          dataSource: res.data, // Lưu toàn bộ dữ liệu
+          filteredData: res.data, // Khởi tạo filteredData giống với dataSource
+          loadingData: false,
+        });
+      } else {
+        updateState({ dataSource: [], loadingData: false });
+        messageApi.error(res.message);
+      }
+    },
+  });
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);

@@ -1,25 +1,27 @@
-// CustomHooks.js
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useQuery as useReactQuery,
+  useInfiniteQuery as useReactInfiniteQuery,
+} from "@tanstack/react-query";
 
-class CustomHooks {
-  static useQuery(queryKey, queryFn, options = {}) {
-    return useQuery(queryKey, queryFn, {
+const CustomHooks = {
+  useQuery: (queryKey, queryFn, options = {}) => {
+    return useReactQuery(queryKey, queryFn, {
       refetchOnWindowFocus: false,
       keepPreviousData: true,
       cacheTime: 1000 * 60 * 10,
       staleTime: 1000,
       ...options,
     });
-  }
-  static useInfiniteQuery(queryKey, queryFn, options = {}) {
-    return useInfiniteQuery(queryKey, queryFn, {
+  },
+  useInfiniteQuery: (queryKey, queryFn, options = {}) => {
+    return useReactInfiniteQuery(queryKey, queryFn, {
       refetchOnWindowFocus: false,
       keepPreviousData: true,
       cacheTime: 1000 * 60 * 10,
       staleTime: 1000,
       ...options,
     });
-  }
-}
+  },
+};
 
 export default CustomHooks;

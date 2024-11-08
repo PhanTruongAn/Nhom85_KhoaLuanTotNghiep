@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import {
   Button,
   Typography,
@@ -9,12 +9,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  UsergroupAddOutlined,
-} from "@ant-design/icons";
-import SearchIcon from "@mui/icons-material/Search";
+import { DeleteOutlined, UsergroupAddOutlined } from "@ant-design/icons";
 import { Space, Table, message, Popconfirm } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import EmptyData from "../../../../components/emptydata/EmptyData";
@@ -36,7 +31,6 @@ function ManagerTopics() {
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [openDetailModal, setOpenDetailModal] = useState(false);
   const [topics, setTopics] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState();
   const [totalPages, setTotalPages] = useState();
   const [refresh, setRefresh] = useState(false);
@@ -67,16 +61,13 @@ function ManagerTopics() {
           setTopics(res.data.topics);
           setTotalRows(res.data.totalRows);
           setTotalPages(res.data.totalPages);
-          setLoading(false);
         } else if (res.status === -1 || res.status === 403) {
-          setLoading(false);
           setTopics([]);
           messageApi.error(res.message);
         }
         setRefresh(false);
       },
-      onError: (err) => {
-        setLoading(false);
+      onError: () => {
         setRefresh(false);
         messageApi.error("Lỗi khi lấy dữ liệu!");
       },
@@ -167,7 +158,7 @@ function ManagerTopics() {
             <Popconfirm
               title="Xóa đề tài"
               description="Bạn có chắc muốn xóa đề tài này?"
-              onConfirm={(e) => handleDelete(record.id)}
+              onConfirm={() => handleDelete(record.id)}
               okText="Đồng ý"
               cancelText="Không"
             >

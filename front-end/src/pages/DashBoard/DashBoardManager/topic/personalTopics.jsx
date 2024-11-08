@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   Button,
   Typography,
@@ -77,7 +77,7 @@ function PersonalTopics() {
           setRefresh(false);
         }
       },
-      onError: (err) => {
+      onError: () => {
         setTopics([]);
         messageApi.error("Lỗi khi lấy dữ liệu!");
         setRefresh(false);
@@ -90,7 +90,7 @@ function PersonalTopics() {
     return sourceData.filter((topic) =>
       topic.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, topics]);
+  }, [searchTerm, topics, data]);
 
   const totalRows = filteredTopics.length;
 
@@ -228,16 +228,6 @@ function PersonalTopics() {
             color="secondary"
             size="small"
             endIcon={<UsergroupAddOutlined />}
-            // sx={[
-            //   (theme) => ({
-            //     ...theme.applyStyles("light", {
-            //       backgroundColor: "#FF993A",
-            //     }),
-            //     ...theme.applyStyles("dark", {
-            //       backgroundColor: "#1DA57A",
-            //     }),
-            //   }),
-            // ]}
           >
             Gán nhóm
           </Button>
@@ -262,7 +252,7 @@ function PersonalTopics() {
           <Popconfirm
             title="Xóa đề tài"
             description="Bạn có chắc muốn xóa đề tài này?"
-            onConfirm={(e) => handleDelete(record.id)}
+            onConfirm={() => handleDelete(record.id)}
             okText="Đồng ý"
             cancelText="Không"
           >

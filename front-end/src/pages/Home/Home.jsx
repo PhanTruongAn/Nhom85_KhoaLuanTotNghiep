@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from "react";
-import SwiperSlide from "../../components/Swiper/Swiper.jsx";
+import { useEffect, useState } from "react";
 import TiltComponent from "../../components/Vanilla/TiltComponent.jsx";
-import imageLeft from "../../images/4.avif";
-import imageRight from "../../images/goals.jpg";
-import imageBottom from "../../images/5.jpg";
 import Footer from "../../components/Footer/Footer.jsx";
-import BackgroundContainer from "./theme/Container.jsx";
-import background from "../../images/background.jpg";
-import backgrounddark from "../../images/backgrounddark.jpg";
 import HomePageTest from "../../components/Swiper/HomePageTest.jsx";
 import { Box } from "@mui/material";
 

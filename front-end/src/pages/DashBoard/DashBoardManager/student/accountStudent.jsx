@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import * as XLSX from "xlsx";
 import _ from "lodash";
 import { Button, Box } from "@mui/material";
@@ -21,7 +21,6 @@ const AccountStudent = () => {
   });
   const [messageApi, contextHolder] = message.useMessage();
   const [jsonData, setJsonData] = useState([]);
-  const [fileInput, setFileInput] = useState(null);
   const [open, setOpen] = useState(false);
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -48,7 +47,7 @@ const AccountStudent = () => {
   const persistDataToSave = () => {
     const data = _.cloneDeep(jsonData);
     const dataPersist = [];
-    Object.entries(data).map(([key, value]) => {
+    Object.entries(data).map(([value]) => {
       dataPersist.push({
         termId: currentTerm.id,
         fullName: value.FullName,

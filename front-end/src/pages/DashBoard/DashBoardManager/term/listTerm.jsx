@@ -1,8 +1,7 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Table, Input, Space } from "antd";
 import {
   EditOutlined,
-  DeleteOutlined,
   SearchOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons";
@@ -14,7 +13,7 @@ import {
   DialogContent,
   Box,
 } from "@mui/material";
-import { message, Popconfirm } from "antd";
+import { message } from "antd";
 import UpdateTerm from "./UpdateTerm";
 import ViewTerm from "./viewTerm";
 import CustomHooks from "../../../../utils/hooks";
@@ -87,7 +86,7 @@ const ListTerm = () => {
     setCurrentTerm(null);
   };
 
-  const handleEditModalOk = (values) => {
+  const handleEditModalOk = () => {
     refetch();
   };
 

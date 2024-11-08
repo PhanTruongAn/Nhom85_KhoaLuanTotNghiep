@@ -1,7 +1,6 @@
-import React from "react";
 import emptyDataImage from "../../images/anhdong/overdate.gif";
 import { Box, Typography } from "@mui/material";
-
+import PropTypes from "prop-types";
 // Helper function to format date and time
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("vi-VN", {
@@ -73,5 +72,9 @@ function OverDate({ text, startDate, endDate }) {
     </Box>
   );
 }
-
+OverDate.propTypes = {
+  text: PropTypes.string.isRequired,
+  startDate: PropTypes.string.isRequired,
+  endDate: PropTypes.string.isRequired,
+};
 export default OverDate;

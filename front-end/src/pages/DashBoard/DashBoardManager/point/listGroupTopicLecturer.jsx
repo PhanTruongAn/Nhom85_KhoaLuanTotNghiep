@@ -1,16 +1,14 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   Box,
   Button,
   Select,
   MenuItem,
-  Typography,
   Dialog,
   FormControl,
   InputLabel,
-  OutlinedInput,
 } from "@mui/material";
-import { Table, Space, message } from "antd";
+import { Table, message } from "antd";
 import PointTopicStudent from "./pointTopicStudent";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomHooks from "../../../../utils/hooks";
@@ -65,7 +63,7 @@ function ListGroupTopicLecturer() {
           messageApi.error(res.message);
         }
       },
-      onError: (err) => {
+      onError: () => {
         updateState({
           dataSource: [],
           loadingData: false,
@@ -84,7 +82,7 @@ function ListGroupTopicLecturer() {
     return sourceData.filter((group) =>
       group.groupName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, state.dataSource]);
+  }, [searchTerm, state.dataSource, groupsData]);
 
   const columns = [
     {

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Form, Input, DatePicker, Row, Col, Card, Space, message } from "antd";
 import { Button, Box } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import dayjs from "dayjs";
 import CustomButton from "../../../../components/Button/CustomButton";
 import managerApi from "../../../../apis/managerApi";
+import PropTypes from "prop-types";
 const UpdateTerm = ({ term, onOk, onCancel }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -164,5 +164,9 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
     </Box>
   );
 };
-
+UpdateTerm.propTypes = {
+  term: PropTypes.object.isRequired,
+  onOk: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+};
 export default UpdateTerm;

@@ -1,17 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, TextField, Grid, Typography, Button } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
-import { Table, Select, Input, Space, message } from "antd";
+import { Table, Select, Space, message } from "antd";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import SearchIcon from "@mui/icons-material/Search";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CustomHooks from "../../../../utils/hooks";
-import CustomButton from "../../../../components/Button/CustomButton";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import lecturerApi from "../../../../apis/lecturerApi";
 import { useSelector, useDispatch } from "react-redux";
-import { setLecturers } from "../../../../redux/userSlice";
-const { Search } = Input;
 const { Option } = Select;
 
 const columns = [
@@ -41,10 +37,10 @@ function ClassifyTypeLecturer() {
   const dispatch = useDispatch();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
-  const [searchLoadingGuide, setSearchLoadingGuide] = useState(false);
-  const [searchLoadingReport, setSearchLoadingReport] = useState(false);
-  const [searchValueGuide, setSearchValueGuide] = useState("");
-  const [searchValueReport, setSearchValueReport] = useState("");
+  // const [searchLoadingGuide, setSearchLoadingGuide] = useState(false);
+  // const [searchLoadingReport, setSearchLoadingReport] = useState(false);
+  // const [searchValueGuide, setSearchValueGuide] = useState("");
+  // const [searchValueReport, setSearchValueReport] = useState("");
   const [selectedLecturerGuide, setSelectedLecturerGuide] = useState(null);
   const [selectedLecturerReport, setSelectedLecturerReport] = useState(null);
   const [guideLecturerTopics, setGuideLecturerTopics] = useState([]);
@@ -71,64 +67,64 @@ function ClassifyTypeLecturer() {
     },
   });
 
-  const handleSearch = (value, type) => {
-    if (type === "guide") {
-      setSearchLoadingGuide(true);
-    } else {
-      setSearchLoadingReport(true);
-    }
+  // const handleSearch = (value, type) => {
+  //   if (type === "guide") {
+  //     setSearchLoadingGuide(true);
+  //   } else {
+  //     setSearchLoadingReport(true);
+  //   }
 
-    const lecturer = lecturers.find(
-      (lecturer) =>
-        lecturer.lecturerId === value ||
-        lecturer.phone === value ||
-        lecturer.email === value
-    );
+  //   const lecturer = lecturers.find(
+  //     (lecturer) =>
+  //       lecturer.lecturerId === value ||
+  //       lecturer.phone === value ||
+  //       lecturer.email === value
+  //   );
 
-    if (lecturer) {
-      if (type === "guide") {
-        setSelectedLecturerGuide(lecturer);
-        setGuideLecturerTopics(lecturer.topics || []);
-      } else {
-        setSelectedLecturerReport(lecturer);
-      }
-    } else {
-      if (type === "guide") {
-        setSelectedLecturerGuide(null);
-        setGuideLecturerTopics([]);
-      } else {
-        setSelectedLecturerReport(null);
-      }
-    }
+  //   if (lecturer) {
+  //     if (type === "guide") {
+  //       setSelectedLecturerGuide(lecturer);
+  //       setGuideLecturerTopics(lecturer.topics || []);
+  //     } else {
+  //       setSelectedLecturerReport(lecturer);
+  //     }
+  //   } else {
+  //     if (type === "guide") {
+  //       setSelectedLecturerGuide(null);
+  //       setGuideLecturerTopics([]);
+  //     } else {
+  //       setSelectedLecturerReport(null);
+  //     }
+  //   }
 
-    setTimeout(() => {
-      if (type === "guide") {
-        setSearchLoadingGuide(false);
-      } else {
-        setSearchLoadingReport(false);
-      }
-    }, 1000);
-  };
+  //   setTimeout(() => {
+  //     if (type === "guide") {
+  //       setSearchLoadingGuide(false);
+  //     } else {
+  //       setSearchLoadingReport(false);
+  //     }
+  //   }, 1000);
+  // };
 
-  const handleSelectChange = (value, type) => {
-    const lecturer = lecturers.find(
-      (lecturer) => lecturer.lecturerId === value
-    );
-    if (type === "guide") {
-      setSelectedLecturerGuide(lecturer);
-      setGuideLecturerTopics(lecturer.topics || []);
-    } else {
-      setSelectedLecturerReport(lecturer);
-    }
-  };
+  // const handleSelectChange = (value, type) => {
+  //   const lecturer = lecturers.find(
+  //     (lecturer) => lecturer.lecturerId === value
+  //   );
+  //   if (type === "guide") {
+  //     setSelectedLecturerGuide(lecturer);
+  //     setGuideLecturerTopics(lecturer.topics || []);
+  //   } else {
+  //     setSelectedLecturerReport(lecturer);
+  //   }
+  // };
 
   const handleReset = () => {
     setSelectedLecturerGuide(null);
     setSelectedLecturerReport(null);
     setGuideLecturerTopics([]);
     setSelectedRowKeys([]);
-    setSearchValueGuide(""); // Reset guide search field
-    setSearchValueReport(""); // Reset report search field
+    // setSearchValueGuide(""); // Reset guide search field
+    // setSearchValueReport(""); // Reset report search field
   };
 
   const onSelectChange = (newSelectedRowKeys) => {

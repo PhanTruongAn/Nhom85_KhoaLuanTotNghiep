@@ -3,7 +3,6 @@ import {
   SettingOutlined,
   LogoutOutlined,
   HomeOutlined,
-  ProjectOutlined,
   OrderedListOutlined,
   ClusterOutlined,
   NotificationOutlined,

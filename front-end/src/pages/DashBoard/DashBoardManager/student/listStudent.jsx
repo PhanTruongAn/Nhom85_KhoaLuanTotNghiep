@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Table, Space, message, Popconfirm, Select, Input } from "antd";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  ReloadOutlined,
-  PlusOutlined,
-  AudioOutlined,
-} from "@ant-design/icons"; // Thêm biểu tượng UserOutlined
+import { useState } from "react";
+import { Table, Space, message, Popconfirm } from "antd";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons"; // Thêm biểu tượng UserOutlined
 import { toast } from "react-toastify";
 import { Box, Typography, Button } from "@mui/material";
 // import AddModal from "./AddModal";
 import studentApi from "../../../../apis/studentApi";
-import { useNavigate } from "react-router-dom";
 import UpdateModal from "../../../../components/Dashboard/updateModal";
 import CreateModal from "../../../../components/Dashboard/createModal";
 import EmptyData from "../../../../components/emptydata/EmptyData";
@@ -20,10 +13,8 @@ import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useSelector } from "react-redux";
 import SearchComponent from "../../../../components/SearchComponent/search";
-const { Option } = Select;
 
 function ListStudent() {
-  const navigate = useNavigate();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [searchValue, setSearchValue] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -39,13 +30,7 @@ function ListStudent() {
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const debouncedSearchTerm = useDebounce(searchValue, 500);
 
-  const [state, setState] = useState({
-    searchLoading: false,
-  });
-  const updateState = (newState) => {
-    setState((prevState) => ({ ...prevState, ...newState }));
-  };
-  const { data, isSuccess, isFetching, refetch } = CustomHooks.useQuery(
+  const { data, isFetching, refetch } = CustomHooks.useQuery(
     ["students", currentPage, debouncedSearchTerm, limitUser, currentTerm?.id],
     () => {
       if (debouncedSearchTerm) {
@@ -68,7 +53,7 @@ function ListStudent() {
           messageApi.error(res.message);
         }
       },
-      onError: (err) => {
+      onError: () => {
         setLoading(false);
         messageApi.error("Lỗi khi lấy dữ liệu!");
       },
@@ -202,7 +187,6 @@ function ListStudent() {
       title: "Nhóm", // Thay đổi tiêu đề cột
       key: "group",
       render: (record) => (record.groupId ? "Đã có nhóm" : "Chưa có nhóm"),
-      sorter: (a, b) => a.groupId - b.groupId,
     },
     {
       title: "Email",
@@ -220,7 +204,7 @@ function ListStudent() {
       render: (_, record) => (
         <>
           <Button
-            onClick={(e) => showUpdateModal(record)}
+            onClick={() => showUpdateModal(record)}
             variant="contained"
             size="small"
             sx={[
@@ -240,7 +224,7 @@ function ListStudent() {
           <Popconfirm
             title="Xóa sinh viên"
             description="Bạn có chắc muốn xóa sinh viên này?"
-            onConfirm={(e) => onPopConfirmDelete(record)}
+            onConfirm={() => onPopConfirmDelete(record)}
             okText="Đồng ý"
             cancelText="Không"
           >

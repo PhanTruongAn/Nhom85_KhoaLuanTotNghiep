@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Box, Button, Dialog, DialogTitle, DialogContent } from "@mui/material";
+import { useState, useEffect, useRef } from "react";
+import { Box, Button, Dialog } from "@mui/material";
 import NotificationDetail from "./notificationDetail"; // Import NotificationDetail
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import _ from "lodash";
 
 function ListNotification() {

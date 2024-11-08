@@ -1,4 +1,3 @@
-import { Drawer } from "antd";
 
 const darkTheme = {
   token: {

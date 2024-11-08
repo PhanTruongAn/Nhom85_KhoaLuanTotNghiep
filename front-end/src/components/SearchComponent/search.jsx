@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Grid, TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-
+import PropTypes from "prop-types";
 function SearchComponent({ onChange, placeholder }) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -36,5 +36,8 @@ function SearchComponent({ onChange, placeholder }) {
     </Grid>
   );
 }
-
+SearchComponent.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string.isRequired,
+};
 export default SearchComponent;

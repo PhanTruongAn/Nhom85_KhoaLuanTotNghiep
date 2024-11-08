@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input, Select, message, Col } from "antd";
 import { Box, Typography } from "@mui/material";
 import { BookTwoTone } from "@ant-design/icons";
@@ -51,20 +51,12 @@ function StudentHome() {
     }
     return res;
   };
-  const { isFetching: fetchingGroup } = CustomHooks.useQuery(
-    ["my-group"],
-    getMyGroup,
-    {
-      enabled: isEmpty(group),
-    }
-  );
-  const { isFetching: fetchingMajors } = CustomHooks.useQuery(
-    ["majors"],
-    getMajors,
-    {
-      enabled: isEmpty(majors),
-    }
-  );
+  CustomHooks.useQuery(["my-group"], getMyGroup, {
+    enabled: isEmpty(group),
+  });
+  CustomHooks.useQuery(["majors"], getMajors, {
+    enabled: isEmpty(majors),
+  });
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -81,7 +73,7 @@ function StudentHome() {
         messageApi.error(`Cập nhật thất bại: ${response.message}`);
       }
     } catch (error) {
-      messageApi.error("Đã xảy ra lỗi khi cập nhật thông tin.");
+      messageApi.error(`Lỗi: ${error.message} `);
     } finally {
       setLoading(false);
     }

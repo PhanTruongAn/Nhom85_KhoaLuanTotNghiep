@@ -1,18 +1,9 @@
-import React, { useState } from "react";
-import {
-  CardContent,
-  CardHeader,
-  Grid,
-  Box,
-  Button,
-  Typography,
-} from "@mui/material";
+import { useState } from "react";
+import { CardContent, CardHeader, Grid, Box, Typography } from "@mui/material";
 import { DatePicker, Input, message } from "antd";
-import dayjs from "dayjs";
 import { Card } from "../../../../components/Card/Card";
 import managerApi from "../../../../apis/managerApi";
 import CustomButton from "../../../../components/Button/CustomButton";
-const { RangePicker } = DatePicker;
 
 function CreateTerm() {
   const [messageApi, contextHolder] = message.useMessage();

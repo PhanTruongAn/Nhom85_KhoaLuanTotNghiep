@@ -1,18 +1,8 @@
-import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Space,
-  message,
-  Pagination,
-  Select,
-  Input,
-  Tag,
-  Popconfirm,
-} from "antd";
+import { useState } from "react";
+import { Table, Space, message, Select, Input, Tag, Popconfirm } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
-  ReloadOutlined,
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
@@ -24,8 +14,6 @@ import managerApi from "../../../../apis/managerApi";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useDebounce } from "@uidotdev/usehooks";
-import { isEmpty } from "lodash";
-const { Search } = Input;
 function ListPermission() {
   const [state, setState] = useState({
     searchLoading: false,
@@ -216,7 +204,7 @@ function ListPermission() {
           <Popconfirm
             title="Xóa quyền hạn"
             description="Bạn có chắc muốn xóa quyền hạn này?"
-            onConfirm={(e) => onPopConfirmDelete(record)}
+            onConfirm={() => onPopConfirmDelete(record)}
             // onCancel={onPopConfirmCancel}
             okText="Đồng ý"
             cancelText="Không"

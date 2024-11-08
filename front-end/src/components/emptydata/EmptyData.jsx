@@ -1,9 +1,8 @@
-import React from "react";
 import emptyDataImage from "../../images/anhdong/robot.lottie";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Box, Typography } from "@mui/material";
-
-function EmptyData({ text, isFetching }) {
+import PropTypes from "prop-types";
+function EmptyData({ text }) {
   return (
     <Box
       display="flex"
@@ -24,5 +23,7 @@ function EmptyData({ text, isFetching }) {
     </Box>
   );
 }
-
+EmptyData.propTypes = {
+  text: PropTypes.string,
+};
 export default EmptyData;

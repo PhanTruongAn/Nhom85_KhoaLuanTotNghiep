@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   MenuFoldOutlined,
   ExclamationCircleOutlined,
-  MoonOutlined,
-  SunOutlined,
   MenuUnfoldOutlined,
   BellOutlined,
 } from "@ant-design/icons";
@@ -21,7 +19,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { ThemeProvider, Box, Popover, TextField } from "@mui/material"; // Popover từ MUI
+import { ThemeProvider, Box, Popover } from "@mui/material"; // Popover từ MUI
 import CssBaseline from "@mui/material/CssBaseline";
 import authApi from "../../../apis/authApi.jsx";
 import lightTheme from "../../../styles/themes/ant/lightTheme.jsx";
@@ -72,7 +70,7 @@ const DashBoardStudent = () => {
     return res;
   };
 
-  const { data: noteData } = CustomHooks.useQuery(["notes"], getNotes, {
+  CustomHooks.useQuery(["notes"], getNotes, {
     enabled: user.role && !isEmpty(currentTerm) && isEmpty(notes),
     onSuccess: (res) => {
       if (res && res.status === 0) {
@@ -85,7 +83,7 @@ const DashBoardStudent = () => {
       messageApi.error(`${error}!`);
     },
   });
-  const { data: termData } = CustomHooks.useQuery(["term"], getTerm, {
+  CustomHooks.useQuery(["term"], getTerm, {
     enabled: isEmpty(currentTerm),
     onSuccess: (res) => {
       if (res && res.status === 0) {

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import "./style.scss";
 import logoIUH from "../../images/logo-iuh.png";
-import themeDark from "../../styles/themes/mui/themeDark";
 import IconButton from "@mui/material/IconButton";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -10,21 +10,19 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Drawer from "@mui/material/Drawer";
 import { useNavigate } from "react-router-dom";
 import ChangeTheme from "./ChangeTheme"; // Import the ChangeTheme component
-import { Space } from "antd";
 
-const Header = (props) => {
+const Header = ({ theme, changeTheme }) => {
   const navigate = useNavigate();
-  const validPaths = ["/home", "/notification", "/information", "/login"];
 
   const [value, setValue] = useState("/login");
   const [drawerOpen, setDrawerOpen] = useState(false);
-
   useEffect(() => {
+    const validPaths = ["/home", "/notification", "/information", "/login"];
     const initialPath = window.location.pathname;
     if (validPaths.includes(initialPath)) {
       setValue(initialPath);
     }
-  }, []);
+  }, []); // Chỉ chạy 1 lần khi component mount
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -99,7 +97,7 @@ const Header = (props) => {
             </Tabs>
 
             {/* Theme toggle button inside Drawer */}
-            <ChangeTheme theme={props.theme} changeTheme={props.changeTheme} />
+            <ChangeTheme theme={theme} changeTheme={changeTheme} />
           </Box>
         </Drawer>
 
@@ -152,11 +150,17 @@ const Header = (props) => {
           </Tabs>
 
           {/* Theme toggle icon for desktop */}
-          <ChangeTheme theme={props.theme} changeTheme={props.changeTheme} />
+          <ChangeTheme theme={theme} changeTheme={changeTheme} />
         </Box>
       </Box>
     </Box>
   );
+};
+
+// Define prop types for Header
+Header.propTypes = {
+  theme: PropTypes.bool.isRequired,
+  changeTheme: PropTypes.func.isRequired,
 };
 
 export default Header;

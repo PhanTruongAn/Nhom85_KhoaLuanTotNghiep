@@ -1,4 +1,3 @@
-import { Pagination } from "antd";
 
 const lightTheme = {
   token: {},

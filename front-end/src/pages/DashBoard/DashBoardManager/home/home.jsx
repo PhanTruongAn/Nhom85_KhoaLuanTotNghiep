@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Input, Select, message, Col } from "antd";
 import { Box, Typography } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import { useSelector, useDispatch } from "react-redux";
-import managerApi from "../../../../apis/managerApi";
 import lecturerApi from "../../../../apis/lecturerApi";
 import CustomButton from "../../../../components/Button/CustomButton";
-import { setUser, setTerms } from "../../../../redux/userSlice";
+import { setUser } from "../../../../redux/userSlice";
 import Avatar from "../../../../components/Avatar/Avatar";
 
 const { Option } = Select;

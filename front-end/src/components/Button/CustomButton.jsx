@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, CircularProgress } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -7,7 +6,6 @@ import PropTypes from "prop-types";
 function CustomButton({ onClick, loading, text, type, sx, disabled }) {
   const isSuccess = type === "success";
   const isError = type === "error";
-  const isInfo = type === "refresh";
   return (
     <Button
       sx={sx ? sx : {}}
@@ -40,5 +38,7 @@ CustomButton.propTypes = {
   loading: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
+  sx: PropTypes.object,
+  disabled: PropTypes.bool,
 };
 export default CustomButton;

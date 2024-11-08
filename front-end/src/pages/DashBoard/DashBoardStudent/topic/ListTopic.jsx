@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import {
-  Paper,
   Button,
   Typography,
   TextField,
@@ -15,7 +14,7 @@ import {
 import { InfoCircleOutlined } from "@ant-design/icons";
 import SearchIcon from "@mui/icons-material/Search";
 import TopicIcon from "@mui/icons-material/Topic";
-import { Table, Pagination, message, Modal } from "antd";
+import { Table, message, Modal } from "antd";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import studentApi from "../../../../apis/studentApi";
 import { isEmpty } from "lodash";
@@ -26,6 +25,7 @@ import ConfirmModal from "../../../../components/Modal/confirmModal";
 import { useDebounce } from "@uidotdev/usehooks";
 import { formatContent } from "../../../../utils/formatContent";
 import OverDate from "../../../../components/overDate/overDate";
+/* eslint-disable */
 function ListTopic() {
   const group = useSelector((state) => state.userInit.group);
   const user = useSelector((state) => state.userInit.user);
@@ -92,7 +92,7 @@ function ListTopic() {
           messageApi.error(res.message);
         }
       },
-      onError: (err) => {
+      onError: () => {
         updateState({ topics: [], totalRows: 0, loadingData: false });
         messageApi.error("Lỗi khi lấy dữ liệu!");
       },
@@ -203,14 +203,14 @@ function ListTopic() {
             variant="outlined"
             size="small"
             endIcon={<InfoCircleOutlined />}
-            onClick={(e) => viewDetailTopic(record.id)}
+            onClick={() => viewDetailTopic(record.id)}
           >
             Xem chi tiết
           </Button>
           <Button
             variant="contained"
             size="small"
-            onClick={(e) => handleRegisterClick(record.id)}
+            onClick={() => handleRegisterClick(record.id)}
             disabled={isWithinPublicTopicPeriod}
           >
             Đăng ký

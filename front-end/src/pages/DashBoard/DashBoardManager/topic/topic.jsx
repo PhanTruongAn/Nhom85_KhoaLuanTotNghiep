@@ -1,9 +1,9 @@
-import React, { useState, useRef } from "react"; // Thêm useRef
-import { Button, Box, IconButton } from "@mui/material";
-import { Table, message, Tooltip, Select, Modal, Space } from "antd";
+import { useState, useRef } from "react"; // Thêm useRef
+import { Button, Box } from "@mui/material";
+import { Table, message, Select, Modal, Space } from "antd";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DownloadFileIcon from "@mui/icons-material/FileDownloadOutlined";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import EmptyData from "../../../../components/emptydata/EmptyData";
@@ -35,7 +35,7 @@ const ManagerTopic = () => {
   const buildDataToSave = () => {
     const data = _.cloneDeep(jsonData[selectedSheet]);
     const dataSave = [];
-    Object.entries(data).map(([key, value]) => {
+    Object.entries(data).map(([value]) => {
       dataSave.push({
         title: value["Tên đề tài"],
         description: value["Mô tả"],
@@ -77,6 +77,7 @@ const ManagerTopic = () => {
 
         messageApi.success("Dữ liệu file đã được tải thành công!");
       } catch (error) {
+        console.log(error);
         messageApi.error("Lỗi khi đọc file. Vui lòng kiểm tra lại định dạng.");
         setLoading(false);
       }

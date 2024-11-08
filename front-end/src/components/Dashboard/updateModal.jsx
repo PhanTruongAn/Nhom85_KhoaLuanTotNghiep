@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Form, Input, message, Modal, Row, Select, Button } from "antd";
 import _ from "lodash";
+import PropTypes from "prop-types";
 import studentApi from "../../apis/studentApi";
 import { toast } from "react-toastify";
 import lecturerApi from "../../apis/lecturerApi";
@@ -141,5 +142,12 @@ const UpdateModal = ({
     </>
   );
 };
-
+UpdateModal.propTypes = {
+  isStudent: PropTypes.bool.isRequired,
+  userSelect: PropTypes.object,
+  isOpen: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  getData: PropTypes.func.isRequired,
+};
 export default UpdateModal;

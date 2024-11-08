@@ -1,8 +1,7 @@
-import React from "react";
 import { Form, Input, Row, Col, Card } from "antd";
 import { Box, Button } from "@mui/material";
 import dayjs from "dayjs";
-
+import PropTypes from "prop-types";
 const ViewTerm = ({ term, onCancel }) => {
   const [form] = Form.useForm();
 
@@ -106,6 +105,10 @@ const ViewTerm = ({ term, onCancel }) => {
       </Button>
     </Box>
   );
+};
+ViewTerm.propTypes = {
+  term: PropTypes.object.isRequired,
+  onCancel: PropTypes.func.isRequired,
 };
 
 export default ViewTerm;

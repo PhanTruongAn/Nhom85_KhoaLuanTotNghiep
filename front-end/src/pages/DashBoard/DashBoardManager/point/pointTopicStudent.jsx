@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -8,6 +8,7 @@ import {
   Grid,
   Divider,
 } from "@mui/material";
+import PropTypes from "prop-types";
 import { message } from "antd";
 import lecturerApi from "../../../../apis/lecturerApi";
 import CustomButton from "../../../../components/Button/CustomButton";
@@ -197,5 +198,19 @@ function PointTopicStudent({ selectedGroup, onClose }) {
     </Box>
   );
 }
-
+PointTopicStudent.propTypes = {
+  selectedGroup: PropTypes.shape({
+    id: PropTypes.number,
+    students: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        username: PropTypes.string,
+        fullName: PropTypes.string,
+        email: PropTypes.string,
+        phone: PropTypes.string,
+      })
+    ),
+  }),
+  onClose: PropTypes.func.isRequired,
+};
 export default PointTopicStudent;

@@ -1,9 +1,5 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
@@ -11,7 +7,6 @@ import Typography from "@mui/material/Typography";
 import Card from "./theme/Card";
 import SignInContainer from "./theme/Container";
 import logo from "../../images/logo-iuh.png";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";

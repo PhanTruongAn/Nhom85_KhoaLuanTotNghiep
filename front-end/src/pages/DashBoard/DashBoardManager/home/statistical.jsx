@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Typography, Paper, Grid } from "@mui/material";
 import { Bar, Pie } from "react-chartjs-2";
 import {
@@ -12,7 +11,6 @@ import {
   ArcElement,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import Image1 from "../../../../images/anhdong/Statistical.jpg";
 
 // Register plugins
 ChartJS.register(

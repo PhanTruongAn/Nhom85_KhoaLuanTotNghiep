@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Typography,
@@ -13,12 +13,8 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { Table, Space, Input, message, Popconfirm } from "antd"; // Import Input từ Ant Design
-import {
-  EditOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-} from "@ant-design/icons"; // Biểu tượng search
+import { Table, Space, message, Popconfirm } from "antd"; // Import Input từ Ant Design
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons"; // Biểu tượng search
 import managerApi from "../../../../../apis/managerApi";
 import CustomHooks from "../../../../../utils/hooks";
 import { useSelector } from "react-redux";
@@ -143,7 +139,7 @@ function ManageNotification() {
           <Popconfirm
             title="Xóa thông báo"
             description="Bạn có chắc muốn xóa thông báo này?"
-            onConfirm={(e) => handleDelete(record.id)}
+            onConfirm={() => handleDelete(record.id)}
             okText="Đồng ý"
             cancelText="Không"
           >

@@ -1,4 +1,3 @@
-import React from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Box } from "@mui/material";
 import animation from "./animation/page-not-found.lottie";

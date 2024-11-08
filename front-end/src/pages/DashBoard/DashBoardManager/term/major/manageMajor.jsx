@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Dialog,
@@ -7,7 +7,6 @@ import {
   DialogTitle,
   TextField,
   Box,
-  Typography,
   IconButton,
   CircularProgress,
 } from "@mui/material";
@@ -174,7 +173,7 @@ const MajorManagement = () => {
           <Popconfirm
             title="Xóa chuyên ngành"
             description="Bạn có chắc muốn xóa chuyên ngành này?"
-            onConfirm={(e) => handleDelete(record)}
+            onConfirm={() => handleDelete(record)}
             okText="Đồng ý"
             cancelText="Không"
           >

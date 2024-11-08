@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Typography, Box } from "@mui/material";
+import { useState } from "react";
+import { Typography, Box } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import studentApi from "../../../../apis/studentApi";
 import { useSelector, useDispatch } from "react-redux";
@@ -28,11 +28,7 @@ const ProjectDetails = () => {
   const isWithinChooseTopicPeriod =
     currentDate > new Date(currentTerm?.endChooseTopicDate);
   // Fetch group data
-  const {
-    data: groupData,
-    isLoading: isLoadingGroup,
-    refetch: refetchGroup,
-  } = CustomHooks.useQuery(
+  const { data: groupData, refetch: refetchGroup } = CustomHooks.useQuery(
     ["my-group"],
     async () => {
       const res = await studentApi.getMyGroup(user.groupId);
@@ -54,11 +50,7 @@ const ProjectDetails = () => {
   );
 
   // Fetch topic data
-  const {
-    data: topicData,
-    isLoading: isLoadingTopic,
-    isFetching,
-  } = CustomHooks.useQuery(
+  const { isFetching } = CustomHooks.useQuery(
     ["my-topic"],
     async () => {
       const res = await studentApi.getMyTopic(
@@ -177,8 +169,7 @@ const ProjectDetails = () => {
                     (theme) => ({
                       backgroundColor: "#ebf6ff",
                       ...theme.applyStyles("dark", {
-                        backgroundImage:
-                          "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
+                        backgroundColor: "#303030",
                       }),
                     }),
                   ]}
@@ -228,8 +219,7 @@ const ProjectDetails = () => {
                     (theme) => ({
                       backgroundColor: "#ebf6ff",
                       ...theme.applyStyles("dark", {
-                        backgroundImage:
-                          "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
+                        backgroundColor: "#303030",
                       }),
                     }),
                   ]}
