@@ -1,11 +1,11 @@
 import { useRef, useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import PropTypes from "prop-types"; // Import PropTypes
-import Icon1 from "../../images/homepage/imageManage.png";
-import Icon2 from "../../images/homepage/imageCoop.png";
-import Icon3 from "../../images/homepage/imageSearchInfor.png";
-import imageBgYB from "../../images/homepage/imageBgYB.jpg";
-import imageBgDG from "../../images/homepage/imageBgGD.jpg";
+import Icon1 from "../../images/homepage/imageManage.avif";
+import Icon2 from "../../images/homepage/imageCoop.avif";
+import Icon3 from "../../images/homepage/imageSearchInfor.avif";
+import imageBgYB from "../../images/homepage/imageBgYB.avif";
+import imageBgDG from "../../images/homepage/imageBgGD.avif";
 
 import "./style.scss";
 

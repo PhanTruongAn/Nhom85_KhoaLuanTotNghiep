@@ -25,25 +25,6 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, [themes]); // Chạy khi themes thay đổi
   return (
-    // <BackgroundContainer
-    //   direction="column"
-    //   justifyContent="space-between"
-    //   sx={{
-    //     backgroundImage: themes
-    //       ? `url(${backgrounddark})`
-    //       : `url(${background})`,
-    //   }}
-    // >
-    //   <SwiperSlide />
-
-    //   <TiltComponent
-    //     srcLeft={imageLeft}
-    //     srcRight={imageRight}
-    //     srcBottom={imageBottom}
-    //   />
-
-    // <Footer />
-    // </BackgroundContainer>
     <Box>
       <HomePageTest />
       <TiltComponent />

@@ -8,12 +8,12 @@ import {
 } from "@mui/material";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import image1 from "../../images/homepage/image1.jpg";
-import image2 from "../../images/homepage/image2.jpg";
-import image3 from "../../images/homepage/image3.jpg";
-import imagedark1 from "../../images/homepage/imagedark1.jpg";
-import imagedark2 from "../../images/homepage/imagedark2.jpg";
-import imagedark3 from "../../images/homepage/imagedark3.jpg";
+import image1 from "../../images/homepage/image1.avif";
+import image2 from "../../images/homepage/image2.avif";
+import image3 from "../../images/homepage/image3.avif";
+import imagedark1 from "../../images/homepage/imagedark1.avif";
+import imagedark2 from "../../images/homepage/imagedark2.avif";
+import imagedark3 from "../../images/homepage/imagedark3.avif";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import StartNow from "../../images/anhdong/startnow.lottie";
 import Marquee from "react-fast-marquee";
