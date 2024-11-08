@@ -185,22 +185,17 @@ const getLecturerList = async (term) => {
   try {
     const list = await Lecturer.findAll({
       attributes: ["id", "username", "fullName", "gender", "email", "phone"],
-      include: [
-        {
-          model: Role,
-          attributes: ["id", "name", "description"],
+      include: {
+        model: Term,
+        as: "terms",
+        attributes: [],
+        through: {
+          attributes: [],
         },
-        {
-          model: Term,
-          as: "terms",
-          through: {
-            attributes: [],
-          },
-          where: {
-            id: term,
-          },
+        where: {
+          id: term,
         },
-      ],
+      },
     });
     if (list && list.length > 0) {
       return {
