@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Table, Space, Popconfirm } from "antd";
 import { Box, Button, Typography } from "@mui/material";
-import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 // Import the UpdateGroupModalLecturer component
 import UpdateGroupModalLecturer from "./UpdateGroupModalLecturer";
@@ -70,7 +70,7 @@ const ManageGroupLecturer = () => {
   const columns = [
     { title: "ID", dataIndex: "id", key: "id", width: "5%" },
     {
-      title: "Group Name",
+      title: "Tên nhóm",
       dataIndex: "groupName",
       key: "groupName",
       width: "30%",
@@ -82,18 +82,10 @@ const ManageGroupLecturer = () => {
       render: (record) => record?.numberOfMembers || "No topic assigned",
     },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space>
-          <Button
-            onClick={() => handleOpenUpdateModal(record)}
-            variant="outlined"
-            size="small"
-            endIcon={<EyeOutlined />}
-          >
-            View Details
-          </Button>
           <Button
             onClick={() => handleOpenUpdateModal(record, true)}
             variant="contained"
@@ -101,7 +93,7 @@ const ManageGroupLecturer = () => {
             endIcon={<EditOutlined />}
             sx={{ backgroundColor: "#FF993A", marginLeft: 1 }}
           >
-            Edit
+            Sửa
           </Button>
           <Popconfirm
             title="Delete this group?"
@@ -116,7 +108,7 @@ const ManageGroupLecturer = () => {
               endIcon={<DeleteOutlined />}
               sx={{ marginLeft: 1 }}
             >
-              Delete
+              Xóa
             </Button>
           </Popconfirm>
         </Space>

@@ -8,14 +8,16 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { Table, message } from "antd";
+import { Space, Table, message } from "antd";
 import PointTopicStudent from "./pointTopicStudent";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
-
+import { FileDoneOutlined } from "@ant-design/icons";
+import Criteria from "../../DashBoardStudent/criteria/Criteria";
+import { Modal } from "antd"; // Import Ant Design's Modal
 function ListGroupTopicLecturer() {
   const [state, setState] = useState({
     searchLoading: false,
@@ -32,6 +34,7 @@ function ListGroupTopicLecturer() {
   const [selectedGroup, setSelectedGroup] = useState(null); // State to hold the selected group
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
   const [selectValue, setSelectValue] = useState(""); // State for select value
+  const [openCriteriaDialog, setOpenCriteriaDialog] = useState(false); // State to control Criteria dialog
 
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -145,6 +148,14 @@ function ListGroupTopicLecturer() {
       messageApi.success("Làm mới dữ liệu thành công!");
     }, 1000);
   };
+  //tiêu chí đánh giá
+  const handleOpenCriteriaDialog = () => {
+    setOpenCriteriaDialog(true);
+  };
+
+  const handleCloseCriteriaDialog = () => {
+    setOpenCriteriaDialog(false);
+  };
 
   return (
     <Box
@@ -197,7 +208,6 @@ function ListGroupTopicLecturer() {
           </Box>
         </Box>
       </FormControl>
-
       <Box
         sx={{
           position: "relative",
@@ -214,12 +224,22 @@ function ListGroupTopicLecturer() {
             transform: "translateY(-100%)",
           }}
         >
-          <CustomButton
-            onClick={onRefreshData}
-            text={"Làm mới"}
-            type="refresh"
-            loading={state.refreshButton}
-          />
+          <Space>
+            <Button
+              color="primary"
+              variant="contained"
+              startIcon={<FileDoneOutlined />}
+              onClick={handleOpenCriteriaDialog} // Open Criteria dialog
+            >
+              Tiêu chí chấm điểm
+            </Button>
+            <CustomButton
+              onClick={onRefreshData}
+              text={"Làm mới"}
+              type="refresh"
+              loading={state.refreshButton}
+            />
+          </Space>
         </Box>
       </Box>
       {/* <Typography
@@ -271,7 +291,6 @@ function ListGroupTopicLecturer() {
           ),
         }}
       />
-
       {/* Dialog for PointTopicStudent */}
       <Dialog
         open={openDialog}
@@ -290,6 +309,16 @@ function ListGroupTopicLecturer() {
           onClose={handleCloseDialog} // Add onClose prop
         />
       </Dialog>
+      {/* Dialog for Criteria */}
+      <Modal
+        open={openCriteriaDialog}
+        onCancel={handleCloseCriteriaDialog}
+        width="80%" // Adjust the width as needed
+        footer={null} // No footer if not needed
+        style={{ height: "80%", overflowY: "auto" }}
+      >
+        <Criteria />
+      </Modal>
     </Box>
   );
 }

@@ -1,5 +1,6 @@
 import { Modal, Typography, Box, Button } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
+import { DeleteOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 const UpdateGroupModal = ({
   groupSelect,
@@ -113,6 +114,17 @@ const UpdateGroupModal = ({
               <Typography variant="body2" sx={{ fontSize: "16px" }}>
                 SĐT: {student.phone || "Không có"}
               </Typography>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteOutlined />}
+                sx={{ mt: 1 }}
+                onClick={() =>
+                  console.log("Remove lecturer", lecturer.fullName)
+                }
+              >
+                Remove from Group
+              </Button>
             </Card>
           ))}
         </Box>

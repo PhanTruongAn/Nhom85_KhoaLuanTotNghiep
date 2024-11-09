@@ -27,7 +27,7 @@ const Home = () => {
   return (
     <Box>
       <HomePageTest />
-      <TiltComponent />
+      {/* <TiltComponent /> */}
       <Footer />
     </Box>
   );

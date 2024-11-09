@@ -1,10 +1,36 @@
-import { Modal, Typography, Box, Button } from "@mui/material";
+import {
+  Modal,
+  Typography,
+  Box,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
+  const [newLecturerId, setNewLecturerId] = useState(""); // State for new lecturer ID
+  const [isAddLecturerOpen, setIsAddLecturerOpen] = useState(false); // State for controlling the Add Lecturer dialog
+
   if (!lecturerSelect) return null;
+
+  const handleAddLecturer = () => {
+    if (newLecturerId.trim()) {
+      console.log("Adding lecturer with ID:", newLecturerId);
+      // Add the logic to add a lecturer using newLecturerId here, e.g., API call
+      setNewLecturerId(""); // Clear input after adding
+      setIsAddLecturerOpen(false); // Close the dialog after adding
+    } else {
+      console.log("Please enter a valid lecturer ID.");
+    }
+  };
 
   return (
     <Modal
@@ -30,7 +56,7 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
           gutterBottom
           sx={{ fontWeight: "700", color: "#006ed3" }}
         >
-          <strong>Group Name: {lecturerSelect.groupName}</strong>
+          <strong>Tên nhóm: {lecturerSelect.groupName}</strong>
         </Typography>
         <Typography
           variant="h6"
@@ -38,8 +64,28 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
           gutterBottom
           sx={{ fontWeight: "700", color: "#006ed3" }}
         >
-          <strong>Lecturer List:</strong>
+          <strong>Danh sách giảng viên:</strong>
         </Typography>
+        {/* Add Lecturer Button at the top-right corner */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<PersonAddIcon />}
+            onClick={() => setIsAddLecturerOpen(true)}
+            sx={{
+              boxShadow: "0px 4px 8px rgba(0,0,0,0.2)",
+              transition: "transform 0.3s",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
+              },
+            }}
+          >
+            Thêm giảng viên
+          </Button>
+        </Box>
         <Box sx={{ maxHeight: "400px", overflow: "auto", mb: 2 }}>
           {lecturerSelect.lecturers?.map((lecturer) => (
             <Card
@@ -63,7 +109,7 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
                 Email: {lecturer.email || "No email"}
               </Typography>
               <Typography variant="body2" sx={{ fontSize: "16px" }}>
-                Phone: {lecturer.phone || "No phone"}
+                Số điện thoại: {lecturer.phone || "No phone"}
               </Typography>
               {lecturerSelect.isEditing && (
                 <Button
@@ -75,7 +121,7 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
                     console.log("Remove lecturer", lecturer.fullName)
                   }
                 >
-                  Remove from Group
+                  Xóa khỏi nhóm
                 </Button>
               )}
             </Card>
@@ -90,10 +136,44 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
         >
           Close
         </Button>
+
+        {/* Dialog for adding a new lecturer */}
+        <Dialog
+          open={isAddLecturerOpen}
+          onClose={() => setIsAddLecturerOpen(false)}
+        >
+          <DialogTitle>Thêm bằng mã giảng viên</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Mã giảng viên"
+              variant="outlined"
+              fullWidth
+              value={newLecturerId}
+              onChange={(e) => setNewLecturerId(e.target.value)}
+              sx={{ mt: 2 }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setIsAddLecturerOpen(false)}
+              color="secondary"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddLecturer}
+              color="primary"
+              variant="contained"
+            >
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Card>
     </Modal>
   );
 };
+
 UpdateGroupModalLecturer.propTypes = {
   lecturerSelect: PropTypes.shape({
     groupName: PropTypes.string,
