@@ -4,8 +4,9 @@ import maleAvatar from "../../images/anhdong/avatar-male.lottie";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Box } from "@mui/material";
 
-function Avatar({ gender }) {
+function Avatar({ gender = "N/A" }) {
   const isMale = gender === "Nam";
+  const avatarSrc = isMale ? maleAvatar : femaleAvatar;
   return (
     <Box
       display="flex"
@@ -16,14 +17,16 @@ function Avatar({ gender }) {
     >
       <DotLottieReact
         style={{ width: "100%", height: "auto" }}
-        src={isMale ? maleAvatar : femaleAvatar}
+        src={avatarSrc}
         loop
         autoplay
       />
     </Box>
   );
 }
+
 Avatar.propTypes = {
-  gender: PropTypes.string.isRequired,
+  gender: PropTypes.string,
 };
+
 export default Avatar;
