@@ -399,7 +399,7 @@ const DashBoardManager = () => {
                 color: themes ? "#fff" : "#000",
                 overflowY: "auto",
                 maxHeight: "580px",
-                background: themes ? "#152f40" : "#fff",
+                background: themes ? "#071522" : "#fff",
                 borderRadius: borderRadiusLG,
               }}
             >

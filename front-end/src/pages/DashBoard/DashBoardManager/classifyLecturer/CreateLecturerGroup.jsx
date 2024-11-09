@@ -36,20 +36,26 @@ function CreateLecturerGroup() {
     return res;
   };
 
-  const { refetch } = CustomHooks.useQuery(["get-lecturers"], getData, {
-    enabled: !isEmpty(currentTerm),
-    onSuccess: (res) => {
-      if (res && res.status === 0) {
-        setLecturers(res.data);
-        messageApi.success(res.message);
-      } else {
-        messageApi.error(res.message);
-      }
-    },
-    onError: () => {
-      messageApi.error("Lỗi khi lấy dữ liệu!");
-    },
-  });
+  const { refetch } = CustomHooks.useQuery(
+    ["get-lecturers", currentTerm],
+    getData,
+    {
+      enabled: !isEmpty(currentTerm),
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          setLecturers(res.data);
+        } else if (res.status === 1 && res.data.length === 0) {
+          messageApi.info(res.message);
+          setLecturers([]);
+        } else {
+          messageApi.error(res.message);
+        }
+      },
+      onError: () => {
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
+    }
+  );
 
   // Filter out the selected lecturer from the list for Lecturer 2
   const filteredLecturers1 = lecturers.filter(
@@ -107,6 +113,9 @@ function CreateLecturerGroup() {
     if (res && res.status === 0) {
       messageApi.success(res.message);
       setLoading(false);
+      setSelectedLecturer1("");
+      setSelectedLecturer2("");
+      refetch();
     } else {
       messageApi.error(res.message);
       setLoading(false);

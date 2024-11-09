@@ -198,7 +198,14 @@ const initWebRoutes = (app) => {
     "/manager/create-group-lecturer",
     managerController.handleCreateGroupLecturer
   );
-
+  router.get(
+    "/manager/get-group-lecturer",
+    managerController.handleGetGroupLecturer
+  );
+  router.get(
+    "/manager/review-group-student",
+    managerController.handleGetAllReviewGroupStudent
+  );
   return app.use("/", router);
 };
 

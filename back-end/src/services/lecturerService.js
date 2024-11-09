@@ -196,6 +196,9 @@ const getLecturerList = async (term) => {
           id: term,
         },
       },
+      where: {
+        groupLecturerId: null,
+      },
     });
     if (list && list.length > 0) {
       return {
@@ -205,8 +208,8 @@ const getLecturerList = async (term) => {
       };
     }
     return {
-      status: -1,
-      message: "Lấy danh sách thất bại!",
+      status: 1,
+      message: "Tất cả giảng viên đều có nhóm!",
       data: list,
     };
   } catch (error) {

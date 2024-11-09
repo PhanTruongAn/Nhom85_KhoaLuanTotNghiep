@@ -367,6 +367,35 @@ const handleCreateGroupLecturer = async (req, res) => {
     });
   }
 };
+const handleGetGroupLecturer = async (req, res) => {
+  try {
+    const { term } = req.query;
+    const data = await service.getGroupLecturer(term);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+const handleGetAllReviewGroupStudent = async (req, res) => {
+  try {
+    const { limit, page } = req.query;
+    const data = await service.paginationGroupsWithoutGroupLecturer(
+      +page,
+      +limit
+    );
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 module.exports = {
   handleDeleteMajor,
   handleUpdateMajor,
@@ -395,4 +424,6 @@ module.exports = {
   handleAssignTopicToGroup,
   handleFindGroupStudent,
   handleCreateGroupLecturer,
+  handleGetGroupLecturer,
+  handleGetAllReviewGroupStudent,
 };

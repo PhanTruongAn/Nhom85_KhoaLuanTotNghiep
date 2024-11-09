@@ -1188,6 +1188,110 @@ const handleCreateGroupLecturer = async (data) => {
   }
 };
 
+const getGroupLecturer = async (termId) => {
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin học kì!",
+    };
+  }
+  try {
+    let groups = await GroupLecturer.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: [
+        {
+          model: Term,
+          attributes: [],
+          where: {
+            id: termId,
+          },
+        },
+        {
+          model: Lecturer,
+          as: "lecturers",
+          attributes: ["username", "fullName", "email", "phone"],
+        },
+      ],
+    });
+    if (groups && groups.length > 0) {
+      return {
+        status: 0,
+        message: "Lấy danh sách nhóm giảng viên thành công!",
+        groups,
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Không tìm thấy nhóm giảng viên nào!",
+        groups: [],
+      };
+    }
+  } catch (error) {
+    console.error("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
+
+const paginationGroupsWithoutGroupLecturer = async (page, limit) => {
+  try {
+    if (!page) {
+      return {
+        status: 1,
+        message: "Số trang không hợp lệ!",
+      };
+    }
+    if (!limit) {
+      return {
+        status: 1,
+        message: "Số phần tử của trang không hợp lệ!",
+      };
+    }
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Group.findAndCountAll({
+      distinct: true,
+      attributes: ["id", "groupName", "numOfMembers"],
+      where: { groupLecturerId: null },
+      offset: offset,
+      limit: limit,
+      include: [
+        {
+          model: Student,
+          as: "students",
+          attributes: [],
+          required: true,
+        },
+        {
+          model: Topic,
+          as: "topic",
+          attributes: ["id", "title"],
+          required: true,
+        },
+      ],
+    });
+
+    const totalPages = Math.ceil(count / limit);
+    return {
+      status: 0,
+      message: "Lấy danh sách thành công!",
+      data: {
+        totalRows: count,
+        totalPages: totalPages,
+        groupStudent: rows,
+      },
+    };
+  } catch (error) {
+    console.log("Lỗi: >>>>>>>>", error.message);
+    return {
+      status: -1,
+      message: "Lấy danh sách thất bại!",
+      data: null,
+    };
+  }
+};
+
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -1217,4 +1321,6 @@ module.exports = {
   assignTopicToGroup,
   findGroupByNameOrTopicTitle,
   handleCreateGroupLecturer,
+  getGroupLecturer,
+  paginationGroupsWithoutGroupLecturer,
 };

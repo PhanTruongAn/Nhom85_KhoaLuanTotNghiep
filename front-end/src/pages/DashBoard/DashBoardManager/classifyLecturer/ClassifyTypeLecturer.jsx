@@ -6,129 +6,137 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CustomHooks from "../../../../utils/hooks";
 import EmptyData from "../../../../components/emptydata/EmptyData";
-import lecturerApi from "../../../../apis/lecturerApi";
+import CustomButton from "../../../../components/Button/CustomButton";
 import { useSelector, useDispatch } from "react-redux";
+import managerApi from "../../../../apis/managerApi";
+import { isEmpty } from "lodash";
 const { Option } = Select;
-
 const columns = [
   {
     title: "ID",
-    dataIndex: "topicId",
-    key: "topicId",
+    dataIndex: "id",
+    key: "id",
   },
   {
-    title: "Tên nhóm",
-    dataIndex: "title",
-    key: "title",
+    title: "Nhóm",
+    dataIndex: "groupName",
+    key: "groupName",
   },
   {
-    title: "Tên dề tài",
-    dataIndex: "topicName",
+    title: "Tên đề tài",
+    render: (record) => record.topic.title,
     key: "topicName",
   },
-  {
-    title: "Giảng viên hướng dẫn",
-    dataIndex: "lecturerName",
-    key: "lecturerName",
-  },
 ];
-
 function ClassifyTypeLecturer() {
   const dispatch = useDispatch();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
-  // const [searchLoadingGuide, setSearchLoadingGuide] = useState(false);
-  // const [searchLoadingReport, setSearchLoadingReport] = useState(false);
-  // const [searchValueGuide, setSearchValueGuide] = useState("");
-  // const [searchValueReport, setSearchValueReport] = useState("");
+  const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [selectedLecturerGuide, setSelectedLecturerGuide] = useState(null);
   const [selectedLecturerReport, setSelectedLecturerReport] = useState(null);
   const [guideLecturerTopics, setGuideLecturerTopics] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [lecturers, setLecturers] = useState([]);
+  const [state, setState] = useState({
+    page: 1,
+    pageSize: 5,
+    totalRow: null,
+    totalPage: null,
+    groups: [],
+    reload: false,
+    groupStudent: [],
+  });
+
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
 
   // Get list lecturer
   const getData = async () => {
     let termId = currentTerm.id;
-    const res = await lecturerApi.getAll(termId);
+    const res = await managerApi.getGroupLecturer(termId);
     return res;
   };
-  const { isFetching } = CustomHooks.useQuery(["reviewLecturers"], getData, {
-    onSuccess: (res) => {
-      if (res && res.status === 0) {
-        dispatch(setLecturers(res.data));
-      } else {
-        messageApi.error(res.message);
+
+  const { isFetching, refetch } = CustomHooks.useQuery(
+    ["group-lecturer"],
+    getData,
+    {
+      enabled: !isEmpty(currentTerm),
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          updateState({ groups: res.groups });
+          messageApi.success(res.message);
+        } else {
+          messageApi.error(res.message);
+        }
+      },
+      onError: (err) => {
+        console.log("Lỗi:", err.message);
+        messageApi.error("Lỗi khi lấy dữ liệu");
+      },
+    }
+  );
+
+  const getGroupStudent = async () => {
+    let res = await managerApi.reviewGroupStudent(state.page, state.pageSize);
+    return res;
+  };
+  const { isFetching: isFetchingGroupStudent, refetch: refetchGroupStudent } =
+    CustomHooks.useQuery(
+      ["reviewGroupStudent", state.page, state.pageSize],
+      getGroupStudent,
+      {
+        onSuccess: (res) => {
+          if (res && res.status === 0) {
+            updateState({
+              groupStudent: res.data.groupStudent,
+              totalRow: res.data.totalRows,
+            });
+          } else {
+            updateState({
+              groupStudent: [],
+            });
+            messageApi.error(res.message);
+          }
+        },
+        onError: () => {
+          updateState({
+            groupStudent: [],
+          });
+          messageApi.error("Lỗi khi lấy dữ liệu!");
+        },
       }
-    },
-    onError: (err) => {
-      console.log("Lỗi:", err.message);
-      messageApi.error("Lỗi khi lấy dữ liệu");
-    },
-  });
-
-  // const handleSearch = (value, type) => {
-  //   if (type === "guide") {
-  //     setSearchLoadingGuide(true);
-  //   } else {
-  //     setSearchLoadingReport(true);
-  //   }
-
-  //   const lecturer = lecturers.find(
-  //     (lecturer) =>
-  //       lecturer.lecturerId === value ||
-  //       lecturer.phone === value ||
-  //       lecturer.email === value
-  //   );
-
-  //   if (lecturer) {
-  //     if (type === "guide") {
-  //       setSelectedLecturerGuide(lecturer);
-  //       setGuideLecturerTopics(lecturer.topics || []);
-  //     } else {
-  //       setSelectedLecturerReport(lecturer);
-  //     }
-  //   } else {
-  //     if (type === "guide") {
-  //       setSelectedLecturerGuide(null);
-  //       setGuideLecturerTopics([]);
-  //     } else {
-  //       setSelectedLecturerReport(null);
-  //     }
-  //   }
-
-  //   setTimeout(() => {
-  //     if (type === "guide") {
-  //       setSearchLoadingGuide(false);
-  //     } else {
-  //       setSearchLoadingReport(false);
-  //     }
-  //   }, 1000);
-  // };
-
-  // const handleSelectChange = (value, type) => {
-  //   const lecturer = lecturers.find(
-  //     (lecturer) => lecturer.lecturerId === value
-  //   );
-  //   if (type === "guide") {
-  //     setSelectedLecturerGuide(lecturer);
-  //     setGuideLecturerTopics(lecturer.topics || []);
-  //   } else {
-  //     setSelectedLecturerReport(lecturer);
-  //   }
-  // };
+    );
+  const handleGroupSelect = (groupId) => {
+    setSelectedGroupId(groupId);
+    const group = state.groups.find((g) => g.id === groupId);
+    if (group && group.lecturers.length === 2) {
+      setSelectedLecturerGuide(group.lecturers[0]);
+      setSelectedLecturerReport(group.lecturers[1]);
+    } else {
+      setSelectedLecturerGuide(null);
+      setSelectedLecturerReport(null);
+    }
+  };
 
   const handleReset = () => {
-    setSelectedLecturerGuide(null);
-    setSelectedLecturerReport(null);
     setGuideLecturerTopics([]);
     setSelectedRowKeys([]);
-    // setSearchValueGuide(""); // Reset guide search field
-    // setSearchValueReport(""); // Reset report search field
+    setSelectedGroupId(null);
+    setSelectedLecturerGuide(null);
+    setSelectedLecturerReport(null);
   };
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const handleReload = () => {
+    updateState({ reload: true });
+    refetch();
+    setTimeout(() => {
+      updateState({ reload: false });
+    }, 1000);
   };
 
   const rowSelection = {
@@ -143,12 +151,16 @@ function ClassifyTypeLecturer() {
       <Select
         style={{ width: "30%", marginBottom: "10px" }}
         showSearch
-        placeholder="Chọn nhóm giảng viên "
-        filterOption={(input, option) =>
-          option.value.toLowerCase().includes(input.toLowerCase())
-        }
+        value={selectedGroupId || "Chọn nhóm giảng viên"}
+        onChange={handleGroupSelect}
       >
-        <Option></Option>
+        {state.groups &&
+          state.groups.length > 0 &&
+          state.groups.map((value) => (
+            <Option key={value.id} value={value.id}>
+              {value.name}
+            </Option>
+          ))}
       </Select>
       <Grid container spacing={2}>
         {/* Lecturer Guide Card */}
@@ -162,7 +174,7 @@ function ClassifyTypeLecturer() {
                   <TextField
                     fullWidth
                     label="Mã giảng viên"
-                    value={selectedLecturerGuide?.lecturerId || ""}
+                    value={selectedLecturerGuide?.username || ""}
                     InputProps={{ readOnly: true }}
                   />
                 </Grid>
@@ -170,7 +182,7 @@ function ClassifyTypeLecturer() {
                   <TextField
                     fullWidth
                     label="Tên giảng viên"
-                    value={selectedLecturerGuide?.name || ""}
+                    value={selectedLecturerGuide?.fullName || ""}
                     InputProps={{ readOnly: true }}
                   />
                 </Grid>
@@ -206,7 +218,7 @@ function ClassifyTypeLecturer() {
                   <TextField
                     fullWidth
                     label="Mã giảng viên"
-                    value={selectedLecturerReport?.lecturerId || ""}
+                    value={selectedLecturerReport?.username || ""}
                     InputProps={{ readOnly: true }}
                   />
                 </Grid>
@@ -214,7 +226,7 @@ function ClassifyTypeLecturer() {
                   <TextField
                     fullWidth
                     label="Tên giảng viên"
-                    value={selectedLecturerReport?.name || ""}
+                    value={selectedLecturerReport?.fullName || ""}
                     InputProps={{ readOnly: true }}
                   />
                 </Grid>
@@ -241,22 +253,41 @@ function ClassifyTypeLecturer() {
       </Grid>
 
       <Box mt={2} mb={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<RefreshIcon />}
-          onClick={handleReset}
-        >
-          Làm mới
-        </Button>
+        <Space>
+          <CustomButton
+            text="Làm mới dữ liệu"
+            loading={state.reload}
+            type="refresh"
+            onClick={handleReload}
+          />
+          <Button
+            variant="contained"
+            color="secondary"
+            // size="small"
+            startIcon={<PersonAddIcon />}
+          >
+            Gán nhóm giảng viên
+          </Button>
+        </Space>
       </Box>
       <Box>
         <Table
           rowSelection={rowSelection}
           columns={columns}
-          dataSource={guideLecturerTopics}
-          rowKey="topicId"
-          pagination={false}
+          dataSource={state.groupStudent}
+          rowKey="id"
+          loading={isFetchingGroupStudent}
+          pagination={{
+            showSizeChanger: true,
+            pageSizeOptions: ["5", "10", "20"],
+            total: state.totalRow, // Cập nhật giá trị total
+            current: state.page,
+            pageSize: state.pageSize,
+            onChange: (page, size) => {
+              updateState({ page: page, pageSize: size });
+            },
+            responsive: true,
+          }}
           locale={{
             emptyText: (
               <Box display="flex" justifyContent="center" alignItems="center">
@@ -271,18 +302,6 @@ function ClassifyTypeLecturer() {
             ),
           }}
         />
-      </Box>
-      <Box mt={2}>
-        <Space>
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            startIcon={<PersonAddIcon />}
-          >
-            Gán giảng viên
-          </Button>
-        </Space>
       </Box>
     </Box>
   );

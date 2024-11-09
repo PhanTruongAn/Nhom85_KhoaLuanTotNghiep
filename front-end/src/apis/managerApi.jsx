@@ -92,5 +92,13 @@ const managerApi = {
   createGroupLecturer: (data) => {
     return axiosClient.post(`${baseUrl}/create-group-lecturer`, data);
   },
+  getGroupLecturer: (term) => {
+    return axiosClient.get(`${baseUrl}/get-group-lecturer?term=${term}`);
+  },
+  reviewGroupStudent: (page, limit) => {
+    return axiosClient.get(
+      `${baseUrl}/review-group-student?page=${page}&limit=${limit}`
+    );
+  },
 };
 export default managerApi;
