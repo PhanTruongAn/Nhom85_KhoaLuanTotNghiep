@@ -86,5 +86,11 @@ const managerApi = {
   assignTopicToGroup: (data) => {
     return axiosClient.put(baseUrl + "/assign-topic", data);
   },
+  getLecturers: (term) => {
+    return axiosClient.get(`${baseUrl}/get-lecturers?term=${term}`);
+  },
+  createGroupLecturer: (data) => {
+    return axiosClient.post(`${baseUrl}/create-group-lecturer`, data);
+  },
 };
 export default managerApi;

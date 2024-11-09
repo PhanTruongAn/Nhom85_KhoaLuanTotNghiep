@@ -14,12 +14,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "groupLecturerId",
         as: "reviewGroups",
       });
+      GroupLecturer.belongsTo(models.Term, {
+        foreignKey: "termId",
+      });
     }
   }
   GroupLecturer.init(
     {
       name: DataTypes.STRING,
       numOfMembers: DataTypes.INTEGER,
+      termId: DataTypes.INTEGER,
     },
     {
       sequelize,

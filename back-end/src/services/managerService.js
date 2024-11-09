@@ -15,6 +15,7 @@ const {
   Role,
   NoteRole,
   Lecturer,
+  GroupLecturer,
 } = require("../models");
 
 const paginationPermission = async (page, limit) => {
@@ -1098,6 +1099,95 @@ const assignTopicToGroup = async (data) => {
     };
   }
 };
+
+const handleCreateGroupLecturer = async (data) => {
+  let { lecturer1, lecturer2, termId } = data;
+  console.log("CheckL ", data);
+
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Không có thông tin học kì!",
+    };
+  }
+
+  if (!lecturer1 || !lecturer2) {
+    return {
+      status: -1,
+      message: "Mỗi nhóm phải có đủ 2 giảng viên!",
+    };
+  }
+
+  try {
+    // Tìm kiếm giảng viên 1 và giảng viên 2 từ cơ sở dữ liệu
+    const lecturer1Record = await Lecturer.findOne({
+      attributes: [
+        "id",
+        "fullName",
+        "username",
+        "phone",
+        "email",
+        "groupLecturerId",
+      ],
+      where: { id: lecturer1 },
+    });
+
+    const lecturer2Record = await Lecturer.findOne({
+      attributes: [
+        "id",
+        "fullName",
+        "username",
+        "phone",
+        "email",
+        "groupLecturerId",
+      ],
+      where: { id: lecturer2 },
+    });
+
+    // Kiểm tra nếu một trong hai giảng viên đã có nhóm
+    if (lecturer1Record.groupLecturerId || lecturer2Record.groupLecturerId) {
+      return {
+        status: -1,
+        message:
+          "Một hoặc cả hai giảng viên đã có nhóm, không thể tạo nhóm mới.",
+      };
+    }
+
+    // Tách tên giảng viên để tạo tên nhóm
+    const nameParts1 = lecturer1Record.fullName.split(" ");
+    const nameParts2 = lecturer2Record.fullName.split(" ");
+
+    let groupName = "";
+    if (nameParts1.length >= 2 && nameParts2.length >= 2) {
+      const name1 = nameParts1.slice(1).join(" ");
+      const name2 = nameParts2.slice(1).join(" ");
+      groupName = `${name1} & ${name2}`;
+    }
+
+    // Tạo nhóm mới
+    const group = await GroupLecturer.create({
+      name: groupName,
+      numOfMembers: 2,
+      termId: termId,
+    });
+
+    // Cập nhật nhóm cho giảng viên 1 và giảng viên 2
+    await lecturer1Record.update({ groupLecturerId: group.id });
+    await lecturer2Record.update({ groupLecturerId: group.id });
+
+    return {
+      status: 0,
+      message: "Tạo nhóm thành công!",
+    };
+  } catch (error) {
+    console.error("Lỗi khi tạo nhóm: ", error.message);
+    return {
+      status: -1,
+      message: "Đã xảy ra lỗi khi tạo nhóm!",
+    };
+  }
+};
+
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -1126,4 +1216,5 @@ module.exports = {
   findTopicByTitleOrLecturerName,
   assignTopicToGroup,
   findGroupByNameOrTopicTitle,
+  handleCreateGroupLecturer,
 };

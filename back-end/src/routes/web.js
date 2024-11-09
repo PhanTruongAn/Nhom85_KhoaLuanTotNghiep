@@ -190,6 +190,14 @@ const initWebRoutes = (app) => {
     "/manager/assign-topic",
     managerController.handleAssignTopicToGroup
   );
+  router.get(
+    "/manager/get-lecturers",
+    lecturerController.handleReviewLecturers
+  );
+  router.post(
+    "/manager/create-group-lecturer",
+    managerController.handleCreateGroupLecturer
+  );
 
   return app.use("/", router);
 };

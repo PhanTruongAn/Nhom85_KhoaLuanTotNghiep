@@ -29,16 +29,6 @@ const TiltCard = ({ icon, title, description }) => {
 
   const tiltRef = useRef(null);
 
-  // useEffect(() => {
-  //   VanillaTilt.init(tiltRef.current, {
-  //     max: 15,
-  //     speed: 400,
-  //     glare: true,
-  //     "max-glare": 0.3,
-  //   });
-  //   return () => tiltRef.current.vanillaTilt.destroy();
-  // }, []);
-
   return (
     <Box
       ref={tiltRef}
