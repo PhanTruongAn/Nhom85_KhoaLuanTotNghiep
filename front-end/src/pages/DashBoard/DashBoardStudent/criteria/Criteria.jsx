@@ -218,7 +218,7 @@ const Criteria = () => {
         columns={columns}
         rowKey="id"
         pagination={false}
-        scroll={{ y: 580 }}
+        scroll={{ y: 400 }}
       />
     </Box>
   );

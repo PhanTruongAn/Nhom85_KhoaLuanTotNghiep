@@ -315,7 +315,7 @@ function ListGroupTopicLecturer() {
         onCancel={handleCloseCriteriaDialog}
         width="80%" // Adjust the width as needed
         footer={null} // No footer if not needed
-        style={{ height: "80%", overflowY: "auto" }}
+        style={{ height: "80%" }}
       >
         <Criteria />
       </Modal>
