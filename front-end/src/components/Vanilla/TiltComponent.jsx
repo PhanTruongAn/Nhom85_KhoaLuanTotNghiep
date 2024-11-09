@@ -102,7 +102,9 @@ const VerticalTiltComponent = () => {
   return (
     <Box
       sx={{
-        background: themes ? `url(${imageBgDG})` : `url(${imageBgYB})`,
+        backgroundColor: themes
+          ? "rgb(201 124 51 / 87%)"
+          : "rgb(201 124 51 / 87%)",
         backgroundSize: "cover",
       }}
     >
