@@ -13,7 +13,7 @@ import {
   DialogContent,
   Box,
 } from "@mui/material";
-import { message } from "antd";
+import { message, Modal } from "antd";
 import UpdateTerm from "./UpdateTerm";
 import ViewTerm from "./viewTerm";
 import CustomHooks from "../../../../utils/hooks";
@@ -332,25 +332,25 @@ const ListTerm = () => {
         />
       </Box>
 
-      <Dialog
-        open={isEditModalVisible}
-        onClose={handleEditModalCancel}
-        maxWidth="md"
-        fullWidth
+      <Modal
+        title={`Chỉnh sửa ${currentTerm?.name}`}
+        visible={isEditModalVisible}
+        onCancel={() => {
+          handleEditModalCancel();
+        }}
+        footer={null}
+        width="50%"
+        bodyStyle={{ maxHeight: "70vh", overflowY: "auto", padding: "16px" }}
+        closable={false} // Disable the close button (X)
       >
-        <DialogTitle
-          sx={{ textAlign: "center", fontSize: "22px", fontWeight: "bold" }}
-        >{`Chỉnh sửa ${currentTerm?.name}`}</DialogTitle>
-        <DialogContent>
-          {currentTerm && (
-            <UpdateTerm
-              term={currentTerm}
-              onOk={handleEditModalOk}
-              onCancel={handleEditModalCancel}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+        {currentTerm && (
+          <UpdateTerm
+            term={currentTerm}
+            onOk={handleEditModalOk}
+            onCancel={handleEditModalCancel}
+          />
+        )}
+      </Modal>
 
       <Dialog
         open={isViewModalVisible}

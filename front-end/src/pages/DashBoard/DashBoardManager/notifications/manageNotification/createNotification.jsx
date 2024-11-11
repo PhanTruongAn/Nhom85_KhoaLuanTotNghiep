@@ -49,6 +49,8 @@ function CreateNotification() {
         height: "100%",
         p: 3,
         // bgcolor: "background.default",
+        overflowX: "hidden",
+        overflowY: "auto",
       }}
     >
       {contextHolder}

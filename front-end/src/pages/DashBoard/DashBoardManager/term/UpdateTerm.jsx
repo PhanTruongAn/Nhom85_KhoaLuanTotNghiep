@@ -1,15 +1,31 @@
 import { useState } from "react";
-import { Form, Input, DatePicker, Row, Col, Card, Space, message } from "antd";
+import {
+  Form,
+  Input,
+  DatePicker,
+  Row,
+  Col,
+  Card,
+  Space,
+  message,
+  Select,
+} from "antd";
 import { Button, Box } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import dayjs from "dayjs";
 import CustomButton from "../../../../components/Button/CustomButton";
 import managerApi from "../../../../apis/managerApi";
 import PropTypes from "prop-types";
+import { forwardRef, useImperativeHandle } from "react";
+
+const { Option } = Select;
+
 const UpdateTerm = ({ term, onOk, onCancel }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const [selectedSection, setSelectedSection] = useState(null); // State to track selected time section
+
   const dateFields = [
     {
       title: "Thời gian khóa luận",
@@ -66,11 +82,10 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
     setLoading(true);
     const formattedValues = {};
     Object.keys(values).forEach((key) => {
-      // Kiểm tra nếu giá trị là dayjs hoặc moment
       if (values[key] && dayjs.isDayjs(values[key])) {
         formattedValues[key] = values[key].format("YYYY-MM-DD HH:mm:ss");
       } else {
-        formattedValues[key] = values[key]; // Các giá trị không phải ngày giữ nguyên
+        formattedValues[key] = values[key];
       }
     });
     let res = await managerApi.updateTerm(formattedValues);
@@ -83,10 +98,18 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
       messageApi.error(res.message);
     }
   };
-
+  const handleCancel = () => {
+    form.resetFields(); // This will reset the form fields to initial values
+    onCancel(); // Call the provided onCancel function to close the modal
+  };
   return (
     <Box
-      style={{ height: 480, overflow: "auto", width: "100%", padding: "10px" }}
+      style={{
+        overflow: "auto",
+        width: "100%",
+        height: "100%",
+        padding: "10px",
+      }}
     >
       {contextHolder}
       <Form
@@ -95,7 +118,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
           if (key.includes("Date")) {
             acc[key] = term[key] ? dayjs(term[key]) : null;
           } else {
-            acc[key] = term[key]; // Các trường không phải ngày giữ nguyên
+            acc[key] = term[key];
           }
           return acc;
         }, {})}
@@ -111,31 +134,50 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
           <Input style={{ width: "50%" }} />
         </Form.Item>
 
-        {/* Mapping date fields */}
-        {dateFields.map((section) => (
-          <Card
-            key={section.title}
-            title={section.title}
-            bordered={true}
-            style={{ marginBottom: "10px", height: "120px" }}
-            hoverable="true"
+        {/* Select to choose which time section to display */}
+        <Form.Item label="Chọn thời gian">
+          <Select
+            style={{ width: "50%" }}
+            placeholder="Chọn thời gian để chỉnh sửa"
+            onChange={(value) => setSelectedSection(value)}
           >
-            <Row gutter={16}>
-              {section.fields.map((field) => (
-                <Col span={12} key={field.name}>
-                  <Form.Item label={field.label} name={field.name}>
-                    <DatePicker
-                      showTime
-                      format="YYYY-MM-DD HH:mm"
-                      style={{ width: "100%" }}
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                    />
-                  </Form.Item>
-                </Col>
-              ))}
-            </Row>
-          </Card>
-        ))}
+            {dateFields.map((section) => (
+              <Option key={section.title} value={section.title}>
+                {section.title}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        {/* Display selected date fields based on the chosen section */}
+        {selectedSection &&
+          dateFields
+            .filter((section) => section.title === selectedSection)
+            .map((section) => (
+              <Card
+                key={section.title}
+                title={section.title}
+                bordered={true}
+                style={{ marginBottom: "10px", height: "120px" }}
+                hoverable={true}
+              >
+                <Row gutter={16}>
+                  {section.fields.map((field) => (
+                    <Col span={12} key={field.name}>
+                      <Form.Item label={field.label} name={field.name}>
+                        <DatePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm"
+                          style={{ width: "100%" }}
+                          getPopupContainer={(trigger) => document.body} // Attach to body to ensure visibility
+                        />
+                      </Form.Item>
+                    </Col>
+                  ))}
+                </Row>
+              </Card>
+            ))}
+
         <Space style={{ float: "right", marginTop: "10px" }}>
           <CustomButton
             onClick={() => form.submit()}
@@ -150,9 +192,8 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
             type="success"
             loading={loading}
           />
-
           <Button
-            onClick={onCancel}
+            onClick={handleCancel} // Call the new handleCancel function
             variant="contained"
             color="error"
             endIcon={<ClearIcon />}
@@ -164,9 +205,11 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
     </Box>
   );
 };
+
 UpdateTerm.propTypes = {
   term: PropTypes.object.isRequired,
   onOk: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 };
+
 export default UpdateTerm;
