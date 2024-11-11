@@ -206,6 +206,10 @@ const initWebRoutes = (app) => {
     "/manager/review-group-student",
     managerController.handleGetAllReviewGroupStudent
   );
+  router.put(
+    "/manager/assign-group-lecturer",
+    managerController.handleAssignGroupLecturer
+  );
   return app.use("/", router);
 };
 

@@ -243,20 +243,7 @@ function ListTopic() {
             spacing={2}
             sx={{ paddingTop: "10px", paddingLeft: { xs: "5px", sm: "10px" } }} // Responsive padding
           >
-            <Grid item xs={12} sm={2} md={2}>
-              <FormControl fullWidth variant="outlined" size="small">
-                <InputLabel>Tìm theo</InputLabel>
-                <Select
-                  value={searchBy}
-                  onChange={handleSearchByChange}
-                  label="Tìm theo"
-                >
-                  <MenuItem value="title">Tên đề tài</MenuItem>
-                  <MenuItem value="lecturer">Giảng viên</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={3} md={3}>
+            <Grid item xs={12} sm={3} md={4}>
               <TextField
                 fullWidth
                 size="small"

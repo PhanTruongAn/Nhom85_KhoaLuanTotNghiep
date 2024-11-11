@@ -92,6 +92,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
     if (res && res.status === 0) {
       setLoading(false);
       onOk();
+      onCancel();
       messageApi.success(res.message);
     } else {
       setLoading(false);
@@ -179,6 +180,14 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
             ))}
 
         <Space style={{ float: "right", marginTop: "10px" }}>
+          <Button
+            onClick={handleCancel} // Call the new handleCancel function
+            variant="contained"
+            color="error"
+            endIcon={<ClearIcon />}
+          >
+            Hủy bỏ
+          </Button>
           <CustomButton
             onClick={() => form.submit()}
             sx={[
@@ -192,14 +201,6 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
             type="success"
             loading={loading}
           />
-          <Button
-            onClick={handleCancel} // Call the new handleCancel function
-            variant="contained"
-            color="error"
-            endIcon={<ClearIcon />}
-          >
-            Hủy bỏ
-          </Button>
         </Space>
       </Form>
     </Box>

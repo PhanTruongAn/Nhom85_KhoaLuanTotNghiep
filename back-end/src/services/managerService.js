@@ -1292,6 +1292,64 @@ const paginationGroupsWithoutGroupLecturer = async (page, limit) => {
   }
 };
 
+const assignGroupLecturer = async (data) => {
+  const { groupLecturerId, groupIds, termId } = data;
+
+  if (!groupLecturerId) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin nhóm giảng viên!",
+    };
+  }
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin nhóm học kì!",
+    };
+  }
+  if (!groupIds || !Array.isArray(groupIds) || groupIds.length === 0) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin nhóm học sinh!",
+    };
+  }
+
+  try {
+    let groupLecturer = await GroupLecturer.findOne({
+      where: {
+        id: groupLecturerId,
+        termId: termId,
+      },
+    });
+    if (!groupLecturer) {
+      return {
+        status: -1,
+        message: "Không tìm nhóm giảng viên trong học kì này!",
+      };
+    }
+
+    await Group.update(
+      { groupLecturerId: groupLecturerId },
+      {
+        where: {
+          id: groupIds,
+        },
+      }
+    );
+
+    return {
+      status: 0,
+      message: "Phân công nhóm giảng viên thành công!",
+    };
+  } catch (error) {
+    console.log("Lỗi: >>>>>>>>", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
+
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -1323,4 +1381,5 @@ module.exports = {
   handleCreateGroupLecturer,
   getGroupLecturer,
   paginationGroupsWithoutGroupLecturer,
+  assignGroupLecturer,
 };

@@ -38,7 +38,7 @@ CustomButton.propTypes = {
   loading: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  sx: PropTypes.object,
+  sx: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   disabled: PropTypes.bool,
 };
 export default CustomButton;

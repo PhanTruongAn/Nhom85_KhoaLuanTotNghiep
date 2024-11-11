@@ -340,7 +340,13 @@ const ListTerm = () => {
         }}
         footer={null}
         width="50%"
-        bodyStyle={{ maxHeight: "70vh", overflowY: "auto", padding: "16px" }}
+        styles={{
+          body: {
+            maxHeight: "70vh",
+            overflowY: "auto",
+            padding: "16px",
+          },
+        }}
         closable={false} // Disable the close button (X)
       >
         {currentTerm && (

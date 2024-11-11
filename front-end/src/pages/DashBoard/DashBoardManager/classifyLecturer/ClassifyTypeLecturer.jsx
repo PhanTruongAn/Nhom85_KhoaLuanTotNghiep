@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Box, TextField, Grid, Typography, Button } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Grid,
+  Typography,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import { Table, Select, Space, message } from "antd";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -37,6 +44,7 @@ function ClassifyTypeLecturer() {
   const [selectedLecturerReport, setSelectedLecturerReport] = useState(null);
   const [guideLecturerTopics, setGuideLecturerTopics] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
   const [state, setState] = useState({
     page: 1,
     pageSize: 5,
@@ -44,6 +52,7 @@ function ClassifyTypeLecturer() {
     totalPage: null,
     groups: [],
     reload: false,
+    assignLoading: false,
     groupStudent: [],
   });
 
@@ -120,6 +129,28 @@ function ClassifyTypeLecturer() {
     }
   };
 
+  const handleAssignGroup = async () => {
+    updateState({ assignLoading: true });
+    if (!selectedGroupId || isEmpty(selectedRowKeys)) {
+      messageApi.info("Chưa chọn nhóm giảng viên hoặc nhóm sinh viên!");
+      updateState({ assignLoading: false });
+    } else {
+      let dataToSave = {
+        termId: currentTerm.id,
+        groupLecturerId: selectedGroupId,
+        groupIds: selectedRowKeys,
+      };
+      let res = await managerApi.assignGroupLecturer(dataToSave);
+      if (res && res.status === 0) {
+        messageApi.success(res.message);
+        handleReset();
+        refetchGroupStudent();
+      } else {
+        messageApi.error(res.message);
+      }
+      updateState({ assignLoading: false });
+    }
+  };
   const handleReset = () => {
     setGuideLecturerTopics([]);
     setSelectedRowKeys([]);
@@ -261,10 +292,18 @@ function ClassifyTypeLecturer() {
             onClick={handleReload}
           />
           <Button
+            onClick={handleAssignGroup}
             variant="contained"
             color="secondary"
             // size="small"
-            startIcon={<PersonAddIcon />}
+            startIcon={
+              state.assignLoading ? (
+                <CircularProgress size={20} color="warning" />
+              ) : (
+                <PersonAddIcon />
+              )
+            }
+            disabled={state.assignLoading}
           >
             Gán nhóm giảng viên
           </Button>

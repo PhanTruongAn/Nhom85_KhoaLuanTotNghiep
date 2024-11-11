@@ -100,5 +100,8 @@ const managerApi = {
       `${baseUrl}/review-group-student?page=${page}&limit=${limit}`
     );
   },
+  assignGroupLecturer: (data) => {
+    return axiosClient.put(baseUrl + "/assign-group-lecturer", data);
+  },
 };
 export default managerApi;
