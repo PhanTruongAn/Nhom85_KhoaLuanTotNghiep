@@ -30,14 +30,14 @@ function ListStudentGroup() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingIcon, setLoadingIcon] = useState(false);
   const containerRef = useRef(null);
+
   const currentDate = new Date();
   // Kiểm tra hạn đăng ký nhóm
   const isWithinChooseGroupPeriod =
-    currentDate >= new Date(currentTerm?.startChooseGroupDate) &&
-    currentDate <= new Date(currentTerm?.endChooseGroupDate);
+    currentDate > new Date(currentTerm?.endChooseGroupDate);
   // Hàm lấy danh sách nhóm
   const fetchGroups = async ({ pageParam = 1 }) => {
-    const res = await studentApi.getAllGroup(pageParam, 12);
+    const res = await studentApi.getAllGroup(pageParam, 12, currentTerm.id);
     if (res && res.status === 0) {
       return {
         groups: res.data.groups,
@@ -51,7 +51,7 @@ function ListStudentGroup() {
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     CustomHooks.useInfiniteQuery(["groups"], fetchGroups, {
-      enabled: isWithinChooseGroupPeriod,
+      enabled: !isWithinChooseGroupPeriod && !isEmpty(currentTerm),
       getNextPageParam: (lastPage) => lastPage.nextPage,
     });
   const handleScroll = () => {
@@ -82,6 +82,7 @@ function ListStudentGroup() {
       const data = {
         groupId: selectedGroup.id,
         studentId: user.id,
+        termId: currentTerm.id,
       };
       setLoadingIcon(true);
       const res = await studentApi.joinGroup(data);
@@ -158,11 +159,11 @@ function ListStudentGroup() {
           >
             {isFetching ? (
               <EmptyData />
-            ) : !isWithinChooseGroupPeriod ? (
+            ) : isWithinChooseGroupPeriod ? (
               <OverDate
                 text="Đã hết hạn đăng ký nhóm!"
-                startDate={currentTerm.startChooseGroupDate}
-                endDate={currentTerm.endChooseGroupDate}
+                startDate={currentTerm?.startChooseGroupDate}
+                endDate={currentTerm?.endChooseGroupDate}
               />
             ) : isEmpty(groups) ? (
               <EmptyData text="Không có dữ liệu để hiển thị!" />

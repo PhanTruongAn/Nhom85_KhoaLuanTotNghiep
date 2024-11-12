@@ -3,13 +3,17 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Group extends Model {
     static associate(models) {
-      // define association here
-      Group.hasMany(models.Student, {
+      Group.belongsToMany(models.Student, {
+        through: "StudentGroup",
         foreignKey: "groupId",
         as: "students",
-        onDelete: "SET NULL",
-        hooks: true,
+        onDelete: "CASCADE",
       });
+      // Group.hasMany(models.StudentGroup, {
+      //   foreignKey: "groupId",
+      //   as: "studentGroups",
+      //   onDelete: "CASCADE",
+      // });
       Group.belongsTo(models.Topic, {
         foreignKey: "topicId",
         as: "topic",
@@ -30,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   Group.init(
     {
       groupName: DataTypes.STRING,
@@ -44,5 +49,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Group",
     }
   );
+
   return Group;
 };

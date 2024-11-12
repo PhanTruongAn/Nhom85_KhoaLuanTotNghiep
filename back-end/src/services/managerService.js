@@ -17,6 +17,7 @@ const {
   Lecturer,
   GroupLecturer,
   TermStudent,
+  StudentGroup,
 } = require("../models");
 
 const paginationPermission = async (page, limit) => {
@@ -333,6 +334,7 @@ const paginationGroupsStudent = async (page, limit, term) => {
         {
           model: Student,
           as: "students",
+          through: { attributes: [] },
           attributes: [
             "id",
             "fullName",
@@ -342,7 +344,6 @@ const paginationGroupsStudent = async (page, limit, term) => {
             "gender",
             "username",
           ],
-          // required: true,
         },
         {
           model: Topic,

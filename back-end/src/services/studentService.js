@@ -16,6 +16,7 @@ const {
   Note,
   Major,
   Evaluation,
+  StudentGroup,
 } = require("../models");
 
 // Tạo tài khoản sinh viên
@@ -448,13 +449,16 @@ const findStudentsByName = async (page, limit, input) => {
     };
   }
 };
-const getStudentGetAllGroup = async (page, limit) => {
+const getStudentGetAllGroup = async (page, limit, termId) => {
   try {
     const offset = (page - 1) * limit;
     const { count, rows } = await Group.findAndCountAll({
       attributes: ["id", "groupName", "numOfMembers", "status"],
       offset: offset,
       limit: limit,
+      where: {
+        termId: termId,
+      },
     });
     const totalPages = Math.ceil(count / limit);
     return {
@@ -483,20 +487,28 @@ const joinGroup = async (data) => {
     };
   }
 
-  const checkStudentGroup = await Student.findOne({
+  // Kiểm tra xem sinh viên đã tham gia nhóm nào trong học kỳ này chưa
+  const checkStudentGroup = await StudentGroup.findOne({
     where: {
-      id: data.studentId,
+      studentId: data.studentId,
+    },
+    include: {
+      model: Group,
+      as: "groups",
+      where: { termId: data.termId }, // Kiểm tra nếu nhóm thuộc học kỳ đúng
     },
   });
-  const { groupId } = checkStudentGroup;
-  if (groupId) {
+
+  if (checkStudentGroup) {
     return {
       status: 1,
-      message: "Bạn đã tham gia nhóm khác rồi!",
+      message: "Bạn đã tham gia nhóm rồi!",
     };
   }
+
+  // Kiểm tra thông tin nhóm
   const res = await Group.findOne({
-    where: { id: data.groupId },
+    where: { id: data.groupId, termId: data.termId }, // Kiểm tra nhóm và học kỳ
     attributes: { exclude: ["createdAt", "updatedAt", "TopicId"] },
     include: {
       model: Student,
@@ -508,7 +520,7 @@ const joinGroup = async (data) => {
   if (!res) {
     return {
       status: 1,
-      message: "Nhóm không tồn tại!",
+      message: "Nhóm không tồn tại trong học kỳ này!",
       data: null,
     };
   }
@@ -516,19 +528,31 @@ const joinGroup = async (data) => {
   const { numOfMembers, id } = res;
   const students = res.students.length;
 
+  // Kiểm tra nếu nhóm đã đầy
   if (students >= numOfMembers) {
     return {
       status: 1,
       message: "Nhóm đã đầy!",
     };
   }
+
+  // Kiểm tra xem sinh viên có phải là người đầu tiên tham gia nhóm không
   const isFirstStudent = students === 0;
+
+  // Cập nhật sinh viên là trưởng nhóm nếu là sinh viên đầu tiên
   const update = await Student.update(
-    { groupId: id, isLeader: isFirstStudent ? true : false },
+    { isLeader: isFirstStudent ? true : false },
     { where: { id: data.studentId } }
   );
 
-  if (update[0] > 0) {
+  // Thêm sinh viên vào nhóm
+  const groupJoin = await StudentGroup.create({
+    studentId: data.studentId,
+    groupId: data.groupId,
+  });
+
+  if (update[0] > 0 && groupJoin) {
+    // Nếu nhóm đầy, cập nhật trạng thái nhóm
     if (students + 1 === numOfMembers) {
       await Group.update({ status: "FULL" }, { where: { id } });
     }
@@ -547,43 +571,70 @@ const joinGroup = async (data) => {
   }
 };
 
-const getInfoMyGroup = async (groupId) => {
-  if (!groupId) {
+const getInfoMyGroup = async (studentId, termId) => {
+  if (!studentId) {
     return {
       status: -1,
-      message: "Dữ liệu không hợp lệ.",
+      message: "ID sinh viên không hợp lệ!.",
       data: null,
     };
   }
-  const res = await Group.findOne({
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Học kì không hợp lệ.",
+      data: null,
+    };
+  }
+
+  const studentGroups = await StudentGroup.findAll({
     where: {
-      id: groupId,
+      studentId: studentId,
     },
-    attributes: { exclude: ["createdAt", "updatedAt", "TopicId"] },
-    include: {
-      model: Student,
-      as: "students",
-      attributes: [
-        "id",
-        "fullName",
-        "email",
-        "phone",
-        "isLeader",
-        "gender",
-        "username",
-      ],
-    },
+    include: [
+      {
+        model: Group,
+        as: "groups",
+        attributes: ["id", "groupName", "status", "topicId", "termId"],
+        include: [
+          {
+            model: Topic,
+            as: "topic",
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
+          {
+            model: Student,
+            as: "students",
+            attributes: [
+              "id",
+              "fullName",
+              "email",
+              "phone",
+              "isLeader",
+              "gender",
+              "username",
+            ],
+            through: { attributes: [] },
+          },
+        ],
+      },
+    ],
   });
-  if (res) {
+
+  const group = studentGroups.find(
+    (studentGroup) => studentGroup.groups.termId === Number(termId)
+  );
+
+  if (group) {
     return {
       status: 0,
       message: "Lấy thông tin nhóm thành công!",
-      data: res,
+      data: group.groups,
     };
   } else {
     return {
       status: -1,
-      message: "Không tìm thấy thông tin nhóm!",
+      message: "Không tìm thấy nhóm trong học kỳ này!",
       data: null,
     };
   }
@@ -597,8 +648,9 @@ const studentLeaveGroup = async (data) => {
       message: "Dữ liệu không hợp lệ!",
     };
   }
+
   const res = await Group.findOne({
-    where: { id: data.groupId },
+    where: { id: data.groupId, termId: data.termId },
     include: {
       model: Student,
       as: "students",
@@ -615,26 +667,59 @@ const studentLeaveGroup = async (data) => {
 
   const { id, numOfMembers } = res;
   const students = res.students.length;
+
+  if (students === 1) {
+    const singleMember = await StudentGroup.destroy({
+      where: { studentId: data.studentId, groupId: data.groupId },
+    });
+
+    if (singleMember > 0) {
+      await Student.update(
+        {
+          isLeader: false,
+        },
+        {
+          where: {
+            id: data.studentId,
+          },
+        }
+      );
+      return {
+        status: 0,
+        message: "Rời nhóm thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Rời nhóm thất bại! Không tìm thấy nhóm.",
+        data: null,
+      };
+    }
+  }
+
   const student = await Student.findOne({
     where: {
       id: data.studentId,
     },
   });
+
   const { isLeader } = student;
+
+  // Kiểm tra nếu sinh viên là trưởng nhóm
   if (isLeader) {
     return {
       status: 1,
       message: "Bạn hãy chọn 1 thành viên khác làm nhóm trưởng",
     };
   }
-  const update = await Student.update(
-    { groupId: null },
-    {
-      where: { id: data.studentId },
-    }
-  );
 
-  if (update[0] > 0) {
+  // Xóa sinh viên khỏi nhóm
+  const update = await StudentGroup.destroy({
+    where: { studentId: data.studentId, groupId: data.groupId },
+  });
+
+  if (update > 0) {
+    // Nếu nhóm còn ít hơn số lượng thành viên tối đa, cập nhật trạng thái nhóm
     if (students - 1 < numOfMembers) {
       await Group.update({ status: "NOT_FULL" }, { where: { id } });
     }
@@ -651,12 +736,13 @@ const studentLeaveGroup = async (data) => {
     };
   }
 };
+
 const removeMemberFromGroup = async (data) => {
-  const { groupId, studentId } = data;
-  if (!groupId && !studentId) {
+  const { groupId, studentId, termId } = data;
+  if (!groupId && !studentId && !termId) {
     return {
       status: -1,
-      message: "Thông tin nhóm hoặc sinh viên cần xóa không hợp lệ!",
+      message: "Thông tin học kì, nhóm hoặc sinh viên cần xóa không hợp lệ!",
     };
   }
   const result = await studentLeaveGroup(data);
@@ -1055,7 +1141,6 @@ const getTerm = async (studentId) => {
       const endDate = new Date(term.endDate);
       return currentDate >= startDate && currentDate <= endDate;
     });
-
     if (currentTerm) {
       return {
         status: 0,

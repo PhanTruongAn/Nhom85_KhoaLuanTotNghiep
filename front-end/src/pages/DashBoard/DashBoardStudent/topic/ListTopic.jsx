@@ -131,7 +131,7 @@ function ListTopic() {
   const handleConfirmJoin = async () => {
     setLoadingConfirm(true);
     const data = {
-      groupId: user.groupId,
+      groupId: group.id,
       topicId: selectedTopicId,
     };
     const res = await studentApi.joinTopic(data);

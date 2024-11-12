@@ -31,11 +31,11 @@ const ProjectDetails = () => {
   const { data: groupData, refetch: refetchGroup } = CustomHooks.useQuery(
     ["my-group"],
     async () => {
-      const res = await studentApi.getMyGroup(user.groupId);
+      const res = await studentApi.getMyGroup(user.id, currentTerm.id);
       return res;
     },
     {
-      enabled: !!user.groupId && isEmpty(group),
+      enabled: isEmpty(group),
       onSuccess: (res) => {
         if (res && res.status === 0) {
           dispatch(setGroup(res.data));

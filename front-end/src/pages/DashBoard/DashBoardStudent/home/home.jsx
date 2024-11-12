@@ -16,6 +16,7 @@ const { Option } = Select;
 function StudentHome() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const group = useSelector((state) => state.userInit.group);
   const majors = useSelector((state) => state.userInit.majors);
   const [messageApi, contextHolder] = message.useMessage();
@@ -31,9 +32,8 @@ function StudentHome() {
     typeTraining: user?.typeTraining || "undefined",
   });
   const [loading, setLoading] = useState(false);
-
   const getMyGroup = async () => {
-    const res = await studentApi.getMyGroup(user.groupId);
+    const res = await studentApi.getMyGroup(user.id, currentTerm.id);
     if (res && res.status === 0) {
       dispatch(setGroup(res.data));
     } else {
@@ -52,7 +52,7 @@ function StudentHome() {
     return res;
   };
   CustomHooks.useQuery(["my-group"], getMyGroup, {
-    enabled: isEmpty(group),
+    enabled: !isEmpty(currentTerm) && isEmpty(group),
   });
   CustomHooks.useQuery(["majors"], getMajors, {
     enabled: isEmpty(majors),

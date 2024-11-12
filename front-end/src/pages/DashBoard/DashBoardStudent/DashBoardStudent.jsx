@@ -75,8 +75,6 @@ const DashBoardStudent = () => {
     onSuccess: (res) => {
       if (res && res.status === 0) {
         dispatch(setNotes(res.data));
-      } else {
-        messageApi.error(res.message);
       }
     },
     onError: (error) => {

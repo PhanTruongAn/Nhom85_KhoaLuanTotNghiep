@@ -112,9 +112,13 @@ const handleFindStudentsByUserNameOrFullName = async (req, res) => {
   }
 };
 const handleStudentGetAllGroup = async (req, res) => {
-  const { page, limit } = req.query;
-  if (page && limit) {
-    const data = await studentService.getStudentGetAllGroup(+page, +limit);
+  const { page, limit, term } = req.query;
+  if (page && limit && term) {
+    const data = await studentService.getStudentGetAllGroup(
+      +page,
+      +limit,
+      term
+    );
     return res.status(200).json(data);
   } else {
     return res.status(400).json({
@@ -137,8 +141,8 @@ const handleJoinGroup = async (req, res) => {
 };
 const handleGetInfoMyGroup = async (req, res) => {
   try {
-    const { group } = req.query;
-    const data = await studentService.getInfoMyGroup(group);
+    const { student, term } = req.query;
+    const data = await studentService.getInfoMyGroup(student, term);
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);

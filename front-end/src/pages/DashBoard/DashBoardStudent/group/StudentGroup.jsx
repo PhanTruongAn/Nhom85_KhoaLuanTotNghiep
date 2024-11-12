@@ -28,7 +28,7 @@ const StudentGroup = () => {
   const isWithinChooseGroupPeriod =
     currentDate > new Date(currentTerm?.endChooseGroupDate);
   const getMyGroup = async () => {
-    const res = await studentApi.getMyGroup(user.groupId);
+    const res = await studentApi.getMyGroup(user.id, currentTerm.id);
     if (res && res.status === 0) {
       dispatch(setGroup(res.data));
     } else {
@@ -38,7 +38,7 @@ const StudentGroup = () => {
   };
 
   const { refetch } = CustomHooks.useQuery(["my-group", group], getMyGroup, {
-    enabled: isEmpty(group),
+    enabled: !isEmpty(currentTerm) && isEmpty(group),
   });
 
   const handleLeaveGroup = async () => {
@@ -46,6 +46,7 @@ const StudentGroup = () => {
     const data = {
       studentId: user.id,
       groupId: group.id,
+      termId: currentTerm.id,
     };
     const res = await studentApi.leaveGroup(data);
     if (res && res.status === 0) {
@@ -65,6 +66,7 @@ const StudentGroup = () => {
     const data = {
       studentId: studentId,
       groupId: group.id,
+      termId: currentTerm.id,
     };
     const res = await studentApi.removeMember(data);
     if (res && res.status === 0) {

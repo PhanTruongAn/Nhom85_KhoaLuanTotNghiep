@@ -25,8 +25,10 @@ const studentApi = {
   transferLeader: (data) => {
     return axiosClient.put(baseUrl + "/transfer-team-leader", data);
   },
-  getMyGroup: (group) => {
-    return axiosClient.get(baseUrl + `/my-group?group=${group}`);
+  getMyGroup: (student, term) => {
+    return axiosClient.get(
+      baseUrl + `/my-group?student=${student}&term=${term}`
+    );
   },
   getMyTopic: (topic) => {
     return axiosClient.get(baseUrl + `/my-topic?topic=${topic}`);
@@ -65,9 +67,9 @@ const studentApi = {
     return axiosClient.put(baseUrl + "/change-password", data);
   },
 
-  getAllGroup: (page, limit) => {
+  getAllGroup: (page, limit, term) => {
     return axiosClient.get(
-      `${baseUrl}/get-all-group?page=${page}&limit=${limit}`
+      `${baseUrl}/get-all-group?page=${page}&limit=${limit}&term=${term}`
     );
   },
   getAllTopics: (page, limit, term) => {

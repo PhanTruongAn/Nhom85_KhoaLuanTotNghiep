@@ -40,16 +40,6 @@ module.exports = {
       typeTraining: {
         type: Sequelize.STRING,
       },
-      groupId: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: "Groups",
-          key: "id",
-        },
-        onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-      },
       majorId: {
         type: Sequelize.INTEGER,
       },

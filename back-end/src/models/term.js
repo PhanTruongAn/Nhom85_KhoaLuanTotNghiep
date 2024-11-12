@@ -8,14 +8,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "termId",
         onDelete: "CASCADE",
         as: "students",
-        hooks: true,
       });
       Term.belongsToMany(models.Lecturer, {
         through: "TermLecturer",
         foreignKey: "termId",
         onDelete: "CASCADE",
         as: "lecturers",
-        hooks: true,
       });
       Term.hasMany(models.Note, {
         foreignKey: "termId",
@@ -35,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   Term.init(
     {
       name: DataTypes.STRING,
