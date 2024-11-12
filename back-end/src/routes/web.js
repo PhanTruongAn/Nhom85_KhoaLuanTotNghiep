@@ -210,6 +210,18 @@ const initWebRoutes = (app) => {
     "/manager/assign-group-lecturer",
     managerController.handleAssignGroupLecturer
   );
+  router.delete(
+    "/manager/delete-group-lecturer",
+    managerController.handleDeleteGroupLecturer
+  );
+  router.delete(
+    "/manager/delete-lecturer-from-group",
+    managerController.handleDeleteLecturerFromGroup
+  );
+  router.put(
+    "/manager/add-lecturer-to-group",
+    managerController.handleAddLecturerToGroup
+  );
   return app.use("/", router);
 };
 

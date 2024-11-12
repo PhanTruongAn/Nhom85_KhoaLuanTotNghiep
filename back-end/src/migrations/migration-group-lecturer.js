@@ -15,9 +15,6 @@ module.exports = {
       numOfMembers: {
         type: Sequelize.INTEGER,
       },
-      termId: {
-        type: Sequelize.INTEGER,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

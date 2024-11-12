@@ -14,7 +14,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CustomHooks from "../../../../utils/hooks";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import managerApi from "../../../../apis/managerApi";
 import { isEmpty } from "lodash";
 const { Option } = Select;
@@ -36,8 +36,6 @@ const columns = [
   },
 ];
 function ClassifyTypeLecturer() {
-  const dispatch = useDispatch();
-  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [selectedLecturerGuide, setSelectedLecturerGuide] = useState(null);
@@ -62,8 +60,7 @@ function ClassifyTypeLecturer() {
 
   // Get list lecturer
   const getData = async () => {
-    let termId = currentTerm.id;
-    const res = await managerApi.getGroupLecturer(termId);
+    const res = await managerApi.getGroupLecturer();
     return res;
   };
 
@@ -71,16 +68,17 @@ function ClassifyTypeLecturer() {
     ["group-lecturer"],
     getData,
     {
-      enabled: !isEmpty(currentTerm),
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({ groups: res.groups });
           messageApi.success(res.message);
         } else {
+          updateState({ groups: [] });
           messageApi.error(res.message);
         }
       },
       onError: (err) => {
+        updateState({ groups: [] });
         console.log("Lỗi:", err.message);
         messageApi.error("Lỗi khi lấy dữ liệu");
       },
@@ -136,7 +134,6 @@ function ClassifyTypeLecturer() {
       updateState({ assignLoading: false });
     } else {
       let dataToSave = {
-        termId: currentTerm.id,
         groupLecturerId: selectedGroupId,
         groupIds: selectedRowKeys,
       };
@@ -152,11 +149,11 @@ function ClassifyTypeLecturer() {
     }
   };
   const handleReset = () => {
-    setGuideLecturerTopics([]);
+    // setGuideLecturerTopics([]);
     setSelectedRowKeys([]);
-    setSelectedGroupId(null);
-    setSelectedLecturerGuide(null);
-    setSelectedLecturerReport(null);
+    // setSelectedGroupId(null);
+    // setSelectedLecturerGuide(null);
+    // setSelectedLecturerReport(null);
   };
 
   const onSelectChange = (newSelectedRowKeys) => {

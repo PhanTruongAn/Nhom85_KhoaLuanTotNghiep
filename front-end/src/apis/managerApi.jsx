@@ -28,13 +28,13 @@ const managerApi = {
   createGroupsStudent: (data) => {
     return axiosClient.post(`${baseUrl}/create-groups-student`, data);
   },
-  getGroupsStudent: (page, limit) => {
+  getGroupsStudent: (page, limit, term) => {
     return axiosClient.get(
-      `${baseUrl}/get-groups-student?page=${page}&limit=${limit}`
+      `${baseUrl}/get-groups-student?term=${term}&page=${page}&limit=${limit}`
     );
   },
-  countStudent: () => {
-    return axiosClient.get(`${baseUrl}/count-student`);
+  countStudent: (term) => {
+    return axiosClient.get(`${baseUrl}/count-student?term=${term}`);
   },
   getTerms: () => {
     return axiosClient.get(`${baseUrl}/terms`);
@@ -92,8 +92,8 @@ const managerApi = {
   createGroupLecturer: (data) => {
     return axiosClient.post(`${baseUrl}/create-group-lecturer`, data);
   },
-  getGroupLecturer: (term) => {
-    return axiosClient.get(`${baseUrl}/get-group-lecturer?term=${term}`);
+  getGroupLecturer: () => {
+    return axiosClient.get(`${baseUrl}/get-group-lecturer`);
   },
   reviewGroupStudent: (page, limit) => {
     return axiosClient.get(
@@ -102,6 +102,17 @@ const managerApi = {
   },
   assignGroupLecturer: (data) => {
     return axiosClient.put(baseUrl + "/assign-group-lecturer", data);
+  },
+  deleteGroupLecturer: (data) => {
+    return axiosClient.delete(baseUrl + "/delete-group-lecturer", { data });
+  },
+  deleteLecturerFromGroup: (data) => {
+    return axiosClient.delete(baseUrl + "/delete-lecturer-from-group", {
+      data,
+    });
+  },
+  addLecturerToGroup: (data) => {
+    return axiosClient.put(baseUrl + "/add-lecturer-to-group", data);
   },
 };
 export default managerApi;

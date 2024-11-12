@@ -71,28 +71,7 @@ const getItems = (isManager) => {
           : []),
       ],
     },
-    {
-      key: "classify-lecturer",
-      icon: <TopicOutlinedIcon />,
-      label: "Phân công",
-      children: [
-        {
-          key: "create-lecturer-group",
-          icon: <FileExcelOutlined />,
-          label: "Tạo nhóm giảng viên",
-        },
-        {
-          key: "classify-type-lecturer",
-          icon: <FileExcelOutlined />,
-          label: "Chấm phản biện",
-        },
-        {
-          key: "manage-group-lecturer",
-          icon: <FileExcelOutlined />,
-          label: "Quản lý nhóm ",
-        },
-      ],
-    },
+
     {
       key: "groups-student",
       icon: <PeopleAltOutlinedIcon />,
@@ -123,6 +102,28 @@ const getItems = (isManager) => {
 
     ...(isManager
       ? [
+          {
+            key: "classify-lecturer",
+            icon: <TopicOutlinedIcon />,
+            label: "Nhóm giảng viên",
+            children: [
+              {
+                key: "create-lecturer-group",
+                icon: <FileExcelOutlined />,
+                label: "Tạo nhóm",
+              },
+              {
+                key: "classify-type-lecturer",
+                icon: <FileExcelOutlined />,
+                label: "Phân công",
+              },
+              {
+                key: "manage-group-lecturer",
+                icon: <FileExcelOutlined />,
+                label: "Quản lý nhóm ",
+              },
+            ],
+          },
           {
             key: "term",
             icon: <BarChartOutlined />,

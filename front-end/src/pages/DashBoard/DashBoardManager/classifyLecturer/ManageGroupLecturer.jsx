@@ -1,85 +1,112 @@
 import { useState } from "react";
-import { Table, Space, Popconfirm } from "antd";
+import { Table, Space, Popconfirm, message } from "antd";
 import { Box, Button, Typography } from "@mui/material";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-
-// Import the UpdateGroupModalLecturer component
 import UpdateGroupModalLecturer from "./UpdateGroupModalLecturer";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import SearchComponent from "../../../../components/SearchComponent/search";
-
-// Sample data generation
-const mockData = [
-  {
-    id: "1",
-    groupName: "Group A",
-    numberOfMembers: 2,
-    lecturers: [
-      {
-        id: "101",
-        fullName: "Dr. John Doe",
-        username: "jdoe",
-        email: "jdoe@example.com",
-        phone: "123456789",
-      },
-      {
-        id: "102",
-        fullName: "Dr. Jane Smith",
-        username: "jsmith",
-        email: "jsmith@example.com",
-        phone: "987654321",
-      },
-    ],
-  },
-  {
-    id: "2",
-    groupName: "Group B",
-    numberOfMembers: 2,
-    lecturers: [
-      {
-        id: "103",
-        fullName: "Dr. Emily White",
-        username: "ewhite",
-        email: "ewhite@example.com",
-        phone: "555555555",
-      },
-    ],
-  },
-];
-
+import CustomHooks from "../../../../utils/hooks";
+import managerApi from "../../../../apis/managerApi";
+import { useSelector } from "react-redux";
+import { isEmpty } from "lodash";
 const ManageGroupLecturer = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
-  const [dataSource, setDataSource] = useState(mockData);
+  const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [state, setState] = useState({
+    page: 1,
+    pageSize: 5,
+    totalRow: null,
+    totalPage: null,
+  });
+
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
   const handleOpenUpdateModal = (group, isEditing = false) => {
     setSelectedGroup({ ...group, isEditing });
     setOpenUpdateModal(true);
   };
-
+  const getGroupLecturer = async () => {
+    let res = await managerApi.getGroupLecturer();
+    return res;
+  };
+  const {
+    data: groupData,
+    isFetching,
+    refetch,
+  } = CustomHooks.useQuery(["group-lecturer"], getGroupLecturer, {
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        setDataSource(res.groups);
+        if (isEmpty(dataSource)) {
+          messageApi.success(res.message);
+        }
+      } else {
+        setDataSource([]);
+        messageApi.error(res.message);
+      }
+    },
+    onError: (err) => {
+      setDataSource([]);
+      console.log("Lỗi:", err.message);
+      messageApi.error("Lỗi khi lấy dữ liệu");
+    },
+  });
+  const handleSearch = (value) => {
+    setSearchKeyword(value.toLowerCase());
+  };
   const handleCloseUpdateModal = () => {
     setOpenUpdateModal(false);
     setSelectedGroup(null);
   };
-
-  const handleDeleteGroup = (record) => {
-    setDataSource(dataSource.filter((group) => group.id !== record.id));
+  const handleDeleteGroup = async (record) => {
+    let dataToSave = {
+      id: record.id,
+    };
+    const res = await managerApi.deleteGroupLecturer(dataToSave);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      refetch();
+    } else {
+      messageApi.error(res.message);
+    }
   };
-
+  const handleRefresh = () => {
+    setLoading(true);
+    refetch();
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
+  const sourceData =
+    groupData && groupData.data ? groupData.data.groups : dataSource;
+  const filteredData = sourceData.filter((item) =>
+    item.name.toLowerCase().includes(searchKeyword)
+  );
   const columns = [
-    { title: "ID", dataIndex: "id", key: "id", width: "5%" },
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: "5%",
+      sorter: (a, b) => a.id - b.id,
+    },
     {
       title: "Tên nhóm",
-      dataIndex: "groupName",
-      key: "groupName",
+      dataIndex: "name",
+      key: "name",
       width: "30%",
     },
     {
-      title: "Số lượng ",
-      key: "numberOfMembers",
+      title: "Số nhóm chấm phản biện",
+      key: "numOfGroupStudent",
       width: "20%",
-      render: (record) => record?.numberOfMembers || "No topic assigned",
+      render: (record) => `${record?.reviewGroups.length}` || "Không có nhóm",
     },
     {
       title: "Hành động",
@@ -96,7 +123,7 @@ const ManageGroupLecturer = () => {
             Sửa
           </Button>
           <Popconfirm
-            title="Delete this group?"
+            title="Xóa nhóm giảng viên này?"
             onConfirm={() => handleDeleteGroup(record)}
             okText="Yes"
             cancelText="No"
@@ -118,10 +145,11 @@ const ManageGroupLecturer = () => {
 
   return (
     <Box sx={{ padding: "20px" }}>
+      {contextHolder}
       <Box sx={{ position: "relative", mb: 2 }}>
         <SearchComponent
-          placeholder="Search by lecturer name or topic"
-          onChange={(e) => console.log("Searching:", e.target.value)}
+          placeholder="Tìm theo tên nhóm giảng viên"
+          onChange={handleSearch}
         />
         <Box
           sx={{
@@ -132,39 +160,54 @@ const ManageGroupLecturer = () => {
           }}
         >
           <CustomButton
-            onClick={() => console.log("Refreshing data...")}
-            text="Refresh Data"
+            onClick={handleRefresh}
+            text="Làm mới dữ liệu"
             type="refresh"
             loading={loading}
           />
         </Box>
       </Box>
 
-      <Typography variant="h5" sx={{ textAlign: "center", mb: 2 }}>
-        Lecturer Group List
+      <Typography variant="h5" sx={{ textAlign: "center", mb: 1 }}>
+        Danh sách nhóm giảng viên
       </Typography>
       <Table
         bordered
         columns={columns}
-        dataSource={dataSource}
+        dataSource={filteredData}
         rowKey="id"
         pagination={{
-          showQuickJumper: true,
           showSizeChanger: true,
           pageSizeOptions: ["5", "10", "20"],
-          total: dataSource.length,
+          total: state.totalRow, // Cập nhật giá trị total
+          current: state.page,
+          pageSize: state.pageSize,
+          onChange: (page, size) => {
+            updateState({ page: page, pageSize: size });
+          },
           responsive: true,
         }}
         locale={{
-          emptyText: <EmptyData text="No data available!" />,
+          emptyText: (
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {isFetching ? (
+                <EmptyData />
+              ) : isEmpty(dataSource) ? (
+                <EmptyData text="Không có dữ liệu!" />
+              ) : (
+                <EmptyData />
+              )}
+            </Box>
+          ),
         }}
       />
 
       <UpdateGroupModalLecturer
-        lecturerSelect={selectedGroup}
+        groupSelected={selectedGroup}
         isOpen={openUpdateModal}
         closeModal={handleCloseUpdateModal}
         onCancel={handleCloseUpdateModal}
+        refetch={refetch}
       />
     </Box>
   );

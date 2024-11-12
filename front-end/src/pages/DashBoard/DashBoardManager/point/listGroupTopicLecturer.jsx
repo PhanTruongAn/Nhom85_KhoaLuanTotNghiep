@@ -12,13 +12,17 @@ import { Space, Table, message } from "antd";
 import PointTopicStudent from "./pointTopicStudent";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomHooks from "../../../../utils/hooks";
-import managerApi from "../../../../apis/managerApi";
+import lecturerApi from "../../../../apis/lecturerApi";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { FileDoneOutlined } from "@ant-design/icons";
 import Criteria from "../../DashBoardStudent/criteria/Criteria";
-import { Modal } from "antd"; // Import Ant Design's Modal
+import { Modal } from "antd";
+import { isEmpty } from "lodash";
+import { useSelector } from "react-redux";
 function ListGroupTopicLecturer() {
+  const user = useSelector((state) => state.userInit.user);
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [state, setState] = useState({
     searchLoading: false,
     currentPage: 1,
@@ -29,6 +33,7 @@ function ListGroupTopicLecturer() {
     totalRows: null,
     refreshButton: false,
   });
+
   const [messageApi, contextHolder] = message.useMessage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(null); // State to hold the selected group
@@ -40,52 +45,42 @@ function ListGroupTopicLecturer() {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
 
-  // Get Groups Student Data
+  // Get Group Data
+  const getGroups = async () => {
+    let termId = currentTerm.id;
+    let lecturerId = user.id;
+    const res = await lecturerApi.getMyGroupStudent(termId, lecturerId);
+    return res;
+  };
+
   const {
-    data: groupsData,
     isFetching,
+    data: groupData,
     refetch,
-  } = CustomHooks.useQuery(
-    ["groupsStudent", state.currentPage, state.pageSize],
-    () => managerApi.getGroupsStudent(state.currentPage, state.pageSize),
-    {
-      onSuccess: (res) => {
-        if (res && res.status === 0) {
-          updateState({
-            refreshButton: false,
-            dataSource: res.data.groupStudent,
-            totalRows: res.data.totalRows,
-            loadingData: false,
-          });
-        } else {
-          updateState({
-            refreshButton: false,
-            dataSource: [],
-            loadingData: false,
-          });
-          messageApi.error(res.message);
+  } = CustomHooks.useQuery(["my-group-topic"], getGroups, {
+    enabled: !isEmpty(currentTerm),
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        updateState({ dataSource: res.data });
+        if (isEmpty(groupData)) {
+          messageApi.success(res.message);
         }
-      },
-      onError: () => {
-        updateState({
-          dataSource: [],
-          loadingData: false,
-          refreshButton: false,
-        });
-        messageApi.error("Lỗi khi lấy dữ liệu!");
-      },
-    }
-  );
+      } else {
+        messageApi.error(res.message);
+      }
+    },
+    onError: () => {
+      messageApi.error("Lỗi khi lấy dữ liệu!");
+    },
+  });
 
   const filteredGroups = useMemo(() => {
     const sourceData =
-      groupsData && groupsData.data
-        ? groupsData.data.groupStudent
-        : state.dataSource;
+      groupData && groupData.data ? groupData.data : state.dataSource;
     return sourceData.filter((group) =>
       group.groupName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, state.dataSource, groupsData]);
+  }, [searchTerm, state.dataSource, groupData]);
 
   const columns = [
     {
@@ -262,8 +257,8 @@ function ListGroupTopicLecturer() {
           pageSizeOptions: ["5", "10", "20"],
           total: searchTerm
             ? filteredGroups.length
-            : groupsData
-            ? groupsData.data?.totalRows
+            : groupData
+            ? groupData.data?.totalRows
             : state.totalRows, // Cập nhật giá trị total
           current: state.currentPage,
           pageSize: state.pageSize,

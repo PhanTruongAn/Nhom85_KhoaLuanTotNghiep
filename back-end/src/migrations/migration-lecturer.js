@@ -9,7 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-
       fullName: {
         type: Sequelize.STRING,
       },
@@ -36,6 +35,13 @@ module.exports = {
       },
       groupLecturerId: {
         type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "GroupLecturers",
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,

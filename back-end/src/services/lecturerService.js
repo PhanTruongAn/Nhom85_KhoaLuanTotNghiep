@@ -805,13 +805,12 @@ const pointGroup = async (data) => {
     console.log("Lỗi: ", error.message);
     return {
       status: -1,
-      message: `Lỗi: ${error.message}`,
+      message: `Lỗi chức năng!`,
     };
   }
 };
 
 const getGroupTopic = async (lecturerId, termId) => {
-  // Kiểm tra xem lecturerId có hợp lệ hay không
   if (!lecturerId) {
     return {
       status: -1,
@@ -825,13 +824,12 @@ const getGroupTopic = async (lecturerId, termId) => {
     };
   }
   try {
-    // Thực hiện truy vấn để lấy danh sách nhóm theo lecturerId và termId
     const groups = await Group.findAll({
       attributes: { exclude: ["createdAt", "updatedAt", "TopicId", "topicId"] },
       include: [
         {
           model: Topic,
-          as: "topic", // Đảm bảo alias trong association trùng với tên bạn đã đặt
+          as: "topic",
           where: {
             lecturerId: lecturerId,
             termId: termId,
@@ -842,7 +840,7 @@ const getGroupTopic = async (lecturerId, termId) => {
         },
         {
           model: Student,
-          as: "students", // Đảm bảo alias trong association trùng với tên bạn đã đặt
+          as: "students",
           attributes: [
             "id",
             "username",
@@ -852,10 +850,17 @@ const getGroupTopic = async (lecturerId, termId) => {
             "phone",
           ],
         },
+        {
+          model: Term,
+          as: "term",
+          attributes: [],
+          where: {
+            id: termId,
+          },
+        },
       ],
     });
 
-    // Nếu không tìm thấy nhóm nào
     if (groups.length === 0) {
       return {
         status: -1,
@@ -863,8 +868,6 @@ const getGroupTopic = async (lecturerId, termId) => {
         data: [],
       };
     }
-
-    // Trả về danh sách nhóm tìm thấy
     return {
       status: 0,
       message: "Lấy danh sách nhóm thành công!",
@@ -874,11 +877,28 @@ const getGroupTopic = async (lecturerId, termId) => {
     console.log("Lỗi:", error.message);
     return {
       status: -1,
-      message: "Đã xảy ra lỗi trong quá trình lấy dữ liệu!",
+      message: "Lỗi chức năng!",
     };
   }
 };
-
+const getReviewGroupStudent = async (data) => {
+  const { groupLecturerId, termId } = data;
+  if (!groupLecturerId || !termId) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin nhóm giảng viên hoặc học kì!",
+    };
+  }
+  try {
+    // let groups = await
+  } catch (error) {
+    console.log("Lỗi:", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,

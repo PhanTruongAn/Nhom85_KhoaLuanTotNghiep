@@ -8,14 +8,13 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "groupLecturerId",
         as: "lecturers",
         onDelete: "SET NULL",
-        hooks: true, // Cần bật hooks để Sequelize xử lý cascade hoặc set null
+        hooks: true,
       });
       GroupLecturer.hasMany(models.Group, {
         foreignKey: "groupLecturerId",
+        onDelete: "SET NULL",
+        hooks: true,
         as: "reviewGroups",
-      });
-      GroupLecturer.belongsTo(models.Term, {
-        foreignKey: "termId",
       });
     }
   }
@@ -23,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       numOfMembers: DataTypes.INTEGER,
-      termId: DataTypes.INTEGER,
     },
     {
       sequelize,

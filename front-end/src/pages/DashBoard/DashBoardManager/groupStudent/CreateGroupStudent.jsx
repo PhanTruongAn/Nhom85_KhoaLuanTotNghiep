@@ -7,9 +7,11 @@ import CustomButton from "../../../../components/Button/CustomButton";
 import CustomHooks from "../../../../utils/hooks";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import { isEmpty } from "lodash";
+import { useSelector } from "react-redux";
+
 const CreateGroupStudent = () => {
   const [messageApi, contextHolder] = message.useMessage();
-
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [state, setState] = useState({
     memberGroup: 2,
     estimateGroupStudent: 0,
@@ -30,7 +32,8 @@ const CreateGroupStudent = () => {
     updateState({ estimateGroupStudent: total });
   };
   const fetchNumberStudent = async () => {
-    const res = await managerApi.countStudent();
+    let term = currentTerm.id;
+    const res = await managerApi.countStudent(term);
     if (res && res.status === 0) {
       updateState({
         numberOfStudent: res.data.totalStudent,
@@ -42,7 +45,13 @@ const CreateGroupStudent = () => {
     }
     return res.data;
   };
-  const { data } = CustomHooks.useQuery(["count"], fetchNumberStudent);
+  const { data, refetch } = CustomHooks.useQuery(
+    ["count", currentTerm],
+    fetchNumberStudent,
+    {
+      enabled: !isEmpty(currentTerm),
+    }
+  );
 
   const buildDataToSave = () => {
     if (isNaN(state.memberGroup) || isNaN(state.estimateGroupStudent)) {
@@ -54,6 +63,7 @@ const CreateGroupStudent = () => {
     const data = {
       estimateGroupStudent: state.estimateGroupStudent,
       numOfMembers: state.memberGroup,
+      termId: currentTerm.id,
     };
     return data;
   };
@@ -67,6 +77,7 @@ const CreateGroupStudent = () => {
     if (res && res.status === 0) {
       messageApi.success(res.message);
       updateState({ loadingSuccess: false });
+      refetch();
     } else {
       messageApi.error(res.message);
       updateState({ loadingSuccess: false });

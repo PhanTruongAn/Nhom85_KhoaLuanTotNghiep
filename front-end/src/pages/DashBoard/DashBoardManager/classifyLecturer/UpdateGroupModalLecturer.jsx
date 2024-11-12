@@ -8,27 +8,58 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  CircularProgress,
 } from "@mui/material";
+import { message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import managerApi from "../../../../apis/managerApi";
+const UpdateGroupModalLecturer = ({
+  groupSelected,
+  isOpen,
+  closeModal,
+  refetch,
+}) => {
+  const [newLecturerId, setNewLecturerId] = useState("");
+  const [isAddLecturerOpen, setIsAddLecturerOpen] = useState(false);
+  const [loadingState, setLoadingState] = useState({});
+  const [messageApi, contextHolder] = message.useMessage();
+  if (!groupSelected) return null;
 
-const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
-  const [newLecturerId, setNewLecturerId] = useState(""); // State for new lecturer ID
-  const [isAddLecturerOpen, setIsAddLecturerOpen] = useState(false); // State for controlling the Add Lecturer dialog
-
-  if (!lecturerSelect) return null;
-
-  const handleAddLecturer = () => {
-    if (newLecturerId.trim()) {
-      console.log("Adding lecturer with ID:", newLecturerId);
-      // Add the logic to add a lecturer using newLecturerId here, e.g., API call
-      setNewLecturerId(""); // Clear input after adding
-      setIsAddLecturerOpen(false); // Close the dialog after adding
+  const handleAddLecturer = async () => {
+    let dataToSave = {
+      username: newLecturerId,
+      groupId: groupSelected.id,
+    };
+    let res = await managerApi.addLecturerToGroup(dataToSave);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      setNewLecturerId("");
+      refetch();
+      setIsAddLecturerOpen(false);
+      setTimeout(() => {
+        closeModal();
+      }, 1500);
     } else {
-      console.log("Please enter a valid lecturer ID.");
+      messageApi.error(res.message);
+    }
+  };
+
+  const handleDelete = async (lecturerId) => {
+    setLoadingState((prev) => ({ ...prev, [lecturerId]: true }));
+
+    const res = await managerApi.deleteLecturerFromGroup({ lecturerId });
+    const messageType = res.status === 0 ? "success" : "error";
+    messageApi[messageType](res.message);
+    setLoadingState((prev) => ({ ...prev, [lecturerId]: false }));
+    if (res && res.status === 0) {
+      refetch();
+      setTimeout(() => {
+        closeModal();
+      }, 1500);
     }
   };
 
@@ -49,6 +80,7 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
           p: 4,
         }}
       >
+        {contextHolder}
         <Typography
           id="modal-title"
           variant="h5"
@@ -56,7 +88,7 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
           gutterBottom
           sx={{ fontWeight: "700", color: "#006ed3" }}
         >
-          <strong>Tên nhóm: {lecturerSelect.groupName}</strong>
+          <strong>Tên nhóm: {groupSelected.name}</strong>
         </Typography>
         <Typography
           variant="h6"
@@ -87,7 +119,7 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
           </Button>
         </Box>
         <Box sx={{ maxHeight: "400px", overflow: "auto", mb: 2 }}>
-          {lecturerSelect.lecturers?.map((lecturer) => (
+          {groupSelected.lecturers?.map((lecturer) => (
             <Card
               key={lecturer.id}
               variant="outlined"
@@ -111,15 +143,20 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
               <Typography variant="body2" sx={{ fontSize: "16px" }}>
                 Số điện thoại: {lecturer.phone || "No phone"}
               </Typography>
-              {lecturerSelect.isEditing && (
+              {groupSelected.isEditing && (
                 <Button
                   variant="outlined"
                   color="error"
-                  startIcon={<DeleteOutlined />}
-                  sx={{ mt: 1 }}
-                  onClick={() =>
-                    console.log("Remove lecturer", lecturer.fullName)
+                  startIcon={
+                    loadingState[lecturer.id] ? (
+                      <CircularProgress size={20} color="error" />
+                    ) : (
+                      <DeleteOutlined />
+                    )
                   }
+                  disabled={loadingState[lecturer.id]}
+                  sx={{ mt: 1 }}
+                  onClick={() => handleDelete(lecturer.id)} // Pass the specific lecturer's id
                 >
                   Xóa khỏi nhóm
                 </Button>
@@ -175,7 +212,7 @@ const UpdateGroupModalLecturer = ({ lecturerSelect, isOpen, closeModal }) => {
 };
 
 UpdateGroupModalLecturer.propTypes = {
-  lecturerSelect: PropTypes.shape({
+  groupSelected: PropTypes.shape({
     groupName: PropTypes.string,
     lecturers: PropTypes.arrayOf(
       PropTypes.shape({
@@ -190,6 +227,7 @@ UpdateGroupModalLecturer.propTypes = {
   }),
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
+  refetch: PropTypes.func.isRequired,
 };
 
 export default UpdateGroupModalLecturer;

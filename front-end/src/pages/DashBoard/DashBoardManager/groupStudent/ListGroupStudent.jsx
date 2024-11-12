@@ -12,7 +12,9 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import managerApi from "../../../../apis/managerApi";
 import { useDebounce } from "@uidotdev/usehooks";
 import { isEmpty } from "lodash";
+import { useSelector } from "react-redux";
 const ListGroupStudent = () => {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -37,15 +39,26 @@ const ListGroupStudent = () => {
 
   // Get Groups Student Data
   const { isFetching, refetch } = CustomHooks.useQuery(
-    ["groupStudent", state.currentPage, state.pageSize, debouncedSearchTerm],
+    [
+      "groupStudent",
+      state.currentPage,
+      state.pageSize,
+      debouncedSearchTerm,
+      currentTerm,
+    ],
     () => {
       if (debouncedSearchTerm) {
         return handleFindGroupStudent();
       } else {
-        return managerApi.getGroupsStudent(state.currentPage, state.pageSize);
+        return managerApi.getGroupsStudent(
+          state.currentPage,
+          state.pageSize,
+          currentTerm.id
+        );
       }
     },
     {
+      enabled: !isEmpty(currentTerm),
       onSuccess: (res) => {
         if (res && res.status === 0) {
           updateState({

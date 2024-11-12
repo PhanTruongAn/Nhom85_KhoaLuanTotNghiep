@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "groupId",
         as: "students",
         onDelete: "SET NULL",
-        hooks: true, // Cần bật hooks để Sequelize xử lý cascade hoặc set null
+        hooks: true,
       });
       Group.belongsTo(models.Topic, {
         foreignKey: "topicId",
@@ -22,6 +22,11 @@ module.exports = (sequelize, DataTypes) => {
       Group.belongsTo(models.GroupLecturer, {
         foreignKey: "groupLecturerId",
         as: "reviewGroupLecturer",
+        onDelete: "SET NULL",
+      });
+      Group.belongsTo(models.Term, {
+        foreignKey: "termId",
+        as: "term",
       });
     }
   }
@@ -32,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       numOfMembers: DataTypes.INTEGER,
       status: DataTypes.STRING,
       groupLecturerId: DataTypes.INTEGER,
+      termId: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -104,13 +104,12 @@ const handleCreateGroupsStudent = async (req, res) => {
   }
 };
 const handleGetAllGroupsStudent = async (req, res) => {
-  if (req.query.page && req.query.limit) {
-    const limit = req.query.limit;
-    const page = req.query.page;
-    const data = await service.paginationGroupsStudent(+page, +limit);
+  try {
+    const { limit, page, term } = req.query;
+    const data = await service.paginationGroupsStudent(+page, +limit, term);
     return res.status(200).json(data);
-  } else {
-    console.log(error);
+  } catch (error) {
+    console.log(error.message);
     return res.status(400).json({
       status: -1,
       message: "Lỗi từ server!",
@@ -132,7 +131,8 @@ const handleFindGroupStudent = async (req, res) => {
 };
 const handleCountStudent = async (req, res) => {
   try {
-    const data = await service.countStudent();
+    const { term } = req.query;
+    const data = await service.countStudent(term);
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -369,8 +369,7 @@ const handleCreateGroupLecturer = async (req, res) => {
 };
 const handleGetGroupLecturer = async (req, res) => {
   try {
-    const { term } = req.query;
-    const data = await service.getGroupLecturer(term);
+    const data = await service.getGroupLecturer();
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -399,6 +398,44 @@ const handleGetAllReviewGroupStudent = async (req, res) => {
 const handleAssignGroupLecturer = async (req, res) => {
   try {
     const data = await service.assignGroupLecturer(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+
+const handleDeleteGroupLecturer = async (req, res) => {
+  try {
+    const data = await service.deleteLecturerGroup(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+const handleDeleteLecturerFromGroup = async (req, res) => {
+  try {
+    const data = await service.deleteLecturerFromGroup(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+
+const handleAddLecturerToGroup = async (req, res) => {
+  try {
+    const data = await service.addLecturerToGroup(req.body);
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -439,4 +476,7 @@ module.exports = {
   handleGetGroupLecturer,
   handleGetAllReviewGroupStudent,
   handleAssignGroupLecturer,
+  handleDeleteGroupLecturer,
+  handleDeleteLecturerFromGroup,
+  handleAddLecturerToGroup,
 };

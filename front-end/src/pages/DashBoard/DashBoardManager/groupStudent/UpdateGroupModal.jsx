@@ -6,13 +6,13 @@ const UpdateGroupModal = ({
   groupSelect,
   isOpen,
   closeModal,
-  onCancel,
+
   // handleDeleteStudent,
 }) => {
   return (
     <Modal
       open={isOpen}
-      onClose={onCancel}
+      onClose={closeModal}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
       sx={{
@@ -145,6 +145,5 @@ UpdateGroupModal.propTypes = {
   groupSelect: PropTypes.object.isRequired,
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
 };
 export default UpdateGroupModal;

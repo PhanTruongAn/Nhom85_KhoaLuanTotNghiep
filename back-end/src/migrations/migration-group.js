@@ -23,6 +23,16 @@ module.exports = {
       },
       groupLecturerId: {
         type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "GroupLecturers",
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+      },
+      termId: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
