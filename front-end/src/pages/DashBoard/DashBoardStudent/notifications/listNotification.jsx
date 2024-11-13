@@ -1,6 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { Box, Button, Dialog } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import NotificationDetail from "./notificationDetail"; // Import NotificationDetail
+import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
 import _ from "lodash";
 
@@ -49,7 +58,7 @@ function ListNotification() {
           borderRadius: "8px",
           padding: "16px",
           maxWidth: "700px", // For large screens
-          width: "100%", // For smaller screens
+          width: "70vw", // For smaller screens
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
           maxHeight: "400px",
           overflowY: "auto",
@@ -130,9 +139,26 @@ function ListNotification() {
             height: "700px",
           },
         }}
+        // closeAfterTransition={true}
       >
+        <DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseModal}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 1,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         {selectedNotification && (
-          <NotificationDetail notification={selectedNotification} />
+          <DialogContent>
+            <NotificationDetail notification={selectedNotification} />
+          </DialogContent>
         )}
       </Dialog>
     </Box>

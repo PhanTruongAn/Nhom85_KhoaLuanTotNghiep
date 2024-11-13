@@ -97,7 +97,7 @@ const StudentGroup = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <Box sx={{ padding: "20px" }}>
       {contextHolder}
       {!isEmpty(group) ? (
         <>
@@ -109,6 +109,7 @@ const StudentGroup = () => {
               sx={{
                 margin: "5px 10px",
                 color: "#006ed3",
+                fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.8rem" }, // Font size adjusts with screen size
               }}
             >
               Nhóm số: {group.groupName}
@@ -131,30 +132,56 @@ const StudentGroup = () => {
                   <Row gutter={[16, 16]} style={{ alignItems: "center" }}>
                     <Col xs={24} sm={4}>
                       <Box sx={{ marginLeft: "-30px" }}>
-                        <Avatar gender={item.gender} />
+                        <Avatar
+                          gender={item.gender}
+                          sx={{
+                            width: { xs: "40px", sm: "50px", md: "60px" },
+                            height: { xs: "40px", sm: "50px", md: "60px" },
+                          }} // Avatar size scales
+                        />
                       </Box>
                     </Col>
 
                     <Col xs={24} sm={14}>
-                      <Typography variant="h5" fontWeight="bold">
+                      <Typography
+                        variant="h5"
+                        fontWeight="bold"
+                        sx={{
+                          fontSize: { xs: "1rem", sm: "1.2rem", md: "1.4rem" },
+                        }} // Font size adjusts with screen size
+                      >
                         Sinh viên {index + 1}: {item.fullName}
                       </Typography>
                       <Row gutter={4}>
                         <Col span={12}>
-                          <Typography>
+                          <Typography
+                            sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+                          >
                             Mã số sinh viên: {item.username}
                           </Typography>
                         </Col>
                         <Col span={12} style={{ textAlign: "left" }}>
-                          <Typography>Số điện thoại: {item.phone}</Typography>
+                          <Typography
+                            sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+                          >
+                            Số điện thoại: {item.phone}
+                          </Typography>
                         </Col>
                       </Row>
                       <Row gutter={4}>
                         <Col span={12}>
-                          <Typography>Email liên hệ: {item.email}</Typography>
+                          <Typography
+                            sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+                          >
+                            Email liên hệ: {item.email}
+                          </Typography>
                         </Col>
                         <Col span={12} style={{ textAlign: "left" }}>
-                          <Typography>Giới tính: {item.gender}</Typography>
+                          <Typography
+                            sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+                          >
+                            Giới tính: {item.gender}
+                          </Typography>
                         </Col>
                       </Row>
                     </Col>
@@ -216,7 +243,7 @@ const StudentGroup = () => {
           <EmptyData text={!user.groupId ? "Bạn chưa tham gia nhóm!" : null} />
         </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

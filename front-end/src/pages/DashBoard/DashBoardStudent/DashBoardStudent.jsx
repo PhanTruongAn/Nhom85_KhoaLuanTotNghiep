@@ -248,7 +248,7 @@ const DashBoardStudent = () => {
             onClose={closeDrawer}
             open={drawerVisible}
             className="ant-sider-mobile custom-drawer"
-            bodyStyle={{ padding: 0 }}
+            styles={{ body: { padding: 0 } }}
           >
             <Box className="drawer-body">
               <MenuAnt

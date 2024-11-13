@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./style.scss";
-import logoIUH from "../../images/logo-iuh.png";
+import logoIUH from "../../images/logo-iuh.avif";
+import logoIUHWhite from "../../images/Logo-White.avif";
 import IconButton from "@mui/material/IconButton";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -103,7 +104,11 @@ const Header = ({ theme, changeTheme }) => {
 
         {/* Logo and title section */}
         <Box className="logo" sx={{ display: "flex", alignItems: "center" }}>
-          <img src={logoIUH} alt="Logo" style={{ width: "100px" }} />
+          <img
+            src={theme ? logoIUHWhite : logoIUH}
+            alt="Logo"
+            style={{ width: "100px" }}
+          />
           <Box className="content">
             <Box sx={{ color: "#0c3b81" }}>
               <b className="title-1">

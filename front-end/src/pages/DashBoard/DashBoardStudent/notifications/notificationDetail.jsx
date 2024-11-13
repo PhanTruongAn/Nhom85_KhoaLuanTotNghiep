@@ -1,6 +1,7 @@
-import { Card, Typography, Divider } from "@mui/material";
+import { Card, Typography, Divider, Box } from "@mui/material";
 import { formatContent } from "../../../../utils/formatContent";
 import PropTypes from "prop-types";
+
 const NotificationDetail = ({ notification }) => {
   return (
     <Card
@@ -10,33 +11,38 @@ const NotificationDetail = ({ notification }) => {
         borderRadius: "10px",
         width: "100%", // Full width of the modal
         height: "100%", // Full height of the modal
-        overflowY: "auto", // Scroll if content overflows
         "@media (max-width:600px)": {
           padding: "15px", // Adjust padding for smaller screens
         },
       }}
     >
-      <Typography sx={{ textAlign: "center" }} variant="h4">
-        {notification.title}
-      </Typography>
-      <Divider sx={{ margin: "10px 0" }} />
-      <div
-        style={{
-          marginTop: "20px",
-          height: "80%", // Keep the height restriction
+      <Box
+        sx={{
+          height: "90%", // Keep the height restriction
           overflowY: "auto", // Scroll when content exceeds the height
         }}
       >
+        <Typography
+          sx={{
+            textAlign: "center",
+            fontSize: "clamp(1.5rem, 5vw, 2.5rem)", // Font size scales based on screen width
+          }}
+          variant="h4"
+        >
+          {notification.title}
+        </Typography>
+        <Divider sx={{ margin: "10px 0" }} />
         {formatContent(notification.content)}
-      </div>
+      </Box>
       <Divider sx={{ margin: "10px 0" }} />
       <Typography
         variant="body2"
         color="text.secondary"
         sx={{
-          fontSize: "14px",
+          marginTop: "20px",
+          fontSize: "clamp(0.8rem, 2.5vw, 1.2rem)", // Font size scales based on screen width
           "@media (max-width:600px)": {
-            fontSize: "12px", // Adjust font size for smaller screens
+            fontSize: "0.9rem", // Adjust font size for smaller screens
           },
         }}
       >
@@ -52,6 +58,7 @@ const NotificationDetail = ({ notification }) => {
     </Card>
   );
 };
+
 NotificationDetail.propTypes = {
   notification: PropTypes.shape({
     title: PropTypes.string.isRequired,
@@ -59,4 +66,5 @@ NotificationDetail.propTypes = {
     createdAt: PropTypes.string.isRequired,
   }).isRequired,
 };
+
 export default NotificationDetail;
