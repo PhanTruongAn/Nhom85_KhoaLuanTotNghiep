@@ -68,7 +68,7 @@ const checkUserPermission = (req, res, next) => {
       return res.status(403).json({
         status: 403,
         data: null,
-        message: "Bạn không có quyền truy cập nguồn tài nguyên này!",
+        message: "Bạn không có quyền hạn này!",
       });
     }
   } else {

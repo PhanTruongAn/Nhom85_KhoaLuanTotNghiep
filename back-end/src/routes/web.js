@@ -121,6 +121,11 @@ const initWebRoutes = (app) => {
     "/lecturer/my-groups-student",
     lecturerController.handleGetGroupTopic
   );
+  router.get(
+    "/lecturer/review-groups-student",
+    lecturerController.handleGetReviewStudentGroups
+  );
+  router.get("/lecturer/my-group", lecturerController.handleMyGroup);
   //Manager Route
   router.get(
     "/manager/get-all-permission",

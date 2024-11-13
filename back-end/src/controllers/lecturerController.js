@@ -231,6 +231,32 @@ const handleReviewLecturers = async (req, res) => {
     });
   }
 };
+const handleMyGroup = async (req, res) => {
+  try {
+    const { lecturer } = req.query;
+    const data = await lecturerService.getLecturerGroup(lecturer);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+const handleGetReviewStudentGroups = async (req, res) => {
+  try {
+    const { group, term } = req.query;
+    const data = await lecturerService.getReviewStudentGroups(group, term);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 module.exports = {
   handleCreateLecturerAccount,
   handleBulkCreateLecturer,
@@ -249,4 +275,6 @@ module.exports = {
   handlePointGroup,
   handleGetGroupTopic,
   handleReviewLecturers,
+  handleMyGroup,
+  handleGetReviewStudentGroups,
 };

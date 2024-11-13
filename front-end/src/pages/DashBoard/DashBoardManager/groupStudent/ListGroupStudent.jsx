@@ -296,7 +296,7 @@ const ListGroupStudent = () => {
         groupSelect={selectedGroup}
         isOpen={openUpdateModal}
         closeModal={handleCloseUpdateModal}
-        onCancel={handleCloseUpdateModal}
+        refetch={refetch}
       />
     </Box>
   );

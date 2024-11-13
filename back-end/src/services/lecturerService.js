@@ -13,6 +13,7 @@ const {
   Note,
   Evaluation,
   Group,
+  GroupLecturer,
 } = require("../models");
 
 //Tạo tài khoản giảng viên
@@ -850,14 +851,6 @@ const getGroupTopic = async (lecturerId, termId) => {
             "phone",
           ],
         },
-        {
-          model: Term,
-          as: "term",
-          attributes: [],
-          where: {
-            id: termId,
-          },
-        },
       ],
     });
 
@@ -881,18 +874,118 @@ const getGroupTopic = async (lecturerId, termId) => {
     };
   }
 };
-const getReviewGroupStudent = async (data) => {
-  const { groupLecturerId, termId } = data;
-  if (!groupLecturerId || !termId) {
+
+const getLecturerGroup = async (lecturerId) => {
+  if (!lecturerId) {
     return {
       status: -1,
-      message: "Không tìm thấy thông tin nhóm giảng viên hoặc học kì!",
+      message: "ID giảng viên không hợp lệ!",
     };
   }
   try {
-    // let groups = await
+    let lecturer = await Lecturer.findOne({
+      attributes: ["id", "username", "groupLecturerId"],
+      where: {
+        id: lecturerId,
+      },
+    });
+    if (!lecturer) {
+      return {
+        status: -1,
+        message: "Giảng viên không tồn tại!",
+      };
+    } else {
+      let { groupLecturerId } = lecturer;
+      let group = await GroupLecturer.findOne({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        where: {
+          id: groupLecturerId,
+        },
+        include: {
+          model: Lecturer,
+          as: "lecturers",
+          attributes: [
+            "id",
+            "fullName",
+            "username",
+            "gender",
+            "phone",
+            "email",
+          ],
+        },
+      });
+      if (!group) {
+        return {
+          status: -1,
+          message: "Không tìm thấy nhóm giảng viên!",
+          data: null,
+        };
+      }
+      return {
+        status: 0,
+        message: "Lấy thông tin nhóm giảng viên thành công!",
+        group,
+      };
+    }
   } catch (error) {
-    console.log("Lỗi:", error.message);
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
+const getReviewStudentGroups = async (groupLecturerId, termId) => {
+  if (!groupLecturerId && !termId) {
+    return {
+      status: -1,
+      message: "Nhóm giảng viên hoặc học kì không hợp lệ!",
+    };
+  }
+  try {
+    let groups = await Group.findAll({
+      where: {
+        groupLecturerId: groupLecturerId,
+        termId: termId,
+      },
+      attributes: ["id", "groupName"],
+      include: [
+        {
+          model: Topic,
+          as: "topic",
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "LecturerId"],
+          },
+        },
+        {
+          model: Student,
+          as: "students",
+          attributes: [
+            "id",
+            "username",
+            "fullName",
+            "gender",
+            "email",
+            "phone",
+          ],
+        },
+      ],
+    });
+    if (groups && groups.length > 0) {
+      return {
+        status: 0,
+        message: "Lấy danh sách nhóm sinh viên thành công!",
+        groups,
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Không tìm thấy nhóm sinh viên nào được phân công!",
+        groups: [],
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
     return {
       status: -1,
       message: "Lỗi chức năng!",
@@ -917,4 +1010,6 @@ module.exports = {
   getNotes,
   pointGroup,
   getGroupTopic,
+  getLecturerGroup,
+  getReviewStudentGroups,
 };

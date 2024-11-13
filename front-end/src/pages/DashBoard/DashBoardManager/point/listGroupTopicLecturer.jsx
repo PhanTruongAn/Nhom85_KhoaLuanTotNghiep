@@ -40,7 +40,6 @@ function ListGroupTopicLecturer() {
   const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
   const [selectValue, setSelectValue] = useState(""); // State for select value
   const [openCriteriaDialog, setOpenCriteriaDialog] = useState(false); // State to control Criteria dialog
-
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
@@ -302,6 +301,7 @@ function ListGroupTopicLecturer() {
         <PointTopicStudent
           selectedGroup={selectedGroup}
           onClose={handleCloseDialog} // Add onClose prop
+          typeLecturer={selectValue}
         />
       </Dialog>
       {/* Dialog for Criteria */}

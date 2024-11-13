@@ -1,14 +1,39 @@
-import { Modal, Typography, Box, Button } from "@mui/material";
+import {
+  Modal,
+  Typography,
+  Box,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import { DeleteOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
-const UpdateGroupModal = ({
-  groupSelect,
-  isOpen,
-  closeModal,
-
-  // handleDeleteStudent,
-}) => {
+import { useState } from "react";
+import studentApi from "../../../../apis/studentApi";
+import { useSelector } from "react-redux";
+import { message } from "antd";
+const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const [loadingRemoveMember, setLoadingRemoveMember] = useState({});
+  const [messageApi, contextHolder] = message.useMessage();
+  const handleDelete = async (studentId) => {
+    setLoadingRemoveMember((prev) => ({ ...prev, [studentId]: true }));
+    const res = await studentApi.removeMember({
+      studentId: studentId,
+      groupId: groupSelect?.id,
+      termId: currentTerm.id,
+    });
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      refetch();
+      setTimeout(() => {
+        closeModal();
+      }, 1500);
+    } else {
+      messageApi.error(res.message);
+    }
+    setLoadingRemoveMember((prev) => ({ ...prev, [studentId]: false }));
+  };
   return (
     <Modal
       open={isOpen}
@@ -31,6 +56,7 @@ const UpdateGroupModal = ({
           p: 4,
         }}
       >
+        {contextHolder}
         <Typography
           id="modal-title"
           variant="h5"
@@ -117,13 +143,17 @@ const UpdateGroupModal = ({
               <Button
                 variant="outlined"
                 color="error"
-                startIcon={<DeleteOutlined />}
-                sx={{ mt: 1 }}
-                onClick={() =>
-                  console.log("Remove lecturer", lecturer.fullName)
+                startIcon={
+                  loadingRemoveMember[student.id] ? (
+                    <CircularProgress size={20} color="error" />
+                  ) : (
+                    <DeleteOutlined />
+                  )
                 }
+                sx={{ mt: 1 }}
+                onClick={() => handleDelete(student.id)}
               >
-                Remove from Group
+                Xóa khỏi nhóm
               </Button>
             </Card>
           ))}
@@ -142,7 +172,7 @@ const UpdateGroupModal = ({
   );
 };
 UpdateGroupModal.propTypes = {
-  groupSelect: PropTypes.object.isRequired,
+  groupSelect: PropTypes.any,
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
 };

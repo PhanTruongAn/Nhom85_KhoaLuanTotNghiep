@@ -150,7 +150,7 @@ const ListGroupStudentLecturer = () => {
           />
         </Box>
       </Box>
-      <Typography variant="h4" sx={{ textAlign: "center", marginY: 2 }}>
+      <Typography variant="h4" sx={{ textAlign: "center", marginY: 1 }}>
         Danh sách nhóm
       </Typography>
       <Table

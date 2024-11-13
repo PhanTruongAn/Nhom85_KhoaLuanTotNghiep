@@ -64,5 +64,13 @@ const lecturerApi = {
       `${baseUrl}/my-groups-student?term=${termId}&lecturer=${lecturerId}`
     );
   },
+  getMyGroup: (lecturerId) => {
+    return axiosClient.get(`${baseUrl}/my-group?lecturer=${lecturerId}`);
+  },
+  reviewStudentGroups: (group, term) => {
+    return axiosClient.get(
+      `${baseUrl}/review-groups-student?group=${group}&term=${term}`
+    );
+  },
 };
 export default lecturerApi;

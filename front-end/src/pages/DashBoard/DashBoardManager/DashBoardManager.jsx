@@ -35,6 +35,7 @@ import {
   setCurrentTerm,
   setTerms,
   setNotes,
+  setGroupLecturer,
 } from "../../../redux/userSlice.jsx";
 import { isEmpty } from "lodash";
 import { getCurrentTerm } from "../../../utils/getCurrentTerm.jsx";
@@ -88,6 +89,23 @@ const DashBoardManager = () => {
     let res = await lecturerApi.getNotes(termId, roleId);
     return res;
   };
+  const getGroup = async () => {
+    let res = await lecturerApi.getMyGroup(user.id);
+    return res;
+  };
+  const { data: groupData } = CustomHooks.useQuery(["group"], getGroup, {
+    enabled: !isEmpty(user),
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        dispatch(setGroupLecturer(res.group));
+      } else {
+        messageApi.error(res.message);
+      }
+    },
+    onError: (error) => {
+      messageApi.error(`${error}!`);
+    },
+  });
 
   CustomHooks.useQuery(["notes"], getNotes, {
     enabled: user.role && !isEmpty(currentTerm) && isEmpty(notes),

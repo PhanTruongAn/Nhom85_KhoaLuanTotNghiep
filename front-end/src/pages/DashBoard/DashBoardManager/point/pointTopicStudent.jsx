@@ -13,7 +13,8 @@ import { message } from "antd";
 import lecturerApi from "../../../../apis/lecturerApi";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useSelector } from "react-redux";
-function PointTopicStudent({ selectedGroup, onClose }) {
+function PointTopicStudent({ selectedGroup, onClose, typeLecturer }) {
+  const isLecturerAdvisor = typeLecturer === "gvHuongDan";
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [students, setStudents] = useState(selectedGroup?.students || []);
   const [messageApi, contextHolder] = message.useMessage();
@@ -133,6 +134,7 @@ function PointTopicStudent({ selectedGroup, onClose }) {
               variant="outlined"
               value={discussionPoint}
               onChange={(event) => handleScoreChange(event, setDiscussionPoint)}
+              disabled={isLecturerAdvisor}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -143,6 +145,7 @@ function PointTopicStudent({ selectedGroup, onClose }) {
               variant="outlined"
               value={progressPoint}
               onChange={(event) => handleScoreChange(event, setProgressPoint)}
+              disabled={!isLecturerAdvisor}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -153,6 +156,7 @@ function PointTopicStudent({ selectedGroup, onClose }) {
               variant="outlined"
               value={reportingPoint}
               onChange={(event) => handleScoreChange(event, setReportingPoint)}
+              disabled={isLecturerAdvisor}
             />
           </Grid>
           <Grid item xs={12}>
@@ -211,6 +215,7 @@ PointTopicStudent.propTypes = {
       })
     ),
   }),
+  typeLecturer: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 export default PointTopicStudent;
