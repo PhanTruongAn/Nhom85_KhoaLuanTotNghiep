@@ -102,7 +102,12 @@ export default function Login() {
       }}
     >
       {contextHolder}
-      <Card variant="outlined" sx={{ marginBottom: "110px" }}>
+      <Card
+        variant="outlined"
+        sx={{
+          marginBottom: "110px",
+        }}
+      >
         <Box>
           <img style={{ width: "100px", height: "auto" }} src={logo} />
         </Box>

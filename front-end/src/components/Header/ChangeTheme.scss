@@ -3,15 +3,16 @@
   width: 60px;
   height: 30px;
   border-radius: 15px;
-  background-color: #4db8ff; // Replace $primary-dark-color with actual color code
+  background-color: #4db8ff;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 
   &.light {
-    background-color: #050ba4; // Light mode background color
+    background-color: #050ba4;
   }
 
   .toggle-thumb {
@@ -25,7 +26,7 @@
     transition: transform 0.3s;
 
     &.light {
-      transform: translateX(30px); // Move to the right for light mode
+      transform: translateX(30px);
     }
   }
 
@@ -42,5 +43,65 @@
 
   .icon-sun {
     right: 8px;
+  }
+
+  // Responsive adjustments for medium screens
+  @media (max-width: 1024px) and (min-width: 769px) {
+    width: 50px;
+    height: 25px;
+
+    .toggle-thumb {
+      width: 20px;
+      height: 20px;
+      top: 2.5px;
+      left: 2.5px;
+
+      &.light {
+        transform: translateX(22px);
+      }
+    }
+
+    .icon {
+      width: 12px;
+      height: 12px;
+    }
+
+    .icon-moon {
+      left: 5px;
+    }
+
+    .icon-sun {
+      right: 5px;
+    }
+  }
+
+  // Responsive adjustments for larger screens
+  @media (max-width: 768px) and (min-width: 481px) {
+    width: 45px;
+    height: 22px;
+
+    .toggle-thumb {
+      width: 18px;
+      height: 18px;
+      top: 2px;
+      left: 2px;
+
+      &.light {
+        transform: translateX(20px);
+      }
+    }
+
+    .icon {
+      width: 10px;
+      height: 10px;
+    }
+
+    .icon-moon {
+      left: 4px;
+    }
+
+    .icon-sun {
+      right: 4px;
+    }
   }
 }

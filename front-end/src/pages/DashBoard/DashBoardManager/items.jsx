@@ -100,13 +100,13 @@ const getItems = (isManager) => {
       ],
     },
 
-    ...(isManager
-      ? [
-          {
-            key: "classify-lecturer",
-            icon: <TopicOutlinedIcon />,
-            label: "Nhóm giảng viên",
-            children: [
+    {
+      key: "classify-lecturer",
+      icon: <TopicOutlinedIcon />,
+      label: "Nhóm giảng viên",
+      children: [
+        ...(isManager
+          ? [
               {
                 key: "create-lecturer-group",
                 icon: <FileExcelOutlined />,
@@ -122,8 +122,23 @@ const getItems = (isManager) => {
                 icon: <FileExcelOutlined />,
                 label: "Quản lý nhóm ",
               },
-            ],
-          },
+              {
+                key: "my-group-lecturer",
+                icon: <FileExcelOutlined />,
+                label: "Nhóm của tôi ",
+              },
+            ]
+          : [
+              {
+                key: "my-group-lecturer",
+                icon: <FileExcelOutlined />,
+                label: "Nhóm của tôi ",
+              },
+            ]),
+      ],
+    },
+    ...(isManager
+      ? [
           {
             key: "term",
             icon: <BarChartOutlined />,

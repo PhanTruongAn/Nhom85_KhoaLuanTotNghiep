@@ -242,12 +242,13 @@ function StudentHome() {
               sx={{ marginBottom: "10px", paddingRight: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
-                Mã Sinh viên *
+                Mã Sinh viên <span style={{ color: "red" }}>*</span>
               </label>
               <Input
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
+                readOnly
               />
             </Box>
             <Box
@@ -255,7 +256,7 @@ function StudentHome() {
               sx={{ marginBottom: "10px", paddingLeft: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
-                Họ và tên *
+                Họ và tên <span style={{ color: "red" }}>*</span>
               </label>
               <Input
                 name="fullName"
@@ -270,7 +271,7 @@ function StudentHome() {
               sx={{ marginBottom: "10px", paddingRight: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
-                Số điện thoại *
+                Số điện thoại <span style={{ color: "red" }}>*</span>
               </label>
               <Input
                 name="phone"
@@ -283,7 +284,7 @@ function StudentHome() {
               sx={{ marginBottom: "10px", paddingLeft: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
-                Email *
+                Email <span style={{ color: "red" }}>*</span>
               </label>
               <Input
                 name="email"

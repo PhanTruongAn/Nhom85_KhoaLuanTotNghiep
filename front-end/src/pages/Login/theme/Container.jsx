@@ -4,6 +4,12 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   alignSelf: "center",
   justifyContent: "center",
   height: "100vh",
+  "@media (max-height: 600px)": {
+    padding: "20px",
+  },
+  "@media (max-width: 600px)": {
+    padding: "20px",
+  },
   backgroundImage:
     "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
   backgroundRepeat: "no-repeat",

@@ -150,11 +150,13 @@ function ManagerHome() {
               sx={{ marginBottom: "16px", paddingRight: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
-                Mã Sinh viên *
+                Mã giảng viên <span style={{ color: "red" }}>*</span>
               </label>
+
               <Input
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                readOnly
               />
             </Box>
             <Box
@@ -162,7 +164,7 @@ function ManagerHome() {
               sx={{ marginBottom: "16px", paddingLeft: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
-                Họ và tên *
+                Họ và tên <span style={{ color: "red" }}>*</span>
               </label>
               <Input
                 value={fullName}
@@ -176,7 +178,7 @@ function ManagerHome() {
               sx={{ marginBottom: "16px", paddingRight: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
-                Số điện thoại *
+                Số điện thoại <span style={{ color: "red" }}>*</span>
               </label>
               <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
             </Box>
@@ -185,7 +187,7 @@ function ManagerHome() {
               sx={{ marginBottom: "16px", paddingLeft: "10px" }}
             >
               <label style={{ textAlign: "left", display: "block" }}>
-                Email *
+                Email <span style={{ color: "red" }}>*</span>
               </label>
               <Input value={email} onChange={(e) => setEmail(e.target.value)} />
             </Box>
