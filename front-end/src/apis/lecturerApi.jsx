@@ -72,5 +72,10 @@ const lecturerApi = {
       `${baseUrl}/review-groups-student?group=${group}&term=${term}`
     );
   },
+  getGroupEvaluation: (group, term) => {
+    return axiosClient.get(
+      `${baseUrl}/get-group-evaluation?group=${group}&term=${term}`
+    );
+  },
 };
 export default lecturerApi;

@@ -10,18 +10,21 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       discussionPoint: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
       },
       progressPoint: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
       },
       reportingPoint: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
       },
       averagePoint: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
       },
-      comment: {
+      noteAdvisorLecturer: {
+        type: Sequelize.STRING,
+      },
+      noteReviewLecturer: {
         type: Sequelize.STRING,
       },
       groupId: {

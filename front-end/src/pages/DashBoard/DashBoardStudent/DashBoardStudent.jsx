@@ -29,7 +29,11 @@ import darkTheme from "../../../styles/themes/ant/darkTheme.jsx";
 import logoDark from "../../../images/Logo-White.avif";
 import logoLight from "../../../images/logo-iuh.avif";
 import ListNotification from "./notifications/listNotification.jsx";
-import { setCurrentTerm, setNotes } from "../../../redux/userSlice.jsx";
+import {
+  setCurrentTerm,
+  setNotes,
+  setGroup,
+} from "../../../redux/userSlice.jsx";
 import { isEmpty } from "lodash";
 import CustomHooks from "../../../utils/hooks.jsx";
 import studentApi from "../../../apis/studentApi.jsx";
@@ -40,6 +44,7 @@ const DashBoardStudent = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const group = useSelector((state) => state.userInit.group);
   const user = useSelector((state) => state.userInit.user);
   const notes = useSelector((state) => state.userInit.notes);
   const [themes, setThemes] = useState(() => {
@@ -70,6 +75,17 @@ const DashBoardStudent = () => {
     return res;
   };
 
+  const getMyGroup = async () => {
+    const res = await studentApi.getMyGroup(user.id, currentTerm.id);
+    if (res && res.status === 0) {
+      dispatch(setGroup(res.data));
+    }
+    return res.data;
+  };
+
+  CustomHooks.useQuery(["my-group", group], getMyGroup, {
+    enabled: !isEmpty(currentTerm),
+  });
   CustomHooks.useQuery(["notes"], getNotes, {
     enabled: user.role && !isEmpty(currentTerm) && isEmpty(notes),
     onSuccess: (res) => {

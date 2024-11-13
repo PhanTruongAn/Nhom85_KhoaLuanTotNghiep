@@ -39,8 +39,6 @@ const ProjectDetails = () => {
       onSuccess: (res) => {
         if (res && res.status === 0) {
           dispatch(setGroup(res.data));
-        } else {
-          messageApi.error(res.message);
         }
       },
       onError: (error) => {
@@ -116,7 +114,7 @@ const ProjectDetails = () => {
           <EmptyData />
         </Box>
       ) : (
-        <>
+        <Box>
           {isEmpty(topic) ? (
             <Box
               sx={{
@@ -241,7 +239,7 @@ const ProjectDetails = () => {
               </Box>
             </>
           )}
-        </>
+        </Box>
       )}
     </Box>
   );

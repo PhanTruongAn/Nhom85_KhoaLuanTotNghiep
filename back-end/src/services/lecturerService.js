@@ -734,41 +734,16 @@ const getNotes = async (termId, roleId) => {
 };
 
 const pointGroup = async (data) => {
-  const {
-    discussionPoint,
-    progressPoint,
-    reportingPoint,
-    comment,
-    averagePoint,
-    groupId,
-    termId,
-  } = data;
-  if (!discussionPoint) {
-    return {
-      status: -1,
-      message: "Điểm thảo luận trống hoặc không hợp lệ!",
-    };
-  }
+  const { discussionPoint, progressPoint, reportingPoint, groupId, termId } =
+    data;
 
-  if (!progressPoint) {
-    return {
-      status: -1,
-      message: "Điểm tiến độ trống hoặc không hợp lệ!",
-    };
-  }
+  // Chuyển đổi các giá trị điểm thành số
+  const discussionScore = Number(discussionPoint);
+  const progressScore = Number(progressPoint);
+  const reportingScore = Number(reportingPoint);
 
-  if (!reportingPoint) {
-    return {
-      status: -1,
-      message: "Điểm báo cáo trống hoặc không hợp lệ!",
-    };
-  }
-  if (!averagePoint) {
-    return {
-      status: -1,
-      message: "Điểm trung bình trống hoặc không hợp lệ!",
-    };
-  }
+  // Hàm kiểm tra xem giá trị có phải là số không
+  const isNumber = (value) => typeof value === "number" && !isNaN(value);
 
   if (!groupId) {
     return {
@@ -782,32 +757,86 @@ const pointGroup = async (data) => {
       message: "Mã học kì trống hoặc không hợp lệ!",
     };
   }
-  try {
-    const evaluationData = {
-      discussionPoint,
-      progressPoint,
-      reportingPoint,
-      averagePoint,
-      groupId,
-      termId,
-      // Chỉ thêm comment nếu nó tồn tại
-      ...(comment && { comment }),
-    };
-    const result = await Evaluation.create(evaluationData);
 
-    if (result) {
+  // Tìm bản ghi đã tồn tại cho nhóm và học kỳ này
+  const existingEvaluation = await Evaluation.findOne({
+    where: { groupId, termId },
+  });
+
+  // Nếu không có bản ghi, thực hiện chấm điểm quá trình
+  if (!existingEvaluation) {
+    if (!isNumber(progressScore)) {
       return {
-        status: 0,
-        message: "Chấm điểm thành công.",
-        data: result,
+        status: -1,
+        message: "Điểm quá trình trống hoặc không hợp lệ!",
       };
     }
-  } catch (error) {
-    console.log("Lỗi: ", error.message);
-    return {
-      status: -1,
-      message: `Lỗi chức năng!`,
-    };
+
+    try {
+      const evaluationData = {
+        progressPoint: progressScore,
+        groupId,
+        termId,
+      };
+
+      const result = await Evaluation.create(evaluationData);
+
+      if (result) {
+        return {
+          status: 0,
+          message: "Chấm điểm quá trình thành công.",
+          data: result,
+        };
+      }
+    } catch (error) {
+      console.log("Lỗi: ", error.message);
+      return {
+        status: -1,
+        message: "Lỗi chức năng chấm điểm quá trình!",
+      };
+    }
+  } else {
+    // Nếu đã có bản ghi (sau khi chấm điểm quá trình), thực hiện chấm điểm đợt 2
+    if (!isNumber(discussionScore)) {
+      return {
+        status: -1,
+        message: "Điểm phản biện trống hoặc không hợp lệ!",
+      };
+    }
+    if (!isNumber(reportingScore)) {
+      return {
+        status: -1,
+        message: "Điểm báo cáo trống hoặc không hợp lệ!",
+      };
+    }
+
+    // Tính điểm trung bình
+    const existProgressScore = existingEvaluation.progressPoint;
+    const averagePoint = (
+      (discussionScore + existProgressScore + reportingScore) /
+      3
+    ).toFixed(1);
+
+    try {
+      // Cập nhật các điểm còn lại trong bản ghi
+      existingEvaluation.discussionPoint = discussionScore;
+      existingEvaluation.reportingPoint = reportingScore;
+      existingEvaluation.averagePoint = averagePoint;
+
+      await existingEvaluation.save();
+
+      return {
+        status: 0,
+        message: "Chấm điểm phản biện thành công.",
+        data: existingEvaluation,
+      };
+    } catch (error) {
+      console.log("Lỗi: ", error.message);
+      return {
+        status: -1,
+        message: "Lỗi chức năng chấm điểm phản biện!",
+      };
+    }
   }
 };
 
@@ -975,13 +1004,13 @@ const getReviewStudentGroups = async (groupLecturerId, termId) => {
       return {
         status: 0,
         message: "Lấy danh sách nhóm sinh viên thành công!",
-        groups,
+        data: groups,
       };
     } else {
       return {
         status: -1,
         message: "Không tìm thấy nhóm sinh viên nào được phân công!",
-        groups: [],
+        data: [],
       };
     }
   } catch (error) {
@@ -989,6 +1018,43 @@ const getReviewStudentGroups = async (groupLecturerId, termId) => {
     return {
       status: -1,
       message: "Lỗi chức năng!",
+    };
+  }
+};
+const getGroupEvaluation = async (groupId, termId) => {
+  if (!groupId && !termId) {
+    return {
+      status: -1,
+      message: "ID nhóm sinh viên hoặc học kì trống hoặc không hợp lệ!",
+    };
+  }
+  try {
+    const result = await Evaluation.findOne({
+      where: {
+        groupId: groupId,
+        termId: termId,
+      },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+    if (result) {
+      return {
+        status: 0,
+        message: "Lấy thông tin điểm số của nhóm thành công!",
+        data: result,
+      };
+    } else {
+      return {
+        status: 1,
+        message: "Nhóm chưa có điểm số!",
+        data: {},
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+      data: {},
     };
   }
 };
@@ -1012,4 +1078,5 @@ module.exports = {
   getGroupTopic,
   getLecturerGroup,
   getReviewStudentGroups,
+  getGroupEvaluation,
 };

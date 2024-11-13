@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import CustomHooks from "../../../../utils/hooks";
 import studentApi from "../../../../apis/studentApi";
 import { isEmpty } from "lodash";
+import lecturerApi from "../../../../apis/lecturerApi";
 const columns = [
   {
     title: "Điểm Quá Trình",
@@ -31,22 +32,21 @@ const columns = [
 ];
 
 function MyPoint() {
-  // const group = useSelector((state) => state.userInit.group);
   const user = useSelector((state) => state.userInit.user);
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const group = useSelector((state) => state.userInit.group);
   const [data, setData] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
+
   const getMyPoint = async () => {
-    let term = currentTerm.id;
-    let myGroup = user.groupId;
-    const res = await studentApi.getEvaluation(term, myGroup);
+    const res = await studentApi.getEvaluation(group.id, currentTerm.id);
     return res;
   };
   const { isFetching, data: evaluationData } = CustomHooks.useQuery(
-    ["my-point"],
+    ["my-point", group],
     getMyPoint,
     {
-      enabled: !isEmpty(currentTerm),
+      enabled: !isEmpty(currentTerm) && !isEmpty(group),
       onSuccess: (res) => {
         if (res && res.status === 0) {
           setData([res.data]);
@@ -59,7 +59,7 @@ function MyPoint() {
       },
     }
   );
-  console.log("Check : ", data);
+
   return (
     <Box
       padding={1}

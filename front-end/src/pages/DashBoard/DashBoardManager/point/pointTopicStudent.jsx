@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -7,13 +7,20 @@ import {
   Paper,
   Grid,
   Divider,
+  Skeleton,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { message } from "antd";
 import lecturerApi from "../../../../apis/lecturerApi";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useSelector } from "react-redux";
-function PointTopicStudent({ selectedGroup, onClose, typeLecturer }) {
+function PointTopicStudent({
+  selectedGroup,
+  onClose,
+  typeLecturer,
+  objectSelect,
+  loadingData,
+}) {
   const isLecturerAdvisor = typeLecturer === "gvHuongDan";
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [students, setStudents] = useState(selectedGroup?.students || []);
@@ -28,20 +35,6 @@ function PointTopicStudent({ selectedGroup, onClose, typeLecturer }) {
     setScore(value);
   };
 
-  const averagePoint =
-    (parseFloat(discussionPoint || 0) +
-      parseFloat(progressPoint || 0) +
-      parseFloat(reportingPoint || 0)) /
-    3;
-
-  useEffect(() => {
-    setStudents(selectedGroup?.students || []);
-    setDiscussionPoint("");
-    setProgressPoint("");
-    setReportingPoint("");
-    setComment("");
-  }, [selectedGroup]);
-
   const handleSubmit = async () => {
     setLoading(true);
     const dataToSave = {
@@ -49,7 +42,6 @@ function PointTopicStudent({ selectedGroup, onClose, typeLecturer }) {
       progressPoint,
       reportingPoint,
       comment,
-      averagePoint,
       groupId: selectedGroup?.id,
       termId: currentTerm.id,
     };
@@ -62,6 +54,7 @@ function PointTopicStudent({ selectedGroup, onClose, typeLecturer }) {
       messageApi.error(res.message);
     }
   };
+
   return (
     <Box padding={3}>
       {contextHolder}
@@ -79,7 +72,7 @@ function PointTopicStudent({ selectedGroup, onClose, typeLecturer }) {
         }}
       >
         <Typography variant="h6" marginBottom={1}>
-          Tên đề tài: Đề tài A
+          Tên nhóm : {`Nhóm: ${selectedGroup?.groupName || ""}`}
         </Typography>
 
         <Divider sx={{ marginBottom: 2 }} />
@@ -127,47 +120,70 @@ function PointTopicStudent({ selectedGroup, onClose, typeLecturer }) {
         {/* Grading Section */}
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
-            <TextField
-              label="Điểm phản biện"
-              type="number"
-              fullWidth
-              variant="outlined"
-              value={discussionPoint}
-              onChange={(event) => handleScoreChange(event, setDiscussionPoint)}
-              disabled={isLecturerAdvisor}
-            />
+            <Box>
+              {loadingData ? (
+                <Skeleton variant="text" width="100%" height={56} />
+              ) : (
+                <TextField
+                  label="Điểm phản biện"
+                  type="number"
+                  fullWidth
+                  variant="outlined"
+                  value={objectSelect?.discussionPoint ?? discussionPoint ?? ""}
+                  onChange={(event) =>
+                    handleScoreChange(event, setDiscussionPoint)
+                  }
+                  disabled={
+                    isLecturerAdvisor ||
+                    objectSelect?.discussionPoint !== undefined
+                  }
+                />
+              )}
+            </Box>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              label="Điểm quá trình"
-              type="number"
-              fullWidth
-              variant="outlined"
-              value={progressPoint}
-              onChange={(event) => handleScoreChange(event, setProgressPoint)}
-              disabled={!isLecturerAdvisor}
-            />
+            <Box>
+              {loadingData ? (
+                <Skeleton variant="text" width="100%" height={56} />
+              ) : (
+                <TextField
+                  label="Điểm quá trình"
+                  type="number"
+                  fullWidth
+                  variant="outlined"
+                  value={objectSelect?.progressPoint ?? progressPoint ?? ""}
+                  onChange={(event) =>
+                    handleScoreChange(event, setProgressPoint)
+                  }
+                  disabled={
+                    !isLecturerAdvisor ||
+                    objectSelect?.progressPoint !== undefined
+                  }
+                />
+              )}
+            </Box>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              label="Điểm báo cáo"
-              type="number"
-              fullWidth
-              variant="outlined"
-              value={reportingPoint}
-              onChange={(event) => handleScoreChange(event, setReportingPoint)}
-              disabled={isLecturerAdvisor}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Điểm trung bình"
-              type="number"
-              fullWidth
-              variant="outlined"
-              disabled
-              value={averagePoint.toFixed(2)}
-            />
+            <Box>
+              {loadingData ? (
+                <Skeleton variant="text" width="100%" height={56} />
+              ) : (
+                <TextField
+                  label="Điểm báo cáo"
+                  type="number"
+                  fullWidth
+                  variant="outlined"
+                  value={objectSelect?.reportingPoint ?? reportingPoint ?? ""}
+                  onChange={(event) =>
+                    handleScoreChange(event, setReportingPoint)
+                  }
+                  disabled={
+                    isLecturerAdvisor ||
+                    objectSelect?.reportingPoint !== undefined
+                  }
+                />
+              )}
+            </Box>
           </Grid>
         </Grid>
 
@@ -217,5 +233,7 @@ PointTopicStudent.propTypes = {
   }),
   typeLecturer: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
+  objectSelect: PropTypes.object,
+  loadingData: PropTypes.bool,
 };
 export default PointTopicStudent;

@@ -15,12 +15,11 @@ import "./ListStudentGroup.scss";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser } from "../../../../redux/userSlice";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import ConfirmModal from "../../../../components/Modal/confirmModal";
 import CustomHooks from "../../../../utils/hooks";
 import OverDate from "../../../../components/overDate/overDate";
-
+import { setGroup } from "../../../../redux/userSlice";
 function ListStudentGroup() {
   const dispatch = useDispatch();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
@@ -87,7 +86,7 @@ function ListStudentGroup() {
       setLoadingIcon(true);
       const res = await studentApi.joinGroup(data);
       if (res && res.status === 0) {
-        dispatch(setUser({ ...user, groupId: res.data.id }));
+        dispatch(setGroup(selectedGroup));
         messageApi.success(res.message);
       } else {
         messageApi.error(res.message);

@@ -23,14 +23,14 @@ import { useSelector } from "react-redux";
 function ListGroupTopicLecturer() {
   const user = useSelector((state) => state.userInit.user);
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const myGroup = useSelector((state) => state.userInit.groupLecturer);
   const [state, setState] = useState({
     searchLoading: false,
     currentPage: 1,
     pageSize: 5,
     dataSource: [],
-    loadingData: false,
+    loading: false,
     objectSelect: {},
-    totalRows: null,
     refreshButton: false,
   });
 
@@ -44,34 +44,81 @@ function ListGroupTopicLecturer() {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
 
-  // Get Group Data
+  // Get Group Student With Advisor Lecturer
   const getGroups = async () => {
     let termId = currentTerm.id;
     let lecturerId = user.id;
     const res = await lecturerApi.getMyGroupStudent(termId, lecturerId);
     return res;
   };
+  // Get Group Student With Review Lecturer
+  const getReviewGroups = async () => {
+    const res = await lecturerApi.reviewStudentGroups(
+      myGroup.id,
+      currentTerm.id
+    );
+    return res;
+  };
 
+  // Get Evaluation Of Group Student
+  const getGroupEvaluation = async () => {
+    const res = await lecturerApi.getGroupEvaluation(
+      selectedGroup.id,
+      currentTerm.id
+    );
+    return res;
+  };
+
+  const { isFetching: fetchingGroupStudent } = CustomHooks.useQuery(
+    ["group-student-evaluation", selectedGroup],
+    getGroupEvaluation,
+    {
+      enabled: !isEmpty(currentTerm) && !isEmpty(selectedGroup),
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          updateState({ objectSelect: res.data });
+        } else if (res.status === -1) {
+          messageApi.error(res.message);
+        } else {
+          updateState({ objectSelect: res.data });
+        }
+      },
+      onError: () => {
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
+    }
+  );
   const {
     isFetching,
     data: groupData,
     refetch,
-  } = CustomHooks.useQuery(["my-group-topic"], getGroups, {
-    enabled: !isEmpty(currentTerm),
-    onSuccess: (res) => {
-      if (res && res.status === 0) {
-        updateState({ dataSource: res.data });
-        if (isEmpty(groupData)) {
-          messageApi.success(res.message);
-        }
+  } = CustomHooks.useQuery(
+    ["my-group-topic", selectValue, state.currentPage, state.pageSize],
+    () => {
+      if (selectValue === "gvHuongDan") {
+        return getGroups();
       } else {
-        messageApi.error(res.message);
+        return getReviewGroups();
       }
     },
-    onError: () => {
-      messageApi.error("Lỗi khi lấy dữ liệu!");
-    },
-  });
+    {
+      enabled: !isEmpty(currentTerm) && !isEmpty(myGroup),
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          updateState({ dataSource: res.data, refreshButton: false });
+          if (isEmpty(groupData)) {
+            messageApi.success(res.message);
+          }
+        } else {
+          messageApi.error(res.message);
+        }
+      },
+      onError: () => {
+        updateState({ refreshButton: false });
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
+    }
+  );
 
   const filteredGroups = useMemo(() => {
     const sourceData =
@@ -118,6 +165,7 @@ function ListGroupTopicLecturer() {
             }),
           })}
           disabled={!selectValue}
+          size="small"
         >
           Chấm điểm
         </Button>
@@ -133,6 +181,7 @@ function ListGroupTopicLecturer() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setSelectedGroup(null); // Reset selection
+    updateState({ objectSelect: {} });
   };
 
   const onRefreshData = () => {
@@ -257,8 +306,8 @@ function ListGroupTopicLecturer() {
           total: searchTerm
             ? filteredGroups.length
             : groupData
-            ? groupData.data?.totalRows
-            : state.totalRows, // Cập nhật giá trị total
+            ? groupData.data.length
+            : state.dataSource.length,
           current: state.currentPage,
           pageSize: state.pageSize,
           onChange: (page, pageSize) => {
@@ -302,6 +351,8 @@ function ListGroupTopicLecturer() {
           selectedGroup={selectedGroup}
           onClose={handleCloseDialog} // Add onClose prop
           typeLecturer={selectValue}
+          objectSelect={state.objectSelect}
+          loadingData={fetchingGroupStudent}
         />
       </Dialog>
       {/* Dialog for Criteria */}

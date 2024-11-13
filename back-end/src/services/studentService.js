@@ -1244,7 +1244,7 @@ const getEvaluation = async (groupId, termId) => {
       message: "Thông tin học kì không tồn tại!",
     };
   }
-
+  console.log("Check>>>>>>>>>>>>>: ", groupId, termId);
   try {
     let result = await Evaluation.findOne({
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -1252,8 +1252,8 @@ const getEvaluation = async (groupId, termId) => {
         groupId: groupId,
         termId: termId,
       },
-      raw: true,
     });
+
     if (result) {
       return {
         status: 0,

@@ -5,14 +5,13 @@ import { Card } from "../../../../components/Card/Card";
 import { Link, Typography, CircularProgress, Button, Box } from "@mui/material";
 
 import studentApi from "../../../../apis/studentApi";
-import CustomHooks from "../../../../utils/hooks";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
-import { setGroup, setUser } from "../../../../redux/userSlice";
+import { setGroup, setMyTopic } from "../../../../redux/userSlice";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import Avatar from "../../../../components/Avatar/Avatar";
 import CustomButton from "../../../../components/Button/CustomButton";
-
+import CustomHooks from "../../../../utils/hooks";
 const StudentGroup = () => {
   const dispatch = useDispatch();
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
@@ -27,20 +26,18 @@ const StudentGroup = () => {
   const currentDate = new Date();
   const isWithinChooseGroupPeriod =
     currentDate > new Date(currentTerm?.endChooseGroupDate);
+
   const getMyGroup = async () => {
     const res = await studentApi.getMyGroup(user.id, currentTerm.id);
     if (res && res.status === 0) {
       dispatch(setGroup(res.data));
-    } else {
-      messageApi.error(res.message);
     }
     return res.data;
   };
 
   const { refetch } = CustomHooks.useQuery(["my-group", group], getMyGroup, {
-    enabled: !isEmpty(currentTerm) && isEmpty(group),
+    enabled: !isEmpty(currentTerm),
   });
-
   const handleLeaveGroup = async () => {
     setLoading(true);
     const data = {
@@ -52,7 +49,7 @@ const StudentGroup = () => {
     if (res && res.status === 0) {
       messageApi.success(res.message);
       setLoading(false);
-      dispatch(setUser({ ...user, groupId: null }));
+      dispatch(setMyTopic({}));
       dispatch(setGroup({}));
     } else {
       setLoading(false);

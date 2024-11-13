@@ -15,11 +15,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   Evaluation.init(
     {
-      discussionPoint: DataTypes.INTEGER,
-      progressPoint: DataTypes.INTEGER,
-      reportingPoint: DataTypes.INTEGER,
-      averagePoint: DataTypes.INTEGER,
-      comment: DataTypes.STRING,
+      discussionPoint: DataTypes.DOUBLE,
+      progressPoint: DataTypes.DOUBLE,
+      reportingPoint: DataTypes.DOUBLE,
+      averagePoint: DataTypes.DOUBLE,
+      noteAdvisorLecturer: DataTypes.STRING,
+      noteReviewLecturer: DataTypes.STRING,
       groupId: DataTypes.STRING,
       termId: DataTypes.STRING,
     },
