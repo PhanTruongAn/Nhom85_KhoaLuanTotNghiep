@@ -1592,6 +1592,11 @@ const getStatistics = async (termId) => {
         {
           model: Student,
           attributes: [],
+          include: {
+            model: TermStudent,
+            attributes: [],
+            where: { termId },
+          },
         },
       ],
       group: ["Major.id"],
