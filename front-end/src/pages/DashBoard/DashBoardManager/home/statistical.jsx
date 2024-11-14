@@ -10,8 +10,13 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import { useSelector } from "react-redux";
+import managerApi from "../../../../apis/managerApi";
+import CustomHooks from "../../../../utils/hooks";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-
+import { useState } from "react";
+import { message } from "antd";
+import { isEmpty } from "lodash";
 // Register plugins
 ChartJS.register(
   CategoryScale,
@@ -25,7 +30,28 @@ ChartJS.register(
 );
 
 function Statistical() {
-  // Data for bar chart (overview)
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [data, setData] = useState({});
+  console.log("Check: ", data);
+  const getData = async () => {
+    const res = await managerApi.getStatistics(currentTerm.id);
+    return res;
+  };
+  CustomHooks.useQuery(["statistics", currentTerm], getData, {
+    enabled: !isEmpty(currentTerm),
+    onSuccess: (res) => {
+      if (res && res.status === 0) {
+        setData(res.data);
+      } else {
+        messageApi.error(res.message);
+      }
+    },
+    onError: (err) => {
+      console.log("Lỗi: ", err.message);
+      messageApi.error("Lỗi khi lấy dữ liệu thống kê!");
+    },
+  });
   const barData = {
     labels: [
       "Sinh viên",
@@ -128,6 +154,7 @@ function Statistical() {
 
   return (
     <Box sx={{ padding: 2 }}>
+      {contextHolder}
       {/* Image Banner */}
       <Box
         sx={{

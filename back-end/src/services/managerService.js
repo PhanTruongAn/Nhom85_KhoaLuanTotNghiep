@@ -18,7 +18,7 @@ const {
   GroupLecturer,
   TermStudent,
   TermLecturer,
-  StudentGroup,
+  Evaluation,
 } = require("../models");
 
 const paginationPermission = async (page, limit) => {
@@ -1550,7 +1550,17 @@ const addLecturerToGroup = async (data) => {
     };
   }
 };
-
+const convertToGrade = (averagePoint) => {
+  if (averagePoint >= 9.0) return "A+"; // A+
+  if (averagePoint >= 8.5) return "A"; // A
+  if (averagePoint >= 8.0) return "B+"; // B+
+  if (averagePoint >= 7.0) return "B"; // B
+  if (averagePoint >= 6.0) return "C+"; // C+
+  if (averagePoint >= 5.5) return "C"; // C
+  if (averagePoint >= 5.0) return "D+"; // D+
+  if (averagePoint >= 4.0) return "D"; // D
+  return "F"; // F
+};
 const getStatistics = async (termId) => {
   if (!termId) {
     return {
@@ -1586,6 +1596,26 @@ const getStatistics = async (termId) => {
       ],
       group: ["Major.id"],
     });
+    const evaluations = await Evaluation.findAll({
+      where: whereCondition,
+    });
+
+    const gradeCounts = {
+      "A+": 0,
+      A: 0,
+      "B+": 0,
+      B: 0,
+      "C+": 0,
+      C: 0,
+      "D+": 0,
+      D: 0,
+      F: 0,
+    };
+
+    evaluations.forEach((evaluation) => {
+      const grade = convertToGrade(evaluation.averagePoint);
+      gradeCounts[grade]++;
+    });
     return {
       status: 0,
       message: "Thành công!",
@@ -1596,6 +1626,7 @@ const getStatistics = async (termId) => {
         totalTopics,
         totalGroupsLecturer,
         totalMajors,
+        gradeCounts,
       },
     };
   } catch (error) {
