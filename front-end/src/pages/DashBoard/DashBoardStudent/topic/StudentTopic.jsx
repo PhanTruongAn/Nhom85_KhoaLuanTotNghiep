@@ -139,6 +139,7 @@ const ProjectDetails = () => {
                 variant="elevation"
               >
                 <Typography
+                  component={"span"}
                   sx={[
                     (theme) => ({
                       ...theme.applyStyles("light", {
@@ -150,14 +151,14 @@ const ProjectDetails = () => {
                 >
                   THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN
                 </Typography>
-                <Typography>
+                <Typography component={"span"}>
                   Họ và tên giảng viên:{" "}
                   {displayedTopic.lecturer?.fullName || "N/A"}
                 </Typography>
-                <Typography>
+                <Typography component={"span"}>
                   Email liên hệ: {displayedTopic.lecturer?.email || "N/A"}
                 </Typography>
-                <Typography>
+                <Typography component={"span"}>
                   Số điện thoại: {displayedTopic.lecturer?.phone || "N/A"}
                 </Typography>
               </Card>
@@ -192,19 +193,19 @@ const ProjectDetails = () => {
                   </AccordionSummary>
                   <AccordionDetails sx={{ minHeight: "150px" }}>
                     {/* Set minHeight to prevent layout shift */}
-                    <Typography>
+                    <Typography component="div">
                       <strong>Mô tả:</strong>{" "}
                       {formatContent(displayedTopic.description) || "N/A"}
                     </Typography>
-                    <Typography>
+                    <Typography component="div">
                       <strong>Mục tiêu:</strong>{" "}
                       {formatContent(displayedTopic.goals) || "N/A"}
                     </Typography>
-                    <Typography>
+                    <Typography component="div">
                       <strong>Yêu cầu:</strong>{" "}
                       {formatContent(displayedTopic.requirement) || "N/A"}
                     </Typography>
-                    <Typography>
+                    <Typography component="div">
                       <strong>Chuẩn đầu ra:</strong>{" "}
                       {formatContent(displayedTopic.standardOutput) || "N/A"}
                     </Typography>

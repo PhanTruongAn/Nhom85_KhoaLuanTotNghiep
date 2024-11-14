@@ -27,19 +27,34 @@ ChartJS.register(
 function Statistical() {
   // Data for bar chart (overview)
   const barData = {
-    labels: ["Sinh viên", "Điểm TB", "Giáo viên", "Đề tài", "Nhóm Giảng Viên"],
+    labels: [
+      "Sinh viên",
+      "Điểm TB",
+      "Giáo viên",
+      "Đề tài",
+      "Nhóm Giảng Viên",
+      "Nhóm Sinh Viên", // Thêm cột "Nhóm Sinh Viên"
+    ],
     datasets: [
       {
         label: "Thống kê tổng quan",
-        data: [20, 7.8, 15, 5, 10], // Add a value for "Nhóm Giảng Viên"
+        data: [20, 7.8, 15, 5, 10, 12], // Thêm giá trị cho "Nhóm Sinh Viên"
         backgroundColor: [
           "#26c6da",
           "#66bb6a",
           "#ec407a",
           "#ffeb3b",
           "#ab47bc",
+          "#ff7043",
         ],
-        borderColor: ["#006064", "#1b5e20", "#880e4f", "#f57f17", "#4a148c"],
+        borderColor: [
+          "#006064",
+          "#1b5e20",
+          "#880e4f",
+          "#f57f17",
+          "#4a148c",
+          "#bf360c",
+        ],
         borderWidth: 1,
       },
     ],
