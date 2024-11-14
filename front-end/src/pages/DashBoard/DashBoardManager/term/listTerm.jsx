@@ -334,7 +334,7 @@ const ListTerm = () => {
 
       <Modal
         title={`Chỉnh sửa ${currentTerm?.name}`}
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onCancel={() => {
           handleEditModalCancel();
         }}

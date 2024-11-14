@@ -6,7 +6,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, StarOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import studentApi from "../../../../apis/studentApi";
@@ -140,6 +140,7 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
               <Typography variant="body2" sx={{ fontSize: "16px" }}>
                 SĐT: {student.phone || "Không có"}
               </Typography>
+              {/* Nút xóa khỏi nhóm */}
               <Button
                 variant="outlined"
                 color="error"
@@ -155,6 +156,18 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
               >
                 Xóa khỏi nhóm
               </Button>
+
+              {/* Nút "Làm nhóm trưởng" chỉ hiển thị cho sinh viên không phải nhóm trưởng */}
+              {!student.isLeader && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<StarOutlined />} // Icon cho nhóm trưởng
+                  sx={{ mt: 1, ml: 1 }}
+                >
+                  Làm nhóm trưởng
+                </Button>
+              )}
             </Card>
           ))}
         </Box>
