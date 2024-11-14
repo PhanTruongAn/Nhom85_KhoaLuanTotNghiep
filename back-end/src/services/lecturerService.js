@@ -878,6 +878,7 @@ const getGroupTopic = async (lecturerId, termId) => {
             "gender",
             "email",
             "phone",
+            "isLeader",
           ],
         },
       ],
@@ -1058,6 +1059,7 @@ const getGroupEvaluation = async (groupId, termId) => {
     };
   }
 };
+
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,

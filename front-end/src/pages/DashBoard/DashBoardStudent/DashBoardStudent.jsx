@@ -15,6 +15,7 @@ import {
   Drawer,
   message,
 } from "antd"; // Thêm Drawer
+import { toast } from "react-toastify";
 import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
 import { useSelector, useDispatch } from "react-redux";
@@ -141,13 +142,13 @@ const DashBoardStudent = () => {
     const res = await authApi.logOut();
     if (res && res.status === 0) {
       localStorage.removeItem("accessToken");
-      messageApi.success(res.message);
+      toast.success(res.message);
       setTimeout(() => {
         navigate("/login");
         window.location.reload();
       }, 1000);
     } else {
-      messageApi.error(res.message);
+      toast.error(res.message);
     }
   };
 
