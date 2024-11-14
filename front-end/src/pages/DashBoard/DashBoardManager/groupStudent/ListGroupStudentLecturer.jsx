@@ -58,7 +58,10 @@ const ListGroupStudentLecturer = () => {
     setSelectedGroup(group);
     setOpenUpdateModal(true);
   };
-  const handleCloseUpdateModal = () => setOpenUpdateModal(false);
+  const handleCloseUpdateModal = () => {
+    setOpenUpdateModal(false);
+    setSelectedGroup(null);
+  };
   const onSearch = (value) => setSearchValue(value);
 
   const filteredGroups = useMemo(() => {
@@ -189,6 +192,7 @@ const ListGroupStudentLecturer = () => {
         groupSelect={selectedGroup}
         isOpen={openUpdateModal}
         closeModal={handleCloseUpdateModal}
+        refetch={refetch}
       />
     </Box>
   );

@@ -756,9 +756,11 @@ const removeMemberFromGroup = async (data) => {
       message: "Nhóm không tồn tại!",
     };
   }
+  const { id, numOfMembers } = studentGroup;
+  const students = studentGroup.students.length;
 
   const result = await StudentGroup.destroy({
-    where: { studentId: studentId, groupId: studentGroup.id },
+    where: { studentId: studentId, groupId: id },
   });
 
   await Student.update(
@@ -769,6 +771,11 @@ const removeMemberFromGroup = async (data) => {
       },
     }
   );
+
+  if (students - 1 < numOfMembers) {
+    await Group.update({ status: "NOT_FULL" }, { where: { id: id } });
+  }
+
   if (result) {
     return {
       status: 0,

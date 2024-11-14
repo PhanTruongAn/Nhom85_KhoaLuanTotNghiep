@@ -130,7 +130,7 @@ const initWebRoutes = (app) => {
     "/lecturer/get-group-evaluation",
     lecturerController.handleGetGroupEvaluation
   );
-
+  router.put("/lecturer/choose-leader", lecturerController.handleChooseLeader);
   //Manager Route
   router.get(
     "/manager/get-all-permission",

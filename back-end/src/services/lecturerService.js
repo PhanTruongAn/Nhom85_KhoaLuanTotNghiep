@@ -9,6 +9,7 @@ const {
   Role,
   Topic,
   TermLecturer,
+  TermStudent,
   Term,
   Note,
   Evaluation,
@@ -1059,7 +1060,58 @@ const getGroupEvaluation = async (groupId, termId) => {
     };
   }
 };
-
+const chooseLeaderForGroup = async (data) => {
+  const { termId, groupId, studentId } = data;
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Học kì trống hoặc không hợp lệ!",
+    };
+  }
+  if (!groupId) {
+    return {
+      status: -1,
+      message: "Nhóm sinh viên trống hoặc không hợp lệ!",
+    };
+  }
+  if (!studentId) {
+    return {
+      status: -1,
+      message: "ID sinh viên trống hoặc không hợp lệ!",
+    };
+  }
+  try {
+    let group = await Group.findOne({
+      where: {
+        id: groupId,
+        termId: termId,
+      },
+    });
+    let student = await Student.findOne({
+      where: {
+        id: studentId,
+      },
+    });
+    if (!student) {
+      return {
+        status: -1,
+        message: "Sinh viên không tồn tại!",
+      };
+    }
+    if (!group) {
+      return {
+        status: -1,
+        message: "Nhóm không tồn tại!",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -1081,4 +1133,5 @@ module.exports = {
   getLecturerGroup,
   getReviewStudentGroups,
   getGroupEvaluation,
+  chooseLeaderForGroup,
 };

@@ -77,5 +77,8 @@ const lecturerApi = {
       `${baseUrl}/get-group-evaluation?group=${group}&term=${term}`
     );
   },
+  chooseLeader: (data) => {
+    return axiosClient.put(baseUrl + "/choose-leader", data);
+  },
 };
 export default lecturerApi;

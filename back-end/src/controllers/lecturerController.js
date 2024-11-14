@@ -270,7 +270,18 @@ const handleGetGroupEvaluation = async (req, res) => {
     });
   }
 };
-
+const handleChooseLeader = async (req, res) => {
+  try {
+    const data = await lecturerService.chooseLeaderForGroup(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 module.exports = {
   handleCreateLecturerAccount,
   handleBulkCreateLecturer,
@@ -292,4 +303,5 @@ module.exports = {
   handleMyGroup,
   handleGetReviewStudentGroups,
   handleGetGroupEvaluation,
+  handleChooseLeader,
 };
