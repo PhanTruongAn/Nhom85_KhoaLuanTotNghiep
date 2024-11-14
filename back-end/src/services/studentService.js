@@ -230,9 +230,6 @@ const getPaginationStudent = async (page, limit, term) => {
             attributes: [],
           },
           as: "groups",
-          where: {
-            termId: term,
-          },
           attributes: ["id", "groupName"],
         },
         {
