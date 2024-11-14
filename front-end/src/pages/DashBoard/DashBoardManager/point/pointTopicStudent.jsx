@@ -209,7 +209,12 @@ function PointTopicStudent({
               loading={loading}
             />
 
-            <Button variant="contained" color="error" onClick={onClose}>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              onClick={onClose}
+            >
               Hủy
             </Button>
           </Box>

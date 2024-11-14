@@ -296,6 +296,7 @@ function ManageNotification() {
 
         <DialogActions>
           <Button
+            size="small"
             onClick={() => setIsUpdateOpen(false)}
             variant="contained"
             color="error"

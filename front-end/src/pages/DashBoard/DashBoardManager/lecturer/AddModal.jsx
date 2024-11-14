@@ -50,6 +50,7 @@ function AddModal({ onClose, isOpen, getData }) {
         onCancel={() => handleCancel()}
         footer={[
           <Button
+            size="small"
             key="back"
             type="primary"
             danger
@@ -58,6 +59,7 @@ function AddModal({ onClose, isOpen, getData }) {
             Hủy bỏ
           </Button>,
           <Button
+            size="small"
             key="submit"
             type="primary"
             loading={loading}

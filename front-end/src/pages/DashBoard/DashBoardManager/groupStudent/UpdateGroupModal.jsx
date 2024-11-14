@@ -144,6 +144,7 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
               <Button
                 variant="outlined"
                 color="error"
+                size="small"
                 startIcon={
                   loadingRemoveMember[student.id] ? (
                     <CircularProgress size={20} color="error" />
@@ -162,6 +163,7 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
                 <Button
                   variant="outlined"
                   color="primary"
+                  size="small"
                   startIcon={<StarOutlined />} // Icon cho nhóm trưởng
                   sx={{ mt: 1, ml: 1 }}
                 >
@@ -174,6 +176,7 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
 
         <Button
           color="error"
+          size="small"
           variant="text"
           onClick={closeModal}
           sx={{ mt: 2, float: "right" }}

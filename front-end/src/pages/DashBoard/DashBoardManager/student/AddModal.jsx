@@ -53,10 +53,17 @@ function AddModal({ onClose, isOpen }) {
         open={isOpen}
         onCancel={handleCancel}
         footer={[
-          <Button key="back" type="primary" danger onClick={handleCancel}>
+          <Button
+            size="small"
+            key="back"
+            type="primary"
+            danger
+            onClick={handleCancel}
+          >
             Hủy bỏ
           </Button>,
           <Button
+            size="small"
             key="submit"
             type="primary"
             loading={loading}

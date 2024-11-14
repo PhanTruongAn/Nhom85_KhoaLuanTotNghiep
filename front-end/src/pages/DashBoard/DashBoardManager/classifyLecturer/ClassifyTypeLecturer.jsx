@@ -292,7 +292,7 @@ function ClassifyTypeLecturer() {
             onClick={handleAssignGroup}
             variant="contained"
             color="secondary"
-            // size="small"
+            size="small"
             startIcon={
               state.assignLoading ? (
                 <CircularProgress size={20} color="warning" />
