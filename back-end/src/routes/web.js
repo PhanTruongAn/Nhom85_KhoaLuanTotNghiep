@@ -232,6 +232,7 @@ const initWebRoutes = (app) => {
     "/manager/add-lecturer-to-group",
     managerController.handleAddLecturerToGroup
   );
+  router.get("/manager/statistics", managerController.handleGetStatistics);
   return app.use("/", router);
 };
 

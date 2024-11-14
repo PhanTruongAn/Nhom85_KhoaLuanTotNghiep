@@ -1086,7 +1086,7 @@ const chooseLeaderForGroup = async (data) => {
       where: { id: groupId, termId },
       include: {
         model: Student,
-        as: "student",
+        as: "students",
         attributes: ["id", "username", "fullName", "isLeader"],
       },
     });
@@ -1098,18 +1098,16 @@ const chooseLeaderForGroup = async (data) => {
       };
     }
 
-    // Find the current leader in the group, if any
-    const currentLeader = group.students.find(
-      (student) => student.isLeader === true
+    // Set all students in the group who are leaders to isLeader = false
+    await Student.update(
+      { isLeader: false },
+      {
+        where: {
+          id: group.students.map((student) => student.id),
+          isLeader: true,
+        },
+      }
     );
-
-    // Update the current leader's isLeader to false if a leader exists
-    if (currentLeader) {
-      await Student.update(
-        { isLeader: false },
-        { where: { id: currentLeader.id } }
-      );
-    }
 
     // Update the specified student to be the new leader
     const updatedStudent = await Student.update(
@@ -1126,7 +1124,7 @@ const chooseLeaderForGroup = async (data) => {
 
     return {
       status: 0,
-      message: "Chọn trưởng nhóm thành công!",
+      message: "Đã chọn trưởng nhóm thành công!",
     };
   } catch (error) {
     console.log("Lỗi: ", error.message);

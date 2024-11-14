@@ -279,7 +279,7 @@ function ListPermission() {
               startIcon={<PlusOutlined />}
               onClick={handleOpenModal}
             >
-              Thêm mới
+              Thêm mới quyền hạn
             </Button>
             <CustomButton
               onClick={handleReload}

@@ -12,9 +12,11 @@ import { useState } from "react";
 import studentApi from "../../../../apis/studentApi";
 import { useSelector } from "react-redux";
 import { message } from "antd";
+import lecturerApi from "../../../../apis/lecturerApi";
 const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [loadingRemoveMember, setLoadingRemoveMember] = useState({});
+  const [loadingChooseLeader, setLoadingChooseLeader] = useState({});
   const [messageApi, contextHolder] = message.useMessage();
   const handleDelete = async (studentId) => {
     setLoadingRemoveMember((prev) => ({ ...prev, [studentId]: true }));
@@ -33,6 +35,26 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
       messageApi.error(res.message);
     }
     setLoadingRemoveMember((prev) => ({ ...prev, [studentId]: false }));
+  };
+
+  const handleChooseLeader = async (studentId) => {
+    setLoadingChooseLeader((prev) => ({ ...prev, [studentId]: true }));
+    const data = {
+      studentId: studentId,
+      groupId: groupSelect?.id,
+      termId: currentTerm.id,
+    };
+    const res = await lecturerApi.chooseLeader(data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      refetch();
+      setTimeout(() => {
+        closeModal();
+      }, 1500);
+    } else {
+      messageApi.error(res.message);
+    }
+    setLoadingChooseLeader((prev) => ({ ...prev, [studentId]: false }));
   };
   return (
     <Modal
@@ -154,6 +176,7 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
                 }
                 sx={{ mt: 1 }}
                 onClick={() => handleDelete(student.id)}
+                disabled={loadingRemoveMember[student.id]}
               >
                 Xóa khỏi nhóm
               </Button>
@@ -164,8 +187,16 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
                   variant="outlined"
                   color="primary"
                   size="small"
-                  startIcon={<StarOutlined />} // Icon cho nhóm trưởng
+                  onClick={() => handleChooseLeader(student.id)}
+                  startIcon={
+                    loadingChooseLeader[student.id] ? (
+                      <CircularProgress size={20} color="primary" />
+                    ) : (
+                      <StarOutlined />
+                    )
+                  }
                   sx={{ mt: 1, ml: 1 }}
+                  disabled={loadingChooseLeader[student.id]}
                 >
                   Làm nhóm trưởng
                 </Button>

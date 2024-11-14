@@ -2,7 +2,7 @@ import db from "../models/index";
 import _, { isEmpty } from "lodash";
 import permissionValid from "../validates/permissionValidate";
 import { isFieldDate, isValidSemester } from "../validates/termValidate";
-const { Op, literal } = require("sequelize");
+const { Op, literal, fn } = require("sequelize");
 const {
   Student,
   Permission,
@@ -17,6 +17,7 @@ const {
   Lecturer,
   GroupLecturer,
   TermStudent,
+  TermLecturer,
   StudentGroup,
 } = require("../models");
 
@@ -1550,6 +1551,61 @@ const addLecturerToGroup = async (data) => {
   }
 };
 
+const getStatistics = async (termId) => {
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Học kì trống hoặc không hợp lệ!",
+    };
+  }
+  const whereCondition = termId ? { termId } : {};
+  try {
+    const totalStudents = await TermStudent.count({
+      where: whereCondition,
+    });
+    const totalLecturers = await TermLecturer.count({
+      where: whereCondition,
+    });
+    const totalGroupsStudent = await Group.count({
+      where: whereCondition,
+    });
+    const totalTopics = await Topic.count({
+      where: whereCondition,
+    });
+    const totalGroupsLecturer = await GroupLecturer.count();
+    const totalMajors = await Major.findAll({
+      attributes: [
+        "majorName",
+        [fn("COUNT", literal("Students.id")), "studentCount"],
+      ],
+      include: [
+        {
+          model: Student,
+          attributes: [],
+        },
+      ],
+      group: ["Major.id"],
+    });
+    return {
+      status: 0,
+      message: "Thành công!",
+      data: {
+        totalStudents,
+        totalLecturers,
+        totalGroupsStudent,
+        totalTopics,
+        totalGroupsLecturer,
+        totalMajors,
+      },
+    };
+  } catch (error) {
+    console.error("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -1585,4 +1641,5 @@ module.exports = {
   deleteLecturerGroup,
   deleteLecturerFromGroup,
   addLecturerToGroup,
+  getStatistics,
 };

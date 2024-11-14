@@ -114,5 +114,8 @@ const managerApi = {
   addLecturerToGroup: (data) => {
     return axiosClient.put(baseUrl + "/add-lecturer-to-group", data);
   },
+  getStatistics: (termId) => {
+    return axiosClient.get(`${baseUrl}/statistics?termId=${termId}`);
+  },
 };
 export default managerApi;
