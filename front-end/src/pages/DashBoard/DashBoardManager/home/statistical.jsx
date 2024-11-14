@@ -17,7 +17,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useState } from "react";
 import { message } from "antd";
 import { isEmpty } from "lodash";
-// Register plugins
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -33,11 +33,12 @@ function Statistical() {
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
   const [data, setData] = useState({});
-  console.log("Check: ", data);
+
   const getData = async () => {
     const res = await managerApi.getStatistics(currentTerm.id);
     return res;
   };
+
   CustomHooks.useQuery(["statistics", currentTerm], getData, {
     enabled: !isEmpty(currentTerm),
     onSuccess: (res) => {
@@ -52,46 +53,55 @@ function Statistical() {
       messageApi.error("Lỗi khi lấy dữ liệu thống kê!");
     },
   });
+
+  // Data for bar chart
   const barData = {
     labels: [
       "Sinh viên",
-      "Điểm TB",
       "Giáo viên",
+      "Nhóm Sinh Viên",
       "Đề tài",
       "Nhóm Giảng Viên",
-      "Nhóm Sinh Viên", // Thêm cột "Nhóm Sinh Viên"
     ],
     datasets: [
       {
         label: "Thống kê tổng quan",
-        data: [20, 7.8, 15, 5, 10, 12], // Thêm giá trị cho "Nhóm Sinh Viên"
+        data: [
+          data.totalStudents || 0,
+          data.totalLecturers || 0,
+          data.totalGroupsStudent || 0,
+          data.totalTopics || 0,
+          data.totalGroupsLecturer || 0,
+        ],
         backgroundColor: [
           "#26c6da",
           "#66bb6a",
           "#ec407a",
           "#ffeb3b",
           "#ab47bc",
-          "#ff7043",
         ],
-        borderColor: [
-          "#006064",
-          "#1b5e20",
-          "#880e4f",
-          "#f57f17",
-          "#4a148c",
-          "#bf360c",
-        ],
+        borderColor: ["#006064", "#1b5e20", "#880e4f", "#f57f17", "#4a148c"],
         borderWidth: 1,
       },
     ],
   };
 
-  // Data for pie charts
+  // Data for grade distribution pie chart
   const gradeData = {
-    labels: ["A", "B", "C", "D", "E", "F"],
+    labels: ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"],
     datasets: [
       {
-        data: [5, 8, 4, 2, 1, 0], // Sample grade data
+        data: [
+          data.gradeCounts?.["A+"] || 0,
+          data.gradeCounts?.["A"] || 0,
+          data.gradeCounts?.["B+"] || 0,
+          data.gradeCounts?.["B"] || 0,
+          data.gradeCounts?.["C+"] || 0,
+          data.gradeCounts?.["C"] || 0,
+          data.gradeCounts?.["D+"] || 0,
+          data.gradeCounts?.["D"] || 0,
+          data.gradeCounts?.["F"] || 0,
+        ],
         backgroundColor: [
           "#4caf50",
           "#8bc34a",
@@ -99,6 +109,9 @@ function Statistical() {
           "#ff9800",
           "#f44336",
           "#9e9e9e",
+          "#3f51b5",
+          "#673ab7",
+          "#e91e63",
         ],
         borderColor: "#fff",
         borderWidth: 1,
@@ -106,12 +119,20 @@ function Statistical() {
     ],
   };
 
-  const facultyData = {
-    labels: ["Khoa CNTT", "Khoa Truyền Thông", "Khoa Khoa Học Máy Tính"],
+  // Data for majors distribution pie chart
+  const majorsData = {
+    labels: data.totalMajors?.map((major) => major.majorName) || [],
     datasets: [
       {
-        data: [12, 5, 3], // Sample faculty data
-        backgroundColor: ["#2196f3", "#ff5722", "#3f51b5"],
+        data: data.totalMajors?.map((major) => major.studentCount) || [],
+        backgroundColor: [
+          "#2196f3",
+          "#ff5722",
+          "#3f51b5",
+          "#9c27b0",
+          "#00bcd4",
+          "#4caf50",
+        ],
         borderColor: "#fff",
         borderWidth: 1,
       },
@@ -127,11 +148,8 @@ function Statistical() {
         anchor: "center",
         align: "center",
         color: "#fff",
-        font: {
-          weight: "bold",
-          size: 14,
-        },
-        formatter: (value) => (value > 0 ? value : null), // Display value only if greater than 0
+        font: { weight: "bold", size: 14 },
+        formatter: (value) => (value > 0 ? value : null),
       },
     },
   };
@@ -142,20 +160,17 @@ function Statistical() {
       legend: { position: "bottom" },
       tooltip: { enabled: true },
       datalabels: {
-        color: "#fff", // Set label color to white
-        font: {
-          weight: "bold",
-          size: 14,
-        },
-        formatter: (value) => (value > 0 ? value : null), // Display value only if greater than 0
+        color: "#fff",
+        font: { weight: "bold", size: 14 },
+        formatter: (value) => (value > 0 ? value : null),
       },
     },
   };
+  console.log("Data: ", data);
 
   return (
     <Box sx={{ padding: 2 }}>
       {contextHolder}
-      {/* Image Banner */}
       <Box
         sx={{
           backgroundSize: "cover",
@@ -202,13 +217,13 @@ function Statistical() {
           </Paper>
         </Grid>
 
-        {/* Pie Chart for Faculty Distribution - Half Width */}
+        {/* Pie Chart for Majors Distribution - Half Width */}
         <Grid item xs={6}>
           <Paper elevation={3} sx={{ padding: 3, borderRadius: 2 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
-              Biểu Đồ Tròn - Phân Bổ Theo Khoa
+              Biểu Đồ Tròn - Phân Bổ Theo Ngành
             </Typography>
-            <Pie data={facultyData} options={pieOptions} />
+            <Pie data={majorsData} options={pieOptions} />
           </Paper>
         </Grid>
       </Grid>
