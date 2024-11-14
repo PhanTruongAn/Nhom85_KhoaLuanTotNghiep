@@ -3,10 +3,10 @@ import db from "../models/index";
 import _ from "lodash";
 const Role = db.Role;
 const Permission = db.Permission;
-const getRoleWithId = async (user) => {
+const getRoleWithId = async (id) => {
   try {
     const role = await Role.findOne({
-      where: { id: user.roleId },
+      where: { id: id },
       attributes: ["id", "name", "description"],
       include: {
         model: Permission,

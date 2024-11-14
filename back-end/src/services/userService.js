@@ -11,7 +11,7 @@ import templateHtml from "../utils/templateHtml";
 let salt = bcrypt.genSaltSync(10);
 
 //Models Database
-const { Student, Lecturer, Major } = require("../models");
+const { Student, Lecturer, Role } = require("../models");
 // Hash Password
 const hashPassword = (password) => {
   let hashPassword = bcrypt.hashSync(password, salt);
@@ -82,10 +82,14 @@ const login = async (data) => {
     };
   }
   const user = await findAccount(username);
+  const role = await Role.findOne({
+    where: { id: user.roleId },
+    attributes: ["id", "name", "description"],
+  });
   if (user) {
     let comparePassword = bcrypt.compareSync(password, user.password);
     if (comparePassword) {
-      const role = await roleService.getRoleWithId(user);
+      // const role = await roleService.getRoleWithId(user);
       const payload = {
         username: user.username,
         role,

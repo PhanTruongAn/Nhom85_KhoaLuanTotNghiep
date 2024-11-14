@@ -1,5 +1,6 @@
 require("dotenv").config();
 import jwtAction from "./jwtAction";
+import roleService from "../services/roleService";
 //Non-secure path
 const white_list = [
   "/",
@@ -48,14 +49,15 @@ const authentication = (req, res, next) => {
   }
 };
 
-const checkUserPermission = (req, res, next) => {
+const checkUserPermission = async (req, res, next) => {
   if (white_list.includes(req.path) || req.path === "/fetch-token")
     return next();
   if (req.user) {
-    const permissions = req.user.role.Permissions;
+    const userAccount = await roleService.getRoleWithId(req.user.role.id);
+    const { Permissions } = userAccount;
     const currentUrl = req.path;
     const userAdmin = req.user.role.name;
-    const canAccess = permissions.some(
+    const canAccess = Permissions.some(
       (item) => item.apiPath === currentUrl || currentUrl.includes(item.apiPath)
     );
     if (
