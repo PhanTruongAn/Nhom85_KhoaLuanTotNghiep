@@ -1080,30 +1080,54 @@ const chooseLeaderForGroup = async (data) => {
       message: "ID sinh viên trống hoặc không hợp lệ!",
     };
   }
+
   try {
-    let group = await Group.findOne({
-      where: {
-        id: groupId,
-        termId: termId,
+    const group = await Group.findOne({
+      where: { id: groupId, termId },
+      include: {
+        model: Student,
+        as: "student",
+        attributes: ["id", "username", "fullName", "isLeader"],
       },
     });
-    let student = await Student.findOne({
-      where: {
-        id: studentId,
-      },
-    });
-    if (!student) {
-      return {
-        status: -1,
-        message: "Sinh viên không tồn tại!",
-      };
-    }
+
     if (!group) {
       return {
         status: -1,
         message: "Nhóm không tồn tại!",
       };
     }
+
+    // Find the current leader in the group, if any
+    const currentLeader = group.students.find(
+      (student) => student.isLeader === true
+    );
+
+    // Update the current leader's isLeader to false if a leader exists
+    if (currentLeader) {
+      await Student.update(
+        { isLeader: false },
+        { where: { id: currentLeader.id } }
+      );
+    }
+
+    // Update the specified student to be the new leader
+    const updatedStudent = await Student.update(
+      { isLeader: true },
+      { where: { id: studentId } }
+    );
+
+    if (!updatedStudent) {
+      return {
+        status: -1,
+        message: "Sinh viên không tồn tại!",
+      };
+    }
+
+    return {
+      status: 0,
+      message: "Chọn trưởng nhóm thành công!",
+    };
   } catch (error) {
     console.log("Lỗi: ", error.message);
     return {
@@ -1112,6 +1136,7 @@ const chooseLeaderForGroup = async (data) => {
     };
   }
 };
+
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
