@@ -7,7 +7,7 @@ import { Link, Typography, CircularProgress, Button, Box } from "@mui/material";
 import studentApi from "../../../../apis/studentApi";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
-import { setGroup, setMyTopic } from "../../../../redux/userSlice";
+import { setGroup, setMyTopic, setUser } from "../../../../redux/userSlice";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import Avatar from "../../../../components/Avatar/Avatar";
 import CustomButton from "../../../../components/Button/CustomButton";
@@ -49,6 +49,7 @@ const StudentGroup = () => {
     if (res && res.status === 0) {
       messageApi.success(res.message);
       setLoading(false);
+      dispatch(setUser({ ...user, isLeader: false }));
       dispatch(setMyTopic({}));
       dispatch(setGroup({}));
     } else {
