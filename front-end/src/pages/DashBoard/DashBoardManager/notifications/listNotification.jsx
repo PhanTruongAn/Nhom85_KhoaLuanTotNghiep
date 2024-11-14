@@ -110,6 +110,7 @@ function ListNotification() {
         ))}
         {visibleCount < sortedNotifications.length && (
           <Button
+            size="small"
             onClick={() => setVisibleCount(visibleCount + 3)}
             style={{ marginTop: "10px" }}
           >

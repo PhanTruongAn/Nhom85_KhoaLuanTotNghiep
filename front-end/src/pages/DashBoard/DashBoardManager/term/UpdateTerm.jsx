@@ -181,6 +181,7 @@ const UpdateTerm = ({ term, onOk, onCancel }) => {
 
         <Space style={{ float: "right", marginTop: "10px" }}>
           <Button
+            size="small"
             onClick={handleCancel} // Call the new handleCancel function
             variant="contained"
             color="error"

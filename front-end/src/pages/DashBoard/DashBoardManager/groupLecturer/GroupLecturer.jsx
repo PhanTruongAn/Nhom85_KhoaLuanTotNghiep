@@ -30,6 +30,7 @@ const columns = (viewDetailTopic) => [
     render: (record) => (
       <Button
         variant="outlined"
+        size="small"
         endIcon={<InfoCircleOutlined />}
         onClick={() => viewDetailTopic(record.topic.id)}
       >

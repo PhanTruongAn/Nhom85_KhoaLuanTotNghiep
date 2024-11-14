@@ -269,6 +269,7 @@ function ListGroupTopicLecturer() {
         >
           <Space>
             <Button
+              size="small"
               color="primary"
               variant="contained"
               startIcon={<FileDoneOutlined />}

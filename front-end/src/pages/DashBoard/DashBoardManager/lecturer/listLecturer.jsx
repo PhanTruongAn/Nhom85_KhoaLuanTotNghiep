@@ -270,6 +270,7 @@ function ListLecturer() {
         >
           <Space>
             <Button
+              size="small"
               variant="contained"
               startIcon={<PlusOutlined />}
               onClick={handleOpenModal}

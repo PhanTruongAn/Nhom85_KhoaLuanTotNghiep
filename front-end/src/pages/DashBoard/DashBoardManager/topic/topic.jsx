@@ -203,6 +203,7 @@ const ManagerTopic = () => {
           <Box>
             <label>
               <Button
+                size="small"
                 startIcon={<UploadFileIcon />}
                 component="span"
                 variant="contained"
@@ -221,6 +222,7 @@ const ManagerTopic = () => {
             </label>
             {/* topic */}
             <Button
+              size="small"
               startIcon={<DownloadFileIcon />}
               href="https://docs.google.com/spreadsheets/d/1xFIktGI025HPQM6kTaK3DCmhDaCzQDOZ/export?format=xlsx" // Chuyển link để tải trực tiếp
               component="a"

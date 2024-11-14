@@ -207,6 +207,7 @@ const MajorManagement = () => {
         >
           <Space>
             <Button
+              size="small"
               variant="contained"
               color="primary"
               startIcon={<Add />}
@@ -215,6 +216,7 @@ const MajorManagement = () => {
               Thêm chuyên ngành
             </Button>
             <Button
+              size="small"
               variant="contained"
               color="primary"
               startIcon={
@@ -274,10 +276,11 @@ const MajorManagement = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="error">
+          <Button size="small" onClick={handleClose} color="error">
             Hủy
           </Button>
           <Button
+            size="small"
             onClick={handleSave}
             color="primary"
             variant="contained"

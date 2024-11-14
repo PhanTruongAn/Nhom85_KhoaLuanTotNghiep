@@ -133,6 +133,7 @@ const AccountLecturer = () => {
                 startIcon={<UploadFileIcon />}
                 component="span"
                 variant="contained"
+                size="small"
                 sx={{ marginRight: "10px" }}
               >
                 Tải file
@@ -146,6 +147,7 @@ const AccountLecturer = () => {
               </Button>
             </label>
             <Button
+              size="small"
               startIcon={<DownloadFileIcon />}
               href="https://docs.google.com/spreadsheets/d/1-qYkfFpfkSUZ7Nww60FOKbmy42tDzFte/export?format=xlsx" // Chuyển link để tải trực tiếp
               component="a"
@@ -167,6 +169,7 @@ const AccountLecturer = () => {
           }}
         >
           <Button
+            size="small"
             variant="contained"
             onClick={handleOpenModal}
             startIcon={<AddIcon />}

@@ -373,7 +373,7 @@ function PersonalTopics() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="primary">
+          <Button size="small" onClick={handleCloseModal} color="primary">
             Đóng
           </Button>
         </DialogActions>
@@ -458,6 +458,7 @@ function PersonalTopics() {
         </DialogContent>
         <DialogActions sx={{ padding: "16px" }}>
           <Button
+            size="small"
             onClick={handleCloseEditModal}
             variant="outlined"
             color="error"
@@ -491,10 +492,14 @@ function PersonalTopics() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleAssignGroupClose} color="error">
+          <Button size="small" onClick={handleAssignGroupClose} color="error">
             Hủy
           </Button>
-          <Button onClick={handleAssignGroupSubmit} color="primary">
+          <Button
+            size="small"
+            onClick={handleAssignGroupSubmit}
+            color="primary"
+          >
             Lưu
           </Button>
         </DialogActions>

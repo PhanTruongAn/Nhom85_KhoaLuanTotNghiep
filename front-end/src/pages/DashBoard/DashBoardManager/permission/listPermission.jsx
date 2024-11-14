@@ -7,7 +7,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { Box, Typography, Button } from "@mui/material";
-import AddModal from "./addModal";
+import AddModal from "./AddModal";
 import UpdateModal from "./updateModal";
 import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
@@ -274,6 +274,7 @@ function ListPermission() {
         <Box className="row col-4">
           <Space>
             <Button
+              size="small"
               variant="contained"
               startIcon={<PlusOutlined />}
               onClick={handleOpenModal}

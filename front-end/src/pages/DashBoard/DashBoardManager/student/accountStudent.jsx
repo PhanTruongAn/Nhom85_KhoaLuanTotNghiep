@@ -123,6 +123,7 @@ const AccountStudent = () => {
           <Box>
             <label>
               <Button
+                size="small"
                 startIcon={<UploadFileIcon />}
                 component="span"
                 variant="contained"
@@ -139,6 +140,7 @@ const AccountStudent = () => {
               </Button>
             </label>
             <Button
+              size="small"
               startIcon={<DownloadFileIcon />}
               component="a"
               href="https://docs.google.com/spreadsheets/d/1HAOqOiXkGQxLSM81L_RK1pzOYNarHKcq/export?format=xlsx" // Chuyển link để tải trực tiếp
@@ -160,6 +162,7 @@ const AccountStudent = () => {
           }}
         >
           <Button
+            size="small"
             variant="contained"
             onClick={handleOpenModal}
             startIcon={<AddIcon />}
