@@ -742,9 +742,34 @@ const removeMemberFromGroup = async (data) => {
       message: "Thông tin học kì, nhóm hoặc sinh viên cần xóa không hợp lệ!",
     };
   }
-  const result = await studentLeaveGroup(data);
+  const studentGroup = await Group.findOne({
+    where: { id: groupId, termId: termId },
+    include: {
+      model: Student,
+      as: "students",
+    },
+  });
 
-  if (result && result.status === 0) {
+  if (!studentGroup) {
+    return {
+      status: 1,
+      message: "Nhóm không tồn tại!",
+    };
+  }
+
+  const result = await StudentGroup.destroy({
+    where: { studentId: studentId, groupId: studentGroup.id },
+  });
+
+  await Student.update(
+    { isLeader: false },
+    {
+      where: {
+        id: studentId,
+      },
+    }
+  );
+  if (result) {
     return {
       status: 0,
       message: "Đã xóa thành viên khỏi nhóm!",
