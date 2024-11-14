@@ -216,6 +216,7 @@ const StudentGroup = () => {
                 variant="contained"
                 disabled={loading || isWithinChooseGroupPeriod}
                 onClick={handleLeaveGroup}
+                size="small"
                 startIcon={
                   loading ? (
                     <CircularProgress size={20} color="primary" />

@@ -11,7 +11,7 @@ function CustomButton({ onClick, loading, text, type, sx, disabled }) {
       sx={sx ? sx : {}}
       variant="contained"
       color={isSuccess ? "success" : isError ? "error" : "primary"}
-      // size="small"
+      size="small"
       onClick={onClick}
       startIcon={
         loading ? (
