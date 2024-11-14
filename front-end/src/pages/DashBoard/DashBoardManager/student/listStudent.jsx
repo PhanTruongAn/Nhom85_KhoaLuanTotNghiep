@@ -186,7 +186,10 @@ function ListStudent() {
     {
       title: "Nhóm", // Thay đổi tiêu đề cột
       key: "group",
-      render: (record) => (record.groupId ? "Đã có nhóm" : "Chưa có nhóm"),
+      render: (record) =>
+        record.groups[0].groupName
+          ? record.groups[0].groupName
+          : "Chưa có nhóm",
     },
     {
       title: "Email",

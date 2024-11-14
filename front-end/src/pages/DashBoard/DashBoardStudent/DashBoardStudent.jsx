@@ -17,7 +17,6 @@ import {
 } from "antd"; // Thêm Drawer
 import { Outlet, useNavigate } from "react-router-dom";
 import items from "./items.jsx";
-import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { ThemeProvider, Box, Popover } from "@mui/material"; // Popover từ MUI
 import CssBaseline from "@mui/material/CssBaseline";
@@ -142,13 +141,13 @@ const DashBoardStudent = () => {
     const res = await authApi.logOut();
     if (res && res.status === 0) {
       localStorage.removeItem("accessToken");
-      toast.success(res.message);
+      messageApi.success(res.message);
       setTimeout(() => {
         navigate("/login");
         window.location.reload();
       }, 1000);
     } else {
-      toast.error(res.message);
+      messageApi.error(res.message);
     }
   };
 
@@ -373,7 +372,7 @@ const DashBoardStudent = () => {
               style={{
                 margin: "24px 16px",
                 color: themes ? "#fff" : "#000",
-                background: themes ? "#152f40" : "#fff",
+                background: themes ? "#071522" : "#fff",
                 overflow: "auto",
                 height: "100%",
               }}
