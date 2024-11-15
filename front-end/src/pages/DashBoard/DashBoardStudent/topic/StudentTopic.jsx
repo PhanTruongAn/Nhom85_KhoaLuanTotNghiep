@@ -11,7 +11,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { message } from "antd";
+import { message, theme } from "antd";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { formatContent } from "../../../../utils/formatContent";
 const ProjectDetails = () => {
@@ -135,36 +135,47 @@ const ProjectDetails = () => {
           ) : (
             <>
               <Card
-                sx={{
-                  marginBottom: "10px",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-                  backgroundColor: "#ffffff",
-                  fontSize: "16px",
-                  "@media (max-width: 768px)": {
-                    fontSize: "14px",
-                  },
-                  "@media (max-width: 480px)": {
-                    fontSize: "12px",
-                  },
-                }}
+                sx={[
+                  (theme) => ({
+                    backgroundColor: "#ebf6ff",
+                    ...theme.applyStyles("dark", {
+                      backgroundColor: "#303030",
+                    }),
+                    marginBottom: "10px",
+                    padding: "10px",
+                    borderRadius: "8px",
+                    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+
+                    fontSize: "16px",
+                    "@media (max-width: 768px)": {
+                      fontSize: "14px",
+                    },
+                    "@media (max-width: 480px)": {
+                      fontSize: "12px",
+                    },
+                  }),
+                ]}
                 variant="elevation"
               >
                 <Typography
                   component={"div"}
-                  sx={{
-                    color: "#006ed3",
-                    fontWeight: "700",
-                    marginBottom: "10px",
-                    fontSize: "1.25rem",
-                    "@media (max-width: 768px)": {
-                      fontSize: "1.1rem",
-                    },
-                    "@media (max-width: 480px)": {
-                      fontSize: "1rem",
-                    },
-                  }}
+                  sx={[
+                    (theme) => ({
+                      fontSize: "18px",
+                      ...theme.applyStyles("light", {
+                        color: "#006ed3",
+                      }),
+                      fontWeight: "700",
+                      marginBottom: "10px",
+                      fontSize: "1.25rem",
+                      "@media (max-width: 768px)": {
+                        fontSize: "1.1rem",
+                      },
+                      "@media (max-width: 480px)": {
+                        fontSize: "1rem",
+                      },
+                    }),
+                  ]}
                 >
                   THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN
                 </Typography>
@@ -175,7 +186,6 @@ const ProjectDetails = () => {
                     fontSize: "1rem",
                     lineHeight: "1.5",
                     fontWeight: "600",
-                    color: "#333",
                     "@media (max-width: 768px)": {
                       fontSize: "0.9rem",
                     },
