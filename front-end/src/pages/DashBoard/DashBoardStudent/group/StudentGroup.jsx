@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Row, Col, message, Space } from "antd";
 import { HomeOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Card } from "../../../../components/Card/Card";
-import { Link, Typography, CircularProgress, Button, Box } from "@mui/material";
-
+import { Typography, CircularProgress, Button, Box } from "@mui/material";
+import { Link } from "react-router-dom";
 import studentApi from "../../../../apis/studentApi";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
@@ -209,7 +209,9 @@ const StudentGroup = () => {
             })}
           <Row justify="space-between" style={{ marginTop: "20px" }}>
             <Col>
-              <Link>Xem Đề tài của tôi</Link>
+              <Link to="/dashboard/my-topic">
+                <i>Xem đề tài của nhóm</i>
+              </Link>
             </Col>
             <Col>
               <Button

@@ -6,9 +6,8 @@ import {
   TextField,
   CircularProgress,
   Typography,
-  Card,
 } from "@mui/material";
-
+import { Card } from "../../components/Card/Card";
 import { useSelector } from "react-redux";
 import lecturerApi from "../../apis/lecturerApi";
 import studentApi from "../../apis/studentApi";

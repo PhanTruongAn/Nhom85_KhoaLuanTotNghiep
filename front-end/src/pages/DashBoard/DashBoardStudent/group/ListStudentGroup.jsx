@@ -131,12 +131,13 @@ function ListStudentGroup() {
                   </Typography>
                   <Typography color="text.secondary">
                     Trạng thái:{" "}
-                    {group.status === "FULL" ? "Đã đầy" : "Có thể tham gia"}
+                    <b>{group.status === "FULL" ? "Đã đủ" : "Chưa đủ"}</b>
                   </Typography>
 
                   <Button
                     disabled={group.status === "FULL"}
                     sx={{ mt: 2 }}
+                    size="small"
                     onClick={() => handleJoinGroup(group)}
                     variant="contained"
                   >
