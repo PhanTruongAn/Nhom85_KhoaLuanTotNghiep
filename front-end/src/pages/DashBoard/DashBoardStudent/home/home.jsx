@@ -10,6 +10,7 @@ import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import { setGroup, setUser, setMajors } from "../../../../redux/userSlice";
 import studentApi from "../../../../apis/studentApi";
+import { Link } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -228,9 +229,9 @@ function StudentHome() {
                     </b>
                   </p>
                   <p>
-                    <a href="my-topic">
+                    <Link to="/dashboard/my-topic">
                       <i>Xem chi tiết</i>
-                    </a>
+                    </Link>
                   </p>
                 </Box>
               </Box>
