@@ -122,19 +122,13 @@ const getItems = (isManager) => {
                 icon: <FileExcelOutlined />,
                 label: "Quản lý nhóm ",
               },
-              {
-                key: "my-group-lecturer",
-                icon: <FileExcelOutlined />,
-                label: "Nhóm của tôi ",
-              },
             ]
-          : [
-              {
-                key: "my-group-lecturer",
-                icon: <FileExcelOutlined />,
-                label: "Nhóm của tôi ",
-              },
-            ]),
+          : []),
+        {
+          key: "my-group-lecturer",
+          icon: <FileExcelOutlined />,
+          label: "Nhóm của tôi ",
+        },
       ],
     },
     ...(isManager

@@ -90,10 +90,10 @@ const DashBoardManager = () => {
     return res;
   };
   const getGroup = async () => {
-    let res = await lecturerApi.getMyGroup(user.id);
+    let res = await lecturerApi.getMyGroup(user?.id);
     return res;
   };
-  const { data: groupData } = CustomHooks.useQuery(["group"], getGroup, {
+  CustomHooks.useQuery(["group"], getGroup, {
     enabled: !isEmpty(user),
     onSuccess: (res) => {
       if (res && res.status === 0) {
@@ -112,8 +112,6 @@ const DashBoardManager = () => {
     onSuccess: (res) => {
       if (res && res.status === 0) {
         dispatch(setNotes(res.data));
-      } else {
-        messageApi.error(res.message);
       }
     },
     onError: (error) => {

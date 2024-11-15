@@ -5,9 +5,8 @@ import { Table, Modal, message } from "antd";
 import EmptyData from "../../../../components/emptydata/EmptyData";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import CustomButton from "../../../../components/Button/CustomButton";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import { formatContent } from "../../../../utils/formatContent";
-
+import { useSelector } from "react-redux";
 const columns = (viewDetailTopic) => [
   {
     title: "ID",
@@ -41,6 +40,8 @@ const columns = (viewDetailTopic) => [
 ];
 
 function GroupLecturer() {
+  const group = useSelector((state) => state.userInit.groupLecturer);
+  console.log("Check: ", group);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [state, setState] = useState({
     reload: false,
@@ -185,93 +186,51 @@ function GroupLecturer() {
     <Box p={1}>
       {contextHolder}
       <Grid container spacing={2}>
-        {/* Lecturer Guide Card */}
-        <Grid item xs={12} md={6}>
-          <Card sx={{ padding: "10px" }}>
-            <Typography variant="h6">Giảng viên 1</Typography>
-            <Box p={2}>
-              <Grid container spacing={2}>
-                {/* Lecturer Information */}
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    label="Mã giảng viên"
-                    value="GV1"
-                    InputProps={{ readOnly: true }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    label="Tên giảng viên"
-                    value="Giảng viên A"
-                    InputProps={{ readOnly: true }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    label="Số điện thoại"
-                    value="123456789"
-                    InputProps={{ readOnly: true }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    label="Email"
-                    value="gvA@example.com"
-                    InputProps={{ readOnly: true }}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Card>
-        </Grid>
-
-        {/* Lecturer Report Card */}
-        <Grid item xs={12} md={6}>
-          <Card sx={{ padding: "10px" }}>
-            <Typography variant="h6">Giảng viên 2</Typography>
-            <Box p={2}>
-              <Grid container spacing={2}>
-                {/* Lecturer Information */}
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    label="Mã giảng viên"
-                    value="GV2"
-                    InputProps={{ readOnly: true }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    label="Tên giảng viên"
-                    value="Giảng viên B"
-                    InputProps={{ readOnly: true }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    label="Số điện thoại"
-                    value="987654321"
-                    InputProps={{ readOnly: true }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    label="Email"
-                    value="gvB@example.com"
-                    InputProps={{ readOnly: true }}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Card>
-        </Grid>
+        {group &&
+          group.lecturers.map((lecturer, index) => {
+            <Grid item xs={12} md={6} key={lecturer.id}>
+              <Card sx={{ padding: "10px" }}>
+                <Typography variant="h6">Giảng viên {index + 1}</Typography>
+                <Box p={2}>
+                  <Grid container spacing={2}>
+                    {/* Lecturer Information */}
+                    <Grid item xs={6}>
+                      <TextField
+                        fullWidth
+                        label="Mã giảng viên"
+                        value={lecturer.username}
+                        InputProps={{ readOnly: true }}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        fullWidth
+                        label="Tên giảng viên"
+                        value={lecturer.fullName}
+                        InputProps={{ readOnly: true }}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        fullWidth
+                        label="Số điện thoại"
+                        value={lecturer.phone}
+                        InputProps={{ readOnly: true }}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        fullWidth
+                        label="Email"
+                        value={lecturer.email}
+                        InputProps={{ readOnly: true }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Card>
+            </Grid>;
+          })}
       </Grid>
 
       <Box mt={2} mb={2}>

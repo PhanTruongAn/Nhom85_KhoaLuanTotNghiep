@@ -162,6 +162,7 @@ function ClassifyTypeLecturer() {
   const handleReload = () => {
     updateState({ reload: true });
     refetch();
+    refetchGroupStudent();
     setTimeout(() => {
       updateState({ reload: false });
     }, 1000);

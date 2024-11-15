@@ -58,7 +58,7 @@ function Statistical() {
   const barData = {
     labels: [
       "Sinh viên",
-      "Giáo viên",
+      "Giảng viên",
       "Nhóm Sinh Viên",
       "Đề tài",
       "Nhóm Giảng Viên",

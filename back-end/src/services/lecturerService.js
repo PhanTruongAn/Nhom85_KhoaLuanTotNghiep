@@ -735,6 +735,7 @@ const getNotes = async (termId, roleId) => {
 };
 
 const pointGroup = async (data) => {
+  console.log(">>>>>>>>>>>>>>>.", data);
   const { discussionPoint, progressPoint, reportingPoint, groupId, termId } =
     data;
 
@@ -764,8 +765,8 @@ const pointGroup = async (data) => {
     where: { groupId, termId },
   });
 
-  // Nếu không có bản ghi, thực hiện chấm điểm quá trình
   if (!existingEvaluation) {
+    // Nếu không có bản ghi, chỉ được phép chấm điểm quá trình
     if (!isNumber(progressScore)) {
       return {
         status: -1,

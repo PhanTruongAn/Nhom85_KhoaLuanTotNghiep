@@ -25,9 +25,9 @@ function PointTopicStudent({
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [students, setStudents] = useState(selectedGroup?.students || []);
   const [messageApi, contextHolder] = message.useMessage();
-  const [discussionPoint, setDiscussionPoint] = useState("");
-  const [progressPoint, setProgressPoint] = useState("");
-  const [reportingPoint, setReportingPoint] = useState("");
+  const [discussionPoint, setDiscussionPoint] = useState();
+  const [progressPoint, setProgressPoint] = useState();
+  const [reportingPoint, setReportingPoint] = useState();
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const handleScoreChange = (event, setScore) => {
@@ -134,8 +134,7 @@ function PointTopicStudent({
                     handleScoreChange(event, setDiscussionPoint)
                   }
                   disabled={
-                    isLecturerAdvisor ||
-                    objectSelect?.discussionPoint !== undefined
+                    isLecturerAdvisor || objectSelect?.discussionPoint != null
                   }
                 />
               )}
@@ -155,10 +154,7 @@ function PointTopicStudent({
                   onChange={(event) =>
                     handleScoreChange(event, setProgressPoint)
                   }
-                  disabled={
-                    !isLecturerAdvisor ||
-                    objectSelect?.progressPoint !== undefined
-                  }
+                  disabled={!isLecturerAdvisor || objectSelect?.progressPoint}
                 />
               )}
             </Box>
@@ -178,8 +174,7 @@ function PointTopicStudent({
                     handleScoreChange(event, setReportingPoint)
                   }
                   disabled={
-                    isLecturerAdvisor ||
-                    objectSelect?.reportingPoint !== undefined
+                    isLecturerAdvisor || objectSelect?.reportingPoint != null
                   }
                 />
               )}
