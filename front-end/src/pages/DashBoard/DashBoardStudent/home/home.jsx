@@ -8,7 +8,7 @@ import Avatar from "../../../../components/Avatar/Avatar";
 import CustomHooks from "../../../../utils/hooks";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
-import { setGroup, setUser, setMajors } from "../../../../redux/userSlice";
+import { setUser, setMajors } from "../../../../redux/userSlice";
 import studentApi from "../../../../apis/studentApi";
 import { Link } from "react-router-dom";
 

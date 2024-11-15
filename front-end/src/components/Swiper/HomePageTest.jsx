@@ -22,8 +22,6 @@ import PropTypes from "prop-types"; // Import PropTypes
 import Icon1 from "../../images/homepage/imageManage.avif";
 import Icon2 from "../../images/homepage/imageCoop.avif";
 import Icon3 from "../../images/homepage/imageSearchInfor.avif";
-import imageBgYB from "../../images/homepage/imageBgYB.avif";
-import imageBgDG from "../../images/homepage/imageBgGD.avif";
 
 const TiltCard = ({ icon, title, description }) => {
   const [themes, setThemes] = useState(
