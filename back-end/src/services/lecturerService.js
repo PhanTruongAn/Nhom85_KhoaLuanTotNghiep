@@ -735,7 +735,6 @@ const getNotes = async (termId, roleId) => {
 };
 
 const pointGroup = async (data) => {
-  console.log(">>>>>>>>>>>>>>>.", data);
   const { discussionPoint, progressPoint, reportingPoint, groupId, termId } =
     data;
 
@@ -770,7 +769,7 @@ const pointGroup = async (data) => {
     if (!isNumber(progressScore)) {
       return {
         status: -1,
-        message: "Điểm quá trình trống hoặc không hợp lệ!",
+        message: "Điểm quá trình trống!",
       };
     }
 

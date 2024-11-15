@@ -182,7 +182,7 @@ function PointTopicStudent({
           </Grid>
         </Grid>
 
-        <TextField
+        {/* <TextField
           label="Nhận xét của giảng viên"
           multiline
           rows={4}
@@ -192,7 +192,7 @@ function PointTopicStudent({
           sx={{ marginTop: 2 }}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-        />
+        /> */}
 
         <Box display="flex" justifyContent="space-between" marginTop={3}>
           <Box>

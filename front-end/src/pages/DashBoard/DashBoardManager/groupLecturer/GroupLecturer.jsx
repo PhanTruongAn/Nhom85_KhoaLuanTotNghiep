@@ -7,6 +7,9 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { formatContent } from "../../../../utils/formatContent";
 import { useSelector } from "react-redux";
+import CustomHooks from "../../../../utils/hooks";
+import { isEmpty } from "lodash";
+import lecturerApi from "../../../../apis/lecturerApi";
 const columns = (viewDetailTopic) => [
   {
     title: "ID",
@@ -41,99 +44,50 @@ const columns = (viewDetailTopic) => [
 
 function GroupLecturer() {
   const group = useSelector((state) => state.userInit.groupLecturer);
-  console.log("Check: ", group);
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [state, setState] = useState({
     reload: false,
-    groupStudent: [
-      {
-        id: 1,
-        groupName: "Nhóm 1",
-        topic: {
-          id: 1,
-          title: "Trải nghiệm qui trình trong việc phát triển phần mềm",
-          description: `
-                + Tìm hiểu requirement từ khách hàng
-                + Design SRS, ADD, DDD
-              `,
-          goals: `
-                + Tìm hiểu requirement từ khách hàng
-                + Design SRS, ADD, DDD
-                + Coding hệ thống với Java hoặc React Native
-                + Thực hiện testing
-                + Deploy hệ thống (cloud computing)
-              `,
-          requirement: `
-                Yêu cầu cứng: Đã hoàn thành môn Công nghệ mới trong SE ở mức khá giỏi
-                Đam mê nghiên cứu công nghệ, lập trình Mobile
-                - Có kiến thức cơ bản về Java, Swift hoặc React Native
-                - Có tinh thần học hỏi và mong muốn làm sản phẩm theo quy trình công nghiệp: tuân thủ tiêu chuẩn khi viết mã nguồn, Có hoạt động đảm bảo chất lượng mã nguồn
-              `,
-          standardOutput: `
-                A.Sinh viên tham gia đề tài
-                1) Nắm vững kiến thức, kỹ năng lập trình Java
-                2) Có kiến thức, kỹ năng triển khai dự án phần mềm đầy đủ qui trình từ Requirement => Design => Coding => Unit Testing
-                3) Có năng lực đầy đủ về Lập kế hoạch, theo dõi tiến độ, phân tích các vấn đề phát sinh trong quá trình thực hiện dự án.
-    
-                B.Sản phẩm
-                1) Có tài liệu mô tả Yêu cầu dự án.
-                2) Có tài liệu mô tả Thiết kế kiến trúc của dự án.
-                3) Có tài liệu mô tả Thiết kế chi tiết cho chức năng chính của dự án.
-                4) Có mã nguồn được lưu vết (tracking) định kỳ trên hệ thống quản lý phiên bản (version control) như Subversion hoặc Git; Mã nguồn trình bày rõ ràng, dễ hiểu theo tiêu chuẩn đã được thống nhất.
-                5) Có tài liệu mô tả tình huống test và kết quả test cho chức năng chính của dự án.
-                6) Có tài liệu mô tả cách biên dịch, đóng gói và hướng dẫn nâng cấp mã nguồn cho dự án.
-              `,
-          quantityGroup: 2,
-          lecturer: {
-            fullName: "Giảng viên A",
-            email: "gvA@example.com",
-          },
-        },
-      },
-      {
-        id: 2,
-        groupName: "Nhóm 2",
-        topic: {
-          id: 2,
-          title: "Đề tài 2",
-          description: "Mô tả đề tài 2",
-          goals: "Mục tiêu đề tài 2",
-          requirement: "Yêu cầu đề tài 2",
-          standardOutput: "Chuẩn đầu ra đề tài 2",
-          quantityGroup: 3,
-          lecturer: {
-            fullName: "Giảng viên B",
-            email: "gvB@example.com",
-          },
-        },
-      },
-      {
-        id: 3,
-        groupName: "Nhóm 3",
-        topic: {
-          id: 3,
-          title: "Đề tài 3",
-          description: "Mô tả đề tài 3",
-          goals: "Mục tiêu đề tài 3",
-          requirement: "Yêu cầu đề tài 3",
-          standardOutput: "Chuẩn đầu ra đề tài 3",
-          quantityGroup: 1,
-          lecturer: {
-            fullName: "Giảng viên C",
-            email: "gvC@example.com",
-          },
-        },
-      },
-    ],
+    groupStudent: [],
     currentRecord: {},
     isModalLoading: false,
     isModalVisible: false,
+    pageSize: 5,
+    page: 1,
   });
   const [messageApi, contextHolder] = message.useMessage();
-
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
+  const getReviewGroups = async () => {
+    const res = await lecturerApi.reviewStudentGroups(group.id, currentTerm.id);
+    return res;
+  };
+  const {
+    isFetching,
+    data: groupStudentData,
+    refetch,
+  } = CustomHooks.useQuery(
+    ["my-group-topic", state.page, state.pageSize],
+    getReviewGroups,
+    {
+      enabled: !isEmpty(currentTerm) && !isEmpty(group),
+      onSuccess: (res) => {
+        if (res && res.status === 0) {
+          updateState({ groupStudent: res.data, reload: false });
+          if (isEmpty(groupStudentData)) {
+            messageApi.success(res.message);
+          }
+        } else {
+          messageApi.error(res.message);
+        }
+      },
+      onError: () => {
+        updateState({ reload: false });
+        messageApi.error("Lỗi khi lấy dữ liệu!");
+      },
+    }
+  );
 
   const handleReset = () => {
     setSelectedRowKeys([]);
@@ -145,8 +99,9 @@ function GroupLecturer() {
 
   const handleReload = () => {
     updateState({ reload: true });
+    refetch();
     setTimeout(() => {
-      updateState({ reload: false });
+      messageApi.success("Làm mới dữ liệu thành công!");
     }, 1000);
   };
 
@@ -170,14 +125,11 @@ function GroupLecturer() {
         "Mục tiêu": topic.goals,
         "Yêu cầu": topic.requirement,
         "Chuẩn đầu ra": topic.standardOutput,
-        "Số lượng nhóm": topic.quantityGroup,
-        "Giảng viên": topic.lecturer.fullName,
-        Email: topic.lecturer.email,
       };
       updateState({ currentRecord: dataConvert, isModalLoading: false });
     }, 500);
   };
-
+  console.log(state.currentRecord);
   const onCloseModal = () => {
     updateState({ isModalVisible: false });
   };
@@ -186,8 +138,8 @@ function GroupLecturer() {
     <Box p={1}>
       {contextHolder}
       <Grid container spacing={2}>
-        {group &&
-          group.lecturers.map((lecturer, index) => {
+        {group.lecturers &&
+          group.lecturers.map((lecturer, index) => (
             <Grid item xs={12} md={6} key={lecturer.id}>
               <Card sx={{ padding: "10px" }}>
                 <Typography variant="h6">Giảng viên {index + 1}</Typography>
@@ -229,8 +181,8 @@ function GroupLecturer() {
                   </Grid>
                 </Box>
               </Card>
-            </Grid>;
-          })}
+            </Grid>
+          ))}
       </Grid>
 
       <Box mt={2} mb={2}>
@@ -251,11 +203,20 @@ function GroupLecturer() {
             showSizeChanger: true,
             pageSizeOptions: ["5", "10", "20"],
             responsive: true,
+            onChange: (page, size) => {
+              updateState({ page: page, pageSize: size });
+            },
           }}
           locale={{
             emptyText: (
               <Box display="flex" justifyContent="center" alignItems="center">
-                <EmptyData text="Không có dữ liệu!" />
+                {isFetching ? (
+                  <EmptyData />
+                ) : state.groupStudent ? (
+                  <EmptyData text="Không có dữ liệu!" />
+                ) : (
+                  <EmptyData />
+                )}
               </Box>
             ),
           }}
