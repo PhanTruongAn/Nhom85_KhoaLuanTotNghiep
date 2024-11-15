@@ -14,35 +14,57 @@ function ManagerHome() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userInit.user);
   const [messageApi, contextHolder] = message.useMessage();
-  const [username, setUsername] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [gender, setGender] = useState("");
-  const [degree, setDegree] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setUsername(user.username || "undefined");
-    setFullName(user.fullName || "undefined");
-    setEmail(user.email || "undefined");
-    setPhone(user.phone || "undefined");
-    setGender(user.gender || "undefined");
-    setDegree(user.degree || "undefined");
-  }, [user]);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState({
+    id: user.id,
+    username: user.username || "undefined",
+    fullName: user.fullName || "undefined",
+    phone: user?.phone || "undefined",
+    email: user?.email || "undefined",
+    gender: user.gender || "undefined",
+    degree: user?.degree || "undefined",
+  });
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.fullName || formData.fullName === "undefined")
+      newErrors.fullName = "Họ và tên không được để trống hoặc undefined.";
+    if (!formData.phone || formData.phone === "undefined") {
+      newErrors.phone = "Số điện thoại không được để trống hoặc undefined.";
+    } else if (!/^0\d{9}$/.test(formData.phone)) {
+      newErrors.phone = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 chữ số.";
+    }
+    if (!formData.email || formData.email === "undefined") {
+      newErrors.email = "Email không được để trống hoặc undefined.";
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formData.email)) {
+      newErrors.email = "Email không hợp lệ. (Vd: username@domain.com)";
+    }
+    if (!formData.gender || formData.gender === "undefined")
+      newErrors.gender = "Giới tính không được để trống hoặc undefined.";
+
+    if (!formData.degree || formData.degree === "undefined")
+      newErrors.degree = "Chức vụ không được để trống hoặc undefined.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" }); // Xóa lỗi khi người dùng sửa
+  };
+  const handleSelectChange = (name, value) => {
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" }); // Xóa lỗi khi người dùng sửa
+  };
 
   const handleSubmit = async () => {
+    if (!validate()) return;
     setLoading(true);
     const id = user.id;
-    const res = await lecturerApi.updateById({
-      id,
-      username,
-      fullName,
-      email,
-      phone,
-      gender,
-      degree,
-    });
+    const res = await lecturerApi.updateById(formData);
     setLoading(false);
     if (res && res.status === 0) {
       const dataRedux = {
@@ -154,7 +176,7 @@ function ManagerHome() {
               </label>
 
               <Input
-                value={username}
+                value={formData.username}
                 onChange={(e) => setUsername(e.target.value)}
                 readOnly
               />
@@ -167,9 +189,13 @@ function ManagerHome() {
                 Họ và tên <span style={{ color: "red" }}>*</span>
               </label>
               <Input
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
               />
+              {errors.fullName && (
+                <span style={{ color: "red" }}>{errors.fullName}</span>
+              )}
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -180,7 +206,14 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Số điện thoại <span style={{ color: "red" }}>*</span>
               </label>
-              <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <Input
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+              {errors.phone && (
+                <span style={{ color: "red" }}>{errors.phone}</span>
+              )}
             </Box>
             <Box
               className="col-6"
@@ -189,7 +222,14 @@ function ManagerHome() {
               <label style={{ textAlign: "left", display: "block" }}>
                 Email <span style={{ color: "red" }}>*</span>
               </label>
-              <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              {errors.email && (
+                <span style={{ color: "red" }}>{errors.email}</span>
+              )}
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -198,26 +238,32 @@ function ManagerHome() {
                 Giới tính
               </label>
               <Select
-                value={gender}
-                onChange={(value) => setGender(value)}
+                value={formData.gender}
+                onChange={(value) => handleSelectChange("gender", value)}
                 style={{ width: "100%" }}
               >
                 <Option value="Nam">Nam</Option>
                 <Option value="Nữ">Nữ</Option>
               </Select>
+              {errors.gender && (
+                <span style={{ color: "red" }}>{errors.gender}</span>
+              )}
             </Box>
             <Box sx={{ marginBottom: "16px", flex: 1, paddingLeft: "10px" }}>
               <label style={{ textAlign: "left", display: "block" }}>
                 Chức vụ
               </label>
               <Select
-                value={degree}
-                onChange={(value) => setDegree(value)}
+                value={formData.degree}
+                onChange={(value) => handleSelectChange("degree", value)}
                 style={{ width: "100%" }}
               >
                 <Option value="THẠC SĨ">THẠC SĨ</Option>
                 <Option value="TIẾN SĨ">TIẾN SĨ</Option>
               </Select>
+              {errors.degree && (
+                <span style={{ color: "red" }}>{errors.degree}</span>
+              )}
             </Box>
           </Box>
           <CustomButton

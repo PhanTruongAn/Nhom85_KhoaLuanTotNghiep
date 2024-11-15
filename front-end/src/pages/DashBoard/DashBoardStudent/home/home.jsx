@@ -30,8 +30,37 @@ function StudentHome() {
     className: user?.className || "undefined",
     typeTraining: user?.typeTraining || "undefined",
   });
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.fullName || formData.fullName === "undefined")
+      newErrors.fullName = "Họ và tên không được để trống hoặc undefined.";
+    if (!formData.phone || formData.phone === "undefined") {
+      newErrors.phone = "Số điện thoại không được để trống hoặc undefined.";
+    } else if (!/^0\d{9}$/.test(formData.phone)) {
+      newErrors.phone = "Số điện thoại phải bắt đầu bằng 0 và gồm 10 chữ số.";
+    }
+    if (!formData.email || formData.email === "undefined") {
+      newErrors.email = "Email không được để trống hoặc undefined.";
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formData.email)) {
+      newErrors.email = "Email không hợp lệ. (Vd: username@domain.com)";
+    }
+    if (!formData.gender || formData.gender === "undefined")
+      newErrors.gender = "Giới tính không được để trống hoặc undefined.";
+    if (!formData.majorId || formData.majorId === "undefined")
+      newErrors.majorId = "Chuyên ngành không được để trống hoặc undefined.";
+    if (!formData.className || formData.className === "undefined")
+      newErrors.className =
+        "Lớp danh nghĩa không được để trống hoặc undefined.";
+    if (!formData.typeTraining || formData.typeTraining === "undefined")
+      newErrors.typeTraining =
+        "Chương trình đào tạo không được để trống hoặc undefined.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
   const getMajors = async () => {
     const res = await studentApi.getMajors();
     if (res && res.status === 0) {
@@ -48,9 +77,14 @@ function StudentHome() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" }); // Xóa lỗi khi người dùng sửa
   };
-
+  const handleSelectChange = (name, value) => {
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" }); // Xóa lỗi khi người dùng sửa
+  };
   const handleUpdate = async () => {
+    if (!validate()) return;
     setLoading(true);
     try {
       const response = await studentApi.updateById(formData);
@@ -251,6 +285,9 @@ function StudentHome() {
                 value={formData.fullName}
                 onChange={handleChange}
               />
+              {errors.fullName && (
+                <span style={{ color: "red" }}>{errors.fullName}</span>
+              )}
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -266,6 +303,9 @@ function StudentHome() {
                 value={formData.phone}
                 onChange={handleChange}
               />
+              {errors.phone && (
+                <span style={{ color: "red" }}>{errors.phone}</span>
+              )}
             </Box>
             <Box
               className="col-12 col-md-6"
@@ -279,6 +319,9 @@ function StudentHome() {
                 value={formData.email}
                 onChange={handleChange}
               />
+              {errors.email && (
+                <span style={{ color: "red" }}>{errors.email}</span>
+              )}
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -292,14 +335,15 @@ function StudentHome() {
               <Select
                 name="gender"
                 value={formData.gender}
-                onChange={(value) =>
-                  setFormData({ ...formData, gender: value })
-                }
+                onChange={(value) => handleSelectChange("gender", value)}
                 style={{ width: "100%" }}
               >
                 <Option value="Nam">Nam</Option>
                 <Option value="Nữ">Nữ</Option>
               </Select>
+              {errors.gender && (
+                <span style={{ color: "red" }}>{errors.gender}</span>
+              )}
             </Box>
             <Box
               className="col-12 col-md-6"
@@ -311,9 +355,7 @@ function StudentHome() {
               <Select
                 name="majorName"
                 value={formData.majorId}
-                onChange={(value) =>
-                  setFormData({ ...formData, majorId: value })
-                }
+                onChange={(value) => handleSelectChange("majorId", value)}
                 style={{ width: "100%" }}
               >
                 {majors.map((major) => (
@@ -322,6 +364,9 @@ function StudentHome() {
                   </Option>
                 ))}
               </Select>
+              {errors.majorId && (
+                <span style={{ color: "red" }}>{errors.majorId}</span>
+              )}
             </Box>
           </Box>
           <Box className="row" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -337,6 +382,9 @@ function StudentHome() {
                 value={formData.className}
                 onChange={handleChange}
               />
+              {errors.className && (
+                <span style={{ color: "red" }}>{errors.className}</span>
+              )}
             </Box>
             <Box
               className="col-12 col-md-6"
@@ -348,14 +396,15 @@ function StudentHome() {
               <Select
                 name="typeTraining"
                 value={formData.typeTraining}
-                onChange={(value) =>
-                  setFormData({ ...formData, typeTraining: value })
-                }
+                onChange={(value) => handleSelectChange("typeTraining", value)}
                 style={{ width: "100%" }}
               >
                 <Option value="Đại Học">Đại Học</Option>
                 <Option value="Cao Đẳng">Cao Đẳng</Option>
               </Select>
+              {errors.typeTraining && (
+                <span style={{ color: "red" }}>{errors.typeTraining}</span>
+              )}
             </Box>
           </Box>
           <CustomButton
