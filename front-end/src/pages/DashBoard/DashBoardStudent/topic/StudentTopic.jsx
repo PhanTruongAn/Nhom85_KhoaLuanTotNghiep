@@ -135,33 +135,92 @@ const ProjectDetails = () => {
           ) : (
             <>
               <Card
-                sx={{ marginBottom: "10px", padding: "10px" }}
+                sx={{
+                  marginBottom: "10px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                  backgroundColor: "#ffffff",
+                  fontSize: "16px",
+                  "@media (max-width: 768px)": {
+                    fontSize: "14px",
+                  },
+                  "@media (max-width: 480px)": {
+                    fontSize: "12px",
+                  },
+                }}
                 variant="elevation"
               >
                 <Typography
-                  component={"span"}
-                  sx={[
-                    (theme) => ({
-                      ...theme.applyStyles("light", {
-                        color: "#006ed3",
-                        fontWeight: "700",
-                      }),
-                    }),
-                  ]}
+                  component={"div"}
+                  sx={{
+                    color: "#006ed3",
+                    fontWeight: "700",
+                    marginBottom: "10px",
+                    fontSize: "1.25rem",
+                    "@media (max-width: 768px)": {
+                      fontSize: "1.1rem",
+                    },
+                    "@media (max-width: 480px)": {
+                      fontSize: "1rem",
+                    },
+                  }}
                 >
                   THÔNG TIN GIẢNG VIÊN HƯỚNG DẪN
                 </Typography>
-                <Typography component={"span"}>
+                <Typography
+                  component={"p"}
+                  sx={{
+                    margin: "5px 0",
+                    fontSize: "1rem",
+                    lineHeight: "1.5",
+                    fontWeight: "600",
+                    color: "#333",
+                    "@media (max-width: 768px)": {
+                      fontSize: "0.9rem",
+                    },
+                    "@media (max-width: 480px)": {
+                      fontSize: "0.8rem",
+                    },
+                  }}
+                >
                   Họ và tên giảng viên:{" "}
                   {displayedTopic.lecturer?.fullName || "N/A"}
                 </Typography>
-                <Typography component={"span"}>
+                <Typography
+                  component={"p"}
+                  sx={{
+                    margin: "5px 0",
+                    fontSize: "1rem",
+                    lineHeight: "1.5",
+                    "@media (max-width: 768px)": {
+                      fontSize: "0.9rem",
+                    },
+                    "@media (max-width: 480px)": {
+                      fontSize: "0.8rem",
+                    },
+                  }}
+                >
                   Email liên hệ: {displayedTopic.lecturer?.email || "N/A"}
                 </Typography>
-                <Typography component={"span"}>
+                <Typography
+                  component={"p"}
+                  sx={{
+                    margin: "5px 0",
+                    fontSize: "1rem",
+                    lineHeight: "1.5",
+                    "@media (max-width: 768px)": {
+                      fontSize: "0.9rem",
+                    },
+                    "@media (max-width: 480px)": {
+                      fontSize: "0.8rem",
+                    },
+                  }}
+                >
                   Số điện thoại: {displayedTopic.lecturer?.phone || "N/A"}
                 </Typography>
               </Card>
+
               <Box>
                 <Accordion
                   sx={[
