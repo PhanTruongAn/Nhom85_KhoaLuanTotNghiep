@@ -17,10 +17,20 @@ import {
   AreaChartOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-
+import TopicOutlinedIcon from "@mui/icons-material/TopicOutlined";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
+import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
+import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 const getItems = (isManager) => {
   const items = [
     {
@@ -47,24 +57,24 @@ const getItems = (isManager) => {
 
     {
       key: "manager-topic",
-      icon: <TopicOutlinedIcon />,
+      icon: <TopicOutlinedIcon />, // Chủ đề
       label: "Đề tài",
       children: [
         {
           key: "topic",
-          icon: <FileExcelOutlined />,
+          icon: <AddBoxOutlinedIcon />, // Thêm đề tài
           label: "Thêm đề tài",
         },
         {
           key: "personal-list-topic",
-          icon: <OrderedListOutlined />,
+          icon: <ListAltOutlinedIcon />, // Đề tài cá nhân
           label: "Đề tài của tôi",
         },
         ...(isManager
           ? [
               {
                 key: "manage-list-topic",
-                icon: <OrderedListOutlined />,
+                icon: <AssignmentTurnedInOutlinedIcon />, // Quản lý danh sách đề tài
                 label: "Danh sách đề tài",
               },
             ]
@@ -94,7 +104,7 @@ const getItems = (isManager) => {
 
         {
           key: "list-group-student-lecturer",
-          icon: <OrderedListOutlined />,
+          icon: <GroupOutlinedIcon />, // Nhóm
           label: "Nhóm của tôi",
         },
       ],
@@ -102,32 +112,32 @@ const getItems = (isManager) => {
 
     {
       key: "classify-lecturer",
-      icon: <TopicOutlinedIcon />,
+      icon: <GroupOutlinedIcon />, // Icon cho "Nhóm giảng viên"
       label: "Nhóm giảng viên",
       children: [
         ...(isManager
           ? [
               {
                 key: "create-lecturer-group",
-                icon: <FileExcelOutlined />,
+                icon: <AddOutlinedIcon />, // Tạo nhóm
                 label: "Tạo nhóm",
               },
               {
                 key: "classify-type-lecturer",
-                icon: <FileExcelOutlined />,
+                icon: <AssignmentIndOutlinedIcon />, // Phân công
                 label: "Phân công",
               },
               {
                 key: "manage-group-lecturer",
-                icon: <FileExcelOutlined />,
-                label: "Quản lý nhóm ",
+                icon: <ManageAccountsOutlinedIcon />, // Quản lý nhóm
+                label: "Quản lý nhóm",
               },
             ]
           : []),
         {
           key: "my-group-lecturer",
-          icon: <FileExcelOutlined />,
-          label: "Nhóm của tôi ",
+          icon: <PersonOutlineOutlinedIcon />, // Nhóm của tôi
+          label: "Nhóm của tôi",
         },
       ],
     },
@@ -135,22 +145,22 @@ const getItems = (isManager) => {
       ? [
           {
             key: "term",
-            icon: <BarChartOutlined />,
-            label: "Học kì",
+            icon: <SchoolOutlinedIcon />, // Icon chính cho "Học kỳ"
+            label: "Học kỳ",
             children: [
               {
                 key: "create-term",
-                icon: <PlusOutlined />,
-                label: "Tạo học kì",
+                icon: <AddCircleOutlineOutlinedIcon />, // Tạo học kỳ
+                label: "Tạo học kỳ",
               },
               {
                 key: "list-term",
-                icon: <OrderedListOutlined />,
+                icon: <ListAltOutlinedIcon />, // Danh sách học kỳ
                 label: "Danh sách",
               },
               {
                 key: "manage-major",
-                icon: <OrderedListOutlined />,
+                icon: <CategoryOutlinedIcon />, // Quản lý chuyên ngành
                 label: "Chuyên ngành",
               },
             ],

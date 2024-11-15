@@ -3,10 +3,15 @@ import {
   Typography,
   Box,
   Button,
-  CircularProgress,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import { DeleteOutlined, StarOutlined } from "@ant-design/icons";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import studentApi from "../../../../apis/studentApi";
@@ -18,6 +23,7 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
   const [loadingRemoveMember, setLoadingRemoveMember] = useState({});
   const [loadingChooseLeader, setLoadingChooseLeader] = useState({});
   const [messageApi, contextHolder] = message.useMessage();
+  const [openAddStudentDialog, setOpenAddStudentDialog] = useState(false);
   const handleDelete = async (studentId) => {
     setLoadingRemoveMember((prev) => ({ ...prev, [studentId]: true }));
     const res = await studentApi.removeMember({
@@ -111,6 +117,57 @@ const UpdateGroupModal = ({ groupSelect, isOpen, closeModal, refetch }) => {
           <strong>Đề tài:</strong>{" "}
           {groupSelect?.topic?.title || "Chưa có đề tài"}
         </Typography>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<PersonAddIcon />}
+            onClick={() => setOpenAddStudentDialog(true)}
+            sx={{
+              boxShadow: "0px 4px 8px rgba(0,0,0,0.2)",
+              transition: "transform 0.3s",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: "0px 6px 12px rgba(0,0,0,0.3)",
+              },
+            }}
+          >
+            Thêm sinh viên
+          </Button>
+          {/* Dialog for Adding Student */}
+          <Dialog
+            open={openAddStudentDialog}
+            onClose={() => setOpenAddStudentDialog(false)}
+          >
+            <DialogTitle>Thêm Sinh Viên</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                label="Mã Sinh Viên"
+                type="text"
+                fullWidth
+                variant="outlined"
+                onChange={(e) => setStudentId(e.target.value)}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => setOpenAddStudentDialog(false)}
+                color="error"
+              >
+                Hủy
+              </Button>
+              <Button
+                onClick={() => setOpenAddStudentDialog(false)}
+                color="primary"
+              >
+                Thêm
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
         <Typography
           variant="h6"
           component="h2"
