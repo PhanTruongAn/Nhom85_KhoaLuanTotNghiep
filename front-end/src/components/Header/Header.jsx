@@ -70,13 +70,19 @@ const Header = ({ theme, changeTheme }) => {
         {/* Drawer component for mobile menu */}
         <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
           <Box
-            sx={{
-              width: 250,
-              display: "flex",
-              flexDirection: "column",
-              padding: "10px",
-              alignItems: "center", // Aligns items to the left
-            }}
+            sx={[
+              (theme) => ({
+                width: 200,
+                height: "100vh",
+                display: "flex",
+                flexDirection: "column",
+                padding: "10px",
+                alignItems: "center",
+                ...theme.applyStyles("dark", {
+                  backgroundColor: "#121212",
+                }),
+              }),
+            ]}
           >
             <Tabs
               value={value}
@@ -85,6 +91,7 @@ const Header = ({ theme, changeTheme }) => {
               sx={{
                 width: "100%",
                 marginBottom: "20px",
+                float: "left",
               }}
             >
               <Tab value="/home" label="TRANG CHỦ" disableRipple />
@@ -109,14 +116,33 @@ const Header = ({ theme, changeTheme }) => {
             alt="Logo"
             style={{ width: "100px" }}
           />
-          <Box className="content">
-            <Box sx={{ color: "#0c3b81" }}>
-              <b className="title-1">
-                TRƯỜNG ĐẠI HỌC CÔNG NGHIỆP TP. HỒ CHÍ MINH
-              </b>
+          <Box sx={{ paddingLeft: "10px" }}>
+            <Box
+              sx={{
+                color: "#0c3b81",
+                fontSize: {
+                  xs: "13px", // Mobile
+                  sm: "18px", // Tablet
+                  md: "20px", // Laptop
+                  lg: "24px", // Desktop lớn
+                },
+              }}
+            >
+              <b>TRƯỜNG ĐẠI HỌC CÔNG NGHIỆP TP. HỒ CHÍ MINH</b>
             </Box>
-            <Box sx={{ color: "#920000" }}>
-              <b className="title-2">KHÓA LUẬN TỐT NGHIỆP</b>
+
+            <Box
+              sx={{
+                color: "#920000",
+                fontSize: {
+                  xs: "13px", // Mobile
+                  sm: "16px", // Tablet
+                  md: "18px", // Laptop
+                  lg: "22px", // Desktop lớn
+                },
+              }}
+            >
+              <b>KHÓA LUẬN TỐT NGHIỆP</b>
             </Box>
           </Box>
         </Box>

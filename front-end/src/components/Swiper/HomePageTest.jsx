@@ -304,13 +304,23 @@ function HomePageTest() {
             <Box
               sx={{
                 position: "absolute",
-                top: 16,
+                top: 18,
                 left: 16,
                 zIndex: 10,
               }}
             >
               <Marquee direction="right">
-                <Typography variant="h4">
+                <Typography
+                  // variant="h4"
+                  sx={{
+                    fontSize: {
+                      xs: "25px", // Mobile
+                      sm: "30px",
+                      md: "35px",
+                      lg: "40px",
+                    },
+                  }}
+                >
                   Chào mừng đến với Hệ thống Đăng ký Luận văn!
                 </Typography>
               </Marquee>
@@ -337,7 +347,12 @@ function HomePageTest() {
               {/* Animation Section */}
               <Box sx={{ maxWidth: "500px", width: "100%" }}>
                 <DotLottieReact
-                  style={{ width: "100%", maxWidth: "650px", margin: "0 auto" }}
+                  style={{
+                    width: "100%",
+                    maxWidth: "650px",
+                    margin: "0 auto",
+                    paddingTop: "20px",
+                  }}
                   src={Welcome}
                   loop
                   autoplay
@@ -360,7 +375,7 @@ function HomePageTest() {
                   style={{
                     width: "100%",
                     height: "100%",
-                    marginTop: "-80px",
+                    marginTop: "-60px",
                     cursor: "pointer",
                   }}
                   onClick={() => window.location.replace("/login")}

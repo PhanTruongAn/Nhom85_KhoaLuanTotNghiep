@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import TiltComponent from "../../components/Vanilla/TiltComponent.jsx";
 import Footer from "../../components/Footer/Footer.jsx";
 import HomePageTest from "../../components/Swiper/HomePageTest.jsx";
 import { Box } from "@mui/material";

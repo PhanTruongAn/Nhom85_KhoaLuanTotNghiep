@@ -1,0 +1,46 @@
+/* Base styles (default for all sizes) */
+.custom-toast {
+  font-size: 16px; /* Kích thước chữ mặc định */
+  padding: 10px;
+  max-width: 400px; /* Chiều rộng tối đa mặc định */
+  border-radius: 10px;
+  background-color: #4caf50; /* Màu nền */
+  color: white; /* Màu chữ */
+  align-self: center;
+}
+
+/* Small (sm: 640px) */
+@media (min-width: 640px) {
+  .custom-toast {
+    font-size: 14px;
+    padding: 12px;
+    max-width: 300px;
+  }
+}
+
+/* Medium (md: 768px) */
+@media (min-width: 768px) {
+  .custom-toast {
+    font-size: 16px;
+    padding: 14px;
+    max-width: 350px;
+  }
+}
+
+/* Large (lg: 1024px) */
+@media (min-width: 1024px) {
+  .custom-toast {
+    font-size: 18px;
+    padding: 16px;
+    max-width: 400px;
+  }
+}
+
+/* Extra Large (xl: 1280px) */
+@media (min-width: 1280px) {
+  .custom-toast {
+    font-size: 20px;
+    padding: 18px;
+    max-width: 500px;
+  }
+}

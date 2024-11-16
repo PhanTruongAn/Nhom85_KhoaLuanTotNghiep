@@ -7,6 +7,7 @@ import { store } from "../redux/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import history from "../utils/history";
+import "../styles/toastStyles.css";
 const queryClient = new QueryClient();
 
 function App() {
@@ -16,7 +17,14 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <HistoryRouter history={history}>
             <AppRoute />
-            <ToastContainer autoClose={1000} />
+            <ToastContainer
+              autoClose={1000}
+              hideProgressBar={true}
+              toastClassName="custom-toast"
+              closeOnClick
+              draggable
+              pauseOnHover
+            />
           </HistoryRouter>
         </QueryClientProvider>
       </Provider>

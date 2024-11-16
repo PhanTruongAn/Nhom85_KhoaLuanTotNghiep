@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./style.scss";
 import Header from "../../components/Header/Header";
 import { ThemeProvider } from "@mui/material";
 import themeDark from "../../styles/themes/mui/themeDark";

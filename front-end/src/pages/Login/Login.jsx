@@ -1,27 +1,29 @@
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import Card from "./theme/Card";
 import SignInContainer from "./theme/Container";
 import logo from "../../images/logo-iuh.png";
-import Input from "@mui/material/Input";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import { IconButton, FormHelperText } from "@mui/material";
+import {
+  IconButton,
+  FormHelperText,
+  InputAdornment,
+  InputLabel,
+  Input,
+  Typography,
+  TextField,
+  Link,
+  FormControl,
+  Button,
+  Box,
+} from "@mui/material";
 import { useState } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import authApi from "../../apis/authApi";
 import "./Style.scss";
-import { message } from "antd";
+import { toast } from "react-toastify";
+
 export default function Login() {
   const navigate = useNavigate();
-  const [messageApi, contextHolder] = message.useMessage();
   const [showPassword, setShowPassword] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -75,10 +77,10 @@ export default function Login() {
       const result = await authApi.login(data);
       if (result.status === 0) {
         localStorage.setItem("accessToken", result.data.accessToken);
-        navigate("/dashboard/home");
         toast.success(result.message);
+        navigate("/dashboard/home");
       } else {
-        messageApi.error(result.message);
+        toast.error(result.message);
       }
     }
   };
@@ -101,11 +103,14 @@ export default function Login() {
         },
       }}
     >
-      {contextHolder}
       <Card
         variant="outlined"
         sx={{
-          marginBottom: "110px",
+          marginBottom: {
+            xs: "170px",
+            sm: "110px",
+          },
+          overflow: "auto",
         }}
       >
         <Box>

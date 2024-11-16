@@ -1,4 +1,3 @@
-@import "../../styles/Themes/colors.scss";
 .header {
   position: fixed; /* Giữ cố định */
   top: 0; /* Gắn lên phía trên cùng */
@@ -23,13 +22,6 @@
     img {
       height: 100%; // Đảm bảo hình ảnh chiếm toàn bộ chiều cao của .logo
       width: auto; // Giữ tỷ lệ khung hình
-    }
-    .content {
-      // padding-bottom: 20px;
-      align-self: center;
-      b {
-        font-size: 15px;
-      }
     }
   }
 }

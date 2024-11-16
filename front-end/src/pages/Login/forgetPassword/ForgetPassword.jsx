@@ -55,14 +55,14 @@ function ForgetPassword() {
     <SignInContainer
       direction="column"
       justifyContent="space-between"
-      sx={{
-        "@media (max-height: 600px)": {
-          marginTop: "200px",
-        },
-        "@media (max-width: 600px)": {
-          marginTop: "200px",
-        },
-      }}
+      // sx={{
+      //   "@media (max-height: 600px)": {
+      //     marginTop: "200px",
+      //   },
+      //   "@media (max-width: 600px)": {
+      //     marginTop: "200px",
+      //   },
+      // }}
     >
       {contextHolder}
       <Card
@@ -70,7 +70,7 @@ function ForgetPassword() {
         sx={{
           alignSelf: "center",
           width: { xs: "100%", sm: "600px" },
-          padding: "30px",
+          padding: "15px",
           borderRadius: "8px",
           boxShadow:
             "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
