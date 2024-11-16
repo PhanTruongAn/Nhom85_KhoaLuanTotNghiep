@@ -97,9 +97,11 @@ const ListGroupStudent = () => {
 
   const handleCloseUpdateModal = () => {
     setOpenUpdateModal(false);
-    setSelectedGroup(null);
   };
 
+  const handleModalExited = () => {
+    setSelectedGroup(null);
+  };
   const onPopConfirmDelete = async (record) => {
     const res = await managerApi.deleteGroupStudent(record);
     if (res && res.status === 0) {
@@ -151,14 +153,6 @@ const ListGroupStudent = () => {
       key: "action",
       render: (_, record) => (
         <>
-          <Button
-            onClick={() => handleOpenUpdateModal(record)}
-            variant="outlined"
-            size="small"
-            endIcon={<InfoCircleOutlined />}
-          >
-            Xem chi tiết
-          </Button>
           <Button
             onClick={() => handleOpenUpdateModal(record)}
             variant="contained"
@@ -296,6 +290,7 @@ const ListGroupStudent = () => {
         groupSelect={selectedGroup}
         isOpen={openUpdateModal}
         closeModal={handleCloseUpdateModal}
+        onExited={handleModalExited}
         refetch={refetch}
       />
     </Box>

@@ -134,7 +134,7 @@ function PointTopicStudent({
                     handleScoreChange(event, setDiscussionPoint)
                   }
                   disabled={
-                    isLecturerAdvisor || objectSelect?.discussionPoint != null
+                    isLecturerAdvisor || Boolean(objectSelect?.discussionPoint)
                   }
                 />
               )}
@@ -154,7 +154,9 @@ function PointTopicStudent({
                   onChange={(event) =>
                     handleScoreChange(event, setProgressPoint)
                   }
-                  disabled={!isLecturerAdvisor || objectSelect?.progressPoint}
+                  disabled={
+                    !isLecturerAdvisor || Boolean(objectSelect?.progressPoint)
+                  }
                 />
               )}
             </Box>
@@ -174,7 +176,7 @@ function PointTopicStudent({
                     handleScoreChange(event, setReportingPoint)
                   }
                   disabled={
-                    isLecturerAdvisor || objectSelect?.reportingPoint != null
+                    isLecturerAdvisor || Boolean(objectSelect?.reportingPoint)
                   }
                 />
               )}

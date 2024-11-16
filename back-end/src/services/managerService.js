@@ -946,23 +946,6 @@ const updateNote = async (data) => {
       content: data.content,
       termId: data.termId,
     });
-
-    // Cập nhật vai trò nếu có (optional)
-    // if (data.recipient) {
-    //   let roleIds = [];
-    //   if (data.recipient === "all") {
-    //     roleIds = [1, 2];
-    //   } else if (data.recipient === "student") {
-    //     roleIds = [1];
-    //   } else if (data.recipient === "lecturer") {
-    //     roleIds = [2];
-    //   }
-
-    //   if (roleIds.length > 0) {
-    //     await note.setRoles(roleIds); // Cập nhật các role liên quan
-    //   }
-    // }
-
     return {
       status: 0,
       message: "Cập nhật thành công!",

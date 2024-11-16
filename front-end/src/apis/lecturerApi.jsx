@@ -80,5 +80,8 @@ const lecturerApi = {
   chooseLeader: (data) => {
     return axiosClient.put(baseUrl + "/choose-leader", data);
   },
+  addStudentToGroup: (data) => {
+    return axiosClient.put(baseUrl + "/add-student-to-group", data);
+  },
 };
 export default lecturerApi;

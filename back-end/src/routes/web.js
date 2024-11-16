@@ -131,6 +131,10 @@ const initWebRoutes = (app) => {
     lecturerController.handleGetGroupEvaluation
   );
   router.put("/lecturer/choose-leader", lecturerController.handleChooseLeader);
+  router.put(
+    "/lecturer/add-student-to-group",
+    lecturerController.handleAddStudentToGroup
+  );
   //Manager Route
   router.get(
     "/manager/get-all-permission",

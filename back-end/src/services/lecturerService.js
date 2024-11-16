@@ -9,7 +9,7 @@ const {
   Role,
   Topic,
   TermLecturer,
-  TermStudent,
+  StudentGroup,
   Term,
   Note,
   Evaluation,
@@ -1135,6 +1135,128 @@ const chooseLeaderForGroup = async (data) => {
   }
 };
 
+const addStudentToGroup = async (data) => {
+  const { studentUserName, termId, groupId } = data;
+  if (!studentUserName) {
+    return {
+      status: -1,
+      message: "Mã sinh viên không hợp lệ!",
+    };
+  }
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Học kì không hợp lệ!",
+    };
+  }
+  if (!groupId) {
+    return {
+      status: -1,
+      message: "ID nhóm không hợp lệ!",
+    };
+  }
+  try {
+    const student = await Student.findOne({
+      where: {
+        username: studentUserName,
+      },
+    });
+    if (!student) {
+      return {
+        status: -1,
+        message: "Không tìm thấy sinh viên!",
+      };
+    }
+
+    // Kiểm tra xem sinh viên đã tham gia nhóm nào trong học kỳ này chưa
+    const checkStudentGroup = await StudentGroup.findOne({
+      where: {
+        studentId: student.id,
+      },
+      include: {
+        model: Group,
+        as: "groups",
+        where: { termId: termId }, // Kiểm tra nếu nhóm thuộc học kỳ đúng
+      },
+    });
+
+    if (checkStudentGroup) {
+      return {
+        status: 1,
+        message: "Sinh viên này đã có nhóm!",
+      };
+    }
+
+    // Kiểm tra thông tin nhóm
+    const res = await Group.findOne({
+      where: { id: groupId, termId: termId }, // Kiểm tra nhóm và học kỳ
+      attributes: { exclude: ["createdAt", "updatedAt", "TopicId"] },
+      include: {
+        model: Student,
+        as: "students",
+        attributes: ["id", "fullName"],
+      },
+    });
+
+    if (!res) {
+      return {
+        status: 1,
+        message: "Nhóm không tồn tại trong học kỳ này!",
+      };
+    }
+
+    const { numOfMembers, id } = res;
+    const students = res.students.length;
+
+    // Kiểm tra nếu nhóm đã đầy
+    if (students >= numOfMembers) {
+      return {
+        status: 1,
+        message: "Nhóm đã đủ sinh viên!",
+      };
+    }
+
+    // Kiểm tra xem sinh viên có phải là người đầu tiên thêm vào nhóm không
+    const isFirstStudent = students === 0;
+
+    // Cập nhật sinh viên là trưởng nhóm nếu là sinh viên đầu tiên
+    const update = await Student.update(
+      { isLeader: isFirstStudent ? true : false },
+      { where: { id: student.id } }
+    );
+
+    // Thêm sinh viên vào nhóm
+    const groupJoin = await StudentGroup.create({
+      studentId: student.id,
+      groupId: groupId,
+    });
+
+    if (update[0] > 0 && groupJoin) {
+      // Nếu nhóm đầy, cập nhật trạng thái nhóm
+      if (students + 1 === numOfMembers) {
+        await Group.update({ status: "FULL" }, { where: { id } });
+      }
+
+      return {
+        status: 0,
+        message: "Thêm sinh viên thành công!",
+        data: res,
+      };
+    } else {
+      return {
+        status: 1,
+        message: "Thêm vào nhóm thất bại!",
+        data: null,
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
 module.exports = {
   createLecturerAccount,
   createBulkAccountLecturer,
@@ -1157,4 +1279,5 @@ module.exports = {
   getReviewStudentGroups,
   getGroupEvaluation,
   chooseLeaderForGroup,
+  addStudentToGroup,
 };
