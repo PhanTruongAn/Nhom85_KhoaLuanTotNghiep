@@ -638,7 +638,6 @@ const getInfoMyGroup = async (studentId, termId) => {
 };
 
 const studentLeaveGroup = async (data) => {
-  console.log("check data: ", data);
   if (!data) {
     return {
       status: -1,
@@ -1273,7 +1272,7 @@ const getEvaluation = async (groupId, termId) => {
       message: "Thông tin học kì không tồn tại!",
     };
   }
-  console.log("Check>>>>>>>>>>>>>: ", groupId, termId);
+
   try {
     let result = await Evaluation.findOne({
       attributes: { exclude: ["createdAt", "updatedAt"] },

@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  db-mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=khoaluan
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "3307:3306"
+
+  backend:
+    build:
+      context: ../back-end
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - DB_PORT=3306
+      - DB_HOST=db-mysql
+    ports:
+      - 8080:8080

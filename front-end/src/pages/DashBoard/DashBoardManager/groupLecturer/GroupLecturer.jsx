@@ -129,7 +129,6 @@ function GroupLecturer() {
       updateState({ currentRecord: dataConvert, isModalLoading: false });
     }, 500);
   };
-  console.log(state.currentRecord);
   const onCloseModal = () => {
     updateState({ isModalVisible: false });
   };

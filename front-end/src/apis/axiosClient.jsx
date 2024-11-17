@@ -2,7 +2,7 @@ import axios from "axios";
 import history from "../utils/history";
 import { toast } from "react-toastify";
 const axiosClient = axios.create({
-  baseURL: "http://localhost:8080/",
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   headers: {
     "content-type": "application/json",
   },
