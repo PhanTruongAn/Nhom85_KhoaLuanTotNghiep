@@ -874,7 +874,7 @@ const studentGetAllTopics = async (page, limit, term) => {
         "status",
         [
           literal(
-            `(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)`
+            `(SELECT COUNT(*) FROM \`Groups\` WHERE \`Groups\`.\`topicId\` = \`Topic\`.\`id\`)`
           ),
           "groupCount",
         ],
@@ -992,7 +992,7 @@ const joinTopic = async (data) => {
       "quantityGroup",
       [
         literal(
-          `(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)`
+          `(SELECT COUNT(*) FROM \`Groups\` WHERE \`Groups\`.\`topicId\` = \`Topic\`.\`id\`)`
         ),
         "groupCount",
       ],
@@ -1111,7 +1111,7 @@ const searchTopicWithNameOrLecturer = async (search) => {
       "status",
       [
         literal(
-          `(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)`
+          `(SELECT COUNT(*) FROM \`Groups\` WHERE \`Groups\`.\`topicId\` = \`Topic\`.\`id\`)`
         ),
         "groupCount",
       ],

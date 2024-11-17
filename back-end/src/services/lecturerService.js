@@ -572,7 +572,7 @@ const getPersonalTopics = async (term, id) => {
         include: [
           [
             literal(
-              `(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)`
+              `(SELECT COUNT(*) FROM \`Groups\` WHERE \`Groups\`.\`topicId\` = \`Topic\`.\`id\`)`
             ),
             "groupCount",
           ],
