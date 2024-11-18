@@ -27,21 +27,22 @@ const AccountLecturer = () => {
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+
     if (!file) {
       messageApi.error("Vui lòng chọn một file Excel.");
       return;
     }
 
-    // Check file type
     const validFileTypes = [
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "application/vnd.ms-excel",
     ];
+
     if (!validFileTypes.includes(file.type)) {
       messageApi.error("Vui lòng chọn một file Excel hợp lệ (.xlsx, .xls).");
-      // Reset the input file
       if (fileInputRef.current) {
         fileInputRef.current.value = null;
       }
@@ -55,40 +56,86 @@ const AccountLecturer = () => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: "array" });
 
-        // Lấy tên của sheet đầu tiên
-        const sheetName = workbook.SheetNames[0]; // Chọn sheet đầu tiên
+        // Lấy sheet đầu tiên
+        const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
 
-        // Chuyển sheet thành JSON
-        const json = XLSX.utils.sheet_to_json(sheet);
+        // Chuyển sheet sang dạng mảng 2D
+        let json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        console.log("Dữ liệu đọc được:", json);
+
         if (json.length > 0) {
-          // Tạo một dữ liệu mới từ sheet đã tải
-          setJsonData(json);
+          const headers = json[0].map((header) => (header || "").trim()); // Lấy tiêu đề từ hàng đầu tiên
+          const dataRows = json.slice(1); // Dữ liệu trừ tiêu đề
+
+          // Kiểm tra các tiêu đề bắt buộc có phải ở hàng đầu tiên không
+          const requiredHeaders = ["Mã giảng viên", "Họ và tên", "Email"];
+          const missingHeaders = requiredHeaders.filter(
+            (header) => !headers.includes(header)
+          );
+
+          if (missingHeaders.length > 0) {
+            messageApi.error(
+              `Thiếu tiêu đề bắt buộc: ${missingHeaders.join(
+                ", "
+              )} hoặc tiêu đề không nằm ở hàng đầu tiên.`
+            );
+            return;
+          }
+
+          // Hàm kiểm tra hàng có phải là trống hay không
+          const isRowEmpty = (row) =>
+            row.every((cell) => !cell || cell.toString().trim() === "");
+
+          // Lọc dữ liệu chỉ giữ lại các hàng không trống
+          const validRows = dataRows.filter((row) => !isRowEmpty(row));
+
+          if (validRows.length === 0) {
+            messageApi.error("Không có dữ liệu hợp lệ trong file.");
+            return;
+          }
+
+          // Kiểm tra nếu tiêu đề không phải là hàng đầu tiên
+          const isFirstRowHeadersValid = requiredHeaders.every((header) =>
+            headers.includes(header)
+          );
+
+          if (!isFirstRowHeadersValid) {
+            messageApi.error("Các tiêu đề phải nằm ở hàng đầu tiên.");
+            return;
+          }
+
+          // Xử lý dữ liệu
+          const formattedData = validRows.map((row) => ({
+            MaGiangVien: row[headers.indexOf("Mã giảng viên")] || "",
+            FullName: row[headers.indexOf("Họ và tên")] || "",
+            Email: row[headers.indexOf("Email")] || "",
+          }));
+
+          setJsonData(formattedData);
           messageApi.success("Dữ liệu file đã được tải thành công!");
         } else {
-          messageApi.error("Sheet không có dữ liệu hợp lệ.");
+          messageApi.error("Sheet không có dữ liệu.");
         }
       } catch (error) {
-        console.error("Error reading file:", error); // In lỗi chi tiết
+        console.error("Error reading file:", error);
         messageApi.error("Lỗi khi đọc file. Vui lòng kiểm tra lại định dạng.");
       }
     };
 
     reader.readAsArrayBuffer(file);
   };
-  const persistDataToSave = () => {
-    const data = _.cloneDeep(jsonData);
-    const dataPersist = [];
-    Object.entries(data).map(([value]) => {
-      dataPersist.push({
-        termId: currentTerm.id,
-        fullName: value.FullName,
-        username: value.MaGiangVien,
-        password: "123",
-      });
-    });
-    return dataPersist;
+
+  const persistDataToSave = (data) => {
+    return data.map((value) => ({
+      termId: currentTerm.id,
+      fullName: value["Họ và tên"] || "",
+      username: value["Mã giảng viên"] || "",
+      password: "123",
+      email: value.Email || "",
+    }));
   };
+
   useEffect(() => {
     getRoles();
   }, []);
@@ -99,9 +146,8 @@ const AccountLecturer = () => {
     }
   };
   const handlerSubmit = async () => {
-    updateState({ loadingSuccess: true });
+    setState({ ...state, loadingSuccess: true });
 
-    // Lưu trữ lỗi theo từng cột
     const errors = {
       FullName: [],
       MaGiangVien: [],
@@ -109,28 +155,25 @@ const AccountLecturer = () => {
     };
 
     const data = jsonData.map((item, index) => {
-      // Kiểm tra các trường và lưu lỗi vào mảng tương ứng
-      if (!item.FullName) {
+      if (!item["FullName"]) {
         errors.FullName.push(`Dòng ${index + 1}`);
       }
-      if (!item.MaGiangVien) {
+      if (!item["MaGiangVien"]) {
         errors.MaGiangVien.push(`Dòng ${index + 1}`);
       }
       if (!item.Email) {
         errors.Email.push(`Dòng ${index + 1}`);
       }
 
-      // Nếu có dữ liệu hợp lệ, tạo đối tượng dữ liệu cần gửi
       return {
         termId: currentTerm.id,
-        fullName: item.FullName || "",
-        username: item.MaGiangVien || "",
-        password: "123", // Mật khẩu mặc định
+        fullName: item["FullName"] || "",
+        username: item["MaGiangVien"] || "",
+        password: "123",
         email: item.Email || "",
       };
     });
 
-    // Kiểm tra nếu có lỗi ở bất kỳ cột nào
     const errorMessages = [];
     Object.entries(errors).forEach(([field, lines]) => {
       if (lines.length > 0) {
@@ -138,9 +181,8 @@ const AccountLecturer = () => {
       }
     });
 
-    // Nếu có lỗi, hiển thị thông báo lỗi
     if (errorMessages.length > 0) {
-      updateState({ loadingSuccess: false });
+      setState({ ...state, loadingSuccess: false });
       messageApi.error(
         <div>
           <strong>Lỗi dữ liệu:</strong>
@@ -154,20 +196,21 @@ const AccountLecturer = () => {
       return;
     }
 
-    // Nếu không có lỗi, gửi dữ liệu đi
     try {
       const result = await lecturerApi.createAccountsLecturer(data);
       if (result.status === 0) {
-        updateState({ loadingSuccess: false });
+        setState({ ...state, loadingSuccess: false });
         messageApi.success(result.message);
-        document.getElementById("file-input").value = "";
+        if (fileInputRef.current) {
+          fileInputRef.current.value = null;
+        }
         setJsonData([]);
       } else {
-        updateState({ loadingSuccess: false });
+        setState({ ...state, loadingSuccess: false });
         messageApi.error(result.message);
       }
     } catch (error) {
-      updateState({ loadingSuccess: false });
+      setState({ ...state, loadingSuccess: false });
       console.error("Error submitting data:", error);
       messageApi.error("Lỗi khi gửi dữ liệu. Vui lòng thử lại.");
     }
@@ -178,24 +221,26 @@ const AccountLecturer = () => {
       messageApi.warning("Không có file để hủy bỏ!");
       return;
     }
-    updateState({ loadingError: true });
-    document.getElementById("file-input").value = "";
+    setState({ ...state, loadingError: true });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
     setTimeout(() => {
       setJsonData([]);
-      updateState({ loadingError: false });
+      setState({ ...state, loadingError: false });
     }, 1000);
   };
 
   const columns = [
     {
-      title: "Full Name",
-      dataIndex: "FullName",
-      key: "fullName",
-    },
-    {
-      title: "Lecturer ID",
+      title: "Mã giảng viên",
       dataIndex: "MaGiangVien",
       key: "LecturerId",
+    },
+    {
+      title: "Họ và tên",
+      dataIndex: "FullName",
+      key: "fullName",
     },
     {
       title: "Email",

@@ -56,14 +56,14 @@ const ManagerTopic = () => {
       return;
     }
 
-    // Check file type
+    // Kiểm tra loại file
     const validFileTypes = [
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "application/vnd.ms-excel",
     ];
     if (!validFileTypes.includes(file.type)) {
       messageApi.error("Vui lòng chọn một file Excel hợp lệ (.xlsx, .xls).");
-      // Reset the input file
+      // Reset input file
       if (fileInputRef.current) {
         fileInputRef.current.value = null;
       }
@@ -71,6 +71,7 @@ const ManagerTopic = () => {
     }
 
     const reader = new FileReader();
+    let hasError = false; // Flag để kiểm tra lỗi
 
     reader.onload = (e) => {
       try {
@@ -81,9 +82,60 @@ const ManagerTopic = () => {
         const sheetData = {};
         sheets.forEach((sheetName) => {
           const sheet = workbook.Sheets[sheetName];
-          const json = XLSX.utils.sheet_to_json(sheet);
-          sheetData[sheetName] = json;
+          const json = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Đọc theo kiểu mảng
+
+          // Kiểm tra hàng tiêu đề
+          const headerRow = json[0];
+          if (!headerRow || headerRow.length === 0) {
+            messageApi.error(
+              `Sheet "${sheetName}" không có hàng tiêu đề hợp lệ hoặc tiêu đề không nằm ở hàng đầu tiên.`
+            );
+            hasError = true; // Đánh dấu có lỗi
+            return; // Dừng lại nếu không có hàng tiêu đề
+          }
+
+          // Kiểm tra xem hàng tiêu đề có phải là hàng đầu tiên không
+          const requiredHeaders = [
+            "Tên đề tài",
+            "Số lượng nhóm",
+            "Mục tiêu đề tài",
+            "Mô tả",
+            "Yêu cầu đầu vào",
+            "Yêu cầu đầu ra",
+          ];
+          const isValidHeader = requiredHeaders.every(
+            (header, index) => headerRow[index] === header
+          );
+
+          if (!isValidHeader) {
+            messageApi.error(
+              `Hàng tiêu đề trong sheet "${sheetName}" không hợp lệ.`
+            );
+            hasError = true; // Đánh dấu có lỗi
+            return; // Dừng lại nếu hàng tiêu đề không đúng
+          }
+
+          // Chuyển đổi dữ liệu
+          const formattedData = json.slice(1).map((row) => {
+            return {
+              "Tên đề tài": row[0],
+              "Số lượng nhóm": row[1],
+              "Mục tiêu đề tài": row[2],
+              "Mô tả": row[3],
+              "Yêu cầu đầu vào": row[4],
+              "Yêu cầu đầu ra": row[5],
+            };
+          });
+
+          sheetData[sheetName] = formattedData;
         });
+
+        if (hasError) {
+          // Nếu có lỗi thì không tiếp tục thông báo thành công
+          return;
+        }
+
+        console.log("sheetData", sheetData);
 
         setSheetNames(sheets);
         setSelectedSheet(sheets[0]); // Chọn sheet đầu tiên mặc định
@@ -99,6 +151,7 @@ const ManagerTopic = () => {
 
     reader.readAsArrayBuffer(file);
   };
+
   const handleSheetChange = (value) => {
     setSelectedSheet(value);
   };
