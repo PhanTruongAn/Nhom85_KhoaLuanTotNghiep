@@ -26,17 +26,62 @@ function CreateTerm() {
     startReportDate: null,
   });
 
-  // console.log("Check endReportDate: ", term.endReportDate);
+  const [errors, setErrors] = useState({});
+
+  const validateFields = () => {
+    const newErrors = {};
+    if (!term.name.trim()) {
+      newErrors.name = "Tên học kỳ là bắt buộc.";
+    }
+    const dateFields = [
+      "startDate",
+      "endDate",
+      "startChooseGroupDate",
+      "endChooseGroupDate",
+      "startChooseTopicDate",
+      "endChooseTopicDate",
+      "startDiscussionDate",
+      "endDiscussionDate",
+      "startReportDate",
+      "endReportDate",
+      "startPublicResultDate",
+      "endPublicResultDate",
+      "startPublicTopicDate",
+      "endPublicTopicDate",
+    ];
+
+    dateFields.forEach((field) => {
+      if (!term[field]) {
+        newErrors[field] = "Trường này là bắt buộc.";
+      }
+    });
+
+    if (term.startDate && term.endDate && term.startDate > term.endDate) {
+      newErrors.startDate = "Ngày bắt đầu không được lớn hơn ngày kết thúc.";
+      newErrors.endDate = "Ngày kết thúc không được nhỏ hơn ngày bắt đầu.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleDateChange = (date, dateString, field) => {
     setTerm({ ...term, [field]: date });
+    setErrors({ ...errors, [field]: null });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setTerm({ ...term, [name]: value });
+    setErrors({ ...errors, [name]: null });
   };
 
   const handleSubmit = async () => {
+    if (!validateFields()) {
+      messageApi.error("Vui lòng kiểm tra lại thông tin.");
+      return;
+    }
+
     setLoading(true);
     const res = await managerApi.createTerm(term);
     if (res && res.status === 0) {
@@ -74,6 +119,11 @@ function CreateTerm() {
                 border: "1px solid #d9d9d9",
               }}
             />
+            {errors.name && (
+              <Typography color="error" variant="body2">
+                {errors.name}
+              </Typography>
+            )}
           </CardContent>
         </Card>
 
@@ -134,6 +184,11 @@ function CreateTerm() {
                       border: "1px solid #d9d9d9",
                     }}
                   />
+                  {errors[section.start] && (
+                    <Typography color="error" variant="body2">
+                      {errors[section.start]}
+                    </Typography>
+                  )}
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <DatePicker
@@ -151,6 +206,11 @@ function CreateTerm() {
                       border: "1px solid #d9d9d9",
                     }}
                   />
+                  {errors[section.end] && (
+                    <Typography color="error" variant="body2">
+                      {errors[section.end]}
+                    </Typography>
+                  )}
                 </Grid>
               </Grid>
             </CardContent>
