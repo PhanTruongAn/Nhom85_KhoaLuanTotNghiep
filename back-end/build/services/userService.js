@@ -153,22 +153,31 @@ var login = /*#__PURE__*/function () {
           return findAccount(username);
         case 6:
           user = _context3.sent;
-          _context3.next = 9;
+          if (user) {
+            _context3.next = 9;
+            break;
+          }
+          return _context3.abrupt("return", {
+            status: -1,
+            message: "Tài khoản không tồn tại!"
+          });
+        case 9:
+          _context3.next = 11;
           return Role.findOne({
             where: {
               id: user.roleId
             },
             attributes: ["id", "name", "description"]
           });
-        case 9:
+        case 11:
           role = _context3.sent;
           if (!user) {
-            _context3.next = 19;
+            _context3.next = 21;
             break;
           }
           comparePassword = _bcryptjs["default"].compareSync(password, user.password);
           if (!comparePassword) {
-            _context3.next = 18;
+            _context3.next = 20;
             break;
           }
           // const role = await roleService.getRoleWithId(user);
@@ -184,19 +193,19 @@ var login = /*#__PURE__*/function () {
               accessToken: accessToken
             }
           });
-        case 18:
+        case 20:
           return _context3.abrupt("return", {
             status: -1,
             message: "Sai mật khẩu",
             data: null
           });
-        case 19:
+        case 21:
           return _context3.abrupt("return", {
             status: -1,
             message: "Tài khoản không tồn tài!",
             data: null
           });
-        case 20:
+        case 22:
         case "end":
           return _context3.stop();
       }
@@ -214,31 +223,30 @@ var changePassword = /*#__PURE__*/function () {
         case 0:
           _context4.prev = 0;
           username = data.username, currentPassword = data.currentPassword, newPassword = data.newPassword, roleName = data.roleName;
-          console.log(username, currentPassword, newPassword, roleName);
           _context4.t0 = roleName;
-          _context4.next = _context4.t0 === "STUDENT" ? 6 : 23;
+          _context4.next = _context4.t0 === "STUDENT" ? 5 : 22;
           break;
-        case 6:
-          _context4.next = 8;
+        case 5:
+          _context4.next = 7;
           return Student.findOne({
             where: {
               username: username
             }
           });
-        case 8:
+        case 7:
           student = _context4.sent;
           comparePassword = _bcryptjs["default"].compareSync(currentPassword, student.password);
           if (comparePassword) {
-            _context4.next = 14;
+            _context4.next = 13;
             break;
           }
           return _context4.abrupt("return", {
             status: 1,
             message: "Mật khẩu cũ không đúng!"
           });
-        case 14:
+        case 13:
           hashPass = hashPassword(newPassword);
-          _context4.next = 17;
+          _context4.next = 16;
           return Student.update({
             password: hashPass
           }, {
@@ -246,42 +254,42 @@ var changePassword = /*#__PURE__*/function () {
               username: username
             }
           });
-        case 17:
+        case 16:
           res = _context4.sent;
           if (!res) {
-            _context4.next = 22;
+            _context4.next = 21;
             break;
           }
           return _context4.abrupt("return", {
             status: 0,
             message: "Cập nhật mật khẩu thành công!"
           });
-        case 22:
+        case 21:
           return _context4.abrupt("return", {
             status: -1,
             message: "Cập nhật mật khẩu thất bại!"
           });
-        case 23:
-          _context4.next = 25;
+        case 22:
+          _context4.next = 24;
           return Lecturer.findOne({
             where: {
               username: username
             }
           });
-        case 25:
+        case 24:
           lecturer = _context4.sent;
           comparePassword2 = _bcryptjs["default"].compareSync(currentPassword, lecturer.password);
           if (comparePassword2) {
-            _context4.next = 31;
+            _context4.next = 30;
             break;
           }
           return _context4.abrupt("return", {
             status: 1,
             message: "Mật khẩu cũ không đúng!"
           });
-        case 31:
+        case 30:
           _hashPass = hashPassword(newPassword);
-          _context4.next = 34;
+          _context4.next = 33;
           return Lecturer.update({
             password: _hashPass
           }, {
@@ -289,36 +297,36 @@ var changePassword = /*#__PURE__*/function () {
               username: username
             }
           });
-        case 34:
+        case 33:
           _res = _context4.sent;
           if (!_res) {
-            _context4.next = 39;
+            _context4.next = 38;
             break;
           }
           return _context4.abrupt("return", {
             status: 0,
             message: "Cập nhật mật khẩu thành công!"
           });
-        case 39:
+        case 38:
           return _context4.abrupt("return", {
             status: -1,
             message: "Cập nhật mật khẩu thất bại!"
           });
-        case 40:
-          _context4.next = 45;
+        case 39:
+          _context4.next = 44;
           break;
-        case 42:
-          _context4.prev = 42;
+        case 41:
+          _context4.prev = 41;
           _context4.t1 = _context4["catch"](0);
           return _context4.abrupt("return", {
             status: -1,
             message: _context4.t1
           });
-        case 45:
+        case 44:
         case "end":
           return _context4.stop();
       }
-    }, _callee4, null, [[0, 42]]);
+    }, _callee4, null, [[0, 41]]);
   }));
   return function changePassword(_x4) {
     return _ref4.apply(this, arguments);

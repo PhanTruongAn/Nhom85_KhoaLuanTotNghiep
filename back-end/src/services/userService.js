@@ -82,6 +82,12 @@ const login = async (data) => {
     };
   }
   const user = await findAccount(username);
+  if (!user) {
+    return {
+      status: -1,
+      message: "Tài khoản không tồn tại!",
+    };
+  }
   const role = await Role.findOne({
     where: { id: user.roleId },
     attributes: ["id", "name", "description"],
@@ -120,7 +126,6 @@ const login = async (data) => {
 const changePassword = async (data) => {
   try {
     const { username, currentPassword, newPassword, roleName } = data;
-    console.log(username, currentPassword, newPassword, roleName);
     switch (roleName) {
       case "STUDENT":
         const student = await Student.findOne({
