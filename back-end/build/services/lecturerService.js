@@ -475,10 +475,48 @@ var deleteLecturer = /*#__PURE__*/function () {
 }();
 var updateLecturer = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(data) {
-    var updateData, res, updatedLecturer;
+    var emailRegex, phoneRegex, updateData, res, updatedLecturer;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) switch (_context6.prev = _context6.next) {
         case 0:
+          if (!(!data.username || !data.fullName || !data.email || !data.phone)) {
+            _context6.next = 2;
+            break;
+          }
+          return _context6.abrupt("return", {
+            status: -1,
+            message: "Tên đăng nhập, họ tên, email và số điện thoại không được để trống!"
+          });
+        case 2:
+          emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+          if (emailRegex.test(data.email)) {
+            _context6.next = 5;
+            break;
+          }
+          return _context6.abrupt("return", {
+            status: -1,
+            message: "Địa chỉ email không hợp lệ! Đảm bảo email có dạng username@domain.com."
+          });
+        case 5:
+          phoneRegex = /^0\d{9}$/;
+          if (phoneRegex.test(data.phone)) {
+            _context6.next = 8;
+            break;
+          }
+          return _context6.abrupt("return", {
+            status: -1,
+            message: "Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số!"
+          });
+        case 8:
+          if (!(data.degree && typeof data.degree !== "string")) {
+            _context6.next = 10;
+            break;
+          }
+          return _context6.abrupt("return", {
+            status: -1,
+            message: "Học vị phải là một chuỗi hợp lệ!"
+          });
+        case 10:
           updateData = {
             username: data.username,
             fullName: data.fullName,
@@ -489,19 +527,20 @@ var updateLecturer = /*#__PURE__*/function () {
           if (data.degree) {
             updateData.degree = data.degree;
           }
-          _context6.next = 4;
+          _context6.prev = 12;
+          _context6.next = 15;
           return Lecturer.update(updateData, {
             where: {
               id: data.id
             }
           });
-        case 4:
+        case 15:
           res = _context6.sent;
           if (!(res[0] > 0)) {
-            _context6.next = 12;
+            _context6.next = 23;
             break;
           }
-          _context6.next = 8;
+          _context6.next = 19;
           return Lecturer.findOne({
             where: {
               id: data.id
@@ -510,24 +549,35 @@ var updateLecturer = /*#__PURE__*/function () {
               exclude: ["password", "createdAt", "updatedAt", "RoleId"]
             }
           });
-        case 8:
+        case 19:
           updatedLecturer = _context6.sent;
           return _context6.abrupt("return", {
             status: 0,
             message: "Cập nhật thành công!",
             data: updatedLecturer
           });
-        case 12:
+        case 23:
           return _context6.abrupt("return", {
             status: -1,
-            message: "Cập nhật thất bại!",
+            message: "Cập nhật thất bại! Không tìm thấy giảng viên.",
             data: null
           });
-        case 13:
+        case 24:
+          _context6.next = 30;
+          break;
+        case 26:
+          _context6.prev = 26;
+          _context6.t0 = _context6["catch"](12);
+          console.log("Lỗi: ", _context6.t0.message);
+          return _context6.abrupt("return", {
+            status: -1,
+            message: "Có lỗi xảy ra trong quá trình cập nhật giảng viên!"
+          });
+        case 30:
         case "end":
           return _context6.stop();
       }
-    }, _callee6);
+    }, _callee6, null, [[12, 26]]);
   }));
   return function updateLecturer(_x8) {
     return _ref7.apply(this, arguments);
@@ -1041,44 +1091,62 @@ var updateTopic = /*#__PURE__*/function () {
             message: "Không tìm thấy thông tin cập nhật!"
           });
         case 2:
-          _context14.prev = 2;
-          _context14.next = 5;
+          if (!(!data.title || data.title.trim() === "")) {
+            _context14.next = 4;
+            break;
+          }
+          return _context14.abrupt("return", {
+            status: -1,
+            message: "Tiêu đề không được để trống!"
+          });
+        case 4:
+          if (!(isNaN(data.quantityGroup) || data.quantityGroup >= 0 && data.quantityGroup <= 10)) {
+            _context14.next = 6;
+            break;
+          }
+          return _context14.abrupt("return", {
+            status: -1,
+            message: "Số lượng nhóm phải ít nhất là 1 và nhiều nhất là 10!"
+          });
+        case 6:
+          _context14.prev = 6;
+          _context14.next = 9;
           return Topic.update(data, {
             where: {
               id: data.id
             }
           });
-        case 5:
+        case 9:
           update = _context14.sent;
           if (!(update[0] > 0)) {
-            _context14.next = 10;
+            _context14.next = 14;
             break;
           }
           return _context14.abrupt("return", {
             status: 0,
             message: "Cập nhật đề tài thành công!"
           });
-        case 10:
+        case 14:
           return _context14.abrupt("return", {
             status: -1,
             message: "Cập nhật đề tài thất bại!"
           });
-        case 11:
-          _context14.next = 17;
+        case 15:
+          _context14.next = 21;
           break;
-        case 13:
-          _context14.prev = 13;
-          _context14.t0 = _context14["catch"](2);
+        case 17:
+          _context14.prev = 17;
+          _context14.t0 = _context14["catch"](6);
           console.log("Lỗi: ", _context14.t0.message);
           return _context14.abrupt("return", {
             status: -1,
             message: "L\u1ED7i: ".concat(_context14.t0.message)
           });
-        case 17:
+        case 21:
         case "end":
           return _context14.stop();
       }
-    }, _callee14, null, [[2, 13]]);
+    }, _callee14, null, [[6, 17]]);
   }));
   return function updateTopic(_x20) {
     return _ref17.apply(this, arguments);
@@ -1168,7 +1236,8 @@ var pointGroup = /*#__PURE__*/function () {
           progressScore = Number(progressPoint);
           reportingScore = Number(reportingPoint); // Hàm kiểm tra xem giá trị có phải là số không
           isNumber = function isNumber(value) {
-            return typeof value === "number" && !isNaN(value) && value >= 0 && value <= 10;
+            var numberValue = Number(value); // Chuyển giá trị thành số
+            return !isNaN(numberValue) && numberValue >= 0 && numberValue <= 10;
           };
           if (groupId) {
             _context16.next = 7;

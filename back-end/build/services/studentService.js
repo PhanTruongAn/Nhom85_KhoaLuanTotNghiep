@@ -457,10 +457,41 @@ var deleteStudent = /*#__PURE__*/function () {
 }();
 var updateStudent = /*#__PURE__*/function () {
   var _ref7 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(data) {
-    var updateData, res;
+    var emailRegex, phoneRegex, updateData, res;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) switch (_context6.prev = _context6.next) {
         case 0:
+          if (!(!data.username || !data.fullName || !data.email || !data.phone)) {
+            _context6.next = 2;
+            break;
+          }
+          return _context6.abrupt("return", {
+            status: -1,
+            message: "Tên đăng nhập, họ tên, email và số điện thoại không được để trống!"
+          });
+        case 2:
+          emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+          if (emailRegex.test(data.email)) {
+            _context6.next = 5;
+            break;
+          }
+          return _context6.abrupt("return", {
+            status: -1,
+            message: "Địa chỉ email không hợp lệ!"
+          });
+        case 5:
+          // Kiểm tra số điện thoại
+          phoneRegex = /^0\d{9}$/; // Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số
+          if (phoneRegex.test(data.phone)) {
+            _context6.next = 8;
+            break;
+          }
+          return _context6.abrupt("return", {
+            status: -1,
+            message: "Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số!"
+          });
+        case 8:
+          // Dữ liệu hợp lệ, tiếp tục thực hiện cập nhật
           updateData = {
             username: data.username,
             fullName: data.fullName,
@@ -471,33 +502,45 @@ var updateStudent = /*#__PURE__*/function () {
             typeTraining: (data === null || data === void 0 ? void 0 : data.typeTraining) || null,
             majorId: (data === null || data === void 0 ? void 0 : data.majorId) || null
           };
-          _context6.next = 3;
+          _context6.prev = 9;
+          _context6.next = 12;
           return Student.update(updateData, {
             where: {
               id: data.id
             }
           });
-        case 3:
+        case 12:
           res = _context6.sent;
           if (!(res[0] > 0)) {
-            _context6.next = 8;
+            _context6.next = 17;
             break;
           }
           return _context6.abrupt("return", {
             status: 0,
             message: "Cập nhật thành công!"
           });
-        case 8:
+        case 17:
           return _context6.abrupt("return", {
             status: -1,
-            message: "Cập nhật thất bại!",
+            message: "Cập nhật thất bại! Không tìm thấy học sinh.",
             data: null
           });
-        case 9:
+        case 18:
+          _context6.next = 24;
+          break;
+        case 20:
+          _context6.prev = 20;
+          _context6.t0 = _context6["catch"](9);
+          console.log("Lỗi: ", _context6.t0.message);
+          return _context6.abrupt("return", {
+            status: -1,
+            message: "Có lỗi xảy ra trong quá trình cập nhật!"
+          });
+        case 24:
         case "end":
           return _context6.stop();
       }
-    }, _callee6);
+    }, _callee6, null, [[9, 20]]);
   }));
   return function updateStudent(_x8) {
     return _ref7.apply(this, arguments);

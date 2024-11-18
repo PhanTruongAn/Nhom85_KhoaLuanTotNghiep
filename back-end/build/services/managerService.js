@@ -1535,30 +1535,39 @@ var updateNote = /*#__PURE__*/function () {
             message: "Không tìm thấy thông báo để cập nhật!"
           });
         case 8:
-          _context25.next = 10;
+          if (data.termId) {
+            _context25.next = 10;
+            break;
+          }
+          return _context25.abrupt("return", {
+            status: -1,
+            message: "Không tìm thấy thông tin học kì cần cập nhật!"
+          });
+        case 10:
+          _context25.next = 12;
           return note.update({
             title: data.title,
             content: data.content,
             termId: data.termId
           });
-        case 10:
+        case 12:
           return _context25.abrupt("return", {
             status: 0,
             message: "Cập nhật thành công!"
           });
-        case 13:
-          _context25.prev = 13;
+        case 15:
+          _context25.prev = 15;
           _context25.t0 = _context25["catch"](0);
           console.log("Lỗi: ", _context25.t0.message);
           return _context25.abrupt("return", {
             status: -1,
             message: "L\u1ED7i: ".concat(_context25.t0.message)
           });
-        case 17:
+        case 19:
         case "end":
           return _context25.stop();
       }
-    }, _callee24, null, [[0, 13]]);
+    }, _callee24, null, [[0, 15]]);
   }));
   return function updateNote(_x24) {
     return _ref24.apply(this, arguments);
