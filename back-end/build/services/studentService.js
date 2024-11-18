@@ -577,7 +577,7 @@ var findStudentsByUserNameOrFullName = /*#__PURE__*/function () {
         case 0:
           _context8.next = 2;
           return Student.findAll({
-            include: {
+            include: [{
               model: Term,
               through: {
                 attributes: []
@@ -586,7 +586,14 @@ var findStudentsByUserNameOrFullName = /*#__PURE__*/function () {
               where: {
                 id: term
               }
-            },
+            }, {
+              model: Group,
+              through: {
+                attributes: []
+              },
+              as: "groups",
+              attributes: ["id", "groupName"]
+            }],
             where: _defineProperty({}, Op.or, [{
               username: _defineProperty({}, Op.like, "%".concat(search, "%"))
             }, {

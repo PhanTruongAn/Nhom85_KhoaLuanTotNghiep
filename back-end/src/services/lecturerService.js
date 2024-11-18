@@ -295,6 +295,38 @@ const deleteLecturer = async (data) => {
 };
 
 const updateLecturer = async (data) => {
+  if (!data.username || !data.fullName || !data.email || !data.phone) {
+    return {
+      status: -1,
+      message:
+        "Tên đăng nhập, họ tên, email và số điện thoại không được để trống!",
+    };
+  }
+
+  const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  if (!emailRegex.test(data.email)) {
+    return {
+      status: -1,
+      message:
+        "Địa chỉ email không hợp lệ! Đảm bảo email có dạng username@domain.com.",
+    };
+  }
+
+  const phoneRegex = /^0\d{9}$/;
+  if (!phoneRegex.test(data.phone)) {
+    return {
+      status: -1,
+      message: "Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số!",
+    };
+  }
+
+  if (data.degree && typeof data.degree !== "string") {
+    return {
+      status: -1,
+      message: "Học vị phải là một chuỗi hợp lệ!",
+    };
+  }
+
   const updateData = {
     username: data.username,
     fullName: data.fullName,
@@ -307,27 +339,40 @@ const updateLecturer = async (data) => {
     updateData.degree = data.degree;
   }
 
-  const res = await Lecturer.update(updateData, {
-    where: { id: data.id },
-  });
-  if (res[0] > 0) {
-    const updatedLecturer = await Lecturer.findOne({
+  try {
+    const res = await Lecturer.update(updateData, {
       where: { id: data.id },
-      attributes: { exclude: ["password", "createdAt", "updatedAt", "RoleId"] },
     });
-    return {
-      status: 0,
-      message: "Cập nhật thành công!",
-      data: updatedLecturer,
-    };
-  } else {
+
+    if (res[0] > 0) {
+      const updatedLecturer = await Lecturer.findOne({
+        where: { id: data.id },
+        attributes: {
+          exclude: ["password", "createdAt", "updatedAt", "RoleId"],
+        },
+      });
+
+      return {
+        status: 0,
+        message: "Cập nhật thành công!",
+        data: updatedLecturer,
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Cập nhật thất bại! Không tìm thấy giảng viên.",
+        data: null,
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
     return {
       status: -1,
-      message: "Cập nhật thất bại!",
-      data: null,
+      message: "Có lỗi xảy ra trong quá trình cập nhật giảng viên!",
     };
   }
 };
+
 const deleteManyLecturer = async (data) => {
   try {
     if (!data && !data.lecturerId && !data.termId) {
@@ -658,6 +703,22 @@ const updateTopic = async (data) => {
       message: "Không tìm thấy thông tin cập nhật!",
     };
   }
+  if (!data.title || data.title.trim() === "") {
+    return {
+      status: -1,
+      message: "Tiêu đề không được để trống!",
+    };
+  }
+  if (
+    isNaN(data.quantityGroup) ||
+    (data.quantityGroup >= 0 && data.quantityGroup <= 10)
+  ) {
+    return {
+      status: -1,
+      message: "Số lượng nhóm phải ít nhất là 1 và nhiều nhất là 10!",
+    };
+  }
+
   try {
     let update = await Topic.update(data, {
       where: {
@@ -744,7 +805,8 @@ const pointGroup = async (data) => {
   const reportingScore = Number(reportingPoint);
 
   // Hàm kiểm tra xem giá trị có phải là số không
-  const isNumber = (value) => typeof value === "number" && !isNaN(value);
+  const isNumber = (value) =>
+    typeof value === "number" && !isNaN(value) && value >= 0 && value <= 10;
 
   if (!groupId) {
     return {

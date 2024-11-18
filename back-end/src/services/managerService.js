@@ -243,7 +243,7 @@ const assignPermissionsToRole = async (data) => {
   }
 };
 const createGroupsStudent = async (data) => {
-  if (!data.estimateGroupStudent || data.estimateGroupStudent <= 0) {
+  if (isNaN(data.estimateGroupStudent) || data.estimateGroupStudent <= 0) {
     return {
       status: -1,
       message: "Số lượng nhóm cần tạo không hợp lệ!",
@@ -937,6 +937,12 @@ const updateNote = async (data) => {
       return {
         status: -1,
         message: "Không tìm thấy thông báo để cập nhật!",
+      };
+    }
+    if (!data.termId) {
+      return {
+        status: -1,
+        message: "Không tìm thấy thông tin học kì cần cập nhật!",
       };
     }
 

@@ -294,6 +294,32 @@ const deleteStudent = async (data) => {
 };
 
 const updateStudent = async (data) => {
+  if (!data.username || !data.fullName || !data.email || !data.phone) {
+    return {
+      status: -1,
+      message:
+        "Tên đăng nhập, họ tên, email và số điện thoại không được để trống!",
+    };
+  }
+
+  const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  if (!emailRegex.test(data.email)) {
+    return {
+      status: -1,
+      message: "Địa chỉ email không hợp lệ!",
+    };
+  }
+
+  // Kiểm tra số điện thoại
+  const phoneRegex = /^0\d{9}$/; // Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số
+  if (!phoneRegex.test(data.phone)) {
+    return {
+      status: -1,
+      message: "Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số!",
+    };
+  }
+
+  // Dữ liệu hợp lệ, tiếp tục thực hiện cập nhật
   const updateData = {
     username: data.username,
     fullName: data.fullName,
@@ -305,22 +331,31 @@ const updateStudent = async (data) => {
     majorId: data?.majorId || null,
   };
 
-  const res = await Student.update(updateData, {
-    where: { id: data.id },
-  });
-  if (res[0] > 0) {
-    return {
-      status: 0,
-      message: "Cập nhật thành công!",
-    };
-  } else {
+  try {
+    const res = await Student.update(updateData, {
+      where: { id: data.id },
+    });
+    if (res[0] > 0) {
+      return {
+        status: 0,
+        message: "Cập nhật thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Cập nhật thất bại! Không tìm thấy học sinh.",
+        data: null,
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error.message);
     return {
       status: -1,
-      message: "Cập nhật thất bại!",
-      data: null,
+      message: "Có lỗi xảy ra trong quá trình cập nhật!",
     };
   }
 };
+
 const deleteManyStudent = async (data) => {
   if (!data && !data.studentId && !data.termId) {
     return {
@@ -361,16 +396,26 @@ const deleteManyStudent = async (data) => {
 
 const findStudentsByUserNameOrFullName = async (term, search) => {
   const results = await Student.findAll({
-    include: {
-      model: Term,
-      through: {
-        attributes: [],
+    include: [
+      {
+        model: Term,
+        through: {
+          attributes: [],
+        },
+        as: "terms",
+        where: {
+          id: term,
+        },
       },
-      as: "terms",
-      where: {
-        id: term,
+      {
+        model: Group,
+        through: {
+          attributes: [],
+        },
+        as: "groups",
+        attributes: ["id", "groupName"],
       },
-    },
+    ],
     where: {
       [Op.or]: [
         {

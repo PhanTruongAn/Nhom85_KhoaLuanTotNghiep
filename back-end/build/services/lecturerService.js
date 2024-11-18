@@ -1168,7 +1168,7 @@ var pointGroup = /*#__PURE__*/function () {
           progressScore = Number(progressPoint);
           reportingScore = Number(reportingPoint); // Hàm kiểm tra xem giá trị có phải là số không
           isNumber = function isNumber(value) {
-            return typeof value === "number" && !isNaN(value);
+            return typeof value === "number" && !isNaN(value) && value >= 0 && value <= 10;
           };
           if (groupId) {
             _context16.next = 7;

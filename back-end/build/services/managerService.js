@@ -448,7 +448,7 @@ var createGroupsStudent = /*#__PURE__*/function () {
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) switch (_context9.prev = _context9.next) {
         case 0:
-          if (!(!data.estimateGroupStudent || data.estimateGroupStudent <= 0)) {
+          if (!(isNaN(data.estimateGroupStudent) || data.estimateGroupStudent <= 0)) {
             _context9.next = 2;
             break;
           }
