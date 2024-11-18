@@ -22,11 +22,11 @@ var router = _express["default"].Router();
 var initWebRoutes = function initWebRoutes(app) {
   router.all("*", _authentication.authentication, _authentication.checkUserPermission);
   // Authenticate route
-  router.post("/login", _userController["default"].handleLogin);
-  router.get("/fetch-token", _userController["default"].handleGetDataFromToken);
-  router.post("/log-out", _userController["default"].handleLogOut);
-  router.post("/find-account", _userController["default"].handleFindAccount);
-  router.put("/send-email", _userController["default"].handleSendEmail);
+  router.post("/api/login", _userController["default"].handleLogin);
+  router.get("/api/fetch-token", _userController["default"].handleGetDataFromToken);
+  router.post("/api/log-out", _userController["default"].handleLogOut);
+  router.post("/api/find-account", _userController["default"].handleFindAccount);
+  router.put("/api/send-email", _userController["default"].handleSendEmail);
   //
 
   //Student route

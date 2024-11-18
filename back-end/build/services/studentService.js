@@ -1319,7 +1319,7 @@ var studentGetAllTopics = /*#__PURE__*/function () {
           offset = (page - 1) * limit;
           _context17.next = 4;
           return Topic.findAndCountAll({
-            attributes: ["id", "title", "quantityGroup", "status", [literal("(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)"), "groupCount"]],
+            attributes: ["id", "title", "quantityGroup", "status", [literal("(SELECT COUNT(*) FROM `Groups` WHERE `Groups`.`topicId` = `Topic`.`id`)"), "groupCount"]],
             where: {
               termId: term
             },
@@ -1476,7 +1476,7 @@ var joinTopic = /*#__PURE__*/function () {
             where: {
               id: data.topicId
             },
-            attributes: ["id", "quantityGroup", [literal("(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)"), "groupCount"]],
+            attributes: ["id", "quantityGroup", [literal("(SELECT COUNT(*) FROM `Groups` WHERE `Groups`.`topicId` = `Topic`.`id`)"), "groupCount"]],
             raw: true // Trả về đối tượng đơn giản
           });
         case 14:
@@ -1640,7 +1640,7 @@ var searchTopicWithNameOrLecturer = /*#__PURE__*/function () {
             }, {
               "$lecturer.fullName$": _defineProperty({}, Op.like, "%".concat(search, "%"))
             }]),
-            attributes: ["id", "title", "quantityGroup", "status", [literal("(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)"), "groupCount"]],
+            attributes: ["id", "title", "quantityGroup", "status", [literal("(SELECT COUNT(*) FROM `Groups` WHERE `Groups`.`topicId` = `Topic`.`id`)"), "groupCount"]],
             include: [{
               model: Lecturer,
               as: "lecturer",

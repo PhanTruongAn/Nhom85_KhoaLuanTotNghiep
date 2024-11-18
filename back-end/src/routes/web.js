@@ -18,11 +18,11 @@ const router = express.Router();
 const initWebRoutes = (app) => {
   router.all("*", authentication, checkUserPermission);
   // Authenticate route
-  router.post("/login", userController.handleLogin);
-  router.get("/fetch-token", userController.handleGetDataFromToken);
-  router.post("/log-out", userController.handleLogOut);
-  router.post("/find-account", userController.handleFindAccount);
-  router.put("/send-email", userController.handleSendEmail);
+  router.post("/api/login", userController.handleLogin);
+  router.get("/api/fetch-token", userController.handleGetDataFromToken);
+  router.post("/api/log-out", userController.handleLogOut);
+  router.post("/api/find-account", userController.handleFindAccount);
+  router.put("/api/send-email", userController.handleSendEmail);
   //
 
   //Student route

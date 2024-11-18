@@ -17,6 +17,8 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "3307:3306"
+    expose:
+      - 3306
 
   frontend:
     build:
@@ -32,6 +34,7 @@ services:
     environment:
       - DB_PORT=3306
       - DB_HOST=db-mysql
+      # - FRONTEND_URL=http://localhost
     ports:
       - 8080:8080
     expose:

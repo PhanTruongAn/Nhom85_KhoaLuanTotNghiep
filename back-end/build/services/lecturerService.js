@@ -905,7 +905,7 @@ var getPersonalTopics = /*#__PURE__*/function () {
           return Topic.findAll({
             attributes: {
               exclude: ["createdAt", "updatedAt", "LecturerId"],
-              include: [[literal("(SELECT COUNT(*) FROM Groups WHERE Groups.topicId = Topic.id)"), "groupCount"]]
+              include: [[literal("(SELECT COUNT(*) FROM `Groups` WHERE `Groups`.`topicId` = `Topic`.`id`)"), "groupCount"]]
             },
             where: {
               termId: term,

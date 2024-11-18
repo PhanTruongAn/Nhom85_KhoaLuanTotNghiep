@@ -4,12 +4,11 @@ import roleService from "../services/roleService";
 //Non-secure path
 const white_list = [
   "/",
-  //   "/createStudent",
-  //   "/createLecturer",
-  "/login",
-  "/log-out",
-  "/find-account",
-  "/send-email",
+  "/api",
+  "/api/login",
+  "/api/log-out",
+  "/api/find-account",
+  "/api/send-email",
 ];
 
 const extractToken = (req) => {
@@ -50,7 +49,7 @@ const authentication = (req, res, next) => {
 };
 
 const checkUserPermission = async (req, res, next) => {
-  if (white_list.includes(req.path) || req.path === "/fetch-token")
+  if (white_list.includes(req.path) || req.path === "/api/fetch-token")
     return next();
   if (req.user) {
     const userAccount = await roleService.getRoleWithId(req.user.role.id);
