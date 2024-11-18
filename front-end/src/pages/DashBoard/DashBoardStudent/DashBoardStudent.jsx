@@ -286,6 +286,7 @@ const DashBoardStudent = () => {
                 theme={themes ? "dark" : "light"}
                 items={items}
                 className="custom-menu"
+                style={{ overflow: "auto" }}
               />
             </Box>
           </Drawer>

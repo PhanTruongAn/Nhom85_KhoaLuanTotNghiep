@@ -316,7 +316,8 @@ const DashBoardManager = () => {
               items={items}
               style={{
                 marginTop: "10px",
-                height: "calc(80vh - 110px)",
+                height: "calc(90vh - 110px)",
+                overflow: "auto",
               }}
             />
           </Sider>
