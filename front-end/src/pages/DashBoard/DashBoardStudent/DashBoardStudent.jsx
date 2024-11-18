@@ -376,7 +376,6 @@ const DashBoardStudent = () => {
                 color: themes ? "#fff" : "#000",
                 background: themes ? "#071522" : "#fff",
                 overflow: "auto",
-                height: "100%",
               }}
             >
               <Outlet />
