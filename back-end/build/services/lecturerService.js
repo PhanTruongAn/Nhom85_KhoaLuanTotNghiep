@@ -1236,8 +1236,7 @@ var pointGroup = /*#__PURE__*/function () {
           progressScore = Number(progressPoint);
           reportingScore = Number(reportingPoint); // Hàm kiểm tra xem giá trị có phải là số không
           isNumber = function isNumber(value) {
-            var numberValue = Number(value); // Chuyển giá trị thành số
-            return !isNaN(numberValue) && numberValue >= 0 && numberValue <= 10;
+            return typeof value === "number" && !isNaN(value) && value >= 0 && value <= 10;
           };
           if (groupId) {
             _context16.next = 7;
@@ -1276,7 +1275,7 @@ var pointGroup = /*#__PURE__*/function () {
           }
           return _context16.abrupt("return", {
             status: -1,
-            message: "Điểm quá trình trống!"
+            message: "Điểm quá trình trống hoặc không hợp lệ!"
           });
         case 15:
           _context16.prev = 15;

@@ -831,7 +831,7 @@ const pointGroup = async (data) => {
     if (!isNumber(progressScore)) {
       return {
         status: -1,
-        message: "Điểm quá trình trống!",
+        message: "Điểm quá trình trống hoặc không hợp lệ!",
       };
     }
 
