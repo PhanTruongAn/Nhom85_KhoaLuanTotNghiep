@@ -4,10 +4,6 @@ import {
   Typography,
   TextField,
   Grid,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
   InputAdornment,
   Box,
 } from "@mui/material";
@@ -21,7 +17,7 @@ import { isEmpty } from "lodash";
 import CustomHooks from "../../../../utils/hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { setGroup } from "../../../../redux/userSlice";
-import ConfirmModal from "../../../../components/Modal/confirmModal";
+import ConfirmModal from "../../../../components/modal/confirmModal";
 import { useDebounce } from "@uidotdev/usehooks";
 import { formatContent } from "../../../../utils/formatContent";
 import OverDate from "../../../../components/overDate/overDate";

@@ -16,7 +16,7 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import { isEmpty } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import ConfirmModal from "../../../../components/Modal/confirmModal";
+import ConfirmModal from "../../../../components/modal/confirmModal";
 import CustomHooks from "../../../../utils/hooks";
 import OverDate from "../../../../components/overDate/overDate";
 import { setGroup } from "../../../../redux/userSlice";

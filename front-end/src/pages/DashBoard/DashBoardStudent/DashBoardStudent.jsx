@@ -22,10 +22,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { ThemeProvider, Box, Popover } from "@mui/material"; // Popover từ MUI
 import CssBaseline from "@mui/material/CssBaseline";
 import authApi from "../../../apis/authApi.jsx";
-import lightTheme from "../../../styles/themes/ant/lightTheme.jsx";
-import themeDark from "../../../styles/themes/mui/themeDark.jsx";
-import themeLight from "../../../styles/themes/mui/themeLight.jsx";
-import darkTheme from "../../../styles/themes/ant/darkTheme.jsx";
+import lightTheme from "../../../styles/Themes/ant/lightTheme.jsx";
+import themeDark from "../../../styles/Themes/mui/themeDark.jsx";
+import themeLight from "../../../styles/Themes/mui/themeLight.jsx";
+import darkTheme from "../../../styles/Themes/ant/darkTheme.jsx";
 import logoDark from "../../../images/Logo-White.avif";
 import logoLight from "../../../images/logo-iuh.avif";
 import ListNotification from "./notifications/listNotification.jsx";
