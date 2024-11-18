@@ -56,6 +56,20 @@ const ManagerTopic = () => {
       return;
     }
 
+    // Check file type
+    const validFileTypes = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-excel",
+    ];
+    if (!validFileTypes.includes(file.type)) {
+      messageApi.error("Vui lòng chọn một file Excel hợp lệ (.xlsx, .xls).");
+      // Reset the input file
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null;
+      }
+      return;
+    }
+
     const reader = new FileReader();
 
     reader.onload = (e) => {
@@ -155,27 +169,67 @@ const ManagerTopic = () => {
   ];
 
   const handleConfirm = async () => {
-    updateState({ loadingSuccess: true });
     if (!jsonData[selectedSheet] || jsonData[selectedSheet].length === 0) {
-      messageApi.warning("Chưa chọn file dữ liệu!.");
-      updateState({ loadingSuccess: false });
-    } else {
-      setLoading(true);
-      const dataSave = buildDataToSave();
-      const res = await lecturerApi.createTopics(dataSave);
-      if (res && res.status === 0) {
-        updateState({ loadingSuccess: false });
-        setLoading(false);
-        setJsonData({});
-        if (fileInputRef.current) {
-          fileInputRef.current.value = null; // Xóa file đang chọn
-        }
-        messageApi.success(res.message);
-      } else {
-        updateState({ loadingSuccess: false });
-        setLoading(false);
-        messageApi.error(res.message);
+      messageApi.warning("Chưa chọn file dữ liệu!");
+      return;
+    }
+
+    const columnErrors = {
+      "Tên đề tài": [],
+      "Mô tả": [],
+      "Số lượng nhóm": [],
+    };
+
+    jsonData[selectedSheet].forEach((record, rowIndex) => {
+      if (!record["Tên đề tài"]) {
+        columnErrors["Tên đề tài"].push(`Trống hàng ${rowIndex + 1}`);
       }
+      if (!record["Mô tả"]) {
+        columnErrors["Mô tả"].push(`Trống hàng ${rowIndex + 1}`);
+      }
+      if (!record["Số lượng nhóm"]) {
+        columnErrors["Số lượng nhóm"].push(`Trống hàng ${rowIndex + 1}`);
+      } else if (
+        isNaN(record["Số lượng nhóm"]) ||
+        record["Số lượng nhóm"] < 1 ||
+        record["Số lượng nhóm"] > 10
+      ) {
+        columnErrors["Số lượng nhóm"].push(
+          `Hàng ${rowIndex + 1} phải là số từ 1 đến 10`
+        );
+      }
+    });
+
+    let errorMessages = [];
+    Object.keys(columnErrors).forEach((column) => {
+      if (columnErrors[column].length > 0) {
+        errorMessages.push(`${column}: ${columnErrors[column].join(", ")}`);
+      }
+    });
+
+    if (errorMessages.length > 0) {
+      messageApi.error(errorMessages.join(" | "));
+      return;
+    }
+
+    updateState({ loadingSuccess: true });
+    setLoading(true);
+
+    const dataSave = buildDataToSave();
+    const res = await lecturerApi.createTopics(dataSave);
+
+    if (res && res.status === 0) {
+      updateState({ loadingSuccess: false });
+      setLoading(false);
+      setJsonData({});
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null; // Xóa file đang chọn
+      }
+      messageApi.success(res.message);
+    } else {
+      updateState({ loadingSuccess: false });
+      setLoading(false);
+      messageApi.error(res.message);
     }
   };
 
