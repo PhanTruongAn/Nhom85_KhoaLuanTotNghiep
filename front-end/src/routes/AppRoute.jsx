@@ -16,7 +16,7 @@ import AccountLecturer from "../pages/DashBoard/DashBoardManager/lecturer/accoun
 import ListLecturer from "../pages/DashBoard/DashBoardManager/lecturer/listLecturer";
 import RolePermission from "../pages/DashBoard/DashBoardManager/permission/rolePermission";
 import ListPermission from "../pages/DashBoard/DashBoardManager/permission/listPermission";
-import ChangePassword from "../pages/setting/ChangePassword";
+import ChangePassword from "../pages/Setting/ChangePassword";
 import ForgetPassword from "../pages/Login/forgetPassword/ForgetPassword";
 import ListGroupStudent from "../pages/DashBoard/DashBoardManager/groupStudent/ListGroupStudent";
 import CreateGroupStudent from "../pages/DashBoard/DashBoardManager/groupStudent/CreateGroupStudent";

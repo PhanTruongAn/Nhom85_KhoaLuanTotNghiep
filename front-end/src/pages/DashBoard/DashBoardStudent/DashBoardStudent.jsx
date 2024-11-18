@@ -190,9 +190,10 @@ const DashBoardStudent = () => {
             collapsible
             collapsed={collapsed}
             style={{ position: "relative" }}
+            width={250}
           >
             {!collapsed && (
-              <Box className="demo-logo-vertical">
+              <Box className="demo-logo-vertical" sx={{ textAlign: "center" }}>
                 <img
                   src={themes ? logoDark : logoLight}
                   style={{

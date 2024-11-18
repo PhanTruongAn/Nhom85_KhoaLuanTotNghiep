@@ -34,6 +34,13 @@ function ManageNotification() {
   const [loading, setLoading] = useState(false);
   const [loadingReload, setLoadingReload] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [state, setState] = useState({
+    page: 1,
+    pageSize: 5,
+  });
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
   const handleGetNotes = async () => {
     const term = currentTerm.id;
     let res = await managerApi.getNotes(term);
@@ -198,12 +205,21 @@ function ManageNotification() {
         Danh sách thông báo
       </Typography>
       <Table
-        style={{ marginTop: "20px" }}
+        style={{ marginTop: "10px" }}
         dataSource={filteredData}
         columns={columns}
         rowKey="id"
         bordered
-        pagination={{ responsive: true }}
+        pagination={{
+          showSizeChanger: true,
+          pageSizeOptions: ["5", "10", "20"],
+          current: state.page,
+          pageSize: state.pageSize,
+          onChange: (page, size) => {
+            updateState({ page: page, pageSize: size });
+          },
+          responsive: true,
+        }}
         loading={loading}
         locale={{
           emptyText: (

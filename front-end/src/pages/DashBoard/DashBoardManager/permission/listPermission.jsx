@@ -7,7 +7,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { Box, Typography, Button } from "@mui/material";
-import AddModal from "./AddModal";
+import AddModal from "./addModal";
 import UpdateModal from "./updateModal";
 import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
