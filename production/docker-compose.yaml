@@ -19,12 +19,8 @@ services:
       - "3307:3306"
     expose:
       - 3306
-
-  # frontend:
-  #   build:
-  #     context: ../front-end
-  #     dockerfile: Dockerfile
-  #   restart: unless-stopped
+    volumes:
+      - ../backup/:/var/lib/mysql
 
   backend:
     build:
@@ -34,7 +30,6 @@ services:
     environment:
       - DB_PORT=3306
       - DB_HOST=db-mysql
-      # - FRONTEND_URL=http://localhost
     ports:
       - 8080:8080
     expose:
