@@ -1,6 +1,8 @@
-import { Box } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 
 function Event() {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <Box>
       <iframe
@@ -8,7 +10,7 @@ function Event() {
         title="Website IUH"
         style={{
           width: "100%",
-          height: "589px",
+          height: isSmallScreen ? "100vh" : "589px",
           overflowY: "auto",
           marginTop: "100px",
         }}

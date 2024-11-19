@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Typography,
@@ -8,44 +8,48 @@ import {
 } from "@mui/material";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import Marquee from "react-fast-marquee";
+import PropTypes from "prop-types";
+
+// Import hình ảnh và animation
 import image1 from "../../images/homepage/image1.avif";
 import image2 from "../../images/homepage/image2.avif";
 import image3 from "../../images/homepage/image3.avif";
 import imagedark1 from "../../images/homepage/imagedark1.avif";
 import imagedark2 from "../../images/homepage/imagedark2.avif";
 import imagedark3 from "../../images/homepage/imagedark3.avif";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import StartNow from "../../images/anhdong/startnow.lottie";
-import Marquee from "react-fast-marquee";
 import Welcome from "../../images/anhdong/Welcome.lottie";
-import PropTypes from "prop-types"; // Import PropTypes
 import Icon1 from "../../images/homepage/imageManage.avif";
 import Icon2 from "../../images/homepage/imageCoop.avif";
 import Icon3 from "../../images/homepage/ImageSearchInfor.avif";
 
-const TiltCard = ({ icon, title, description }) => {
+// Custom hook for theme handling
+const useThemeSync = () => {
   const [themes, setThemes] = useState(
     localStorage.getItem("themeDark") === "true"
   );
 
   useEffect(() => {
-    const checkTheme = () => {
-      const storedTheme = localStorage.getItem("themeDark");
-      const themeValue = storedTheme === "true";
-      if (themeValue !== themes) {
-        setThemes(themeValue);
+    const intervalId = setInterval(() => {
+      const storedTheme = localStorage.getItem("themeDark") === "true";
+      if (storedTheme !== themes) {
+        setThemes(storedTheme);
       }
-    };
+    }, 100);
 
-    const intervalId = setInterval(checkTheme, 100);
     return () => clearInterval(intervalId);
   }, [themes]);
 
-  const tiltRef = useRef(null);
+  return themes;
+};
+
+const TiltCard = ({ icon, title, description }) => {
+  const themes = useThemeSync();
 
   return (
     <Box
-      ref={tiltRef}
       sx={{
         width: "100%",
         maxWidth: "600px",
@@ -57,16 +61,16 @@ const TiltCard = ({ icon, title, description }) => {
           "0px 10px 20px rgba(0, 0, 0, 0.15), inset 0 0 10px rgba(255, 255, 255, 0.1)",
         display: "flex",
         alignItems: "center",
-        flexDirection: { xs: "column", md: "column", lg: "row" }, // Apply 'column' layout for 'xs' and 'md'
-        textAlign: { xs: "center", md: "center", lg: "left" }, // Center text for 'xs' and 'md'
+        flexDirection: { xs: "column", md: "column", lg: "row" },
+        textAlign: { xs: "center", md: "center", lg: "left" },
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
       }}
     >
       <Box
         sx={{
           flex: "0 0 auto",
-          marginRight: { xs: "0", md: "0", lg: "24px" }, // No margin on 'xs' and 'md'
-          marginBottom: { xs: "16px", md: "16px", lg: "0" },
+          marginRight: { xs: "0", lg: "24px" },
+          marginBottom: { xs: "16px", lg: "0" },
         }}
       >
         <img
@@ -97,32 +101,37 @@ TiltCard.propTypes = {
 };
 
 const VerticalTiltComponent = () => {
-  const [themes, setThemes] = useState(
-    localStorage.getItem("themeDark") === "true"
-  );
+  const themes = useThemeSync();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
-  useEffect(() => {
-    const checkTheme = () => {
-      const storedTheme = localStorage.getItem("themeDark");
-      const themeValue = storedTheme === "true";
-      if (themeValue !== themes) {
-        setThemes(themeValue);
-      }
-    };
-
-    const intervalId = setInterval(checkTheme, 100);
-    return () => clearInterval(intervalId);
-  }, [themes]);
+  const tiltCards = [
+    {
+      icon: Icon1,
+      title: "Quản lý đăng ký khóa luận dễ dàng",
+      description:
+        "Đơn giản hóa quy trình đăng ký khóa luận cho sinh viên và giảng viên, giúp tiết kiệm thời gian và công sức.",
+    },
+    {
+      icon: Icon3,
+      title: "Dễ dàng tra cứu thông tin",
+      description:
+        "Tìm kiếm và xem thông tin về các đề tài khóa luận một cách nhanh chóng và thuận tiện.",
+    },
+    {
+      icon: Icon2,
+      title: "Hợp tác và kết nối",
+      description:
+        "Cộng tác trực tiếp với giảng viên và các bạn cùng lớp trong suốt quá trình thực hiện khóa luận.",
+    },
+  ];
 
   return (
     <Box
       sx={{
         backgroundSize: "cover",
         padding: isSmallScreen ? "16px" : isMediumScreen ? "24px" : "32px",
-        marginLeft: isSmallScreen ? "-27px" : "0px",
       }}
     >
       <Box
@@ -134,115 +143,43 @@ const VerticalTiltComponent = () => {
           margin: "0 auto",
         }}
       >
-        {/* First TiltCard */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: isSmallScreen ? "column" : "row",
-            justifyContent: "flex-start",
-            width: "100%",
-            marginBottom: isSmallScreen
-              ? "16px"
-              : isMediumScreen
-              ? "8px"
-              : "-80px",
-          }}
-        >
+        {tiltCards.map((card, index) => (
           <Box
+            key={index}
             sx={{
-              flex: "0 0 auto",
-              maxWidth: isSmallScreen ? "100%" : isMediumScreen ? "75%" : "48%",
+              display: "flex",
+              flexDirection: isSmallScreen ? "column" : "row",
+              justifyContent:
+                index % 2 === 0
+                  ? "flex-start"
+                  : isSmallScreen
+                  ? "center"
+                  : "flex-end",
+              width: "100%",
+              marginBottom: isMediumScreen ? "16px" : "24px",
             }}
           >
             <TiltCard
-              icon={Icon1}
-              title="Quản lý đăng ký khóa luận dễ dàng"
-              description="Đơn giản hóa quy trình đăng ký khóa luận cho sinh viên và giảng viên, giúp tiết kiệm thời gian và công sức."
+              icon={card.icon}
+              title={card.title}
+              description={card.description}
             />
           </Box>
-        </Box>
-
-        {/* Second TiltCard */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: isSmallScreen ? "column" : "row",
-            justifyContent: isSmallScreen
-              ? "center"
-              : isMediumScreen
-              ? "center"
-              : "flex-end",
-            width: "100%",
-            marginBottom: isMediumScreen ? "16px" : "24px",
-          }}
-        >
-          <Box
-            sx={{
-              flex: "0 0 auto",
-              maxWidth: isSmallScreen ? "100%" : isMediumScreen ? "75%" : "48%",
-            }}
-          >
-            <TiltCard
-              icon={Icon3}
-              title="Dễ dàng tra cứu thông tin"
-              description="Tìm kiếm và xem thông tin về các đề tài khóa luận một cách nhanh chóng và thuận tiện."
-            />
-          </Box>
-        </Box>
-
-        {/* Third TiltCard */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: isSmallScreen ? "column" : "row",
-            justifyContent: "flex-start",
-            width: "100%",
-            marginTop: isSmallScreen
-              ? "16px"
-              : isMediumScreen
-              ? "8px"
-              : "-150px",
-          }}
-        >
-          <Box
-            sx={{
-              flex: "0 0 auto",
-              maxWidth: isSmallScreen ? "100%" : isMediumScreen ? "75%" : "48%",
-            }}
-          >
-            <TiltCard
-              icon={Icon2}
-              title="Hợp tác và kết nối"
-              description="Cộng tác trực tiếp với giảng viên và các bạn cùng lớp trong suốt quá trình thực hiện khóa luận."
-            />
-          </Box>
-        </Box>
+        ))}
       </Box>
     </Box>
   );
 };
 
 function HomePageTest() {
-  const [themes, setThemes] = useState(
-    localStorage.getItem("themeDark") === "true"
-  );
+  const themes = useThemeSync();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
-  useEffect(() => {
-    const checkTheme = () => {
-      const storedTheme = localStorage.getItem("themeDark");
-      const themeValue = storedTheme === "true";
-      if (themeValue !== themes) {
-        setThemes(themeValue);
-      }
-    };
-
-    const intervalId = setInterval(checkTheme, 100);
-    return () => clearInterval(intervalId);
-  }, [themes]);
-
-  const images = [image1, image2, image3];
-  const imagesdark = [imagedark1, imagedark2, imagedark3];
-  const themeImages = themes ? imagesdark : images;
+  const images = useMemo(() => [image1, image2, image3], []);
+  const imagesDark = useMemo(() => [imagedark1, imagedark2, imagedark3], []);
+  const themeImages = themes ? imagesDark : images;
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -251,11 +188,7 @@ function HomePageTest() {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % themeImages.length);
     }, 2000);
     return () => clearInterval(interval);
-  }, [themes, themeImages.length]);
-
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  }, [themeImages]);
 
   return (
     <Box
@@ -263,10 +196,7 @@ function HomePageTest() {
         backgroundImage: `url(${themeImages[currentIndex]})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        position: "relative",
-        width: "100%",
-        paddingTop: isSmallScreen ? "97.6px" : isMediumScreen ? "96px" : "96px",
+        paddingTop: "96px",
       }}
     >
       <Box sx={{ height: "100%" }}>

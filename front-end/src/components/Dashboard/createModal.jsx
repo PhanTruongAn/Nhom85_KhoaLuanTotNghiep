@@ -72,7 +72,7 @@ function CreateModal({
     <Box>
       {contextHolder}
       <Modal
-        title="Thêm tài khoản sinh viên"
+        title={`Thêm tài khoản ${obj}`}
         open={isOpen}
         onCancel={handleCancel}
         footer={[
@@ -83,13 +83,18 @@ function CreateModal({
             key="submit"
             type="primary"
             loading={loading}
-            onClick={handlerSubmit}
+            onClick={() => form.submit()}
           >
             Xác nhận
           </Button>,
         ]}
       >
-        <Form layout="vertical" form={form}>
+        <Form
+          layout="vertical"
+          form={form}
+          initialValues={user}
+          onFinish={handlerSubmit}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -117,7 +122,15 @@ function CreateModal({
                     required: true,
                     message: `Hãy nhập mã ${obj}!`,
                   },
-                ]}
+                  isStudent && {
+                    pattern: /^\d{8}$/,
+                    message: "Mã sinh viên phải là 8 chữ số!",
+                  },
+                  !isStudent && {
+                    pattern: /^\d{8}$/,
+                    message: "Mã giảng viên phải là 8 chữ số!",
+                  },
+                ].filter(Boolean)}
               >
                 <Input
                   placeholder={`Mã ${obj}`}
@@ -129,7 +142,16 @@ function CreateModal({
           {!isStudent && (
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item name="role" label="Vai trò" required>
+                <Form.Item
+                  name="role"
+                  label="Vai trò"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Hãy chọn vai trò!",
+                    },
+                  ]}
+                >
                   <Select
                     placeholder="Hãy chọn vai trò"
                     onChange={(value) => handlerOnChange(value, "roleId")}

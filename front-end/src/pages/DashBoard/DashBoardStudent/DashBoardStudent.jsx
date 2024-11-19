@@ -253,7 +253,7 @@ const DashBoardStudent = () => {
               items={items}
               style={{
                 marginTop: "10px",
-                height: "calc(95vh - 110px)",
+                height: "calc(92vh - 110px)",
               }}
             />
           </Sider>

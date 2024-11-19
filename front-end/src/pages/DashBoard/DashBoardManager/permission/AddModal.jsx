@@ -34,16 +34,25 @@ function AddModal({ onClose, isOpen, refetch }) {
   };
 
   const handleSubmit = async () => {
-    updateState({ buttonLoading: true });
-    const res = await managerApi.create(state.data);
-    if (res && res.status === 0) {
-      messageApi.success(res.message);
-      updateState({ buttonLoading: false });
-      refetch();
-      handleCancel();
-    } else {
-      messageApi.error(res.message);
-      updateState({ buttonLoading: false });
+    try {
+      const isValid = await form.validateFields(); // Validate form before submission
+      if (isValid) {
+        updateState({ buttonLoading: true });
+        const res = await managerApi.create(state.data);
+        if (res && res.status === 0) {
+          messageApi.success(res.message);
+          updateState({ buttonLoading: false });
+          refetch();
+          handleCancel();
+        } else {
+          messageApi.error(res.message);
+          updateState({ buttonLoading: false });
+        }
+      }
+    } catch (error) {
+      messageApi.error(
+        "Có lỗi trong quá trình xác nhận. Vui lòng kiểm tra lại thông tin!"
+      );
     }
   };
 
@@ -77,7 +86,7 @@ function AddModal({ onClose, isOpen, refetch }) {
                 rules={[
                   {
                     required: true,
-                    message: "Hãy điền đường dẫn!",
+                    message: "Hãy điền đường dẫn!",
                   },
                 ]}
               >
@@ -94,7 +103,7 @@ function AddModal({ onClose, isOpen, refetch }) {
                 rules={[
                   {
                     required: true,
-                    message: "Hãy điền mô tả!",
+                    message: "Hãy điền mô tả!",
                   },
                 ]}
               >
@@ -109,7 +118,12 @@ function AddModal({ onClose, isOpen, refetch }) {
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="method" label="Phương thức" required>
+              <Form.Item
+                name="method"
+                label="Phương thức"
+                rules={[{ required: true, message: "Hãy chọn phương thức!" }]}
+                required
+              >
                 <Select
                   placeholder="Hãy chọn phương thức"
                   onChange={(value) => handlerOnChange(value, "method")}
@@ -119,7 +133,7 @@ function AddModal({ onClose, isOpen, refetch }) {
                     { value: "PUT", label: "PUT" },
                     { value: "DELETE", label: "DELETE" },
                   ]}
-                ></Select>
+                />
               </Form.Item>
             </Col>
           </Row>

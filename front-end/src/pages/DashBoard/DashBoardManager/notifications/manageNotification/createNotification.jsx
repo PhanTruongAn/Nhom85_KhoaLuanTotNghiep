@@ -12,6 +12,7 @@ import { message } from "antd";
 import { useSelector } from "react-redux";
 import managerApi from "../../../../../apis/managerApi";
 import CustomButton from "../../../../../components/Button/CustomButton";
+
 function CreateNotification() {
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
@@ -19,8 +20,25 @@ function CreateNotification() {
   const [details, setDetails] = useState("");
   const [recipient, setRecipient] = useState("all");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    title: "",
+    details: "",
+    recipient: "",
+  });
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!title) newErrors.title = "Tiêu đề là bắt buộc!";
+    if (!details) newErrors.details = "Chi tiết là bắt buộc!";
+    if (!recipient) newErrors.recipient = "Đối tượng là bắt buộc!";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Prevent submission if validation fails
+
     setLoading(true);
     let dataToSave = {
       termId: currentTerm.id,
@@ -28,6 +46,7 @@ function CreateNotification() {
       content: details,
       recipient: recipient,
     };
+
     let res = await managerApi.createNote(dataToSave);
     if (res && res.status === 0) {
       messageApi.success(res.message);
@@ -48,7 +67,6 @@ function CreateNotification() {
         justifyContent: "center",
         height: "100%",
         p: 3,
-        // bgcolor: "background.default",
         overflowX: "hidden",
         overflowY: "auto",
       }}
@@ -67,7 +85,8 @@ function CreateNotification() {
           bgcolor: "background.paper",
           width: "100%",
           maxWidth: "900px",
-          height: "500px",
+          height: "77vh",
+          overflowY: "auto",
         }}
       >
         <Typography variant="h5" component="h2" gutterBottom>
@@ -79,6 +98,8 @@ function CreateNotification() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
+          error={!!errors.title}
+          helperText={errors.title}
         />
         <TextField
           label="Chi tiết"
@@ -88,19 +109,27 @@ function CreateNotification() {
           multiline
           rows={7}
           required
+          error={!!errors.details}
+          helperText={errors.details}
         />
-        <FormControl fullWidth>
+        <FormControl fullWidth error={!!errors.recipient}>
           <InputLabel id="recipient-label">Đối tượng</InputLabel>
           <Select
             labelId="recipient-label"
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
             label="Recipient"
+            required
           >
             <MenuItem value="all">Tất cả</MenuItem>
             <MenuItem value="student">Sinh viên</MenuItem>
             <MenuItem value="lecturer">Giảng viên</MenuItem>
           </Select>
+          {errors.recipient && (
+            <Typography color="error" variant="caption">
+              {errors.recipient}
+            </Typography>
+          )}
         </FormControl>
         <CustomButton
           text=" Gửi thông báo"

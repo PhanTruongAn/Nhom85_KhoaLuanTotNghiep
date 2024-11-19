@@ -141,24 +141,21 @@ function ListNotification() {
         }}
         // closeAfterTransition={true}
       >
-        <DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseModal}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 1,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseModal}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 1,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
         {selectedNotification && (
-          <DialogContent>
-            <NotificationDetail notification={selectedNotification} />
-          </DialogContent>
+          <NotificationDetail notification={selectedNotification} />
         )}
       </Dialog>
     </Box>

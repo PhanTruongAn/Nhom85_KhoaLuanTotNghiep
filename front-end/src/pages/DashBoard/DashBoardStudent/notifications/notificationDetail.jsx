@@ -18,6 +18,7 @@ const NotificationDetail = ({ notification }) => {
     >
       <Box
         sx={{
+          marginTop: "20px",
           height: "90%", // Keep the height restriction
           overflowY: "auto", // Scroll when content exceeds the height
         }}

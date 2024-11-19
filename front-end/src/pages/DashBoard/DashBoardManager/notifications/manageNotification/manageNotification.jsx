@@ -13,8 +13,8 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { Table, Space, message, Popconfirm } from "antd"; // Import Input từ Ant Design
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons"; // Biểu tượng search
+import { Table, Space, message, Popconfirm } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import managerApi from "../../../../../apis/managerApi";
 import CustomHooks from "../../../../../utils/hooks";
 import { useSelector } from "react-redux";
@@ -38,9 +38,16 @@ function ManageNotification() {
     page: 1,
     pageSize: 5,
   });
+  const [errors, setErrors] = useState({
+    title: "",
+    content: "",
+    termId: "",
+  });
+
   const updateState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
+
   const handleGetNotes = async () => {
     const term = currentTerm.id;
     let res = await managerApi.getNotes(term);
@@ -70,6 +77,7 @@ function ManageNotification() {
       messageApi.error(`${error}!`);
     },
   });
+
   const handleDelete = async (id) => {
     let res = await managerApi.deleteNote(id);
     if (res && res.status === 0) {
@@ -83,9 +91,22 @@ function ManageNotification() {
   const handleUpdateClick = (record) => {
     setCurrentNotification(record);
     setIsUpdateOpen(true);
+    setErrors({ title: "", content: "", termId: "" });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!currentNotification.title) newErrors.title = "Tiêu đề là bắt buộc!";
+    if (!currentNotification.content)
+      newErrors.content = "Chi tiết là bắt buộc!";
+    if (!currentNotification.termId) newErrors.termId = "Học kỳ là bắt buộc!";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
   const handleUpdateSubmit = async () => {
+    if (!validateForm()) return; // Prevent submission if validation fails
+
     setUpdateLoading(true);
     const res = await managerApi.updateNote(currentNotification);
     if (res && res.status === 0) {
@@ -98,6 +119,15 @@ function ManageNotification() {
       setUpdateLoading(false);
       messageApi.success(res.message);
     }
+  };
+  const handleClose = () => {
+    // Reset errors khi đóng form
+    setErrors({
+      title: "",
+      content: "",
+      termId: "",
+    });
+    setIsUpdateOpen(false);
   };
 
   const handleChange = (e) => {
@@ -115,10 +145,12 @@ function ManageNotification() {
       setLoading(false);
     }, 1000);
   };
-  //tìm kiếm
+
+  // Tìm kiếm
   const handleSearch = (value) => {
     setSearchKeyword(value.toLowerCase());
   };
+
   // Lọc tìm kiếm
   const sourceData = notesData && notesData.data ? notesData.data : data;
   const filteredData = sourceData.filter((item) =>
@@ -194,7 +226,6 @@ function ManageNotification() {
         />
       </Box>
       <Typography
-        // fontWeight="bold"
         variant="h4"
         sx={{
           justifyContent: "center",
@@ -238,7 +269,7 @@ function ManageNotification() {
 
       <Dialog
         open={isUpdateOpen}
-        onClose={() => setIsUpdateOpen(false)}
+        onClose={handleClose}
         maxWidth="lg"
         fullWidth
         PaperProps={{ style: { height: "700px" } }}
@@ -274,6 +305,8 @@ function ManageNotification() {
                   borderRadius: "8px",
                 },
               }}
+              error={!!errors.title}
+              helperText={errors.title}
             />
             <TextField
               label="Chi tiết"
@@ -289,6 +322,8 @@ function ManageNotification() {
                   borderRadius: "8px",
                 },
               }}
+              error={!!errors.content}
+              helperText={errors.content}
             />
             <FormControl fullWidth>
               <InputLabel id="term-label">Học kỳ</InputLabel>
@@ -299,6 +334,7 @@ function ManageNotification() {
                 onChange={handleChange}
                 label="Học kỳ"
                 sx={{ borderRadius: "8px" }}
+                error={!!errors.termId}
               >
                 {terms.map((term) => (
                   <MenuItem key={term.id} value={term.id}>

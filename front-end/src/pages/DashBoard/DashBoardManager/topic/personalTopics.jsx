@@ -50,6 +50,45 @@ function PersonalTopics() {
     requirement: "",
     standardOutput: "",
   });
+  //validate
+  const [errors, setErrors] = useState({});
+  const validateEditTopic = () => {
+    const newErrors = {};
+
+    if (!editTopic.title.trim()) {
+      newErrors.title = "Tên đề tài không được để trống.";
+    }
+
+    if (
+      !editTopic.quantityGroup ||
+      editTopic.quantityGroup < 1 ||
+      editTopic.quantityGroup > 10
+    ) {
+      newErrors.quantityGroup =
+        "Số lượng nhóm không được trống hoặc phải từ 1 đến 10.";
+    }
+
+    if (!editTopic.description.trim()) {
+      newErrors.description = "Mô tả không được để trống.";
+    }
+
+    if (!editTopic.goals.trim()) {
+      newErrors.goals = "Mục tiêu không được để trống.";
+    }
+
+    if (!editTopic.requirement.trim()) {
+      newErrors.requirement = "Yêu cầu đầu vào không được để trống.";
+    }
+
+    if (!editTopic.standardOutput.trim()) {
+      newErrors.standardOutput = "Yêu cầu đầu ra không được để trống.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  //validate gán nhóm
+  const [groupNameError, setGroupNameError] = useState(""); // Trạng thái lưu lỗi
 
   //Get Personal Topic
   const getPersonalTopic = async () => {
@@ -120,6 +159,7 @@ function PersonalTopics() {
       requirement: "",
       standardOutput: "",
     });
+    setErrors({});
   };
 
   const handleRefresh = () => {
@@ -144,6 +184,8 @@ function PersonalTopics() {
   };
 
   const handleSaveEdit = async () => {
+    if (!validateEditTopic()) return; // Nếu không hợp lệ, dừng lại
+
     setLoading(true);
     const res = await lecturerApi.updateTopicById(editTopic);
     if (res && res.status === 0) {
@@ -151,6 +193,7 @@ function PersonalTopics() {
       handleCloseEditModal();
       setLoading(false);
       refetch();
+      setErrors({}); // Xóa lỗi khi người dùng sửa thành công
     } else {
       setLoading(false);
       messageApi.error(res.message);
@@ -159,6 +202,11 @@ function PersonalTopics() {
 
   //Gán nhóm
   const handleAssignGroupSubmit = async () => {
+    if (!groupName.trim()) {
+      setGroupNameError("Tên nhóm không được để trống.");
+      return;
+    }
+
     let dataToSave = {
       groupName: groupName,
       topicId: selectedGroupTopic.id,
@@ -172,6 +220,7 @@ function PersonalTopics() {
       messageApi.error(res.message);
     }
   };
+
   const handleAssignGroup = (topic) => {
     setSelectedGroupTopic(topic);
     setOpenAssignGroupDialog(true);
@@ -179,11 +228,15 @@ function PersonalTopics() {
 
   const handleGroupNameChange = (event) => {
     setGroupName(event.target.value);
+    if (event.target.value.trim()) {
+      setGroupNameError(""); // Xóa lỗi khi người dùng nhập đúng
+    }
   };
 
   const handleAssignGroupClose = () => {
     setOpenAssignGroupDialog(false);
     setGroupName("");
+    setGroupNameError("");
   };
   const columns = [
     {
@@ -202,7 +255,6 @@ function PersonalTopics() {
     },
     {
       title: "Số lượng nhóm",
-      // dataIndex: "quantityGroup",
       key: "quantityGroup",
       width: "15%",
       render: (record) => `${record.groupCount}/${record.quantityGroup}`,
@@ -400,59 +452,101 @@ function PersonalTopics() {
             <TextField
               label="Tên đề tài"
               value={editTopic.title}
-              onChange={(e) =>
-                setEditTopic({ ...editTopic, title: e.target.value })
-              }
-              fullWidth
+              onChange={(e) => {
+                setEditTopic({ ...editTopic, title: e.target.value });
+                if (e.target.value.trim()) {
+                  setErrors((prevErrors) => ({ ...prevErrors, title: "" }));
+                }
+              }}
+              error={!!errors.title}
+              helperText={errors.title}
             />
+
             <TextField
               label="Số lượng nhóm"
               type="number"
               value={editTopic.quantityGroup}
-              onChange={(e) =>
-                setEditTopic({ ...editTopic, quantityGroup: e.target.value })
-              }
-              fullWidth
+              onChange={(e) => {
+                const value = e.target.value;
+                setEditTopic({ ...editTopic, quantityGroup: value });
+                if (value >= 1 && value <= 10) {
+                  setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    quantityGroup: "",
+                  }));
+                }
+              }}
+              error={!!errors.quantityGroup}
+              helperText={errors.quantityGroup}
             />
+
             <TextField
               label="Mô tả"
               value={editTopic.description}
-              onChange={(e) =>
-                setEditTopic({ ...editTopic, description: e.target.value })
-              }
+              onChange={(e) => {
+                setEditTopic({ ...editTopic, description: e.target.value });
+                if (e.target.value.trim()) {
+                  setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    description: "",
+                  }));
+                }
+              }}
               multiline
               rows={4}
-              fullWidth
+              error={!!errors.description}
+              helperText={errors.description}
             />
+
             <TextField
               label="Mục tiêu"
               value={editTopic.goals}
-              onChange={(e) =>
-                setEditTopic({ ...editTopic, goals: e.target.value })
-              }
+              onChange={(e) => {
+                setEditTopic({ ...editTopic, goals: e.target.value });
+                if (e.target.value.trim()) {
+                  setErrors((prevErrors) => ({ ...prevErrors, goals: "" }));
+                }
+              }}
               multiline
               rows={4}
-              fullWidth
+              error={!!errors.goals}
+              helperText={errors.goals}
             />
+
             <TextField
               label="Yêu cầu đầu vào"
               value={editTopic.requirement}
-              onChange={(e) =>
-                setEditTopic({ ...editTopic, requirement: e.target.value })
-              }
+              onChange={(e) => {
+                setEditTopic({ ...editTopic, requirement: e.target.value });
+                if (e.target.value.trim()) {
+                  setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    requirement: "",
+                  }));
+                }
+              }}
               multiline
               rows={4}
-              fullWidth
+              error={!!errors.requirement}
+              helperText={errors.requirement}
             />
+
             <TextField
               label="Yêu cầu đầu ra"
               value={editTopic.standardOutput}
-              onChange={(e) =>
-                setEditTopic({ ...editTopic, standardOutput: e.target.value })
-              }
+              onChange={(e) => {
+                setEditTopic({ ...editTopic, standardOutput: e.target.value });
+                if (e.target.value.trim()) {
+                  setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    standardOutput: "",
+                  }));
+                }
+              }}
               multiline
               rows={4}
-              fullWidth
+              error={!!errors.standardOutput}
+              helperText={errors.standardOutput}
             />
           </Box>
         </DialogContent>
@@ -488,6 +582,8 @@ function PersonalTopics() {
               value={groupName}
               onChange={handleGroupNameChange}
               fullWidth
+              error={!!groupNameError} // Hiển thị viền đỏ nếu có lỗi
+              helperText={groupNameError} // Hiển thị thông báo lỗi
             />
           </Box>
         </DialogContent>

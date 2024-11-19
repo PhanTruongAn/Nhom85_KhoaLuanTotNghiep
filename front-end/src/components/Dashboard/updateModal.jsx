@@ -5,7 +5,9 @@ import PropTypes from "prop-types";
 import studentApi from "../../apis/studentApi";
 import { toast } from "react-toastify";
 import lecturerApi from "../../apis/lecturerApi";
+
 const { Option } = Select;
+
 const UpdateModal = ({
   isStudent,
   userSelect,
@@ -18,11 +20,13 @@ const UpdateModal = ({
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (userSelect) {
       form.setFieldsValue(userSelect);
     }
   }, [userSelect, form]);
+
   const onSubmit = async () => {
     setLoading(true);
     const _data = _.cloneDeep(form.getFieldValue());
@@ -36,10 +40,13 @@ const UpdateModal = ({
       setLoading(false);
     } else if (res.status === -1) {
       messageApi.error(res.message);
+      setLoading(false);
     } else {
       toast.error(res.message);
+      setLoading(false);
     }
   };
+
   return (
     <>
       {contextHolder}
@@ -55,13 +62,18 @@ const UpdateModal = ({
             key="submit"
             type="primary"
             loading={loading}
-            onClick={onSubmit}
+            onClick={() => form.submit()}
           >
             Cập nhật
           </Button>,
         ]}
       >
-        <Form layout="vertical" form={form} initialValues={userSelect}>
+        <Form
+          layout="vertical"
+          form={form}
+          initialValues={userSelect}
+          onFinish={onSubmit}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -71,6 +83,14 @@ const UpdateModal = ({
                   {
                     required: true,
                     message: `Hãy nhập mã ${obj}!`,
+                  },
+                  isStudent && {
+                    pattern: /^\d{8}$/,
+                    message: "Mã sinh viên phải là 8 chữ số!",
+                  },
+                  !isStudent && {
+                    pattern: /^\d{8}$/,
+                    message: "Mã giảng viên phải là 8 chữ số!",
                   },
                 ]}
               >
@@ -102,14 +122,13 @@ const UpdateModal = ({
                     required: true,
                     message: "Hãy nhập email!",
                   },
+                  {
+                    type: "email",
+                    message: "Email phải có dạng username@domain.com!",
+                  },
                 ]}
               >
-                <Input
-                  style={{
-                    width: "100%",
-                  }}
-                  placeholder="Email"
-                />
+                <Input style={{ width: "100%" }} placeholder="Email" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -121,6 +140,10 @@ const UpdateModal = ({
                     required: true,
                     message: "Hãy nhập số điện thoại!",
                   },
+                  {
+                    pattern: /^0\d{9}$/,
+                    message: "Số điện thoại phải bắt đầu từ 0 và có 10 chữ số!",
+                  },
                 ]}
               >
                 <Input placeholder="Số điện thoại" />
@@ -129,7 +152,16 @@ const UpdateModal = ({
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="gender" label="Giới tính">
+              <Form.Item
+                name="gender"
+                label="Giới tính"
+                rules={[
+                  {
+                    required: true,
+                    message: "Hãy chọn giới tính!",
+                  },
+                ]}
+              >
                 <Select placeholder="Hãy chọn giới tính">
                   <Option value="Nam">Nam</Option>
                   <Option value="Nữ">Nữ</Option>
@@ -142,6 +174,7 @@ const UpdateModal = ({
     </>
   );
 };
+
 UpdateModal.propTypes = {
   isStudent: PropTypes.bool.isRequired,
   userSelect: PropTypes.object,
@@ -150,4 +183,5 @@ UpdateModal.propTypes = {
   onCancel: PropTypes.func.isRequired,
   getData: PropTypes.func.isRequired,
 };
+
 export default UpdateModal;

@@ -14,6 +14,7 @@ import { message } from "antd";
 import lecturerApi from "../../../../apis/lecturerApi";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useSelector } from "react-redux";
+
 function PointTopicStudent({
   selectedGroup,
   onClose,
@@ -30,12 +31,65 @@ function PointTopicStudent({
   const [reportingPoint, setReportingPoint] = useState();
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
-  const handleScoreChange = (event, setScore) => {
+  const [errors, setErrors] = useState({
+    discussionPoint: "",
+    progressPoint: "",
+    reportingPoint: "",
+  });
+
+  // Hàm xử lý khi thay đổi điểm
+  const handleScoreChange = (event, setScore, fieldName) => {
     const value = event.target.value;
     setScore(value);
+
+    // Reset lỗi khi có thay đổi
+    setErrors((prev) => ({ ...prev, [fieldName]: "" }));
+  };
+
+  // Hàm validate điểm nhập vào
+  const validateForm = () => {
+    let valid = true;
+    let newErrors = {
+      discussionPoint: "",
+      progressPoint: "",
+      reportingPoint: "",
+    };
+
+    // Kiểm tra điểm phản biện
+    if (discussionPoint === undefined || discussionPoint === "") {
+      newErrors.discussionPoint = "Điểm phản biện không được để trống!";
+      valid = false;
+    } else if (discussionPoint < 0 || discussionPoint > 10) {
+      newErrors.discussionPoint = "Điểm phản biện phải từ 0 đến 10!";
+      valid = false;
+    }
+
+    // Kiểm tra điểm quá trình
+    if (progressPoint === undefined || progressPoint === "") {
+      newErrors.progressPoint = "Điểm quá trình không được để trống!";
+      valid = false;
+    } else if (progressPoint < 0 || progressPoint > 10) {
+      newErrors.progressPoint = "Điểm quá trình phải từ 0 đến 10!";
+      valid = false;
+    }
+
+    // Kiểm tra điểm báo cáo
+    if (reportingPoint === undefined || reportingPoint === "") {
+      newErrors.reportingPoint = "Điểm báo cáo không được để trống!";
+      valid = false;
+    } else if (reportingPoint < 0 || reportingPoint > 10) {
+      newErrors.reportingPoint = "Điểm báo cáo phải từ 0 đến 10!";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
   };
 
   const handleSubmit = async () => {
+    if (!validateForm()) return; // Ngừng gửi nếu form không hợp lệ
+    setErrors({});
+    if (loading) return;
     setLoading(true);
     const dataToSave = {
       discussionPoint,
@@ -45,6 +99,7 @@ function PointTopicStudent({
       groupId: selectedGroup?.id,
       termId: currentTerm.id,
     };
+
     const res = await lecturerApi.evaluations(dataToSave);
     if (res && res.status === 0) {
       messageApi.success(res.message);
@@ -131,11 +186,17 @@ function PointTopicStudent({
                   variant="outlined"
                   value={objectSelect?.discussionPoint ?? discussionPoint ?? ""}
                   onChange={(event) =>
-                    handleScoreChange(event, setDiscussionPoint)
+                    handleScoreChange(
+                      event,
+                      setDiscussionPoint,
+                      "discussionPoint"
+                    )
                   }
                   disabled={
                     isLecturerAdvisor || Boolean(objectSelect?.discussionPoint)
                   }
+                  error={Boolean(errors.discussionPoint)}
+                  helperText={errors.discussionPoint}
                 />
               )}
             </Box>
@@ -152,11 +213,13 @@ function PointTopicStudent({
                   variant="outlined"
                   value={objectSelect?.progressPoint ?? progressPoint ?? ""}
                   onChange={(event) =>
-                    handleScoreChange(event, setProgressPoint)
+                    handleScoreChange(event, setProgressPoint, "progressPoint")
                   }
                   disabled={
                     !isLecturerAdvisor || Boolean(objectSelect?.progressPoint)
                   }
+                  error={Boolean(errors.progressPoint)}
+                  helperText={errors.progressPoint}
                 />
               )}
             </Box>
@@ -173,28 +236,22 @@ function PointTopicStudent({
                   variant="outlined"
                   value={objectSelect?.reportingPoint ?? reportingPoint ?? ""}
                   onChange={(event) =>
-                    handleScoreChange(event, setReportingPoint)
+                    handleScoreChange(
+                      event,
+                      setReportingPoint,
+                      "reportingPoint"
+                    )
                   }
                   disabled={
                     isLecturerAdvisor || Boolean(objectSelect?.reportingPoint)
                   }
+                  error={Boolean(errors.reportingPoint)}
+                  helperText={errors.reportingPoint}
                 />
               )}
             </Box>
           </Grid>
         </Grid>
-
-        {/* <TextField
-          label="Nhận xét của giảng viên"
-          multiline
-          rows={4}
-          fullWidth
-          margin="dense"
-          variant="outlined"
-          sx={{ marginTop: 2 }}
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        /> */}
 
         <Box display="flex" justifyContent="space-between" marginTop={3}>
           <Box>
@@ -220,6 +277,7 @@ function PointTopicStudent({
     </Box>
   );
 }
+
 PointTopicStudent.propTypes = {
   selectedGroup: PropTypes.shape({
     id: PropTypes.number,
@@ -238,4 +296,5 @@ PointTopicStudent.propTypes = {
   objectSelect: PropTypes.object,
   loadingData: PropTypes.bool,
 };
+
 export default PointTopicStudent;
