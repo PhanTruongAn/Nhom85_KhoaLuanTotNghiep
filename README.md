@@ -12,7 +12,7 @@
 
 Đây là dự án khóa luận tốt nghiệp của nhóm 85, cung cấp hệ thống quản lý và hỗ trợ cho sinh viên, giảng viên, và quản lý. 
 
-- **Link Demo**: [phantruongan.click](https://phantruongan.click)  
+- **Link Demo**: [phantruongan.click](http://phantruongan.click)  
 
 ### Các tính năng nổi bật
 
