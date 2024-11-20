@@ -687,7 +687,7 @@ const createMajor = async (data) => {
     if (!majorName) {
       return {
         status: -1,
-        message: "Tên chuyên ngành không hợp lệ hoặc trống!",
+        message: "Tên chuyên ngành trống hoặc không hợp lệ!",
       };
     }
     let result = await Major.create({ majorName });
@@ -796,7 +796,7 @@ const createNote = async (data) => {
     if (!title || !content) {
       return {
         status: -1,
-        message: "Tiêu đề hoặc nội dung thông báo không hợp lệ!",
+        message: "Tiêu đề hoặc nội dung thông báo không được trống!",
       };
     }
     if (!recipient) {
