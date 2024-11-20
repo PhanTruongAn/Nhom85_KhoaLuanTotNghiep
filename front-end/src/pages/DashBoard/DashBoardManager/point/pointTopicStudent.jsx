@@ -55,31 +55,44 @@ function PointTopicStudent({
       reportingPoint: "",
     };
 
-    // Kiểm tra điểm phản biện
-    if (discussionPoint === undefined || discussionPoint === "") {
-      newErrors.discussionPoint = "Điểm phản biện không được để trống!";
-      valid = false;
-    } else if (discussionPoint < 0 || discussionPoint > 10) {
-      newErrors.discussionPoint = "Điểm phản biện phải từ 0 đến 10!";
-      valid = false;
+    // Kiểm tra loại giảng viên
+    if (!isLecturerAdvisor) {
+      // Giảng viên không phải gvHuongDan -> kiểm tra điểm phản biện và báo cáo
+      if (
+        !objectSelect?.discussionPoint &&
+        (discussionPoint === undefined || discussionPoint === "")
+      ) {
+        newErrors.discussionPoint = "Điểm phản biện không được để trống!";
+        valid = false;
+      } else if (discussionPoint < 0 || discussionPoint > 10) {
+        newErrors.discussionPoint = "Điểm phản biện phải từ 0 đến 10!";
+        valid = false;
+      }
+
+      if (
+        !objectSelect?.reportingPoint &&
+        (reportingPoint === undefined || reportingPoint === "")
+      ) {
+        newErrors.reportingPoint = "Điểm báo cáo không được để trống!";
+        valid = false;
+      } else if (reportingPoint < 0 || reportingPoint > 10) {
+        newErrors.reportingPoint = "Điểm báo cáo phải từ 0 đến 10!";
+        valid = false;
+      }
     }
 
-    // Kiểm tra điểm quá trình
-    if (progressPoint === undefined || progressPoint === "") {
-      newErrors.progressPoint = "Điểm quá trình không được để trống!";
-      valid = false;
-    } else if (progressPoint < 0 || progressPoint > 10) {
-      newErrors.progressPoint = "Điểm quá trình phải từ 0 đến 10!";
-      valid = false;
-    }
-
-    // Kiểm tra điểm báo cáo
-    if (reportingPoint === undefined || reportingPoint === "") {
-      newErrors.reportingPoint = "Điểm báo cáo không được để trống!";
-      valid = false;
-    } else if (reportingPoint < 0 || reportingPoint > 10) {
-      newErrors.reportingPoint = "Điểm báo cáo phải từ 0 đến 10!";
-      valid = false;
+    if (isLecturerAdvisor) {
+      // Giảng viên gvHuongDan -> chỉ kiểm tra điểm quá trình
+      if (
+        !objectSelect?.progressPoint &&
+        (progressPoint === undefined || progressPoint === "")
+      ) {
+        newErrors.progressPoint = "Điểm quá trình không được để trống!";
+        valid = false;
+      } else if (progressPoint < 0 || progressPoint > 10) {
+        newErrors.progressPoint = "Điểm quá trình phải từ 0 đến 10!";
+        valid = false;
+      }
     }
 
     setErrors(newErrors);
