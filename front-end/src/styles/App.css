@@ -45,11 +45,11 @@
 
 /* Tùy chỉnh thanh cuộn toàn ứng dụng */
 ::-webkit-scrollbar {
-  width: 10px; /* Độ rộng của thanh cuộn */
+  width: 5px; /* Độ rộng của thanh cuộn */
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #006ed3; /* Màu của thanh cuộn */
+  background-color: #4db8ff; /* Màu của thanh cuộn */
   border-radius: 5px;
 }
 

@@ -186,7 +186,7 @@ function HomePageTest() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % themeImages.length);
-    }, 2000);
+    }, 8000);
     return () => clearInterval(interval);
   }, [themeImages]);
 

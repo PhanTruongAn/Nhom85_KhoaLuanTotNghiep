@@ -303,7 +303,7 @@ function ClassifyTypeLecturer() {
             }
             disabled={state.assignLoading}
           >
-            Gán nhóm giảng viên
+            Phân công chấm phản biện
           </Button>
         </Space>
       </Box>

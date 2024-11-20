@@ -144,7 +144,12 @@ function ChangePassword() {
           height: "auto",
         }}
       >
-        <Typography variant="h5" component="h2" gutterBottom>
+        <Typography
+          variant="h5"
+          component="h2"
+          gutterBottom
+          sx={{ textAlign: "center" }}
+        >
           Đổi Mật Khẩu
         </Typography>
         <TextField
