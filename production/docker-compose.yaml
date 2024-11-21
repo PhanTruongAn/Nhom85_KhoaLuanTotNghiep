@@ -32,6 +32,7 @@ services:
       - DB_HOST=db-mysql
       - DB_USER=root
       - DB_PASSWORD=Ocvittot123 
+      - DB_NAME=khoaluan 
     ports:
       - 8080:8080
     expose:
