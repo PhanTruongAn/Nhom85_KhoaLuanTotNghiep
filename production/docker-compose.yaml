@@ -14,7 +14,7 @@ services:
     restart: always
     environment:
       - MYSQL_DATABASE=khoaluan
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=Ocvittot123
     ports:
       - "3307:3306"
     expose:
@@ -30,9 +30,14 @@ services:
     environment:
       - DB_PORT=3306
       - DB_HOST=db-mysql
+      - DB_USER=root
+      - DB_PASSWORD=Ocvittot123 
+      - DB_NAME=khoaluan 
     ports:
       - 8080:8080
     expose:
       - 8080
     depends_on:
       - db-mysql
+    volumes:
+      - ../backup/:/var/lib/mysql
