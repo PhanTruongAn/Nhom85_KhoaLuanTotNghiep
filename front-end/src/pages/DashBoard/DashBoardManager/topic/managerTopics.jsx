@@ -38,6 +38,14 @@ function ManagerTopics() {
   const [selectedGroupTopic, setSelectedGroupTopic] = useState(null); // State for the selected topic for group assignment
   const [groupName, setGroupName] = useState(""); // State for the group name
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [isClosing, setIsClosing] = useState(false); // New state to control closing animation
+  const handleCloseDetailModal = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setOpenDetailModal(false);
+      setIsClosing(false);
+    }, 100); // Delay before closing the modal completely
+  };
 
   //Get All Topics Of Lecturer
   const {
@@ -282,51 +290,53 @@ function ManagerTopics() {
           ),
         }}
       />
+      {openDetailModal && !isClosing && (
+        <Dialog
+          open={openDetailModal}
+          onClose={handleCloseDetailModal}
+          maxWidth="lg"
+          sx={{ overflow: "auto" }}
+        >
+          <DialogTitle variant="h4">Chi tiết đề tài</DialogTitle>
+          <DialogContent sx={{ padding: "20px" }}>
+            {selectedTopic ? (
+              <Box>
+                <Typography>
+                  <b>Tên đề tài:</b> {selectedTopic.title}
+                </Typography>
+                <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
+                  <b>Số lượng nhóm:</b> {selectedTopic.quantityGroup}
+                </Typography>
+                <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
+                  <b>Giảng viên:</b> {selectedTopic.lecturer.fullName}
+                </Typography>
+                <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
+                  <b>Mô tả:</b> {formatContent(selectedTopic.description)}
+                </Typography>
+                <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
+                  <b>Mục tiêu:</b> {formatContent(selectedTopic.goals)}
+                </Typography>
+                <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
+                  <b>Yêu cầu đầu vào:</b>{" "}
+                  {formatContent(selectedTopic.requirement)}
+                </Typography>
+                <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
+                  <b>Yêu cầu đầu ra:</b>{" "}
+                  {formatContent(selectedTopic.standardOutput)}
+                </Typography>
+              </Box>
+            ) : (
+              <Typography>Đang tải dữ liệu...</Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button size="small" onClick={handleCloseModal} color="primary">
+              Đóng
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
 
-      <Dialog
-        open={openDetailModal}
-        onClose={handleCloseModal}
-        maxWidth="lg"
-        sx={{ overflow: "auto" }}
-      >
-        <DialogTitle variant="h4">Chi tiết đề tài</DialogTitle>
-        <DialogContent sx={{ padding: "20px" }}>
-          {selectedTopic ? (
-            <Box>
-              <Typography>
-                <b>Tên đề tài:</b> {selectedTopic.title}
-              </Typography>
-              <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Số lượng nhóm:</b> {selectedTopic.quantityGroup}
-              </Typography>
-              <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Giảng viên:</b> {selectedTopic.lecturer.fullName}
-              </Typography>
-              <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Mô tả:</b> {formatContent(selectedTopic.description)}
-              </Typography>
-              <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Mục tiêu:</b> {formatContent(selectedTopic.goals)}
-              </Typography>
-              <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Yêu cầu đầu vào:</b>{" "}
-                {formatContent(selectedTopic.requirement)}
-              </Typography>
-              <Typography sx={{ marginTop: "5px", fontSize: "17px" }}>
-                <b>Yêu cầu đầu ra:</b>{" "}
-                {formatContent(selectedTopic.standardOutput)}
-              </Typography>
-            </Box>
-          ) : (
-            <Typography>Đang tải dữ liệu...</Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button size="small" onClick={handleCloseModal} color="primary">
-            Đóng
-          </Button>
-        </DialogActions>
-      </Dialog>
       <Dialog
         open={openAssignGroupDialog}
         onClose={handleAssignGroupClose}
