@@ -127,12 +127,12 @@ const createBulkAccount = async (data) => {
     const newAccounts = data.filter(
       ({ username }) => !usernamesInDb.includes(username)
     );
-
+    const defaultPassword = "123";
     // Tạo danh sách các tài khoản sinh viên mới
     const dataPersist = newAccounts.map((value) => ({
       fullName: value.fullName,
       username: value.username,
-      password: hashPassword(value.password),
+      password: hashPassword(defaultPassword),
       roleId: 1,
     }));
 
