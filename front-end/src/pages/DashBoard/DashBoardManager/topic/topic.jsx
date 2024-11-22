@@ -49,6 +49,14 @@ const ManagerTopic = () => {
     });
     return dataSave;
   };
+  const filterEmptyRows = (data) => {
+    return data.filter((row) => {
+      return Object.values(row).some(
+        (cell) => cell !== undefined && cell !== null && cell !== ""
+      );
+    });
+  };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) {
@@ -80,9 +88,11 @@ const ManagerTopic = () => {
         const sheets = workbook.SheetNames;
 
         const sheetData = {};
+        let hasValidData = false; // Biến để kiểm tra xem có dữ liệu hợp lệ không
+
         sheets.forEach((sheetName) => {
           const sheet = workbook.Sheets[sheetName];
-          const json = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Đọc theo kiểu mảng
+          const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
           // Kiểm tra hàng tiêu đề
           const headerRow = json[0];
@@ -116,7 +126,7 @@ const ManagerTopic = () => {
           }
 
           // Chuyển đổi dữ liệu
-          const formattedData = json.slice(1).map((row) => {
+          let formattedData = json.slice(1).map((row) => {
             return {
               "Tên đề tài": row[0],
               "Số lượng nhóm": row[1],
@@ -127,11 +137,26 @@ const ManagerTopic = () => {
             };
           });
 
+          // Lọc bỏ các hàng rỗng
+          formattedData = filterEmptyRows(formattedData);
+
+          if (formattedData.length > 0) {
+            hasValidData = true; // Đánh dấu rằng có dữ liệu hợp lệ
+          }
+
           sheetData[sheetName] = formattedData;
         });
 
         if (hasError) {
           // Nếu có lỗi thì không tiếp tục thông báo thành công
+          return;
+        }
+
+        if (!hasValidData) {
+          messageApi.warning("File dữ liệu rỗng sau khi lọc.");
+          setJsonData({});
+          setSheetNames([]);
+          setSelectedSheet("");
           return;
         }
 
