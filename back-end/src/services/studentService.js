@@ -120,7 +120,6 @@ const createBulkAccount = async (data) => {
     // Lấy danh sách tài khoản hiện tại trong cơ sở dữ liệu
     const currentAccounts = await Student.findAll({
       attributes: ["id", "fullName", "username"],
-      raw: true,
     });
 
     // Tạo danh sách tài khoản mới và kiểm tra tồn tại
