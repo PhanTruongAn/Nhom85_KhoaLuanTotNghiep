@@ -7,52 +7,91 @@ const Footer = () => {
   return (
     <Box
       component="footer"
-      sx={[
-        (theme) => ({
-          ...theme.applyStyles("dark", {
-            backgroundColor: "#09223b",
-          }),
-          padding: "20px 0",
-          textAlign: "center",
+      sx={(theme) => ({
+        ...theme.applyStyles("dark", {
+          backgroundColor: "#09223b",
         }),
-      ]}
+        padding: { xs: "20px", sm: "40px 20px" },
+        textAlign: "center",
+      })}
     >
       <Box
         className="container-main"
-        sx={{ maxWidth: "1200px", margin: "0 auto" }}
+        sx={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: { xs: "0 20px", sm: "0 40px" },
+        }}
       >
-        <Grid container spacing={3} sx={{ textAlign: "left" }}>
+        <Grid
+          container
+          spacing={3}
+          sx={{ textAlign: { xs: "center", md: "left" } }}
+        >
           {/* Company Name Section */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            sx={{ padding: { xs: "0", sm: "10px" } }}
+          >
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              gutterBottom
+              sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+            >
               Giới thiệu
             </Typography>
-            <Typography>
+            <Typography sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
               Chào mừng các bạn đến với Hệ thống đăng kí khóa luận của khoa công
               nghệ thông tin trường Đại học Công nghiệp TP.HCM.
             </Typography>
           </Grid>
 
           {/* Contact Section */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            sx={{ padding: { xs: "0", sm: "10px" } }}
+          >
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              gutterBottom
+              sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+            >
               Liên hệ
             </Typography>
-            <Typography>
+            <Typography sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
               <i className="fas fa-home"></i> Khoa Công nghệ Thông tin - Lầu 1 -
               Nhà H
             </Typography>
-            <Typography>
+            <Typography sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
               <i className="fas fa-envelope"></i> Email: daotao.fit@iuh.edu.vn
             </Typography>
-            <Typography>
+            <Typography sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
               <i className="fas fa-phone"></i> Điện thoại: 028.389.40390 - 167
             </Typography>
           </Grid>
 
           {/* Follow FIT IUH Section */}
-          <Grid item xs={12} sm={12} md={4}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            sx={{ padding: { xs: "0", sm: "10px" } }}
+          >
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              gutterBottom
+              sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+            >
               Liên kết
             </Typography>
             <Box
@@ -90,7 +129,10 @@ const Footer = () => {
             marginTop: "20px",
           }}
         >
-          <Typography variant="body2">
+          <Typography
+            variant="body2"
+            sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
+          >
             © 2017 Khoa Công nghệ thông tin - Đại học Công nghiệp Thành phố Hồ
             Chí Minh
           </Typography>
