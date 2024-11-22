@@ -104,7 +104,8 @@ const AccountStudent = () => {
 
           // Xử lý dữ liệu
           const formattedData = validRows.map((row) => ({
-            MaSinhVien: row[headers.indexOf("Mã sinh viên")] || "",
+            MaSinhVien:
+              String(row[headers.indexOf("Mã sinh viên")]).trim() || "",
             FullName: row[headers.indexOf("Họ và tên")] || "",
             Email: row[headers.indexOf("Email")] || "",
           }));
@@ -121,20 +122,6 @@ const AccountStudent = () => {
     };
 
     reader.readAsArrayBuffer(file);
-  };
-
-  const persistDataToSave = () => {
-    const data = _.cloneDeep(jsonData);
-    const dataPersist = [];
-    Object.entries(data).map(([value]) => {
-      dataPersist.push({
-        termId: currentTerm.id,
-        fullName: value.FullName,
-        username: value.MaSinhVien,
-        password: "123",
-      });
-    });
-    return dataPersist;
   };
 
   const handlerSubmit = async () => {
@@ -229,18 +216,17 @@ const AccountStudent = () => {
     {
       title: "Mã sinh viên",
       dataIndex: "MaSinhVien",
-      key: "studentId",
+      key: "MaSinhVien", // Key trùng với dataIndex
     },
     {
       title: "Họ và tên",
       dataIndex: "FullName",
-      key: "fullName",
+      key: "FullName",
     },
-
     {
       title: "Email",
       dataIndex: "Email",
-      key: "email",
+      key: "Email",
     },
   ];
 

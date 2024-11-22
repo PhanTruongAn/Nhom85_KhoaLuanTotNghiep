@@ -106,7 +106,8 @@ const AccountLecturer = () => {
 
           // Xử lý dữ liệu
           const formattedData = validRows.map((row) => ({
-            MaGiangVien: row[headers.indexOf("Mã giảng viên")] || "",
+            MaGiangVien:
+              String(row[headers.indexOf("Mã giảng viên")]).trim() || "",
             FullName: row[headers.indexOf("Họ và tên")] || "",
             Email: row[headers.indexOf("Email")] || "",
           }));
@@ -236,7 +237,7 @@ const AccountLecturer = () => {
     {
       title: "Mã giảng viên",
       dataIndex: "MaGiangVien",
-      key: "LecturerId",
+      key: "maGiangVien",
     },
     {
       title: "Họ và tên",
