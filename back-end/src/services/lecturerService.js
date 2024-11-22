@@ -121,12 +121,12 @@ const createBulkAccountLecturer = async (data) => {
         data: null,
       };
     }
-
+    const defaultPassword = "123";
     // Tạo danh sách các giảng viên mới
     const dataPersist = newLecturers.map((value) => ({
       fullName: value.fullName,
       username: value.username,
-      password: hashPassword(value.password),
+      password: hashPassword(defaultPassword),
       roleId: 2,
     }));
 
