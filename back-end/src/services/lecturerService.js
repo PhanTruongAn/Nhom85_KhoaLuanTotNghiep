@@ -133,13 +133,24 @@ const createBulkAccountLecturer = async (data) => {
     }));
 
     // Thêm giảng viên mới vào cơ sở dữ liệu
-    await Lecturer.bulkCreate(dataPersist);
+    const createdLecturers = await Lecturer.bulkCreate(dataPersist, {
+      returning: true, // Lấy danh sách giảng viên vừa tạo
+    });
+
+    // Kết hợp giảng viên hiện tại và giảng viên vừa được tạo
+    const allLecturers = [
+      ...currentAccounts,
+      ...createdLecturers.map((lecturer) => ({
+        id: lecturer.id,
+        username: lecturer.username,
+      })),
+    ];
 
     // Lấy danh sách username từ dữ liệu đầu vào
     const inputUsernames = data.map((lecturer) => lecturer.username);
 
-    // Lọc ra danh sách giảng viên đã tồn tại trong dữ liệu đầu vào
-    const lecturersInDb = currentAccounts.filter((account) =>
+    // Lọc ra danh sách giảng viên đầu vào đã tồn tại trong cơ sở dữ liệu
+    const lecturersInDb = allLecturers.filter((account) =>
       inputUsernames.includes(account.username)
     );
 

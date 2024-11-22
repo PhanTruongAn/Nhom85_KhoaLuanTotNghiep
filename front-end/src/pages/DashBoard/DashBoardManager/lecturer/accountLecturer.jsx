@@ -197,9 +197,8 @@ const AccountLecturer = () => {
     }
 
     try {
-      console.log("Data to submit:", data);
-
       const result = await lecturerApi.createAccountsLecturer(data);
+
       if (result.status === 0) {
         setState({ ...state, loadingSuccess: false });
         messageApi.success(result.message);

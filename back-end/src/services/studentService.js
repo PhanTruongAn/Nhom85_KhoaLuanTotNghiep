@@ -107,45 +107,59 @@ const createBulkAccount = async (data) => {
     };
   }
 
-  // Lấy termId từ phần tử đầu tiên của data
-  const termId = data[0]?.termId;
-
-  if (!termId) {
-    return {
-      status: 1,
-      message: "Không tìm thấy thông tin học kỳ!",
-    };
-  }
-
   try {
-    // Lấy danh sách tài khoản hiện tại trong cơ sở dữ liệu
+    // Lấy termId từ phần tử đầu tiên của data
+    const termId = data[0]?.termId;
+
+    if (!termId) {
+      return {
+        status: 1,
+        message: "Không tìm thấy thông tin học kỳ!",
+        data: null,
+      };
+    }
+
+    // Lấy danh sách sinh viên hiện tại trong cơ sở dữ liệu
     const currentAccounts = await Student.findAll({
       attributes: ["id", "fullName", "username"],
+      raw: true,
     });
 
-    // Tạo danh sách tài khoản mới và kiểm tra tồn tại
+    // Tạo danh sách sinh viên mới và kiểm tra tồn tại
     const usernamesInDb = currentAccounts.map((account) => account.username);
-    const newAccounts = data.filter(
+    const newStudents = data.filter(
       ({ username }) => !usernamesInDb.includes(username)
     );
+
     const defaultPassword = "123";
 
-    // Tạo danh sách các tài khoản sinh viên mới
-    const dataPersist = newAccounts.map((value) => ({
+    // Tạo danh sách các sinh viên mới
+    const dataPersist = newStudents.map((value) => ({
       fullName: value.fullName,
       username: value.username,
       password: hashPassword(defaultPassword),
-      roleId: 1,
+      roleId: 1, // Sinh viên có roleId = 1
     }));
 
-    // Thêm tài khoản sinh viên mới vào cơ sở dữ liệu
-    await Student.bulkCreate(dataPersist);
+    // Thêm sinh viên mới vào cơ sở dữ liệu
+    const createdStudents = await Student.bulkCreate(dataPersist, {
+      returning: true, // Lấy danh sách sinh viên vừa tạo
+    });
+
+    // Kết hợp sinh viên hiện tại và sinh viên vừa được tạo
+    const allStudents = [
+      ...currentAccounts,
+      ...createdStudents.map((student) => ({
+        id: student.id,
+        username: student.username,
+      })),
+    ];
 
     // Lấy danh sách username từ dữ liệu đầu vào
-    const inputUsernames = data.map((account) => account.username);
+    const inputUsernames = data.map((student) => student.username);
 
-    // Lấy danh sách studentId tương ứng với username
-    const studentsInDb = currentAccounts.filter((account) =>
+    // Lọc ra danh sách sinh viên đầu vào đã tồn tại trong cơ sở dữ liệu
+    const studentsInDb = allStudents.filter((account) =>
       inputUsernames.includes(account.username)
     );
 
