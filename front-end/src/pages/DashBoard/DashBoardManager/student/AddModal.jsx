@@ -102,10 +102,6 @@ function AddModal({ onClose, isOpen }) {
                     required: true,
                     message: "Hãy nhập mã sinh viên!",
                   },
-                  {
-                    pattern: /^\d{8}$/,
-                    message: "Mã sinh viên phải là 8 chữ số!",
-                  },
                 ]}
               >
                 <Input placeholder="Mã sinh viên" />

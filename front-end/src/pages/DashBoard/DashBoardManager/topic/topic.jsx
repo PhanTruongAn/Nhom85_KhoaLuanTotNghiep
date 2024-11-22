@@ -34,9 +34,8 @@ const ManagerTopic = () => {
   };
   const buildDataToSave = () => {
     const data = _.cloneDeep(jsonData[selectedSheet]);
-    const dataSave = [];
-    Object.entries(data).map(([value]) => {
-      dataSave.push({
+    const dataSave = data.map((value) => {
+      return {
         title: value["Tên đề tài"],
         description: value["Mô tả"],
         goals: value["Mục tiêu đề tài"],
@@ -45,10 +44,11 @@ const ManagerTopic = () => {
         quantityGroup: value["Số lượng nhóm"],
         lecturerId: user.id,
         termId: currentTerm.id,
-      });
+      };
     });
     return dataSave;
   };
+
   const filterEmptyRows = (data) => {
     return data.filter((row) => {
       return Object.values(row).some(
@@ -160,15 +160,12 @@ const ManagerTopic = () => {
           return;
         }
 
-        console.log("sheetData", sheetData);
-
         setSheetNames(sheets);
         setSelectedSheet(sheets[0]); // Chọn sheet đầu tiên mặc định
         setJsonData(sheetData);
 
         messageApi.success("Dữ liệu file đã được tải thành công!");
       } catch (error) {
-        console.log(error);
         messageApi.error("Lỗi khi đọc file. Vui lòng kiểm tra lại định dạng.");
         setLoading(false);
       }
@@ -294,6 +291,7 @@ const ManagerTopic = () => {
     setLoading(true);
 
     const dataSave = buildDataToSave();
+
     const res = await lecturerApi.createTopics(dataSave);
 
     if (res && res.status === 0) {

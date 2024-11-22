@@ -49,7 +49,6 @@ function Statistical() {
       }
     },
     onError: (err) => {
-      console.log("Lỗi: ", err.message);
       messageApi.error("Lỗi khi lấy dữ liệu thống kê!");
     },
   });
@@ -166,7 +165,6 @@ function Statistical() {
       },
     },
   };
-  console.log("Data: ", data);
 
   return (
     <Box sx={{ padding: 2 }}>

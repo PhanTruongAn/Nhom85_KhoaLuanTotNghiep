@@ -142,7 +142,7 @@ function ListLecturer() {
       termId: currentTerm.id,
     };
     const res = await lecturerApi.deleteById(user);
-    // console.log("Res:", res);
+
     if (res && res.status === 0) {
       messageApi.success(res.message);
       refetch();

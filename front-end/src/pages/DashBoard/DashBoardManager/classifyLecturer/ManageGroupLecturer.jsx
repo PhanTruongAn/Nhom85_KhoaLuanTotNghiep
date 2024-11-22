@@ -53,7 +53,7 @@ const ManageGroupLecturer = () => {
     },
     onError: (err) => {
       setDataSource([]);
-      console.log("Lỗi:", err.message);
+
       messageApi.error("Lỗi khi lấy dữ liệu");
     },
   });

@@ -62,7 +62,6 @@ const AccountLecturer = () => {
 
         // Chuyển sheet sang dạng mảng 2D
         let json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        console.log("Dữ liệu đọc được:", json);
 
         if (json.length > 0) {
           const headers = json[0].map((header) => (header || "").trim()); // Lấy tiêu đề từ hàng đầu tiên
@@ -197,6 +196,8 @@ const AccountLecturer = () => {
     }
 
     try {
+      console.log("Data to submit:", data);
+
       const result = await lecturerApi.createAccountsLecturer(data);
       if (result.status === 0) {
         setState({ ...state, loadingSuccess: false });

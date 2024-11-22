@@ -79,7 +79,7 @@ function ClassifyTypeLecturer() {
       },
       onError: (err) => {
         updateState({ groups: [] });
-        console.log("Lỗi:", err.message);
+
         messageApi.error("Lỗi khi lấy dữ liệu");
       },
     }

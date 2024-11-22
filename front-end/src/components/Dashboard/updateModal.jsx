@@ -84,14 +84,6 @@ const UpdateModal = ({
                     required: true,
                     message: `Hãy nhập mã ${obj}!`,
                   },
-                  isStudent && {
-                    pattern: /^\d{8}$/,
-                    message: "Mã sinh viên phải là 8 chữ số!",
-                  },
-                  !isStudent && {
-                    pattern: /^\d{8}$/,
-                    message: "Mã giảng viên phải là 8 chữ số!",
-                  },
                 ]}
               >
                 <Input placeholder={`Mã ${obj}`} />
