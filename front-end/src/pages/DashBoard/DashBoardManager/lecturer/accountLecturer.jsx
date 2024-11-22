@@ -237,7 +237,7 @@ const AccountLecturer = () => {
     {
       title: "Mã giảng viên",
       dataIndex: "MaGiangVien",
-      key: "maGiangVien",
+      key: "LecturerId",
     },
     {
       title: "Họ và tên",
