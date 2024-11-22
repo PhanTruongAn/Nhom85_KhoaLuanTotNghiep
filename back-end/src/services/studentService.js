@@ -106,6 +106,7 @@ const createBulkAccount = async (data) => {
       data: null,
     };
   }
+
   // Lấy termId từ phần tử đầu tiên của data
   const termId = data[0]?.termId;
 
@@ -128,6 +129,7 @@ const createBulkAccount = async (data) => {
       ({ username }) => !usernamesInDb.includes(username)
     );
     const defaultPassword = "123";
+
     // Tạo danh sách các tài khoản sinh viên mới
     const dataPersist = newAccounts.map((value) => ({
       fullName: value.fullName,
@@ -139,27 +141,36 @@ const createBulkAccount = async (data) => {
     // Thêm tài khoản sinh viên mới vào cơ sở dữ liệu
     await Student.bulkCreate(dataPersist);
 
-    const termStudents = [];
+    // Lấy danh sách username từ dữ liệu đầu vào
+    const inputUsernames = data.map((account) => account.username);
 
-    // Kiểm tra từng tài khoản sinh viên (bao gồm cả tài khoản đã tồn tại)
-    for (const account of currentAccounts) {
-      const existTermStudent = await TermStudent.findOne({
-        where: {
-          studentId: account.id,
-          termId: termId,
-        },
-      });
+    // Lấy danh sách studentId tương ứng với username
+    const studentsInDb = currentAccounts.filter((account) =>
+      inputUsernames.includes(account.username)
+    );
 
-      // Nếu tài khoản chưa tồn tại trong TermStudent, thêm vào danh sách
-      if (!existTermStudent) {
-        termStudents.push({
-          studentId: account.id,
-          termId: termId,
-        });
-      }
-    }
+    // Lấy danh sách studentId đã tồn tại trong TermStudent cho học kỳ này
+    const existingTermStudents = await TermStudent.findAll({
+      where: {
+        termId: termId,
+        studentId: studentsInDb.map((student) => student.id),
+      },
+      attributes: ["studentId"],
+      raw: true,
+    });
 
-    // Thực hiện bulkCreate cho TermStudent nếu có sinh viên mới
+    // Tạo danh sách studentId cần thêm vào TermStudent
+    const existingStudentIds = existingTermStudents.map(
+      (entry) => entry.studentId
+    );
+    const termStudents = studentsInDb
+      .filter((student) => !existingStudentIds.includes(student.id))
+      .map((student) => ({
+        studentId: student.id,
+        termId: termId,
+      }));
+
+    // Thêm vào TermStudent nếu có dữ liệu mới
     if (termStudents.length > 0) {
       await TermStudent.bulkCreate(termStudents);
       return {

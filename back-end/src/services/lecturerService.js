@@ -99,6 +99,17 @@ const createBulkAccountLecturer = async (data) => {
   }
 
   try {
+    // Lấy termId từ phần tử đầu tiên của data
+    const termId = data[0]?.termId;
+
+    if (!termId) {
+      return {
+        status: 1,
+        message: "Không tìm thấy thông tin học kỳ!",
+        data: null,
+      };
+    }
+
     // Lấy danh sách giảng viên hiện tại trong cơ sở dữ liệu
     const currentAccounts = await Lecturer.findAll({
       attributes: ["id", "fullName", "username"],
@@ -111,17 +122,8 @@ const createBulkAccountLecturer = async (data) => {
       ({ username }) => !usernamesInDb.includes(username)
     );
 
-    // Lấy termId từ phần tử đầu tiên của data
-    const termId = data[0]?.termId;
-
-    if (!termId) {
-      return {
-        status: 1,
-        message: "Không tìm thấy thông tin học kỳ!",
-        data: null,
-      };
-    }
     const defaultPassword = "123";
+
     // Tạo danh sách các giảng viên mới
     const dataPersist = newLecturers.map((value) => ({
       fullName: value.fullName,
@@ -133,27 +135,36 @@ const createBulkAccountLecturer = async (data) => {
     // Thêm giảng viên mới vào cơ sở dữ liệu
     await Lecturer.bulkCreate(dataPersist);
 
-    const termLecturers = [];
+    // Lấy danh sách username từ dữ liệu đầu vào
+    const inputUsernames = data.map((lecturer) => lecturer.username);
 
-    // Kiểm tra từng giảng viên (bao gồm cả giảng viên đã tồn tại)
-    for (const lecturer of currentAccounts) {
-      const existTermLecturer = await TermLecturer.findOne({
-        where: {
-          lecturerId: lecturer.id,
-          termId: termId,
-        },
-      });
+    // Lọc ra danh sách giảng viên đã tồn tại trong dữ liệu đầu vào
+    const lecturersInDb = currentAccounts.filter((account) =>
+      inputUsernames.includes(account.username)
+    );
 
-      // Nếu giảng viên chưa tồn tại trong TermLecturer, thêm vào danh sách
-      if (!existTermLecturer) {
-        termLecturers.push({
-          lecturerId: lecturer.id,
-          termId: termId,
-        });
-      }
-    }
+    // Lấy danh sách lecturerId đã tồn tại trong TermLecturer cho học kỳ này
+    const existingTermLecturers = await TermLecturer.findAll({
+      where: {
+        termId: termId,
+        lecturerId: lecturersInDb.map((lecturer) => lecturer.id),
+      },
+      attributes: ["lecturerId"],
+      raw: true,
+    });
 
-    // Thực hiện bulkCreate cho TermLecturer nếu có giảng viên mới
+    // Tạo danh sách lecturerId cần thêm vào TermLecturer
+    const existingLecturerIds = existingTermLecturers.map(
+      (entry) => entry.lecturerId
+    );
+    const termLecturers = lecturersInDb
+      .filter((lecturer) => !existingLecturerIds.includes(lecturer.id))
+      .map((lecturer) => ({
+        lecturerId: lecturer.id,
+        termId: termId,
+      }));
+
+    // Thêm vào TermLecturer nếu có dữ liệu mới
     if (termLecturers.length > 0) {
       await TermLecturer.bulkCreate(termLecturers);
       return {
