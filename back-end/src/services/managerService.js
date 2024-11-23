@@ -1748,7 +1748,6 @@ const findEvaluationByGroupNameOrTopicTitle = async (term, searchValue) => {
           "noteReviewLecturer",
         ],
       },
-      where: { termId: term },
       distinct: true,
       include: [
         {
@@ -1771,6 +1770,7 @@ const findEvaluationByGroupNameOrTopicTitle = async (term, searchValue) => {
           { "$group.groupName$": { [Op.like]: `%${searchValue}%` } },
           { "$group.topic.title$": { [Op.like]: `%${searchValue}%` } },
         ],
+        termId: term,
       },
     });
 
