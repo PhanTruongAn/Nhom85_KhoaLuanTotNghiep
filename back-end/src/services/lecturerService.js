@@ -732,12 +732,13 @@ const updateTopic = async (data) => {
     };
   }
   if (
-    isNaN(data.quantityGroup) ||
-    (data.quantityGroup >= 0 && data.quantityGroup <= 10)
+    isNaN(Number(data.quantityGroup)) || 
+  Number(data.quantityGroup) < 1 || 
+  Number(data.quantityGroup) > 10
   ) {
     return {
       status: -1,
-      message: "Số lượng nhóm phải ít nhất là 1 và nhiều nhất là 10!",
+      message: "Số lượng nhóm phải là số, ít nhất là 1 nhóm và nhiều nhất là 10 nhóm!",
     };
   }
 
