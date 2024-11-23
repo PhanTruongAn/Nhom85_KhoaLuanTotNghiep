@@ -477,14 +477,24 @@ function PersonalTopics() {
               value={editTopic.quantityGroup}
               onChange={(e) => {
                 const value = e.target.value;
-                setEditTopic({ ...editTopic, quantityGroup: value });
-                if (value >= 1 && value <= 10) {
-                  setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    quantityGroup: "",
-                  }));
+                if (/^\d*$/.test(value)) {
+                  // Kiểm tra nếu giá trị chỉ chứa các chữ số
+                  setEditTopic({ ...editTopic, quantityGroup: value });
+                  if (value >= 1 && value <= 10) {
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      quantityGroup: "",
+                    }));
+                  }
                 }
               }}
+              onKeyPress={(e) => {
+                if (!/^\d*$/.test(e.key)) {
+                  // Ngăn chặn các ký tự không phải số
+                  e.preventDefault();
+                }
+              }}
+              inputProps={{ min: 1, max: 10, step: 1 }} // Giới hạn giá trị đầu vào
               error={!!errors.quantityGroup}
               helperText={errors.quantityGroup}
             />

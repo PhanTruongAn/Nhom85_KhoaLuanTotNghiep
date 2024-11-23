@@ -73,6 +73,7 @@ function GroupLecturer() {
     {
       enabled: !isEmpty(currentTerm) && !isEmpty(group),
       onSuccess: (res) => {
+        updateState({ reload: false });
         if (res && res.status === 0) {
           updateState({ groupStudent: res.data, reload: false });
           if (isEmpty(groupStudentData)) {

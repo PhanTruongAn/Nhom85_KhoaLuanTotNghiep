@@ -187,6 +187,12 @@ const CreateGroupStudent = () => {
                 onChange={(e) =>
                   updateState({ estimateGroupStudent: e.target.value })
                 }
+                onKeyPress={(e) => {
+                  if (!/^\d*$/.test(e.key)) {
+                    // Ngăn chặn các ký tự không phải số
+                    e.preventDefault();
+                  }
+                }}
                 required
               />
               <TextField
@@ -200,6 +206,12 @@ const CreateGroupStudent = () => {
                 }}
                 value={state.memberGroup}
                 onChange={(e) => onChange(e)}
+                onKeyPress={(e) => {
+                  if (!/^\d*$/.test(e.key)) {
+                    // Ngăn chặn các ký tự không phải số
+                    e.preventDefault();
+                  }
+                }}
                 required
               />
             </Box>
