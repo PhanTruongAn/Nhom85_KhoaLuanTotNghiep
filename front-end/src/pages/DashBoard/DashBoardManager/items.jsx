@@ -10,9 +10,6 @@ import {
   LockOutlined,
   KeyOutlined,
   UsergroupAddOutlined,
-  FileExcelOutlined,
-  BarChartOutlined,
-  TableOutlined,
   PlusOutlined,
   AreaChartOutlined,
   UserOutlined,
@@ -31,6 +28,9 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+
 const getItems = (isManager) => {
   const items = [
     {
@@ -238,13 +238,18 @@ const getItems = (isManager) => {
       : []),
     {
       key: "point",
-      icon: <TableOutlined />,
+      icon: <ListAltIcon />,
       label: "Chấm điểm",
       children: [
         {
           key: "point-list-group",
-          icon: <OrderedListOutlined />,
-          label: "Danh sách ",
+          icon: <ListAltIcon />,
+          label: "Danh sách chấm điểm",
+        },
+        isManager && {
+          key: "manage-point-student",
+          icon: <AssignmentIcon />,
+          label: "Danh sách điểm",
         },
       ],
     },
