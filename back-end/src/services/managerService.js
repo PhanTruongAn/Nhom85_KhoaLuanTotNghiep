@@ -382,7 +382,13 @@ const paginationGroupsStudent = async (page, limit, term) => {
   }
 };
 
-const findGroupByNameOrTopicTitle = async (searchValue) => {
+const findGroupByNameOrTopicTitle = async (term, searchValue) => {
+  if (!term) {
+    return {
+      status: -1,
+      message: "Thông tin học kì trống hoặc không hợp lệ!",
+    };
+  }
   if (!searchValue) {
     return {
       status: -1,
@@ -417,6 +423,7 @@ const findGroupByNameOrTopicTitle = async (searchValue) => {
           { groupName: { [Op.like]: `%${searchValue}%` } }, // Case-insensitive search for groupName
           { "$topic.title$": { [Op.like]: `%${searchValue}%` } }, // Case-insensitive search for topic title
         ],
+        termId: term,
       },
     });
 
@@ -1717,7 +1724,13 @@ const getAllGroupEvaluation = async (page, limit, term) => {
   }
 };
 
-const findEvaluationByGroupNameOrTopicTitle = async (searchValue) => {
+const findEvaluationByGroupNameOrTopicTitle = async (term, searchValue) => {
+  if (!term) {
+    return {
+      status: -1,
+      message: "Thông tin học kì trống hoặc không hợp lệ!",
+    };
+  }
   if (!searchValue) {
     return {
       status: -1,
@@ -1735,6 +1748,7 @@ const findEvaluationByGroupNameOrTopicTitle = async (searchValue) => {
           "noteReviewLecturer",
         ],
       },
+      where: { termId: term },
       distinct: true,
       include: [
         {

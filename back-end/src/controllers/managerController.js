@@ -117,9 +117,9 @@ const handleGetAllGroupsStudent = async (req, res) => {
   }
 };
 const handleFindGroupStudent = async (req, res) => {
-  const { search } = req.query;
+  const { term, search } = req.query;
   try {
-    const data = await service.findGroupByNameOrTopicTitle(search);
+    const data = await service.findGroupByNameOrTopicTitle(term, search);
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -473,9 +473,12 @@ const handleGetAllGroupEvaluation = async (req, res) => {
   }
 };
 const handleFindEvaluation = async (req, res) => {
-  const { search } = req.query;
+  const { term, search } = req.query;
   try {
-    const data = await service.findEvaluationByGroupNameOrTopicTitle(search);
+    const data = await service.findEvaluationByGroupNameOrTopicTitle(
+      term,
+      search
+    );
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);

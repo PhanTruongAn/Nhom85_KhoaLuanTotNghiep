@@ -93,7 +93,10 @@ function ManagePointStudent() {
     }
   );
   const handleFindEvaluation = async () => {
-    const res = await managerApi.findEvaluation(state.searchValue);
+    const res = await managerApi.findEvaluation(
+      currentTerm.id,
+      state.searchValue
+    );
     return res;
   };
 

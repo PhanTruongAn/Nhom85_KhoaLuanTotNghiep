@@ -91,7 +91,7 @@ const ListGroupStudent = () => {
     }
   );
   const handleFindGroupStudent = async () => {
-    const res = await managerApi.findGroupStudent(searchValue);
+    const res = await managerApi.findGroupStudent(currentTerm.id, searchValue);
     return res;
   };
   const handleOpenUpdateModal = (group) => {

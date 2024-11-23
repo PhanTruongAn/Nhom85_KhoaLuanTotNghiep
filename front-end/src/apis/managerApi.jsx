@@ -79,8 +79,10 @@ const managerApi = {
       `${baseUrl}/find-topics?term=${term}&search=${search}`
     );
   },
-  findGroupStudent: (search) => {
-    return axiosClient.get(`${baseUrl}/find-group-student?search=${search}`);
+  findGroupStudent: (term, search) => {
+    return axiosClient.get(
+      `${baseUrl}/find-group-student?term=${term}&search=${search}`
+    );
   },
 
   assignTopicToGroup: (data) => {
@@ -122,8 +124,10 @@ const managerApi = {
       `${baseUrl}/group-student-evaluation?term=${term}&page=${page}&limit=${limit}`
     );
   },
-  findEvaluation: (search) => {
-    return axiosClient.get(`${baseUrl}/find-evaluation?search=${search}`);
+  findEvaluation: (term, search) => {
+    return axiosClient.get(
+      `${baseUrl}/find-evaluation?term=${term}&search=${search}`
+    );
   },
   editEvaluation: (data) => {
     return axiosClient.put(baseUrl + "/edit-evaluation", data);
