@@ -1631,6 +1631,257 @@ const getStatistics = async (termId) => {
     };
   }
 };
+
+const getAllGroupEvaluation = async (page, limit, term) => {
+  try {
+    if (!page) {
+      return {
+        status: 1,
+        message: "Số trang không hợp lệ!",
+      };
+    }
+    if (!limit) {
+      return {
+        status: 1,
+        message: "Số phần tử của trang không hợp lệ!",
+      };
+    }
+    if (!term) {
+      return {
+        status: 1,
+        message: "Học kì không hợp lệ!",
+      };
+    }
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Evaluation.findAndCountAll({
+      attributes: {
+        exclude: [
+          "createdAt",
+          "updatedAt",
+          "groupId",
+          "noteAdvisorLecturer",
+          "noteReviewLecturer",
+        ],
+      },
+      distinct: true,
+      offset: offset,
+      limit: limit,
+      include: {
+        model: Group,
+        as: "group",
+        attributes: ["id", "groupName"],
+        include: [
+          {
+            model: Student,
+            as: "students",
+            through: { attributes: [] },
+            attributes: [
+              "id",
+              "fullName",
+              "email",
+              "phone",
+              "isLeader",
+              "gender",
+              "username",
+            ],
+          },
+          {
+            model: Topic,
+            as: "topic",
+            attributes: ["id", "title"],
+          },
+        ],
+      },
+      where: {
+        termId: term,
+      },
+    });
+
+    const totalPages = Math.ceil(count / limit);
+    return {
+      status: 0,
+      message: "Lấy danh sách nhóm thành công!",
+      data: {
+        totalRows: count,
+        totalPages: totalPages,
+        evaluations: rows,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lấy danh sách thất bại!",
+      data: null,
+    };
+  }
+};
+
+const findEvaluationByGroupNameOrTopicTitle = async (searchValue) => {
+  if (!searchValue) {
+    return {
+      status: -1,
+      message: "Dữ liệu tìm kiếm không hợp lệ!",
+    };
+  }
+  try {
+    const groups = await Evaluation.findAll({
+      attributes: {
+        exclude: [
+          "createdAt",
+          "updatedAt",
+          "groupId",
+          "noteAdvisorLecturer",
+          "noteReviewLecturer",
+        ],
+      },
+      distinct: true,
+      include: [
+        {
+          model: Group,
+          as: "group",
+          attributes: ["id", "groupName"],
+          required: true,
+          include: [
+            {
+              model: Topic,
+              as: "topic",
+              attributes: ["id", "title"],
+              required: true,
+            },
+          ],
+        },
+      ],
+      where: {
+        [Op.or]: [
+          { "$group.groupName$": { [Op.like]: `%${searchValue}%` } },
+          { "$group.topic.title$": { [Op.like]: `%${searchValue}%` } },
+        ],
+      },
+    });
+
+    if (groups && groups.length > 0) {
+      return {
+        status: 0,
+        message: "Tìm kiếm thành công!",
+        data: groups,
+      };
+    } else {
+      return {
+        status: 1,
+        message: "Không tìm thấy dữ liệu phù hợp!",
+        data: [],
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
+
+const editEvaluation = async (data) => {
+  const { id, discussionPoint, progressPoint, reportingPoint } = data;
+  if (!id) {
+    return {
+      status: -1,
+      message: "ID kết quả đánh giá trống hoặc không hợp lệ!",
+    };
+  }
+  try {
+    const checkEvaluation = await Evaluation.findOne({ where: { id: id } });
+    if (!checkEvaluation) {
+      return {
+        status: -1,
+        message: "Không tìm thấy kết quả đánh giá của nhóm này!",
+      };
+    }
+    if (
+      !checkEvaluation.discussionPoint ||
+      !checkEvaluation.progressPoint ||
+      !checkEvaluation.reportingPoint
+    ) {
+      return {
+        status: -1,
+        message:
+          "Kết quả đánh giá nhóm này chưa hoàn thiện, không thể chỉnh sửa!",
+      };
+    }
+    if (discussionPoint === "" || isNaN(Number(discussionPoint))) {
+      return {
+        status: -1,
+        message:
+          "Điểm phản biện không phải số từ 0 đến 10, trống hoặc không hợp lệ!",
+      };
+    }
+    if (progressPoint === "" || isNaN(Number(progressPoint))) {
+      return {
+        status: -1,
+        message:
+          "Điểm quá trình không phải số từ 0 đến 10 , trống hoặc không hợp lệ!",
+      };
+    }
+    if (reportingPoint === "" || isNaN(Number(reportingPoint))) {
+      return {
+        status: -1,
+        message:
+          "Điểm báo cáo không phải số từ 0 đến 10, trống hoặc không hợp lệ!",
+      };
+    }
+    const averagePoint = (
+      (discussionPoint + progressPoint + reportingPoint) /
+      3
+    ).toFixed(1);
+
+    checkEvaluation.discussionPoint = discussionPoint;
+    checkEvaluation.progressPoint = progressPoint;
+    checkEvaluation.reportingPoint = reportingPoint;
+    checkEvaluation.averagePoint = averagePoint;
+
+    await checkEvaluation.save();
+    return {
+      status: 0,
+      message: "Chỉnh sửa kết quả đánh giá thành công!",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
+const deleteEvaluation = async (id) => {
+  try {
+    if (!id) {
+      return {
+        status: -1,
+        message: "ID kết quả đánh giá trống hoặc không hợp lệ!",
+      };
+    }
+
+    const result = await Evaluation.destroy({ where: { id: id } });
+    if (result > 0) {
+      return {
+        status: 0,
+        message: "Xóa kết quả đánh giá thành công!",
+      };
+    } else {
+      return {
+        status: -1,
+        message: "Không tìm thấy kết quả đánh giá cần xóa!",
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      status: -1,
+      message: "Lỗi chức năng!",
+    };
+  }
+};
 module.exports = {
   updateMajor,
   deleteMajor,
@@ -1667,4 +1918,8 @@ module.exports = {
   deleteLecturerFromGroup,
   addLecturerToGroup,
   getStatistics,
+  getAllGroupEvaluation,
+  findEvaluationByGroupNameOrTopicTitle,
+  editEvaluation,
+  deleteEvaluation,
 };

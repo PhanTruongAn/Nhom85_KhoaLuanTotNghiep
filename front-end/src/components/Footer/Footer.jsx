@@ -20,7 +20,7 @@ const Footer = () => {
         sx={{
           maxWidth: "1200px",
           margin: "0 auto",
-          padding: { xs: "0 20px", sm: "0 40px" },
+          padding: { xs: "0 20px", sm: "0 30px" },
         }}
       >
         <Grid

@@ -249,7 +249,7 @@ const getItems = (isManager) => {
         isManager && {
           key: "manage-point-student",
           icon: <AssignmentIcon />,
-          label: "Danh sách điểm",
+          label: "Quản lý điểm số",
         },
       ],
     },

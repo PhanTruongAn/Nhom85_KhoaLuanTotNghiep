@@ -458,6 +458,58 @@ const handleGetStatistics = async (req, res) => {
     });
   }
 };
+
+const handleGetAllGroupEvaluation = async (req, res) => {
+  try {
+    const { limit, page, term } = req.query;
+    const data = await service.getAllGroupEvaluation(+page, +limit, term);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+const handleFindEvaluation = async (req, res) => {
+  const { search } = req.query;
+  try {
+    const data = await service.findEvaluationByGroupNameOrTopicTitle(search);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+const handleEditEvaluation = async (req, res) => {
+  try {
+    const data = await service.editEvaluation(req.body);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
+const handleDeleteEvaluation = async (req, res) => {
+  try {
+    let { id } = req.query;
+    const data = await service.deleteEvaluation(id);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: -1,
+      message: "Lỗi từ server!",
+    });
+  }
+};
 module.exports = {
   handleDeleteMajor,
   handleUpdateMajor,
@@ -493,4 +545,8 @@ module.exports = {
   handleDeleteLecturerFromGroup,
   handleAddLecturerToGroup,
   handleGetStatistics,
+  handleGetAllGroupEvaluation,
+  handleFindEvaluation,
+  handleEditEvaluation,
+  handleDeleteEvaluation,
 };

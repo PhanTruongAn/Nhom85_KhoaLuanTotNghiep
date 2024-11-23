@@ -8,7 +8,6 @@ import EmptyData from "../../../../components/emptydata/EmptyData";
 import CustomButton from "../../../../components/Button/CustomButton";
 import CustomHooks from "../../../../utils/hooks";
 import SearchComponent from "../../../../components/SearchComponent/search";
-import { InfoCircleOutlined } from "@ant-design/icons";
 import managerApi from "../../../../apis/managerApi";
 import { useDebounce } from "@uidotdev/usehooks";
 import { isEmpty } from "lodash";
@@ -19,12 +18,12 @@ const ListGroupStudent = () => {
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [searchValue, setSearchValue] = useState("");
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const debouncedSearchTerm = useDebounce(searchValue, 500);
   const [state, setState] = useState({
     searchLoading: false,
     currentPage: 1,
     pageSize: 5,
+    totalPages: 1,
     dataSource: [],
     loadingData: false,
     searchValue: "",
@@ -38,7 +37,11 @@ const ListGroupStudent = () => {
   };
 
   // Get Groups Student Data
-  const { isFetching, refetch } = CustomHooks.useQuery(
+  const {
+    isFetching,
+    refetch,
+    data: groupData,
+  } = CustomHooks.useQuery(
     [
       "groupStudent",
       state.currentPage,
@@ -65,6 +68,7 @@ const ListGroupStudent = () => {
             refreshButton: false,
             dataSource: res.data?.groupStudent || res.data,
             totalRows: res.data?.totalRows || res.data.length,
+            totalPages: res.data?.totalPages || 1,
             loadingData: false,
           });
         } else {
@@ -106,14 +110,13 @@ const ListGroupStudent = () => {
     const res = await managerApi.deleteGroupStudent(record);
     if (res && res.status === 0) {
       messageApi.success(res.message);
+      if (state.dataSource.length === 1 && state.totalPages !== 1) {
+        updateState({ currentPage: state?.currentPage - 1 });
+      }
       refetch();
     } else {
       messageApi.error(res.message);
     }
-  };
-
-  const handleDeleteMany = () => {
-    message.success(`Deleted groups: ${selectedRowKeys.join(", ")}`);
   };
 
   const onRefreshData = () => {
@@ -225,19 +228,6 @@ const ListGroupStudent = () => {
           alignItems: "center",
         }}
       >
-        <Button
-          variant="contained"
-          color="error"
-          size="small"
-          sx={{
-            marginRight: "10px",
-            display: selectedRowKeys.length === 0 ? "none" : "",
-          }}
-          startIcon={<DeleteOutlined />}
-          onClick={handleDeleteMany}
-        >
-          Xóa nhiều
-        </Button>
         <Typography
           sx={{
             flex: 1, // Để tiêu đề chiếm không gian còn lại
@@ -252,13 +242,13 @@ const ListGroupStudent = () => {
       </Box>
 
       <Table
-        rowSelection={{
-          selectedRowKeys,
-          onChange: setSelectedRowKeys,
-        }}
         bordered
         columns={columns}
-        dataSource={state.dataSource}
+        dataSource={
+          groupData && groupData.data
+            ? groupData.data.groupStudent
+            : state.dataSource
+        }
         rowKey="id"
         loading={isFetching}
         pagination={{
@@ -266,6 +256,10 @@ const ListGroupStudent = () => {
           showSizeChanger: true,
           pageSizeOptions: ["5", "10", "20"],
           total: state.totalRows, // Cập nhật giá trị total
+          total:
+            groupData && groupData.data
+              ? groupData.data.totalRows
+              : state.totalRows,
           current: state.currentPage,
           pageSize: state.pageSize,
           onChange: (page, size) => {

@@ -236,7 +236,24 @@ const initWebRoutes = (app) => {
     "/manager/add-lecturer-to-group",
     managerController.handleAddLecturerToGroup
   );
+  router.get(
+    "/manager/group-student-evaluation",
+    managerController.handleGetAllGroupEvaluation
+  );
+
   router.get("/manager/statistics", managerController.handleGetStatistics);
+  router.get(
+    "/manager/find-evaluation",
+    managerController.handleFindEvaluation
+  );
+  router.put(
+    "/manager/edit-evaluation",
+    managerController.handleEditEvaluation
+  );
+  router.delete(
+    "/manager/delete-evaluation",
+    managerController.handleDeleteEvaluation
+  );
   return app.use("/", router);
 };
 

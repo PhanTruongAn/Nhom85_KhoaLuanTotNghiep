@@ -117,5 +117,19 @@ const managerApi = {
   getStatistics: (termId) => {
     return axiosClient.get(`${baseUrl}/statistics?termId=${termId}`);
   },
+  getGroupStudentEvaluation: (page, limit, term) => {
+    return axiosClient.get(
+      `${baseUrl}/group-student-evaluation?term=${term}&page=${page}&limit=${limit}`
+    );
+  },
+  findEvaluation: (search) => {
+    return axiosClient.get(`${baseUrl}/find-evaluation?search=${search}`);
+  },
+  editEvaluation: (data) => {
+    return axiosClient.put(baseUrl + "/edit-evaluation", data);
+  },
+  deleteEvaluation: (id) => {
+    return axiosClient.delete(baseUrl + `/delete-evaluation?id=${id}`);
+  },
 };
 export default managerApi;

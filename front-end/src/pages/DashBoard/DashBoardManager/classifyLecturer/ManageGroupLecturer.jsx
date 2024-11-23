@@ -80,6 +80,7 @@ const ManageGroupLecturer = () => {
     setLoading(true);
     refetch();
     setTimeout(() => {
+      messageApi.success("Làm mới dữ liệu thành công!");
       setLoading(false);
     }, 1000);
   };

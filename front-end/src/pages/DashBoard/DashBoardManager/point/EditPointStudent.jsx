@@ -8,53 +8,28 @@ import {
   Grid,
   Divider,
 } from "@mui/material";
+import PropTypes from "prop-types";
 import { message } from "antd";
 import CustomButton from "../../../../components/Button/CustomButton";
 import { useSelector } from "react-redux";
+import managerApi from "../../../../apis/managerApi";
 
-function EditPointStudent({ onClose }) {
+function EditPointStudent({ onClose, selectedRecord, refetch }) {
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
 
-  // Dữ liệu mẫu gán cứng
-  const selectedGroup = {
-    id: 1,
-    groupName: "Nhóm 1",
-    students: [
-      {
-        id: 1,
-        username: "SV001",
-        fullName: "Nguyễn Văn A",
-        email: "nguyenvana@example.com",
-        phone: "0123456789",
-      },
-      {
-        id: 2,
-        username: "SV002",
-        fullName: "Trần Thị B",
-        email: "tranthib@example.com",
-        phone: "0987654321",
-      },
-    ],
-  };
-
-  const objectSelect = {
-    discussionPoint: 8,
-    progressPoint: 7,
-    reportingPoint: 9,
-  };
-
-  const [students, setStudents] = useState(selectedGroup?.students || []);
+  const [students, setStudents] = useState(
+    selectedRecord?.group?.students || []
+  );
   const [messageApi, contextHolder] = message.useMessage();
   const [discussionPoint, setDiscussionPoint] = useState(
-    objectSelect.discussionPoint
+    selectedRecord?.discussionPoint || undefined
   );
   const [progressPoint, setProgressPoint] = useState(
-    objectSelect.progressPoint
+    selectedRecord?.progressPoint || undefined
   );
   const [reportingPoint, setReportingPoint] = useState(
-    objectSelect.reportingPoint
+    selectedRecord?.reportingPoint || undefined
   );
-  const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({
     discussionPoint: "",
@@ -64,58 +39,32 @@ function EditPointStudent({ onClose }) {
 
   const handleScoreChange = (event, setScore, fieldName) => {
     const value = event.target.value;
-    setScore(value);
-
+    const numericValue = value === "" ? "" : Number(value);
+    setScore(numericValue);
     setErrors((prev) => ({ ...prev, [fieldName]: "" }));
   };
 
-  const validateForm = () => {
-    let valid = true;
-    let newErrors = {
-      discussionPoint: "",
-      progressPoint: "",
-      reportingPoint: "",
-    };
-
-    if (discussionPoint === undefined || discussionPoint === "") {
-      newErrors.discussionPoint = "Điểm phản biện không được để trống!";
-      valid = false;
-    } else if (discussionPoint < 0 || discussionPoint > 10) {
-      newErrors.discussionPoint = "Điểm phản biện phải từ 0 đến 10!";
-      valid = false;
-    }
-
-    if (progressPoint === undefined || progressPoint === "") {
-      newErrors.progressPoint = "Điểm quá trình không được để trống!";
-      valid = false;
-    } else if (progressPoint < 0 || progressPoint > 10) {
-      newErrors.progressPoint = "Điểm quá trình phải từ 0 đến 10!";
-      valid = false;
-    }
-
-    if (reportingPoint === undefined || reportingPoint === "") {
-      newErrors.reportingPoint = "Điểm báo cáo không được để trống!";
-      valid = false;
-    } else if (reportingPoint < 0 || reportingPoint > 10) {
-      newErrors.reportingPoint = "Điểm báo cáo phải từ 0 đến 10!";
-      valid = false;
-    }
-
-    setErrors(newErrors);
-    return valid;
-  };
-
-  const handleSubmit = () => {
-    if (!validateForm()) return;
-    setErrors({});
-    if (loading) return;
+  const handleSubmit = async () => {
     setLoading(true);
+    setErrors({});
 
-    // Gán cứng phản hồi sau khi lưu
-    setTimeout(() => {
-      messageApi.success("Điểm đã được lưu thành công!");
-      setLoading(false);
-    }, 1000);
+    const data = {
+      id: selectedRecord?.id || null,
+      discussionPoint: discussionPoint,
+      progressPoint: progressPoint,
+      reportingPoint: reportingPoint,
+    };
+    const res = await managerApi.editEvaluation(data);
+    if (res && res.status === 0) {
+      messageApi.success(res.message);
+      setTimeout(() => {
+        onClose();
+        refetch();
+      }, 1500);
+    } else {
+      messageApi.error(res.message);
+    }
+    setLoading(false);
   };
 
   return (
@@ -135,7 +84,7 @@ function EditPointStudent({ onClose }) {
         }}
       >
         <Typography variant="h6" marginBottom={1}>
-          Tên nhóm : {`${selectedGroup?.groupName || ""}`}
+          Tên nhóm : {`${selectedRecord?.group?.groupName || ""}`}
         </Typography>
 
         <Divider sx={{ marginBottom: 2 }} />
@@ -259,5 +208,9 @@ function EditPointStudent({ onClose }) {
     </Box>
   );
 }
-
+EditPointStudent.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  selectedRecord: PropTypes.object,
+  refetch: PropTypes.func.isRequired,
+};
 export default EditPointStudent;
