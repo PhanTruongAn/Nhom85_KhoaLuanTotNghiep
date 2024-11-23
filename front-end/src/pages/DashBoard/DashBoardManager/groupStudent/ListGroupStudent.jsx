@@ -246,7 +246,7 @@ const ListGroupStudent = () => {
         columns={columns}
         dataSource={
           groupData && groupData.data
-            ? groupData.data.groupStudent
+            ? groupData.data?.groupStudent || groupData.data
             : state.dataSource
         }
         rowKey="id"
@@ -255,7 +255,6 @@ const ListGroupStudent = () => {
           showQuickJumper: true,
           showSizeChanger: true,
           pageSizeOptions: ["5", "10", "20"],
-          total: state.totalRows, // Cập nhật giá trị total
           total:
             groupData && groupData.data
               ? groupData.data.totalRows

@@ -221,7 +221,7 @@ function ManagePointStudent() {
         columns={columns}
         dataSource={
           groupData && groupData.data
-            ? groupData.data.evaluations
+            ? groupData.data?.evaluations || groupData.data
             : state.dataSource
         }
         rowKey="id"
