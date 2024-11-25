@@ -17,12 +17,14 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import managerApi from "../../../../apis/managerApi";
+import { useSelector } from "react-redux";
 const UpdateGroupModalLecturer = ({
   groupSelected,
   isOpen,
   closeModal,
   refetch,
 }) => {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [newLecturerId, setNewLecturerId] = useState("");
   const [isAddLecturerOpen, setIsAddLecturerOpen] = useState(false);
   const [loadingState, setLoadingState] = useState({});
@@ -33,6 +35,7 @@ const UpdateGroupModalLecturer = ({
     let dataToSave = {
       username: newLecturerId,
       groupId: groupSelected.id,
+      termId: currentTerm.id,
     };
     let res = await managerApi.addLecturerToGroup(dataToSave);
     if (res && res.status === 0) {

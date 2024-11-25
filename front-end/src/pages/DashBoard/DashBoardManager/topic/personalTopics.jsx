@@ -218,6 +218,7 @@ function PersonalTopics() {
     let dataToSave = {
       groupName: groupName,
       topicId: selectedGroupTopic.id,
+      termId: currentTerm.id,
     };
     const res = await managerApi.assignTopicToGroup(dataToSave);
     if (res && res.status === 0) {

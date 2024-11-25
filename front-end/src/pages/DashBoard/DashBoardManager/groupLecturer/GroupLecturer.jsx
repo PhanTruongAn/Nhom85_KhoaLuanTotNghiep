@@ -45,7 +45,7 @@ const columns = (viewDetailTopic) => [
 function GroupLecturer() {
   const group = useSelector((state) => state.userInit.groupLecturer);
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
   const [state, setState] = useState({
     reload: false,
     groupStudent: [],
@@ -89,27 +89,12 @@ function GroupLecturer() {
       },
     }
   );
-
-  const handleReset = () => {
-    setSelectedRowKeys([]);
-  };
-
-  const onSelectChange = (newSelectedRowKeys) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
   const handleReload = () => {
     updateState({ reload: true });
     refetch();
     setTimeout(() => {
       messageApi.success("Làm mới dữ liệu thành công!");
     }, 1000);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    selections: [Table.SELECTION_ALL, Table.SELECTION_NONE],
   };
 
   const viewDetailTopic = (id) => {
@@ -195,7 +180,6 @@ function GroupLecturer() {
       </Box>
       <Box>
         <Table
-          rowSelection={rowSelection}
           columns={columns(viewDetailTopic)}
           dataSource={state.groupStudent}
           rowKey="id"

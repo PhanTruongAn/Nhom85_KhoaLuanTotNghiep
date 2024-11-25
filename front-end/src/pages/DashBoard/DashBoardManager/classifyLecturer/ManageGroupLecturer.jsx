@@ -8,7 +8,7 @@ import CustomButton from "../../../../components/Button/CustomButton";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
-import { useSelector } from "react-redux";
+
 import { isEmpty } from "lodash";
 const ManageGroupLecturer = () => {
   const [messageApi, contextHolder] = message.useMessage();

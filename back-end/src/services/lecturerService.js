@@ -732,13 +732,14 @@ const updateTopic = async (data) => {
     };
   }
   if (
-    isNaN(Number(data.quantityGroup)) || 
-  Number(data.quantityGroup) < 1 || 
-  Number(data.quantityGroup) > 10
+    isNaN(Number(data.quantityGroup)) ||
+    Number(data.quantityGroup) < 1 ||
+    Number(data.quantityGroup) > 10
   ) {
     return {
       status: -1,
-      message: "Số lượng nhóm phải là số, ít nhất là 1 nhóm và nhiều nhất là 10 nhóm!",
+      message:
+        "Số lượng nhóm phải là số, ít nhất là 1 nhóm và nhiều nhất là 10 nhóm!",
     };
   }
 
@@ -1249,7 +1250,7 @@ const addStudentToGroup = async (data) => {
     if (!student) {
       return {
         status: -1,
-        message: "Không tìm thấy sinh viên!",
+        message: "Sinh viên không tồn tại!",
       };
     }
 

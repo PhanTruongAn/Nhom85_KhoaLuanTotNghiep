@@ -1067,7 +1067,13 @@ const findTopicByTitleOrLecturerName = async (term, search) => {
   }
 };
 const assignTopicToGroup = async (data) => {
-  const { groupName, topicId } = data;
+  const { groupName, topicId, termId } = data;
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Thông tin học kì không hợp lệ!",
+    };
+  }
   if (!groupName || !topicId) {
     return {
       status: -1,
@@ -1078,14 +1084,21 @@ const assignTopicToGroup = async (data) => {
     let group = await Group.findOne({
       where: {
         groupName: groupName,
+        termId: termId,
       },
-      raw: true,
+      attributes: { exclude: ["TopicId"] },
+      distinct: true,
+      include: {
+        model: Student,
+        as: "students",
+        attributes: ["id", "fullName"],
+        through: { attributes: [] },
+      },
     });
     let topic = await Topic.findOne({
       where: {
         id: topicId,
       },
-      raw: true,
     });
 
     if (!group) {
@@ -1098,6 +1111,12 @@ const assignTopicToGroup = async (data) => {
       return {
         status: -1,
         message: "Đề tài không tồn tại!",
+      };
+    }
+    if (!group.students || group.students.length === 0) {
+      return {
+        status: -1,
+        message: "Nhóm này chưa có sinh viên, không thể gán đề tài!",
       };
     }
     let numOfGroup = await Group.findAll({
@@ -1333,7 +1352,7 @@ const assignGroupLecturer = async (data) => {
   if (!groupIds || !Array.isArray(groupIds) || groupIds.length === 0) {
     return {
       status: -1,
-      message: "Không tìm thấy thông tin nhóm học sinh!",
+      message: "Không tìm thấy thông tin nhóm sinh viên!",
     };
   }
 
@@ -1479,7 +1498,14 @@ const deleteLecturerFromGroup = async (data) => {
   }
 };
 const addLecturerToGroup = async (data) => {
-  const { username, groupId } = data;
+  const { username, groupId, termId } = data;
+
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Không tìm thấy thông tin học kì!",
+    };
+  }
   if (!username || !groupId) {
     return {
       status: -1,
@@ -1499,6 +1525,15 @@ const addLecturerToGroup = async (data) => {
       };
     }
 
+    const termLecturer = await TermLecturer.findOne({
+      where: { id: lecturer.id, termId: termId },
+    });
+    if (!termLecturer) {
+      return {
+        status: -1,
+        message: "Giảng viên không tham gia khóa luận trong học kì này!",
+      };
+    }
     const group = await GroupLecturer.findOne({
       where: { id: groupId },
     });
