@@ -149,10 +149,8 @@ function ListLecturer() {
       if (dataSource.length === 1 && totalPages !== 1) {
         setCurrentPage(currentPage - 1);
       }
-    } else if (res.EC === -1) {
-      messageApi.error(res.message);
     } else {
-      toast.error(res.message);
+      messageApi.error(res.message);
     }
   };
   const onSelectChange = (newSelectedRowKeys) => {

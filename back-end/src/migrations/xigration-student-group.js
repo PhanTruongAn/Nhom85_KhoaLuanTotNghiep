@@ -12,14 +12,14 @@ module.exports = {
       studentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        // references: { model: "Students", key: "id" },
-        // onDelete: "CASCADE",
+        references: { model: "Students", key: "id" },
+        onDelete: "CASCADE",
       },
       groupId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        // references: { model: "Groups", key: "id" },
-        // onDelete: "CASCADE",
+        references: { model: "Groups", key: "id" },
+        onDelete: "CASCADE",
       },
     });
   },

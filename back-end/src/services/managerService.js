@@ -486,33 +486,80 @@ const countStudent = async (termId) => {
   } catch (error) {
     console.error("Có lỗi xảy ra:", error);
     return {
-      status: 1,
+      status: -1,
       message: "Lấy tổng số lượng sinh viên và tổng số nhóm thất bại!",
       data: null,
     };
   }
 };
 const deleteGroupStudent = async (data) => {
-  if (!data && !data.id) {
+  const { id } = data;
+  if (!id) {
     return {
-      status: 1,
-      message: "Dữ liệu không hợp lệ!",
+      status: -1,
+      message: "Id nhóm trống hoặc không hợp lệ!",
     };
   }
-  const res = await Group.destroy({
-    where: {
-      id: data.id,
-    },
-  });
-  if (res) {
+  try {
+    const group = await Group.findOne({
+      include: {
+        model: Student,
+        as: "students",
+        through: { attributes: [] },
+        attributes: [
+          "id",
+          "fullName",
+          "email",
+          "phone",
+          "isLeader",
+          "gender",
+          "username",
+        ],
+      },
+      where: {
+        id: id,
+      },
+    });
+    if (!group) {
+      return {
+        status: -1,
+        message: "Không tìm thấy nhóm cần xóa!",
+      };
+    }
+    const { students } = group;
+    const groupEvaluation = await Evaluation.findOne({
+      where: {
+        groupId: group.id,
+      },
+    });
+    if (groupEvaluation) {
+      return {
+        status: -1,
+        message: "Nhóm này đã có kết quả đánh giá không thể xóa!",
+      };
+    }
+    if (students.length > 0) {
+      return {
+        status: -1,
+        message: "Nhóm này đã có sinh viên không thể xóa!",
+      };
+    }
+    const res = await Group.destroy({
+      where: {
+        id: group.id,
+      },
+    });
+    if (res > 0) {
+      return {
+        status: 0,
+        message: "Xoá nhóm thành công!",
+      };
+    }
+  } catch (error) {
+    console.error("Lỗi: ", error);
     return {
-      status: 0,
-      message: "Xoá nhóm thành công!",
-    };
-  } else {
-    return {
-      status: 0,
-      message: "Xoá nhóm thất bại!",
+      status: -1,
+      message: "Lỗi chức năng!",
     };
   }
 };

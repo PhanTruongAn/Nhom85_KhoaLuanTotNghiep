@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "lecturerId",
         onDelete: "CASCADE",
       });
-      Lecturer.hasMany(models.Topic);
       Lecturer.belongsToMany(models.Term, {
         through: "TermLecturer",
         foreignKey: "lecturerId",

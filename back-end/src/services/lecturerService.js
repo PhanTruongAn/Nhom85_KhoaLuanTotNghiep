@@ -297,6 +297,24 @@ const deleteLecturer = async (data) => {
       message: "Id giảng viên hoặc Id học kì không hợp lệ!",
     };
   }
+  const lecturer = await Lecturer.findOne({
+    where: {
+      id: data.id,
+    },
+  });
+  if (!lecturer) {
+    return {
+      status: -1,
+      message: "Không tìm thấy giảng viên!",
+    };
+  }
+  const { groupLecturerId } = lecturer;
+  if (groupLecturerId) {
+    return {
+      status: -1,
+      message: "Giảng viên đang tham gia nhóm chấm phản biện, không thể xóa!",
+    };
+  }
   const res = await Lecturer.destroy({
     where: { id: data.id },
   });
@@ -310,7 +328,7 @@ const deleteLecturer = async (data) => {
     };
   } else {
     return {
-      status: 0,
+      status: -1,
       message: "Xóa thất bại!",
     };
   }

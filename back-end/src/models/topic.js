@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       Topic.belongsTo(models.Lecturer, {
         foreignKey: "lecturerId",
         as: "lecturer",
+        onDelete: "CASCADE",
       });
       Topic.belongsTo(models.Term, {
         foreignKey: "termId",

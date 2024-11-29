@@ -298,21 +298,30 @@ const deleteStudent = async (data) => {
       message: "Id sinh viên hoặc Id học kì không hợp lệ!",
     };
   }
-  const res = await Student.destroy({
-    where: { id: data.id },
-  });
-  let res2 = await TermStudent.destroy({
-    where: { studentId: data.id, termId: data.termId },
-  });
-  if (res && res2) {
+  // const
+  try {
+    const res = await Student.destroy({
+      where: { id: data.id },
+    });
+    let res2 = await TermStudent.destroy({
+      where: { studentId: data.id, termId: data.termId },
+    });
+    if (res > 0 && res2 > 0) {
+      return {
+        status: 0,
+        message: "Xóa thành công!",
+      };
+    } else {
+      return {
+        status: 0,
+        message: "Xóa thất bại!",
+      };
+    }
+  } catch (error) {
+    console.log("Lỗi: ", error);
     return {
-      status: 0,
-      message: "Xóa thành công!",
-    };
-  } else {
-    return {
-      status: 0,
-      message: "Xóa thất bại!",
+      status: -1,
+      message: "Lỗi chức năng!",
     };
   }
 };
