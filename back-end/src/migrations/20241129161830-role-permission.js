@@ -2,23 +2,26 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Notes", {
+    await queryInterface.createTable("RolePermissions", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      title: {
-        type: Sequelize.STRING,
-      },
-      content: {
-        type: Sequelize.TEXT,
-      },
-      termId: {
+
+      roleId: {
         type: Sequelize.INTEGER,
-         references: {
-          model: "Terms",
+        references: {
+          model: "Roles",
+          key: "id",
+        },
+        onDelete: "CASCADE",
+      },
+      permissionId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Permissions",
           key: "id",
         },
         onDelete: "CASCADE",
@@ -34,6 +37,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Notes");
+    await queryInterface.dropTable("RolePermissions");
   },
 };
