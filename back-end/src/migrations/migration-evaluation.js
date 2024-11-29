@@ -30,10 +30,14 @@ module.exports = {
       groupId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: "Groups", key: "id" },
+        onDelete: "CASCADE",
       },
       termId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: "Terms", key: "id" },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,

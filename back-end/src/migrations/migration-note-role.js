@@ -9,9 +9,19 @@ module.exports = {
       },
       noteId: {
         type: Sequelize.INTEGER,
+         references: {
+          model: "Notes",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       roleId: {
         type: Sequelize.INTEGER,
+         references: {
+          model: "Roles",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,

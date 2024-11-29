@@ -11,9 +11,19 @@ module.exports = {
       },
       termId: {
         type: Sequelize.INTEGER,
+         references: {
+          model: "Terms",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       lecturerId: {
         type: Sequelize.INTEGER,
+         references: {
+          model: "Lecturers",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,

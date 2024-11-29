@@ -9,7 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-
       title: {
         type: Sequelize.STRING,
       },
@@ -18,8 +17,12 @@ module.exports = {
       },
       termId: {
         type: Sequelize.INTEGER,
+         references: {
+          model: "Terms",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

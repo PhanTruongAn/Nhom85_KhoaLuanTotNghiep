@@ -33,6 +33,11 @@ module.exports = {
       },
       roleId: {
         type: Sequelize.INTEGER,
+         references: {
+          model: "Roles",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       className: {
         type: Sequelize.STRING,
@@ -42,6 +47,11 @@ module.exports = {
       },
       majorId: {
         type: Sequelize.INTEGER,
+         references: {
+          model: "Majors",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,

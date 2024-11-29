@@ -9,7 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-
       apiPath: {
         type: Sequelize.STRING,
       },

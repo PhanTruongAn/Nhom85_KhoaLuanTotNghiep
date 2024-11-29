@@ -12,9 +12,19 @@ module.exports = {
 
       roleId: {
         type: Sequelize.INTEGER,
+         references: {
+          model: "Roles",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       permissionId: {
         type: Sequelize.INTEGER,
+         references: {
+          model: "Permissions",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
