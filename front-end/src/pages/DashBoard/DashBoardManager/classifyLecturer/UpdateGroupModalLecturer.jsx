@@ -198,14 +198,14 @@ const UpdateGroupModalLecturer = ({
               onClick={() => setIsAddLecturerOpen(false)}
               color="secondary"
             >
-              Cancel
+              Hủy
             </Button>
             <Button
               onClick={handleAddLecturer}
               color="primary"
               variant="contained"
             >
-              Add
+              Thêm
             </Button>
           </DialogActions>
         </Dialog>
