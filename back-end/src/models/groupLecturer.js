@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true,
         as: "reviewGroups",
       });
+      GroupLecturer.hasMany(models.Evaluation, {
+        foreignKey: "groupLecturerId",
+        onDelete: "CASCADE",
+      });
     }
   }
   GroupLecturer.init(

@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "termId",
         as: "term",
       });
+      Evaluation.belongsTo(models.Lecturer, {
+        foreignKey: "lecturerId",
+      });
+      Evaluation.belongsTo(models.GroupLecturer, {
+        foreignKey: "groupLecturerId",
+      });
     }
   }
   Evaluation.init(
@@ -19,10 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       progressPoint: DataTypes.DOUBLE,
       reportingPoint: DataTypes.DOUBLE,
       averagePoint: DataTypes.DOUBLE,
-      noteAdvisorLecturer: DataTypes.STRING,
-      noteReviewLecturer: DataTypes.STRING,
-      groupId: DataTypes.STRING,
-      termId: DataTypes.STRING,
+      lecturerId: DataTypes.INTEGER,
+      groupLecturerId: DataTypes.INTEGER,
+      groupId: DataTypes.INTEGER,
+      termId: DataTypes.INTEGER,
     },
     {
       sequelize,

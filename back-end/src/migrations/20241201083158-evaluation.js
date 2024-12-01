@@ -21,11 +21,17 @@ module.exports = {
       averagePoint: {
         type: Sequelize.DOUBLE,
       },
-      noteAdvisorLecturer: {
-        type: Sequelize.STRING,
+      lecturerId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "Lecturers", key: "id" },
+        onDelete: "CASCADE",
       },
-      noteReviewLecturer: {
-        type: Sequelize.STRING,
+      groupLecturerId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "GroupLecturers", key: "id" },
+        onDelete: "CASCADE",
       },
       groupId: {
         type: Sequelize.INTEGER,

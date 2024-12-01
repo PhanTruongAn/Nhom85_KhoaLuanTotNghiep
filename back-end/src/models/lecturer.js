@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "groupLecturerId",
         onDelete: "SET NULL",
       });
+      Lecturer.hasMany(models.Evaluation, {
+        foreignKey: "lecturerId",
+        onDelete: "CASCADE",
+      });
     }
   }
   Lecturer.init(
