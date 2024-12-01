@@ -23,13 +23,13 @@ module.exports = {
       },
       lecturerId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: { model: "Lecturers", key: "id" },
         onDelete: "CASCADE",
       },
       groupLecturerId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: { model: "GroupLecturers", key: "id" },
         onDelete: "CASCADE",
       },

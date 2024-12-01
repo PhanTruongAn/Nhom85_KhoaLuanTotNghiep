@@ -84,13 +84,16 @@ function EditPointStudent({ onClose, selectedRecord, refetch }) {
         }}
       >
         <Typography variant="h6" marginBottom={1}>
-          Tên nhóm : {`${selectedRecord?.group?.groupName || ""}`}
+          <strong>Tên nhóm: </strong>
+          {`${selectedRecord?.group?.groupName || ""}`}
         </Typography>
         <Typography variant="h6" marginBottom={1}>
-          Giảng viên hướng dẫn:
+          <strong>Giảng viên hướng dẫn: </strong>
+          {`${selectedRecord?.Lecturer?.fullName || ""}`}
         </Typography>
         <Typography variant="h6" marginBottom={1}>
-          Giảng viên phản biện và báo cáo:
+          <strong>Giảng viên phản biện và báo cáo: </strong>
+          {`${selectedRecord?.GroupLecturer?.name || ""}`}
         </Typography>
 
         <Divider sx={{ marginBottom: 2 }} />

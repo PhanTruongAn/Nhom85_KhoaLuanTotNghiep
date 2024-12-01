@@ -1256,18 +1256,10 @@ const handleCreateGroupLecturer = async (data) => {
       order: [["createdAt", "DESC"]],
     });
 
-    let groupNumber = 1;
-    if (latestGroup) {
-      const match = latestGroup.name.match(/^Nhóm (\d+)/);
-      if (match) {
-        groupNumber = parseInt(match[1], 10) + 1;
-      }
-    }
-
     const fullNameLecturer1 = lecturer1Record.fullName;
     const fullNameLecturer2 = lecturer2Record.fullName;
 
-    const groupName = `Nhóm ${groupNumber} - ${fullNameLecturer1} & ${fullNameLecturer2}`;
+    const groupName = `Nhóm ${fullNameLecturer1} & ${fullNameLecturer2}`;
 
     const group = await GroupLecturer.create({
       name: groupName,
@@ -1748,39 +1740,49 @@ const getAllGroupEvaluation = async (page, limit, term) => {
           "createdAt",
           "updatedAt",
           "groupId",
-          "noteAdvisorLecturer",
-          "noteReviewLecturer",
+          "lecturerId",
+          "groupLecturerId",
         ],
       },
       distinct: true,
       offset: offset,
       limit: limit,
-      include: {
-        model: Group,
-        as: "group",
-        attributes: ["id", "groupName"],
-        include: [
-          {
-            model: Student,
-            as: "students",
-            through: { attributes: [] },
-            attributes: [
-              "id",
-              "fullName",
-              "email",
-              "phone",
-              "isLeader",
-              "gender",
-              "username",
-            ],
-          },
-          {
-            model: Topic,
-            as: "topic",
-            attributes: ["id", "title"],
-          },
-        ],
-      },
+      include: [
+        {
+          model: Group,
+          as: "group",
+          attributes: ["id", "groupName"],
+          include: [
+            {
+              model: Student,
+              as: "students",
+              through: { attributes: [] },
+              attributes: [
+                "id",
+                "fullName",
+                "email",
+                "phone",
+                "isLeader",
+                "gender",
+                "username",
+              ],
+            },
+            {
+              model: Topic,
+              as: "topic",
+              attributes: ["id", "title"],
+            },
+          ],
+        },
+        {
+          model: Lecturer,
+          attributes: ["id", "fullName", "username"],
+        },
+        {
+          model: GroupLecturer,
+          attributes: ["id", "name"],
+        },
+      ],
       where: {
         termId: term,
       },
@@ -1826,8 +1828,8 @@ const findEvaluationByGroupNameOrTopicTitle = async (term, searchValue) => {
           "createdAt",
           "updatedAt",
           "groupId",
-          "noteAdvisorLecturer",
-          "noteReviewLecturer",
+          "lecturerId",
+          "groupLecturerId",
         ],
       },
       distinct: true,
@@ -1845,6 +1847,14 @@ const findEvaluationByGroupNameOrTopicTitle = async (term, searchValue) => {
               required: true,
             },
           ],
+        },
+        {
+          model: Lecturer,
+          attributes: ["id", "fullName", "username"],
+        },
+        {
+          model: GroupLecturer,
+          attributes: ["id", "name"],
         },
       ],
       where: {

@@ -302,10 +302,27 @@ const deleteLecturer = async (data) => {
       id: data.id,
     },
   });
+  const isInEvaluation = await Evaluation.findOne({
+    where: { lecturerId: data.id },
+    include: {
+      model: Group,
+      as: "group",
+      where: {
+        termId: data.termId,
+      },
+    },
+  });
+
   if (!lecturer) {
     return {
       status: -1,
       message: "Không tìm thấy giảng viên!",
+    };
+  }
+  if (isInEvaluation) {
+    return {
+      status: -1,
+      message: "Giảng viên đang tham gia chấm điểm quá trình, không thể xóa!",
     };
   }
   const { groupLecturerId } = lecturer;
@@ -838,8 +855,15 @@ const getNotes = async (termId, roleId) => {
 };
 
 const pointGroup = async (data) => {
-  const { discussionPoint, progressPoint, reportingPoint, groupId, termId } =
-    data;
+  const {
+    discussionPoint,
+    progressPoint,
+    reportingPoint,
+    groupId,
+    termId,
+    lecturerId,
+    groupLecturerId,
+  } = data;
 
   // Chuyển đổi các giá trị điểm thành số
   const discussionScore = Number(discussionPoint);
@@ -878,8 +902,15 @@ const pointGroup = async (data) => {
     }
 
     try {
+      if (!lecturerId) {
+        return {
+          status: -1,
+          message: "Mã giảng viên hướng dẫn trống hoặc không hợp lệ!",
+        };
+      }
       const evaluationData = {
         progressPoint: progressScore,
+        lecturerId,
         groupId,
         termId,
       };
@@ -902,6 +933,12 @@ const pointGroup = async (data) => {
     }
   } else {
     // Nếu đã có bản ghi (sau khi chấm điểm quá trình), thực hiện chấm điểm đợt 2
+    if (!groupLecturerId) {
+      return {
+        status: -1,
+        message: "Mã nhóm giảng viên chấm phản biện trống hoặc không hợp lệ!",
+      };
+    }
     if (!isNumber(discussionScore)) {
       return {
         status: -1,
@@ -927,7 +964,7 @@ const pointGroup = async (data) => {
       existingEvaluation.discussionPoint = discussionScore;
       existingEvaluation.reportingPoint = reportingScore;
       existingEvaluation.averagePoint = averagePoint;
-
+      existingEvaluation.groupLecturerId = groupLecturerId;
       await existingEvaluation.save();
 
       return {

@@ -24,6 +24,8 @@ function PointTopicStudent({
 }) {
   const isLecturerAdvisor = typeLecturer === "gvHuongDan";
   const currentTerm = useSelector((state) => state.userInit.currentTerm);
+  const groupLecturer = useSelector((state) => state.userInit.groupLecturer);
+  const lecturer = useSelector((state) => state.userInit.user);
   const [students, setStudents] = useState(selectedGroup?.students || []);
   const [messageApi, contextHolder] = message.useMessage();
   const [discussionPoint, setDiscussionPoint] = useState();
@@ -108,7 +110,8 @@ function PointTopicStudent({
       discussionPoint,
       progressPoint,
       reportingPoint,
-      comment,
+      lecturerId: lecturer.id,
+      groupLecturerId: groupLecturer?.id || null,
       groupId: selectedGroup?.id,
       termId: currentTerm.id,
     };
