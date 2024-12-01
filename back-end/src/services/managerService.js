@@ -1438,6 +1438,17 @@ const deleteLecturerGroup = async (data) => {
       message: "Id nhóm giảng viên không hợp lệ!",
     };
   }
+  const isInEvaluation = await Evaluation.findOne({
+    where:{
+      groupLecturerId:id
+    }
+  })
+  if(isInEvaluation){
+    return {
+      status: -1,
+      message: "Nhóm giảng viên đang tham gia chấm phản biện, không thể xóa!",
+    };
+  }
   try {
     const res = await GroupLecturer.destroy({
       where: {
