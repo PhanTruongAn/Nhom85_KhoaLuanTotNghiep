@@ -92,7 +92,7 @@ function EditPointStudent({ onClose, selectedRecord, refetch }) {
           {`${selectedRecord?.Lecturer?.fullName || ""}`}
         </Typography>
         <Typography variant="h6" marginBottom={1}>
-          <strong>Giảng viên phản biện và báo cáo: </strong>
+          <strong>Chấm phản biện: </strong>
           {`${selectedRecord?.GroupLecturer?.name || ""}`}
         </Typography>
 
