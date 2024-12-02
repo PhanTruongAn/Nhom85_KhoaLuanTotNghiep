@@ -33,6 +33,12 @@ module.exports = {
       },
       termId: {
         type: Sequelize.INTEGER,
+         allowNull: true,
+        references: {
+          model: "Terms",
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
