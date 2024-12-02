@@ -369,7 +369,8 @@ const handleCreateGroupLecturer = async (req, res) => {
 };
 const handleGetGroupLecturer = async (req, res) => {
   try {
-    const data = await service.getGroupLecturer();
+    const { termId } = req.query;
+    const data = await service.getGroupLecturer(termId);
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);

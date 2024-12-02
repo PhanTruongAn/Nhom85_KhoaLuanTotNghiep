@@ -1208,8 +1208,7 @@ const assignTopicToGroup = async (data) => {
 };
 
 const handleCreateGroupLecturer = async (data) => {
-  let { lecturer1, lecturer2 } = data;
-  console.log("CheckL ", data);
+  let { lecturer1, lecturer2, termId } = data;
 
   if (!lecturer1 || !lecturer2) {
     return {
@@ -1217,7 +1216,12 @@ const handleCreateGroupLecturer = async (data) => {
       message: "Mỗi nhóm phải có đủ 2 giảng viên!",
     };
   }
-
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Học kì trống hoặc không hợp lệ!",
+    };
+  }
   try {
     const lecturer1Record = await Lecturer.findOne({
       attributes: [
@@ -1251,11 +1255,6 @@ const handleCreateGroupLecturer = async (data) => {
       };
     }
 
-    const latestGroup = await GroupLecturer.findOne({
-      attributes: ["name"],
-      order: [["createdAt", "DESC"]],
-    });
-
     const fullNameLecturer1 = lecturer1Record.fullName;
     const fullNameLecturer2 = lecturer2Record.fullName;
 
@@ -1264,6 +1263,7 @@ const handleCreateGroupLecturer = async (data) => {
     const group = await GroupLecturer.create({
       name: groupName,
       numOfMembers: 2,
+      termId: termId,
     });
 
     await lecturer1Record.update({ groupLecturerId: group.id });
@@ -1282,7 +1282,14 @@ const handleCreateGroupLecturer = async (data) => {
   }
 };
 
-const getGroupLecturer = async () => {
+const getGroupLecturer = async (termId) => {
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Thông tin học kì trống hoặc không hợp lệ!",
+      groups: [],
+    };
+  }
   try {
     let groups = await GroupLecturer.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -1298,6 +1305,9 @@ const getGroupLecturer = async () => {
           attributes: ["id"],
         },
       ],
+      where: {
+        termId: termId,
+      },
     });
     if (groups && groups.length > 0) {
       return {
@@ -1439,11 +1449,11 @@ const deleteLecturerGroup = async (data) => {
     };
   }
   const isInEvaluation = await Evaluation.findOne({
-    where:{
-      groupLecturerId:id
-    }
-  })
-  if(isInEvaluation){
+    where: {
+      groupLecturerId: id,
+    },
+  });
+  if (isInEvaluation) {
     return {
       status: -1,
       message: "Nhóm giảng viên đang tham gia chấm phản biện, không thể xóa!",
@@ -1508,25 +1518,35 @@ const deleteLecturerFromGroup = async (data) => {
       };
     }
 
-    // Lấy tên nhóm và tách tên giảng viên
-    const groupName = group.name; // Example: "Nhóm 1 - Văn Hê & Trường An"
-    const [prefix, lecturers] = groupName.split(" - ");
+    // Lấy tên nhóm
+    const groupName = group.name; // Ví dụ: "Nhóm Nguyễn Văn A & Phan Trường An"
 
-    const nameParts = lecturers.split(" & ");
+    // Tách tiền tố và danh sách giảng viên
+    const [prefix, ...lecturerParts] = groupName.split(" "); // Tách khoảng trắng
+    const lecturers = lecturerParts.join(" "); //Nối lại phần tên giảng viên: "Nhóm Nguyễn Văn A & Phan Trường An"
 
-    // Xóa tên giảng viên khỏi tên nhóm
-    const updatedNameParts = nameParts.filter(
-      (name) => name !== lecturer.fullName
+    // Tách danh sách giảng viên bằng dấu " & "
+    const lecturerNames = lecturers.split(" & "); // ["Nguyễn Văn A", "Phan Trường An"]
+
+    // Xóa giảng viên khỏi danh sách
+    const updatedNames = lecturerNames.filter(
+      (name) => name.trim() !== lecturer.fullName.trim()
     );
 
-    // Nếu chỉ còn một giảng viên, không cần dấu "&"
-    let updatedGroupName = "";
-    if (updatedNameParts.length === 1) {
-      updatedGroupName = `${prefix} - ${updatedNameParts[0]}`;
-    } else if (updatedNameParts.length > 1) {
-      updatedGroupName = `${prefix} - ${updatedNameParts.join(" & ")}`;
+    // Cập nhật tên nhóm mới
+    let updatedGroupName = prefix;
+    if (updatedNames.length === 1) {
+      updatedGroupName += ` ${updatedNames[0]}`; // Chỉ còn 1 giảng viên, không cần "&"
+    } else if (updatedNames.length > 1) {
+      updatedGroupName += ` ${updatedNames.join(" & ")}`; // Nối lại với "&"
     }
 
+    // Nếu không còn giảng viên nào, giữ nguyên tiền tố
+    if (updatedNames.length === 0) {
+      updatedGroupName = prefix;
+    }
+
+    // Cập nhật cơ sở dữ liệu
     await group.update({
       name: updatedGroupName,
     });
@@ -1547,6 +1567,7 @@ const deleteLecturerFromGroup = async (data) => {
     };
   }
 };
+
 const addLecturerToGroup = async (data) => {
   const { username, groupId, termId } = data;
 
@@ -1576,14 +1597,16 @@ const addLecturerToGroup = async (data) => {
     }
 
     const termLecturer = await TermLecturer.findOne({
-      where: { id: lecturer.id, termId: termId },
+      where: { lecturerId: lecturer.id, termId: termId },
     });
+
     if (!termLecturer) {
       return {
         status: -1,
         message: "Giảng viên không tham gia khóa luận trong học kì này!",
       };
     }
+
     const group = await GroupLecturer.findOne({
       where: { id: groupId },
     });
@@ -1602,17 +1625,21 @@ const addLecturerToGroup = async (data) => {
       };
     }
 
+    // Gán giảng viên vào nhóm
     await lecturer.update({
       groupLecturerId: group.id,
     });
 
-    const groupName = group.name;
-    const [prefix, lecturers] = groupName.split(" - ");
-    const nameParts = lecturers.split(" & ");
+    // Cập nhật tên nhóm
+    const groupName = group.name; // Ví dụ: "Nhóm Nguyễn Văn A"
+    const [prefix, ...lecturerParts] = groupName.split(" "); // Tách bằng khoảng trắng
+    const lecturers = lecturerParts.join(" "); // Lấy phần tên giảng viên hiện có
 
-    if (!nameParts.includes(lecturer.fullName)) {
-      nameParts.push(lecturer.fullName);
-      const updatedGroupName = `${prefix} - ${nameParts.join(" & ")}`;
+    const lecturerNames = lecturers ? lecturers.split(" & ") : []; // Tách danh sách giảng viên
+
+    if (!lecturerNames.includes(lecturer.fullName)) {
+      lecturerNames.push(lecturer.fullName); // Thêm tên giảng viên mới
+      const updatedGroupName = `${prefix} ${lecturerNames.join(" & ")}`; // Kết nối lại với "&"
 
       await group.update({
         name: updatedGroupName,
@@ -1631,6 +1658,7 @@ const addLecturerToGroup = async (data) => {
     };
   }
 };
+
 const convertToGrade = (averagePoint) => {
   if (averagePoint >= 9.0) return "A+"; // A+
   if (averagePoint >= 8.5) return "A"; // A
@@ -1663,7 +1691,9 @@ const getStatistics = async (termId) => {
     const totalTopics = await Topic.count({
       where: whereCondition,
     });
-    const totalGroupsLecturer = await GroupLecturer.count();
+    const totalGroupsLecturer = await GroupLecturer.count({
+      where: whereCondition,
+    });
     const totalMajors = await Major.findAll({
       attributes: [
         "majorName",

@@ -298,22 +298,36 @@ const deleteStudent = async (data) => {
       message: "Id sinh viên hoặc Id học kì không hợp lệ!",
     };
   }
-  // const
+  const isInGroup = await StudentGroup.findOne({
+    where: {
+      studentId: data.id,
+    },
+    include: {
+      model: Group,
+      as: "groups",
+      where: {
+        termId: data.termId,
+      },
+    },
+  });
+  if (isInGroup) {
+    return {
+      status: -1,
+      message: "Sinh viên hiện đang tham gia nhóm, không thể xóa!",
+    };
+  }
   try {
     const res = await Student.destroy({
       where: { id: data.id },
     });
-    let res2 = await TermStudent.destroy({
-      where: { studentId: data.id, termId: data.termId },
-    });
-    if (res > 0 && res2 > 0) {
+    if (res > 0) {
       return {
         status: 0,
         message: "Xóa thành công!",
       };
     } else {
       return {
-        status: 0,
+        status: -1,
         message: "Xóa thất bại!",
       };
     }

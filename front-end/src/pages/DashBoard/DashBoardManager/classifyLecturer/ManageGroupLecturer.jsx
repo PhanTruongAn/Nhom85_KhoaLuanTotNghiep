@@ -8,9 +8,10 @@ import CustomButton from "../../../../components/Button/CustomButton";
 import SearchComponent from "../../../../components/SearchComponent/search";
 import CustomHooks from "../../../../utils/hooks";
 import managerApi from "../../../../apis/managerApi";
-
+import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 const ManageGroupLecturer = () => {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -32,14 +33,14 @@ const ManageGroupLecturer = () => {
     setOpenUpdateModal(true);
   };
   const getGroupLecturer = async () => {
-    let res = await managerApi.getGroupLecturer();
+    let res = await managerApi.getGroupLecturer(currentTerm.id);
     return res;
   };
   const {
     data: groupData,
     isFetching,
     refetch,
-  } = CustomHooks.useQuery(["group-lecturer"], getGroupLecturer, {
+  } = CustomHooks.useQuery(["group-lecturer", currentTerm], getGroupLecturer, {
     onSuccess: (res) => {
       if (res && res.status === 0) {
         setDataSource(res.groups);

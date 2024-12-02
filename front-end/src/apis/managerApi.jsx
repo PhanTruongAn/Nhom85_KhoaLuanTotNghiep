@@ -94,8 +94,8 @@ const managerApi = {
   createGroupLecturer: (data) => {
     return axiosClient.post(`${baseUrl}/create-group-lecturer`, data);
   },
-  getGroupLecturer: () => {
-    return axiosClient.get(`${baseUrl}/get-group-lecturer`);
+  getGroupLecturer: (termId) => {
+    return axiosClient.get(`${baseUrl}/get-group-lecturer?termId=${termId}`);
   },
   reviewGroupStudent: (page, limit) => {
     return axiosClient.get(

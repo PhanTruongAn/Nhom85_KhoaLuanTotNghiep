@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "termId",
         as: "studentGroups",
       });
+      Term.hasMany(models.GroupLecturer, {
+        foreignKey: "termId",
+      });
     }
   }
 

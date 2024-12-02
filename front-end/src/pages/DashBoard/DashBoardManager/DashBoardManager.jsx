@@ -90,11 +90,11 @@ const DashBoardManager = () => {
     return res;
   };
   const getGroup = async () => {
-    let res = await lecturerApi.getMyGroup(user?.id);
+    let res = await lecturerApi.getMyGroup(user.id, currentTerm.id);
     return res;
   };
   CustomHooks.useQuery(["group"], getGroup, {
-    enabled: !isEmpty(user),
+    enabled: !isEmpty(user) && !isEmpty(currentTerm),
     onSuccess: (res) => {
       if (res && res.status === 0) {
         dispatch(setGroupLecturer(res.group));

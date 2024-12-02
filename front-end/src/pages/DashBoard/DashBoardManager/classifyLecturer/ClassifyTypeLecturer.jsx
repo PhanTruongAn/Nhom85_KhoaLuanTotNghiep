@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { Card } from "../../../../components/Card/Card";
 import { Table, Select, Space, message } from "antd";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CustomHooks from "../../../../utils/hooks";
 import EmptyData from "../../../../components/emptydata/EmptyData";
@@ -36,6 +35,7 @@ const columns = [
   },
 ];
 function ClassifyTypeLecturer() {
+  const currentTerm = useSelector((state) => state.userInit.currentTerm);
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [selectedLecturerGuide, setSelectedLecturerGuide] = useState(null);
@@ -60,12 +60,12 @@ function ClassifyTypeLecturer() {
 
   // Get list lecturer
   const getData = async () => {
-    const res = await managerApi.getGroupLecturer();
+    const res = await managerApi.getGroupLecturer(currentTerm.id);
     return res;
   };
 
   const { isFetching, refetch } = CustomHooks.useQuery(
-    ["group-lecturer"],
+    ["group-lecturer", currentTerm],
     getData,
     {
       onSuccess: (res) => {
@@ -79,7 +79,6 @@ function ClassifyTypeLecturer() {
       },
       onError: (err) => {
         updateState({ groups: [] });
-
         messageApi.error("Lỗi khi lấy dữ liệu");
       },
     }

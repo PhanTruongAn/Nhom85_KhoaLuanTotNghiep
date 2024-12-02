@@ -335,10 +335,7 @@ const deleteLecturer = async (data) => {
   const res = await Lecturer.destroy({
     where: { id: data.id },
   });
-  const res2 = await TermLecturer.destroy({
-    where: { lecturerId: data.id, termId: data.termId },
-  });
-  if (res && res2) {
+  if (res) {
     return {
       status: 0,
       message: "Xóa thành công!",
@@ -1047,11 +1044,17 @@ const getGroupTopic = async (lecturerId, termId) => {
   }
 };
 
-const getLecturerGroup = async (lecturerId) => {
+const getLecturerGroup = async (lecturerId, termId) => {
   if (!lecturerId) {
     return {
       status: -1,
       message: "ID giảng viên không hợp lệ!",
+    };
+  }
+  if (!termId) {
+    return {
+      status: -1,
+      message: "Học kì trống hoặc không hợp lệ!",
     };
   }
   try {
@@ -1072,6 +1075,7 @@ const getLecturerGroup = async (lecturerId) => {
         attributes: { exclude: ["createdAt", "updatedAt"] },
         where: {
           id: groupLecturerId,
+          termId: termId,
         },
         include: {
           model: Lecturer,

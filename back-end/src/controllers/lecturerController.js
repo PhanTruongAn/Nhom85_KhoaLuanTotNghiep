@@ -233,8 +233,8 @@ const handleReviewLecturers = async (req, res) => {
 };
 const handleMyGroup = async (req, res) => {
   try {
-    const { lecturer } = req.query;
-    const data = await lecturerService.getLecturerGroup(lecturer);
+    const { lecturer, termId } = req.query;
+    const data = await lecturerService.getLecturerGroup(lecturer, termId);
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);

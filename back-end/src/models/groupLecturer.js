@@ -20,12 +20,17 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "groupLecturerId",
         onDelete: "CASCADE",
       });
+      GroupLecturer.belongsTo(models.Term, {
+        foreignKey: "termId",
+        onDelete: "CASCADE",
+      });
     }
   }
   GroupLecturer.init(
     {
       name: DataTypes.STRING,
       numOfMembers: DataTypes.INTEGER,
+      termId: DataTypes.INTEGER,
     },
     {
       sequelize,
