@@ -6,7 +6,7 @@ services:
       - ../front-end/dist:/usr/share/nginx/html
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/nginx/ssl/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:rw
     ports:
       - 80:808
       - 443:443
@@ -38,8 +38,8 @@ services:
       - DB_PORT=3306
       - DB_HOST=db-mysql
       - DB_USER=root
-      - DB_PASSWORD=Ocvittot123 
-      - DB_NAME=khoaluan 
+      - DB_PASSWORD=Ocvittot123
+      - DB_NAME=khoaluan
     ports:
       - 8080:8080
     expose:
