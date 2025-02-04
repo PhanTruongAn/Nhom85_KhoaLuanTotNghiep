@@ -40,10 +40,12 @@
 
 
 - Đăng ký đề tài (chỉ mở trong thời gian được quản lý thiết lập), quản lý đề tài (chỉ có nhóm trưởng mới có thể đăng ký cũng như hủy đăng ký đề tài).
+
 ![join-topic](https://github.com/user-attachments/assets/f8eed9c7-bd83-41f6-be31-1a013c09d33c) ![view-topic](https://github.com/user-attachments/assets/acdff459-5b4a-4215-9de3-eaaec8087497)
 
 - Xem điểm số (chỉ mở trong thời gian được quản lý thiết lập)
-![Uploading view-point.png…]()
+
+![view-point](https://github.com/user-attachments/assets/ab5b64ed-36aa-483a-b64a-477fc0f57c10)
 
 - Một số chức năng khác như xem tiêu chí đánh giá hoặc thông báo.
 
@@ -92,9 +94,11 @@
 
 
 - Quản lý điểm số các nhóm: quản lý có thể thao tác trực tiếp điểm số các nhóm (xóa hoặc chỉnh sửa)
+
 ![manage-point](https://github.com/user-attachments/assets/e18e75cc-3109-487f-876a-9b833d2e1c14)
 
 - Một số chức năng khác như quản lý học kì, thông báo.
+
 ![major](https://github.com/user-attachments/assets/6642b54f-21b2-46bd-bc9e-8d8da8b7c845) ![create-note](https://github.com/user-attachments/assets/d49f6315-d8a4-45ee-8b63-79962cca0631) ![manage-note](https://github.com/user-attachments/assets/e3217719-b85d-4c3a-bc07-ef3ec04dbe51)
 
 
