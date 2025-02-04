@@ -7,9 +7,11 @@
 
 ### Các tính năng nổi bật
 - Đăng nhập: Người dùng đăng nhập bằng khoản đã được cung cấp sẵn và dựa vào vai trò của tài khoản sẽ có quyền hạn và chức năng khác nhau.
+
 ![login](https://github.com/user-attachments/assets/7210037c-6bdb-4475-b6f9-f06ae9e82e32)
 
 - Quên mật khẩu: Người dùng nhập username và mật khẩu mới sẽ được gửi về email đã đăng ký tài khoản, nếu tài khoản chưa có email thì nhập email mới.
+
 ![forget-pass](https://github.com/user-attachments/assets/48224cb2-2725-483d-970b-cbc6366bde01)
 
 
