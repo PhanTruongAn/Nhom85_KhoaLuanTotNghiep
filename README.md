@@ -2,10 +2,11 @@
 
 ## Mô tả dự án
 
-Đây là dự án khóa luận tốt nghiệp của nhóm 85, cung cấp hệ thống quản lý và hỗ trợ cho sinh viên, giảng viên, và quản lý. 
+Đây là dự án khóa luận tốt nghiệp của nhóm 85, cung cấp hệ thống quản lý, triển khai và thực  khóa luận tốt nghiệp cho sinh viên, giảng viên, và quản lý.
 
 
 ### Các tính năng nổi bật
+- Hệ thống có chức năng thay đổi theme sáng, tối.
 - Đăng nhập: Người dùng đăng nhập bằng khoản đã được cung cấp sẵn và dựa vào vai trò của tài khoản sẽ có quyền hạn và chức năng khác nhau.
 
 ![login](https://github.com/user-attachments/assets/7210037c-6bdb-4475-b6f9-f06ae9e82e32)
@@ -16,6 +17,10 @@
 
 
 #### **Dành cho sinh viên:**
+- Sinh viên có thể thay đổi thông tin cá nhân, đổi mật khẩu.
+  ![info](https://github.com/user-attachments/assets/6a731843-b684-40c6-82ac-5f700262a8f3) ![change-pass](https://github.com/user-attachments/assets/be0798ae-50e6-4e87-adf9-45e441629335)
+
+
 - Tham gia nhóm, quản lý nhóm.
 - Đăng ký đề tài, quản lý đề tài.
 - Xem điểm số.
