@@ -1,20 +1,17 @@
 # Nhom85_KhoaLuanTotNghiep
 
-## Tài khoản mẫu
-
-| **Loại tài khoản** | **Tên tài khoản** | **Mật khẩu**     |
-|---------------------|-------------------|------------------|
-| Quản lý            | admin            | anhdayroi1122    |
-| Giảng viên         | GV002            | 123              |
-| Sinh viên          | SV002            | 123              |
-
 ## Mô tả dự án
 
 Đây là dự án khóa luận tốt nghiệp của nhóm 85, cung cấp hệ thống quản lý và hỗ trợ cho sinh viên, giảng viên, và quản lý. 
 
-- **Link Demo**: [phantruongan.click](http://phantruongan.click)  
 
 ### Các tính năng nổi bật
+- Đăng nhập: Người dùng đăng nhập bằng khoản đã được cung cấp sẵn và dựa vào vai trò của tài khoản sẽ có quyền hạn và chức năng khác nhau.
+![login](https://github.com/user-attachments/assets/7210037c-6bdb-4475-b6f9-f06ae9e82e32)
+
+- Quên mật khẩu: Người dùng nhập username và mật khẩu mới sẽ được gửi về email đã đăng ký tài khoản, nếu tài khoản chưa có email thì nhập email mới.
+![forget-pass](https://github.com/user-attachments/assets/48224cb2-2725-483d-970b-cbc6366bde01)
+
 
 #### **Dành cho sinh viên:**
 - Tham gia nhóm, quản lý nhóm.
@@ -39,8 +36,9 @@
 
 ### Backend:
 - **Node.js** với **ExpressJS** để xây dựng REST API.
+- **Sequelize** để thực hiện ORM.
 - **MySQL** cho cơ sở dữ liệu.
-- **JWT** để xác thực.
+- **JWT** để xác thực và phân quyền người dùng.
 
 ### Triển khai:
 - **Docker** và **Nginx** để triển khai ứng dụng.
